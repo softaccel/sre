@@ -1,0 +1,167 @@
+<div class="modal" id="partnerModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title col-2">Nume partner</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="detaliiPartener-tab" data-toggle="tab" href="#detaliiPartener" role="tab" aria-controls="detaliiPartener" aria-selected="true">Detalii</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="comenziPartener-tab" data-toggle="tab" href="#comenziPartener" role="tab" aria-controls="comenziPartener" aria-selected="false">Istoric comenzi</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade active show" id="detaliiPartener" role="tabpanel" aria-labelledby="detaliiPartener-tab">
+                        <div id="detalii" data-resourcetype="item" data-type="item">
+                            <div class="form-row">
+                                <div class="form-group col-4">
+                                    <label for="nameInput">Denumire</label>
+                                    <input type="text" maxlength="155" id="nameInput" name="name" class="form-control form-control-sm" required="" value="ABOGAR S.R.L.">
+                                </div>
+                                <div class="form-group col-2">
+                                    <label for="cod_fiscalInput">Cod fiscal</label>
+                                    <input type="text" maxlength="20" id="cod_fiscalInput" data-sync="cod_fiscal" name="cod_fiscal" class="form-control form-control-sm" value="RO2483866">
+                                </div>
+                                <div class="form-group col-3">
+                                    <label for="reg_comInput">Reg Com</label>
+                                    <input type="text" maxlength="45" id="reg_comInput" data-sync="reg_com" name="reg_com" class="form-control form-control-sm" value="J35/1236/1992">
+                                </div>
+                                <div class="form-group col-2">
+                                    <label for="discountInput">TVA</label>
+                                    <select class="custom-select custom-select-sm" data-sync="is_vat" name="is_vat">
+                                        <option value="1">platitor</option>
+                                        <option value="0">neplatitor</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-1">
+                                    <label for="discountInput">Discount</label>
+                                    <input type="number" maxlength="0" id="discountInput" data-sync="discount" name="discount" class="form-control form-control-sm" value="">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-7">
+                                    <label for="addressInput">Adresa</label>
+                                    <input type="text" maxlength="100" id="addressInput" data-sync="address" name="address" class="form-control form-control-sm">
+                                </div>
+                                <div class="form-group col-2">
+                                    <label for="cityInput">Localitate</label>
+                                    <input type="text" maxlength="45" id="cityInput" data-sync="city" name="city" class="form-control form-control-sm" required="">
+                                </div>
+                                <div class="form-group col-2">
+                                    <label for="countyInput">Judet</label>
+                                    <input type="text" maxlength="45" id="countyInput" data-sync="county" name="county" class="form-control form-control-sm">
+                                </div>
+                                <div class="form-group col-1">
+                                    <label for="countryInput">Tara</label>
+                                    <input type="text" maxlength="45" id="countryInput" data-sync="country" name="country" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-3">
+                                    <label for="emailInput">Email</label>
+                                    <input type="text" maxlength="100" id="emailInput" data-sync="email" name="email" class="form-control form-control-sm">
+                                </div>
+                                <div class="form-group col-3">
+                                    <label for="phoneInput">Telefon</label>
+                                    <input type="text" maxlength="45" id="phoneInput" data-sync="phone" name="phone" class="form-control form-control-sm">
+                                </div>
+                                <div class="form-group col-3">
+                                    <label for="bank_nameInput">Banca</label>
+                                    <input type="text" maxlength="45" id="bank_nameInput" data-sync="bank_name" name="bank_name" class="form-control form-control-sm">
+                                </div>
+                                <div class="form-group col-3">
+                                    <label for="bank_accountInput">Cont</label>
+                                    <input type="text" maxlength="45" id="bank_accountInput" data-sync="bank_account" name="bank_account" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-3">
+                                    <label for="is_customerInput">Client</label>
+                                    <select name="is_customer" id="is_customerInput" data-sync="is_customer" class="custom-select">
+                                        <option value="1">da</option>
+                                        <option value="0">nu</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-3">
+                                    <label>Furnizor</label>
+                                    <select name="is_supplier" data-sync="is_supplier" class="custom-select">
+                                        <option value="1">da</option>
+                                        <option value="0">nu</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-12">
+                                    <label>Notite</label>
+                                    <textarea class="form-control form-control-sm" rows="3" data-sync="comments" name="comments"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="comenziPartener" data-resourcetype="collection" role="tabpanel" aria-labelledby="comenziPartener-tab">
+                        <form id="filterClientOrders" class="d-none"><input type="submit" name="sb"></form>
+                        <table class="table table-sm">
+                            <thead>
+                            <tr>
+                                <th class="align-top">
+                                    <label>Nr comanda</label>
+                                </th>
+                                <th>
+                                    <label>Data</label>
+                                    <input class="form-control form-control-sm" name="creation_date" data-operator="~=~" form="filterClientOrders" onkeyup="this.form.sb.click()">
+                                </th>
+                                <th>
+                                    <label>Total cu TVA</label>
+                                    <input class="form-control form-control-sm" name="total_wtva" data-operator="=" form="filterClientOrders" onkeyup="this.form.sb.click()">
+                                </th>
+                                <th>
+                                    <label>Rest plata</label>
+                                    <input class="form-control form-control-sm" name="to_pay" data-operator="=" form="filterClientOrders" onkeyup="this.form.sb.click()">
+                                </th>
+                                <th>
+                                    <label>Status</label>
+                                    <select class="form-control form-control-sm" name="status" data-operator="><" form="filterClientOrders" onchange="this.form.sb.click()">
+                                        <option value="offer;ordered;processing;ready;delivered;canceled" class="bg-secondary"></option>
+                                        <option value="offer" class="bg-secondary">Oferta</option>
+                                        <option value="ordered" class="bg-primary">Comandat</option>
+                                        <option value="processing" class="bg-warning">In lucru</option>
+                                        <option value="ready" class="bg-info">Gata de livrare</option>
+                                        <option value="delivered" class="bg-success">Livrat</option>
+                                        <option value="canceled" class="bg-dark">Anulat</option>
+                                    </select>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id="clientOrders" data-resourcetype="collection" data-filter="#filterClientOrders" data-paging="#clientOrdersPaging"></tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="8" align="left">
+                                    <div class="btn-group" id="clientOrdersPaging" data-pagesize="5"><button data-type="first" class="btn btn-outline-secondary disabled" title="0">&lt;&lt;</button><button data-type="prev" class="btn btn-outline-secondary disabled" title="-5">&lt;</button><button data-type="next" class="btn btn-outline-secondary disabled" title="5">&gt;</button><button data-type="last" class="btn btn-outline-secondary disabled" title="-5">&gt;&gt;</button></div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function init(k) {
+        let modal = $("#partnerModal").remove().appendTo("body");
+        k.exec = function (data) {
+            modal.modal("show");
+        };
+        k.exec();
+    }
+</script>
+

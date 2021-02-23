@@ -1,0 +1,95 @@
+<table class="table table-sm table-hover listapontaj">
+    <thead class="thead-light">
+    <tr>
+        <th class="form-group">
+            <label>Angajat</label>
+            <input type="text" class="form-control form-control-sm">
+        </th>
+        <th class="form-group">
+            <label>Comanda</label>
+            <input type="text" class="form-control form-control-sm">
+        </th>
+        <th class="form-group">
+            <label>Operatiune</label>
+            <input type="text" class="form-control form-control-sm">
+        </th>
+        <th class="form-group">
+            <label>Start</label>
+            <input type="text" class="form-control form-control-sm">
+        </th>
+        <th class="form-group">
+            <label>Stop</label>
+            <input type="text" class="form-control form-control-sm">
+        </th>
+        <th style="min-width: 100px">
+            <button type="button" class="btn btn-secondary"><i class="fa fa-search"></i></button>
+            <button type="button" class="btn btn-success"><i class="fa fa-file-excel"></i></button>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <select class="custom-select">
+                <option>Pop Ionescu</option>
+                <option>Ion Popescu</option>
+            </select>
+        </td>
+        <td>
+            <select class="custom-select">
+                <option>A1235</option>
+                <option>B251</option>
+            </select>
+        </td>
+
+        <td>
+            <select class="custom-select">
+                <option>sudura</option>
+                <option>debitare</option>
+            </select>
+        </td>
+
+        <td><input class="form-control" type="datetime-local"></td>
+        <td><input class="form-control" type="datetime-local"></td>
+        <td>
+            <button type="button" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        </td>
+    </tr>
+    <tr>
+        <td><a href="" onclick="komponentor.intent('/views/employees/employee').send();return false;">Ion Popescu</a></td>
+        <td>A325</td>
+        <td>sudura</td>
+        <td>2020-01-03 08:00</td>
+        <td>2020-01-03 11:00</td>
+        <td>
+            <button type="button" class="btn btn-warning"><i class="fa fa-edit"></i></button>
+            <button type="button" class="btn btn-danger"><i class="fa fa-trash-alt"></i></button>
+        </td>
+    </tr>
+    <tr>
+        <td><a href="" onclick="komponentor.intent('/views/employees/employee').send();return false;">Pop Ionescu</a></td>
+        <td>A325</td>
+        <td>sudura</td>
+        <td>2020-01-03 08:00</td>
+        <td>2020-01-03 11:00</td>
+        <td>
+            <button type="button" class="btn btn-warning"><i class="fa fa-edit"></i></button>
+            <button type="button" class="btn btn-danger"><i class="fa fa-trash-alt"></i></button>
+        </td>
+    </tr>
+    </tbody>
+
+    <tfoot>
+    <tr>
+        <td colspan="5" align="left">
+            <div class="btn-group" id="usersPaging" data-pagesize="20">
+                <button data-type="first" class="btn btn-outline-secondary">&lt;&lt;</button>
+                <button data-type="prev" class="btn btn-outline-secondary">&lt;</button>
+                <button data-type="page" class="btn btn-outline-secondary">1</button>
+                <button data-type="next" class="btn btn-outline-secondary">&gt;</button>
+                <button data-type="last" class="btn btn-outline-secondary">&gt;&gt;</button>
+            </div>
+        </td>
+    </tr>
+    </tfoot>
+</table>

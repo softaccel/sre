@@ -1,0 +1,30 @@
+<div class="app-main__inner">
+    <div class="row mb-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Teams</div>
+                </div>
+                <div class="card-body row" id="teams" data-type="teams" data-resourcetype="collection">
+                    <div class="col-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <%= attributes.name %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function init(k,html) {
+        $("#teams").apiator({url:apiRoot+"/teams?page[users][limit]=200"});
+
+        // k.exec = function (options) {
+        //     console.log(options);
+        // }
+    }
+</script>

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Spaleck ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+<!--    <base href="/" />-->
+<!--    <meta name="description" content="This is an example dashboard created using build-in elements and components.">-->
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link href="templates/AdminLTE/dist/css/adminlte.css" rel="stylesheet">
+    <link href="assets/css/spinner.css" rel="stylesheet">
+    <link href="assets/css/jquery-ui.css" rel="stylesheet">
+    <link href="assets/css/selectize.bootstrap3.css" rel="stylesheet">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+        <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+    </div>
+
+<div class="app-container app-theme-white body-tabs-shadow closed-sidebar fixed-header" id="mainc">
+    <div class="app-header header-shadow" is='komponent' data-url="/common/header"></div>
+    <div class="app-main">
+        <div is='komponent' data-url="/common/sidebar" data-replace="true"></div>
+        <div class="app-main__outer" id="pageContent">
+            <ul id="tree">
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<script src="assets/js/jquery.js"></script>
+<script src="assets/js/jwt-decode.js"></script>
+<script src="assets/js/komponentor.js?v=1"></script>
+<script src="assets/js/selectize.min.js?v=1"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.bundle.js"></script>
+<script src="assets/js/jquery-ui.js"></script>
+<script src="assets/js/underscore-min.js"></script>
+<script src="assets/js/apiator.js"></script>
+
+
+<script>
+    let _kPath = "komponents";
+    let _kExt = ".html";
+    let vPath = _kPath+"views/";
+    let apiRoot = '/spaleck/be/dbapi/api/';
+    // let defaultKomponent = "/views/dashboard";
+    let pageContentContainer = $('#pageContent');
+</script>
+<script>
+
+    $(document).ready(function () {
+        if(komponentor.routing.path) {
+            komponentor.getKomponent({
+                $el: pageContentContainer,
+                url: komponentor.routing.path,
+                paras: komponentor.routing.paras
+            }).catch(function (a) {
+                $('#pageContent').html("<h3>Page not found</h3>");
+            })
+        }
+        else if(typeof defaultKomponent!=="undefined") {
+            komponentor.getKomponent({
+                $el: pageContentContainer,
+                url: defaultKomponent
+            }).catch(function (a) {
+                $('#pageContent').html("<h3>Page not found</h3>");
+            })
+        }
+        else {
+            $.get("http://localhost/spaleck/be/tree").done(function (data) {
+                console.log(data);
+                render_recusive(data,$("#tree"));
+                $("#tree").find("li").on("click",function (e) {
+                    window.location = window.location.pathname +"#"+$(e.target).data("path").split(".")[0];
+                    // komponentor.intent($(e.target).data("path").split(".")[0]).send();
+                });
+            });
+        }
+    });
+
+    /**
+     *
+     * @param  items Array
+     * @param target
+     */
+    function render_recusive(items,target) {
+        items.forEach(function (item) {
+            let li = $("<li>").text(item.name).data("path",item.path).appendTo(target);
+            if(item.hasOwnProperty("files")) {
+                render_recusive(item.files,$("<ul>").appendTo(li));
+            }
+        })
+    }
+</script>
+
+</body>
+</html>

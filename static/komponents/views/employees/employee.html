@@ -1,0 +1,159 @@
+<style>
+    #detaliiPanel table td:first-child{
+        width: 150px;
+        font-weight: bold;
+    }
+
+
+    #detaliiPanel tr td.view button{
+        display: none;
+    }
+
+    #detaliiPanel tr td.view:hover button{
+        display: inline;
+    }
+    #detaliiPanel tr td.edit{
+        display: none;
+    }
+    #detaliiPanel tr.edit td.edit{
+        display: inline-block;
+    }
+    #detaliiPanel tr.edit td.view{
+        display: none;
+    }
+    #pontajPanel th:first-child,#pontajPanel td:first-child {
+        display: none;
+
+    }
+</style>
+<div class="modal" id="employeeModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title font-weight-bold">Detalii</div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" id="detaliiTab" data-toggle="tab" href="#detaliiPanel"
+                           role="tab" aria-controls="detaliiPanel" aria-selected="true">Detalii</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pontajTab" data-toggle="tab" href="#pontajPanel"
+                           role="tab" aria-controls="pontajPanel" aria-selected="false">Pontaj</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="docsTab" data-toggle="tab" href="#docsPanel"
+                           role="tab" aria-controls="docsPanel" aria-selected="false">Documente</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div id="employee" data-resourcetype="item" data-type="employees">
+
+                        <div class="tab-pane fade active" id="detaliiPanel" role="tabpanel" aria-labelledby="detaliiTab">
+                            <table width="100%">
+                                <tr>
+                                    <td>EmployeeID</td>
+                                    <td><%= id %></td>
+                                </tr>
+                                <tr>
+                                    <td>Fname</td>
+                                    <td class="view">
+                                        <%= attributes.fname %>
+                                        <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+                                    </td>
+                                    <td class="edit">
+                                        <input name="fname" value="<%= attributes.fname %>" class="form-control form-control-sm form-text" type="text">
+                                        <button class="btn btn-sm btn-success" onclick="save(this)"><i class="fa fa-save"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Lname</td>
+                                    <td class="view">
+                                        <%= attributes.lname %>
+                                        <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+                                    </td>
+                                    <td class="edit">
+                                        <input name="lname" value="<%= attributes.lname %>" class="form-control form-control-sm form-text" type="text">
+                                        <button class="btn btn-sm btn-success" onclick="save(this)"><i class="fa fa-save"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Data nasterii</td>
+                                    <td class="view">
+                                        <%= attributes.bdate %>
+                                        <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+                                    </td>
+                                    <td class="edit">
+                                        <input name="bdate" value="<%= attributes.bdate %>" class="form-control form-control-sm form-text" type="date">
+                                        <button class="btn btn-sm btn-success" onclick="save(this)"><i class="fa fa-save"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>CNP</td>
+                                    <td class="view"><%= attributes.cnp %></td>
+                                    <td class="edit"><input name="cnp" value="<%= attributes.cnp %>" class="form-control form-control-sm form-text" type="text"> </td>
+                                    <td class="view"><button class="btn btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button> </td>
+                                    <td class="edit"><button class="btn btn-sm btn-success" onclick="save(this)"><i class="fa fa-save"></i></button> </td>
+                                </tr>
+                                <tr>
+                                    <td>UserID</td>
+                                    <td class="edit"><%= relationships.userid %></td>
+                                    <td class="edit"><%= relationships.userid %></td>
+                                </tr>
+                                <tr>
+                                    <td>Address</td>
+                                    <td class="edit">
+                                        <%= attributes.address_1 %> <%= attributes.address_2 %><br>
+                                        <%= attributes.city %> <%= attributes.postcode %><br>
+                                        <%= attributes.county %>,<%= attributes.country %><br>
+                                    </td>
+                                    <td class="edit">
+                                        <%= attributes.address_1 %> <%= attributes.address_2 %><br>
+                                        <%= attributes.city %> <%= attributes.postcode %><br>
+                                        <%= attributes.county %>,<%= attributes.country %><br>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>Erp User ID</td>
+                                    <td class="edit"><%= relationships.userid?relationships.userid.id:"-" %></td>
+                                    <td class="edit"><%= relationships.userid?relationships.userid.id:"-" %></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="docsPanel" role="tabpanel" aria-labelledby="docsTab"></div>
+                        <div class="tab-pane fade" id="pontajPanel" role="tabpanel" aria-labelledby="pontajTab">
+                            <div is="komponent" data-url="/views/pontaj/lista"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function edit(src) {
+        $(src).parents("tr").addClass("edit");
+    }
+    function save(src) {
+        $(src).parents("tr").removeClass("edit");
+        let inp = $(src).parents("tr").find("input");
+        let update = {};
+        update[inp.attr("name")] = inp.val();
+        $(src).data("instance").update(update);
+        // console.log(inp,$(src).data("instance"))
+    }
+
+    function init(k,data) {
+        let $modal =  $("#employeeModal").appendTo("body");
+        k.exec = function (data) {
+            $modal.modal("show");
+        };
+        k.exec();
+    }
+</script>

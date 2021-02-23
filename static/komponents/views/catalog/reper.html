@@ -1,0 +1,60 @@
+<div class="modal" id="reperFormModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reper x</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group" data-edit="true" data-create="true">
+                    <label for="nameInput">Denumire</label>
+                    <input type="text" maxlength="45" id="nameInput" name="name" class="form-control form-control-sm" required="">
+                </div>
+
+                <div class="form-group" data-edit="false" data-create="true">
+                    <label for="typeInput">Tip reper</label>
+                    <select name="type" class="custom-select custom-select-sm" id="typeInput" required="">
+                        <option value=""></option>
+                        <option value="product">Material</option>
+                        <option value="service">Servicii</option>
+                    </select>
+                </div>
+
+                <div class="form-group" data-edit="true" data-create="true" id="unitInputGroup">
+                    <label for="unitInput">Unitate de masura</label>
+                    <select class="custom-select custom-select-sm" name="unit" id="unitInput" required="" data-resourcetype="collection"><option value="buc" data-type="item" id="uid_9sppp6xsj">buc</option><option value="kg" data-type="item" id="uid_87gsb4eoi">kg</option><option value="mc" data-type="item" id="uid_bacjhbocq">mc</option><option value="ml" data-type="item" id="uid_4agtg396p">ml</option><option value="mp" data-type="item" id="uid_9cwe89nia">mp</option><option value="ora" data-type="item" id="uid_cjgr92a3g">ora</option><option value="pack" data-type="item" id="uid_y3e8mz513">pack</option><option value="set" data-type="item" id="uid_tar6e1ub4">set</option><option value="zi" data-type="item" id="uid_iqg7qu721">zi</option></select>
+                </div>
+
+
+                <div class="form-group" data-edit="true" data-create="true">
+                    <label>Pret vanzare (fara TVA)</label>
+                    <input type="number" step="0.01" name="unit_price" class="form-control form-control-sm" onkeyup="this.form.unit_price_w_tva.value=round(this.value*1.19,1)">
+                </div>
+
+                <div class="form-group" data-edit="true" data-create="true">
+                    <select class="custom-select custom-select-sm " name="activ" required="">
+                        <option value="1" class="bg-success">ACTIV</option>
+                        <option value="0" class="bg-danger">INACTIV</option>
+                    </select>
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function init(k) {
+        let modal = $("#reperFormModal").remove().appendTo("body");
+        k.exec = function (data) {
+            modal.modal("show");
+        };
+        k.exec();
+    }
+</script>
+

@@ -1,0 +1,221 @@
+<style>
+    .order-summary-table{
+        width: 100%;
+        border-collapse: separate;
+        -webkit-border-vertical-spacing: 10px;
+    }
+    .order-summary-table tr{
+        margin-bottom: 5px;
+    }
+    .order-summary-table td{
+        border-bottom: solid #e6e6e6 1px;
+        padding: 5px;
+        margin-bottom: 5px;
+
+    }
+    .order-summary-table td:first-child{
+        font-weight: bold;
+        background: #E6E6E6;
+
+    }
+
+    .bg-light-me{
+        background-color: #d6d6d6 !important
+    }
+    a.bg-light-me:hover, a.bg-light:focus, button.bg-light:hover, button.bg-light:focus{
+        background-color: #d5d5d5 !important
+    }
+
+</style>
+<div class="modal" id="order_file_modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Comanda <span class="badge">A654</span></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body bg-light">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Sumar</h5>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+
+
+                            <div class="col-6">
+                                <table class="order-summary-table">
+                                    <tr>
+                                        <td>Nr. comanda intern</td>
+                                        <td>A654</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bestellung</td>
+                                        <td>D12542357</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Client</td>
+                                        <td><a href="#" onclick="komponentor.intent('/views/customers/customer').data({id:0}).send()">Spalek GmbH</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Stadiu</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Comandat
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="#">Da in lucru</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Data preluare comanda</td>
+                                        <td>2021-02-01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date dare in executie</td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Data finalizare</td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Data livrare</td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pret estimat</td>
+                                        <td>7958 EURO</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pret curent</td>
+                                        <td>2587 EURO</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pret final</td>
+                                        <td>-</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-6 text-center">
+                                <img src="assets/img/product.jpg" width="300">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <div class="card-header-title m-0">Angajati alocati</div>
+                        <div class="btn-actions-pane-right">
+                            <button></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+
+                            <div class="col-3">
+                                <div class="shadow bg-light-me rounded p-2" onclick="komponentor.intent('/views/employees/employee').send()">
+                                    <span class="rounded-circle bg-primary text-center float-left p-1 d-inline-block mr-2"
+                                          style="width: 50px; height: 50px; color: white; font-size: 25px">
+                                        <i class="fa fa-user"></i>
+                                    </span> <strong>Matei Basarab</strong><br>
+                                    muncitor
+                                    <div style="clear: left"></div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="shadow bg-light-me rounded p-2">
+                                    <span class="rounded-circle bg-primary text-center float-left p-1 d-inline-block mr-2"
+                                          style="width: 50px; height: 50px; color: white; font-size: 25px">
+                                        <i class="fa fa-user"></i>
+                                    </span> <strong>Matei Basarab</strong><br>
+                                    muncitor
+                                    <div style="clear: left"></div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="shadow bg-light-me rounded p-2">
+                                    <span class="rounded-circle bg-primary text-center float-left p-1 d-inline-block mr-2"
+                                          style="width: 50px; height: 50px; color: white; font-size: 25px">
+                                        <i class="fa fa-user"></i>
+                                    </span> <strong>Matei Basarab</strong><br>
+                                    muncitor
+                                    <div style="clear: left"></div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="shadow bg-light-me rounded p-2">
+                                    <span class="rounded-circle bg-primary text-center float-left p-1 d-inline-block mr-2"
+                                          style="width: 50px; height: 50px; color: white; font-size: 25px">
+                                        <i class="fa fa-user"></i>
+                                    </span> <strong>Matei Basarab</strong><br>
+                                    muncitor
+                                    <div style="clear: left"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <div class="card-header-title m-0">Elemente comanda</div>
+                        <div class="btn-actions-pane-right">
+                            <button class="btn btn-primary"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>Denumire</th>
+                                <th>Date</th>
+                                <th>Cantitate</th>
+                                <th>Pret Unitar</th>
+                                <th>Total</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Sudura</td>
+                                <td>2020-02-02</td>
+                                <td>100</td>
+                                <td>30 EUR/ora</td>
+                                <td>3000 EUR</td>
+                            </tr>
+                            <tr>
+                                <td>Sudura</td>
+                                <td>2020-02-02</td>
+                                <td>100</td>
+                                <td>30 EUR/ora</td>
+                                <td>3000 EUR</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function init(k) {
+        let modal = $("#order_file_modal").remove().appendTo("body");
+        k.exec = function (data) {
+            modal.modal("show");
+        };
+        k.exec();
+
+    }
+</script>
