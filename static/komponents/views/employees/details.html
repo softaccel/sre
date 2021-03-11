@@ -1,0 +1,205 @@
+<table width="100%" id="employeeDetailsTable" data-resourcetype="item" data-type="employees">
+    <tr>
+        <td style="min-width: 200px">EmployeeID</td>
+        <td>
+            <div class="view">
+                <span class="label"><%= id %></span>
+            </div>
+        </td>
+
+    </tr>
+    <tr>
+        <td>Prenume</td>
+        <td>
+            <div class="view">
+                <span class="label"><%= attributes.fname %></span>
+                <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+            </div>
+            <div class="edit input-group">
+                <input name="fname" value="<%= attributes.fname %>" class="form-control form-control-sm" type="text">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                </div>
+
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>Nume</td>
+        <td>
+            <div class="view">
+                <span class="label"><%= attributes.lname %></span>
+                <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+            </div>
+            <div class="edit input-group">
+                <input name="lname" value="<%= attributes.lname %>" class="form-control form-control-sm" type="text">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                </div>
+
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>Functia</td>
+        <td>
+            <div class="view">
+                <span class="label"><%= relationships.jobtitle.attributes.name %></span>
+                <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+            </div>
+            <div class="edit input-group">
+                <input name="jobtitle" value="<%= relationships.jobtitle.id %>" class="form-control form-control-sm" type="text">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                </div>
+
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>Echipa</td>
+        <td>
+            <div class="view">
+                <span class="label"><%= relationships.team?relationships.team.attributes.name:"-" %></span>
+                <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+            </div>
+            <div class="edit input-group">
+                <input name="jobtitle" value="<%= relationships.jobtitle.id %>" class="form-control form-control-sm" type="text">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                </div>
+
+            </div>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td>Data nasterii</td>
+        <td>
+            <div class="view">
+                <span class="label"><%= attributes.bdate %></span>
+                <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+            </div>
+            <div class="edit input-group inpgrp">
+                <input name="bdate" value="<%= attributes.bdate %>" class="form-control form-control-sm" type="text">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>CNP</td>
+        <td>
+            <div class="view">
+                <span class="label"><%= attributes.cnp %></span>
+                <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+            </div>
+            <div class="edit input-group">
+                <input name="bdate" value="<%= attributes.cnp %>" class="form-control form-control-sm" type="text">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>Address</td>
+        <td class="view">
+            <div class="view">
+                <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+                <div  class="label">
+                    <%= attributes.address_1 %> <%= attributes.address_2 %><br>
+                    <%= attributes.city %> <%= attributes.postcode %><br>
+                    <%= attributes.county %>,<%= attributes.country %><br>
+                </div>
+
+            </div>
+
+            <div class="edit">
+                <div class="container">
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <div class="position-relative form-group">
+                                <label for="address_1_input" class="">Adresa 1</label>
+                                <input name="address_1" value="<%= attributes.address_1 %>" id="address_1_input" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="position-relative form-group">
+                                <label for="address_2_input" class="">Adresa 2</label>
+                                <input name="address_2" value="<%= attributes.address_2 %>" id="address_2_input" type="text" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-3">
+                            <div class="position-relative form-group">
+                                <label for="city_input" class="">Localitate</label>
+                                <input name="city" id="city_input" value="<%= attributes.city %>" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="position-relative form-group">
+                                <label for="postcode_input" class="">Cod postal</label>
+                                <input name="postcode" id="postcode_input" value="<%= attributes.postcode %>" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="position-relative form-group">
+                                <label for="county_input" class="">Judet</label>
+                                <input name="county" id="county_input" value="<%= attributes.county %>" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="position-relative form-group">
+                                <label for="country_input" class="">Tara</label>
+                                <input name="country" id="country_input" value="<%= attributes.country %>" type="text" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col text-center">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+
+    </tr>
+    <tr>
+        <td>Erp User ID</td>
+        <td>
+            <div class="view">
+                <span><%= relationships.userid?relationships.userid.id:"-" %></span>
+
+                <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+            </div>
+            <div class="edit input-group">
+                <input name="userid" value="<%= relationships.userid?relationships.userid.id:null %>" class="form-control form-control-sm" type="text">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<script>
+    function init_komponent(k) {
+        console.log("###################",k);
+
+        k.exec = function (instance) {
+            let modUrl = {};
+            Object.assign(modUrl,instance.url);
+            if(modUrl.parameters['fields[employees]']) {
+                delete modUrl.parameters['fields[employees]'];
+            }
+            instance.bindView($(k.$el)).setUrl(modUrl).loadFromRemote();
+        };
+
+        return k;
+    }
+</script>

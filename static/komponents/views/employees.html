@@ -1,89 +1,66 @@
+<style>
+    .ul-cards {
+        list-style: none;
+        padding: 0px;
+    }
+    .ul-cards li{
+        margin: 0px;
+    }
+</style>
+
 <div class="app-main__inner">
-    <div class="row mb-3">
-        <div class="col">
-            <div class="card">
-                <div class="card-body">
-                    <form id="filterEmployees"></form>
-                    <table class="table table-sm table-hover">
-                        <thead class="thead-light" id="employeesThead">
-                        <tr>
-                            <th>
-                                <label>
-                                    Nume
-                                    <a class="text-secondary" data-sortfld="fname">
-                                        <i class="fa fa-sort-up sort-up"  style="display: none"></i>
-                                        <i class="fa fa-sort-down sort-down" style="display: none"></i>
-                                        <i class="fa fa-sort sort-default text-light"></i>
-                                    </a>
-                                </label>
-                                <input form="filterEmployees" type="text" name="fname" data-operator="~=~" class="form-control form-control-sm" onkeyup="this.form.submit.click()">
-                            </th>
-                            <th>
-                                <label>
-                                    Prenume
-                                    <a class="text-secondary" data-sortfld="fname">
-                                        <i class="fa fa-sort-up sort-up"  style="display: none"></i>
-                                        <i class="fa fa-sort-down sort-down" style="display: none"></i>
-                                        <i class="fa fa-sort sort-default text-light"></i>
-                                    </a>
-                                </label>
-                                <input form="filterEmployees" type="text" name="fname" data-operator="~=~" class="form-control form-control-sm" onkeyup="this.form.submit.click()">
-                            </th>
-                            <th class="align-top">
-                                Echipa
-                            </th>
-                            <th>
-                                <label>
-                                    Active
-                                    <a class="text-secondary" data-sortfld="active">
-                                        <i class="fa fa-sort-up sort-up"  style="display: none"></i>
-                                        <i class="fa fa-sort-down sort-down" style="display: none"></i>
-                                        <i class="fa fa-sort sort-default text-light"></i>
-                                    </a>
-                                </label>
-                                <select form="filterEmployees" name="active" class="form-control custom-select custom-select-sm" onchange="this.form.submit.click()">
-                                    <option value="__EMPTY__"></option>
-                                    <option value="1">Active</option>
-                                    <option value="0">Blocat</option>
-                                </select>
-                            </th>
-                            <th width="100">
-                                <button type="button" class="btn btn-success" data-toggle="modal"
-                                        data-target="#addEditModal" data-action="showCreateModal" data-instance="#employees">Adauga</button>
-                            </th>
-                        </tr>
-                        </thead>
+    <div class="app-page-title">
+        <div class="page-title-wrapper">
+            <div class="page-title-heading">
+                <div class="page-title-icon">
+                    <i class="fa fa-industry"></i>
+                </div>
+                <div>Angajati
+                    <div class="page-title-subheading"></div>
+                </div>
+            </div>
+            <div class="page-title-actions">
+                <button onclick="addNewEmployee()" type="button" data-toggle="tooltip" title="Adauga angajat" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary">
+                    <i class="fa fa-user-plus"></i> Angajat nou
+                </button>
 
-                        <tbody data-resourcetype="collection" id="employees"
-                               data-addeditmodal='#addEditModal' data-deletemodal='#confirmDeleteModal'
-                               data-filter="filterEmployees" data-type="employees" data-sort="#employeesThead"
-                               data-paging="#employeesPaging" data-filter="#filterEmployees">
-                        <tr onclick="komponentor.intent('/views/employees/employee').data().send()">
-                            <td><%= attributes.fname %></td>
-                            <td><%= attributes.lname %></td>
-                            <td><%= relationships.team?relationships.team.attributes.name:"-" %></td>
-                            <td><span class="badge badge-<%= attributes.locked*1?'danger':'success' %>"><%= attributes.locked*1?'blocat':'activ' %></span> </td>
-                            <td>
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal" data-action="showDeleteConfirm">Sterge</button>
-                            </td>
-                        </tr>
-                        </tbody>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="row mb-3">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="filterEmployees"></form>
+                        <ul class="row ul-cards" data-resourcetype="collection" id="employees"
+                            data-filter="filterEmployees"
+                            data-paging="#employeesPaging" data-filter="#filterEmployees">
+                            <li class="m-3" onclick="openEmployeeModal(this)">
+                                <div class="card" style="width: 200px; height: 150px">
+                                    <div class="card-body text-center">
+                                        <span class="d-inline-block" style="width: 60px">
+                                            <img class="rounded-circle" src="assets/img/pexels-photo-220453.webp" alt="" width="52" height="52">
+                                        </span><br>
+                                        <strong><%=attributes.fname%> <%=attributes.lname%></strong><br>
+                                        <span class="font-weight-normal"><%=relationships.jobtitle.attributes.name%>  </span>
 
-                        <tfoot>
-                        <tr>
-                            <td colspan="5" align="left">
-                                <div class="btn-group" id="employeesPaging" data-pagesize="20">
-                                    <button data-type="first" class="btn btn-outline-secondary">&lt;&lt;</button>
-                                    <button data-type="prev" class="btn btn-outline-secondary">&lt;</button>
-                                    <button data-type="page" class="btn btn-outline-secondary">1</button>
-                                    <button data-type="next" class="btn btn-outline-secondary">&gt;</button>
-                                    <button data-type="last" class="btn btn-outline-secondary">&gt;&gt;</button>
+                                    </div>
                                 </div>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                    <!-- HTML TEMPLATE SECTION: STOP-->
+                            </li>
+
+                        </ul>
+                        <!-- HTML TEMPLATE SECTION: STOP-->
+                    </div>
+                    <div class="card-footer" id="employeesPaging">
+                        <div class="btn-group" id="" data-pagesize="20">
+                            <button data-type="first" class="btn btn-outline-secondary">&lt;&lt;</button>
+                            <button data-type="prev" class="btn btn-outline-secondary">&lt;</button>
+                            <button data-type="page" class="btn btn-outline-secondary">1</button>
+                            <button data-type="next" class="btn btn-outline-secondary">&gt;</button>
+                            <button data-type="last" class="btn btn-outline-secondary">&gt;&gt;</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -91,9 +68,49 @@
 </div>
 
 <script>
+    /**
+     *
+     * @param src
+     */
+    function openEmployeeModal(src) {
+        if($(src).data("locked"))
+            return;
+        $(src).data("locked",true);
+        komponentor
+            .intent('/views/employees/employee')
+            .data({
+                instance:$(src).data('instance')
+            })
+            .send()
+            .then(function (kmp) {
+                // console.log("**************",kmp);
+            })
+            .finally(function () {
+                $(src).removeData("locked");
+            })
+    }
 
-    function init(k,html) {
-         $("#employees").apiator({url:apiRoot+"/employees?page[employees][limit]=20&include=team"});
+    /**
+     *
+     */
+    function addNewEmployee() {
+        komponentor
+            .intent('/views/employees/employee')
+            .data({
+                instance:$("#employees").data('instance'),
+                action:'new',
+                loadrecursive:'inhibit'
+            })
+            .send();
+    }
+
+    /**
+     *
+     * @param k
+     * @param html
+     */
+    function init_komponent(k,html) {
+        $("#employees").apiator({url:apiRoot+"/employees?page[employees][limit]=20&include=team,jobtitle&fields[employees]=fname,lname"});
 
         k.exec = function (options) {
             console.log(options);

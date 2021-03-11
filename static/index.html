@@ -18,6 +18,9 @@
     <link href="assets/css/spinner.css" rel="stylesheet">
     <link href="assets/css/jquery-ui.css" rel="stylesheet">
     <link href="assets/css/selectize.bootstrap3.css" rel="stylesheet">
+    <style>
+
+    </style>
 </head>
 <body>
 
@@ -27,10 +30,11 @@
 <div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar" id="mainc">
     <div class="app-header header-shadow" is='komponent' data-url="/common/header"></div>
     <div class="app-main">
-        <div class="app-sidebar sidebar-shadow" is='komponent' data-url="/common/sidebar">
-        </div>
+        <div class="app-sidebar sidebar-shadow" is='komponent' data-url="/common/sidebar" id="sidebar"></div>
 
         <div class="app-main__outer" id="pageContent">
+
+<button onclick="sendIntent()">asd</button>
             <ul id="tree">
 
             </ul>
@@ -60,34 +64,47 @@
 </script>
 <script>
 
+    function sendIntent(){
+        console.log("*****************");
+        komponentor.intent('/common/test').data({a:1})
+            .send()
+            .then(function (a,b,c) {
+                console.log(a,b,c);
+            })
+    }
+
+    autoload = false;
     $(document).ready(function () {
+        // load static defined komponents
+        let $overlay = $("<div class='pageOverlay'><div class='spinner'></div></div>").appendTo("body");
+        komponentor.loadKomponents($("body"))
+            .then(function () {
+                $overlay.remove();
+            })
+            .catch(function () {
+                $overlay.remove();
+            });
+
+        // load main app according to routing path
         if(komponentor.routing.path) {
-            komponentor.getKomponent({
-                $el: pageContentContainer,
+            $(pageContentContainer).komponent({
                 url: komponentor.routing.path,
                 paras: komponentor.routing.paras
-            }).catch(function (a) {
-                $('#pageContent').html("<h3>Page not found</h3>");
-            })
+            });
+            return;
         }
-        else if(typeof defaultKomponent!=="undefined") {
-            komponentor.getKomponent({
+
+        //
+        if(typeof defaultKomponent!=="undefined") {
+            komponentor.fetchKomponent({
                 $el: pageContentContainer,
                 url: defaultKomponent
             }).catch(function (a) {
                 $('#pageContent').html("<h3>Page not found</h3>");
-            })
-        }
-        else {
-            $.get("http://localhost/spaleck/be/tree").done(function (data) {
-                console.log(data);
-                render_recusive(data,$("#tree"));
-                $("#tree").find("li").on("click",function (e) {
-                    window.location = window.location.pathname +"#"+$(e.target).data("path").split(".")[0];
-                    // komponentor.intent($(e.target).data("path").split(".")[0]).send();
-                });
             });
+            return;
         }
+
     });
 
     /**
@@ -104,6 +121,9 @@
         })
     }
 </script>
+
+
+
 
 </body>
 </html>

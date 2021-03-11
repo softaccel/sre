@@ -79,8 +79,7 @@
 		return obj;
 	};
 
-	function deepmerge(target, source, optionsArgument)
-	{
+	function deepmerge(target, source, optionsArgument) {
 		function defaultArrayMerge(target, source, optionsArgument) {
 			let destination = target.slice();
 			source.forEach(function(e, i) {
@@ -143,8 +142,7 @@
 		}
 	}
 
-	deepmerge.all = function deepmergeAll(array, optionsArgument)
-	{
+	deepmerge.all = function deepmergeAll(array, optionsArgument) {
 		if (!Array.isArray(array) || array.length < 2) {
 			throw new Error('first argument should be an array with at least two elements');
 		}
@@ -162,8 +160,7 @@
 	 * @returns {{}}
 	 * @constructor
 	 */
-	function EventsEmitter(eventNames)
-	{
+	function EventsEmitter(eventNames) {
 		if(typeof eventNames!=="object" )
 			throw "Invalid Events Emiter initializer";
 
@@ -227,16 +224,11 @@
 	 * @param options
 	 * @returns {{}|*}
 	 */
-	function parseOptions(options)
-	{
-		if(typeof options==="undefined") {
+	function parseOptions(options) {
+		if(typeof options==="undefined")
 			return {};
-		}
-
-		if(options.constructor===Object) {
+		if(options.constructor===Object)
 			return options;
-		}
-
 		throw ["Invalid options",options];
 	}
 
@@ -244,8 +236,7 @@
 	 *
 	 * @param doc
 	 */
-	function flattenDoc(doc)
-	{
+	function flattenDoc(doc) {
 		let arr = [];
 		if(doc.hasOwnProperty("data") && doc.data!==null) {
 			if(doc.data.constructor===Array)
@@ -315,18 +306,14 @@
 			}
 		};
 
-		if(data.hasOwnProperty("data")) {
-			db = deepmerge(db, parseDataProperty(data.data));
-		}
+		if(data.hasOwnProperty("data"))
+			db = deepmerge(db,parseDataProperty(data.data));
 
-		if(data.hasOwnProperty("includes")) {
-			db = deepmerge(db, parseIncludesProperty(data.includes));
-		}
+		if(data.hasOwnProperty("includes"))
+			db = deepmerge(db,parseIncludesProperty(data.includes));
 
 
-		/**
-		 * fix relations
-		 */
+		// fix relations
 		Object.getOwnPropertyNames(db).forEach(function (resName) {
 			Object.getOwnPropertyNames(db[resName]).forEach(function (keyId) {
 				if(!db[resName][keyId])
@@ -362,11 +349,6 @@
 				})
 			});
 		});
-
-		/**
-		 *
-		 * @param data
-		 */
 		function parseDataProperty(data)
 		{
 			let db = {};
@@ -382,10 +364,6 @@
 			return addItems2Db(data);
 		}
 
-		/**
-		 *
-		 * @param data
-		 */
 		function parseIncludesProperty(data)
 		{
 			let db = {};
@@ -396,10 +374,6 @@
 
 		}
 
-		/**
-		 *
-		 * @param items
-		 */
 		function addItems2Db(items)
 		{
 			let db = {};
@@ -422,14 +396,13 @@
 	 * @param options
 	 * @returns {{relationships: null, view: null, attributes: null, id: null, collection: null, type: null, url: null}}
 	 */
-	function Item(options)
-	{
+	function Item(options) {
 		let _item = {
 			id: null,
 			type: null,
 			attributes: null,
 			relationships: null,
-			views: [],
+			view: null,
 			collection: null,
 			url: null,
 			updateUrl: null,
@@ -442,7 +415,7 @@
 		Object.assign(_item,EventsEmitter(eventTypes));
 
 		Object.assign(_item,parseOptions(options));
-		let storage = Storage();
+		let storage = new Storage();
 
 		_item.setUrl = function (url) {
 			if(url.constructor===String) {
@@ -450,7 +423,6 @@
 				this.updateUrl = Object.assign({},this.url);
 				this.deleteUrl = Object.assign({},this.url);
 			}
-
 
 			if(url.hasOwnProperty("url"))
 				this.url = URL(url.url);
@@ -465,10 +437,8 @@
 		_item.deleteUrl = URL(_item.deleteUrl?_item.deleteUrl:_item.url);
 		_item.updateUrl = URL(_item.updateUrl?_item.updateUrl:_item.url);
 
-
-		_item.views.forEach(function (view) {
-			view.item = _item;
-		});
+		if(_item.view)
+			_item.view.item = _item;
 
 
 		/**
@@ -478,84 +448,37 @@
 		 * @param errorThrown
 		 * @param _self
 		 */
-		function fail(jqXHR, textStatus, errorThrown) {
-			if(jqXHR.status===404) {
-				// _self.view.renderEmpty();
-				_item.views.forEach(function (view) {
-					view.renderEmpty();
-				});
-			}
+		function fail(jqXHR, textStatus, errorThrown, _self) {
+			if(jqXHR.status===404)
+				_self.view.renderEmpty();
 		}
 
 
 		/**
 		 * load data from remote storage. Trigger an AJAX call
-		 * @returns {Promise<unknown>}
 		 */
 		_item.loadFromRemote = function () {
+			let _self = _item;
+
 			return new Promise(function (resolve,reject) {
-				if(!_item.url) {
-					throw("No valid URL provided");
+				if(!_self.url) {
+					reject("No valid URL provided");
 				}
 
-				storage.read(_item.url,{},_item)
-					.then(function (data, textStatus, jqXHR, ctx) {
-						_item
-							.loadFromJSONAPIDoc(data, textStatus, jqXHR, ctx)
-							.views.forEach(function (view){
-								view.render();
-							});
-
-						resolve(_item);
-					})
-					.catch(function(jqXHR, textStatus, errorThrown)
+				storage.read(_self.url,
+					{},
+					(data, textStatus, jqXHR, ctx)=> {
+						// console.log("recv data from srv. render item as received from server",_self);
+						_self.loadFromJSONAPIDoc(data, textStatus, jqXHR, ctx).view.render();
+						resolve(_self);
+					},
+					(jqXHR, textStatus, errorThrown, _self)=>
 					{
-						console.log("fail to load resource",_item.url,jqXHR, textStatus, errorThrown);
-						fail(jqXHR, textStatus, errorThrown);
+						fail(jqXHR, textStatus, errorThrown, _self);
 						reject(jqXHR);
-					});
-
+					}
+					, _self);
 			});
-		};
-
-		_item.unbindView = function(view)
-		{
-			let found = false;
-			for(let i=0;i<this.views.length;i++) {
-				if(this.views[i]===view) {
-					found = i
-				}
-			}
-			if(found!==false) {
-				this.views.splice(found,1)
-			}
-
-		};
-
-
-		/**
-		 *
-		 * @param view
-		 */
-		_item.bindView = function(view) {
-
-			view = ItemView(view);
-			// console.log("55555555555555555",view);
-
-			let bound = false;
-			_item.views.forEach(function (v) {
-				console.log("view exists");
-				if(v===view) {
-					bound = true;
-				}
-			});
-
-			if(bound) {
-				return;
-			}
-			view.item = _item;
-			_item.views.push(view);
-			return this;
 		};
 
 		/**
@@ -569,24 +492,22 @@
 		_item.loadFromJSONAPIDoc = function (data,text,xhr,ctx) {
 			let obj;
 
-			if(this.hasOwnProperty("collection")) {
+			if(this.hasOwnProperty("collection"))
 				obj = this;
-			}
-			else if(ctx && ctx.hasOwnProperty("collection")) {
+
+			else if(ctx && ctx.hasOwnProperty("collection"))
 				obj = ctx;
-			}
 
 			if(data.data && data.data.constructor===Array) {
 				throw "Invalid configuration: resource type is item but server response is collection";
 			}
 
+
 			let db = buildDb(data);
-
 			Object.assign(obj,parseItemData(data,db));
-
 			obj.url = URL(obj.url);
-
 			// dispatch event
+
 			obj.dispatch('load',{type:'load',src:obj,data:data,xhr:xhr});
 			return this;
 		};
@@ -624,11 +545,8 @@
 		 * @param error
 		 */
 		_item.fail = function (xhr,statusText,error) {
-			// console.log(xhr,statusText,error);
-			// this.view.renderEmpty();
-			this.view.forEach(function (view) {
-				view.renderEmpty();
-			});
+			console.log(xhr,statusText,error);
+			this.view.renderEmpty();
 		};
 
 
@@ -752,69 +670,54 @@
 				}, this);
 			}
 
+			let self = this;
+			// console.log("-------------------",JSON.parse(JSON.stringify(toUpdate)));
+
 			return new Promise(function (resolve,reject) {
 				// console.log("++++++++++++++++++",JSON.parse(JSON.stringify(toUpdate)));
 
-				if(!Object.getOwnPropertyNames(toUpdate.attributes).length
-					&& !Object.getOwnPropertyNames(toUpdate.relationships).length) {
+				if(!Object.getOwnPropertyNames(toUpdate.attributes).length && !Object.getOwnPropertyNames(toUpdate.relationships).length) {
 					console.log("Nothing to update");
-					resolve(_item);
+					resolve(self);
 				}
 
 				let patchData = JSON.stringify({data: toUpdate});
-
-				storage.update(_item.updateUrl, {},patchData,_item)
-					.then(function (data,txt,xhr)
-					{
+				storage.update(self.updateUrl, {},patchData,
+					function (data,txt,xhr,ctx) {
 						let newData = parseItemData(data,buildDb(data));
-						Object.assign(_item,newData);
-
-						console.log("Update OK. Render updated",_item);
-						// ctx.view.render();
-						_item.views.forEach(function (view){
-							view.render();
-						});
-						resolve(_item);
-					})
-					.catch(function (xhr,txt,err,ctx)
-					{
-						console.log("Update NOK",_item.updateUrl,patchData,xhr);
+						Object.assign(ctx,newData);
+						console.log("Update OK. Render updated",self);
+						ctx.view.render();
+						resolve(self);
+					},
+					function (xhr,txt,err,ctx) {
+						console.log("Update NOK",self.updateUrl,patchData,xhr);
 							reject(xhr);
-					});
+					}, self);
 			});
 
 		};
-
 
 		/**
 		 * delete item
 		 */
 		_item.delete = function (cb) {
+			let _self = this;
 			return new Promise(function(resolve,reject){
-				// console.log(_self);
-				if(!_item.deleteUrl) {
-					_item.deleteUrl = _item.url + "/" + _item.id;
-				}
+				console.log(_self);
+				if(!_self.deleteUrl)
+					_self.deleteUrl = _self.url+"/"+_self.id;
+				storage.remove(_self.deleteUrl,{},null,function (data,textStatus, jqXHR, ctx) {
+					if(ctx.view)
+						ctx.view.remove();
+					if(typeof cb!=="undefined" && cb.constructor === Function)
+						cb();
 
-				storage
-					.remove(_item.deleteUrl,{},null,_item)
-					.then(function (data,textStatus, jqXHR, ctx) {
-						for(let i=ctx.view.length-1;i>=0;i++) {
-							ctx.view[i].remove(i);
-						}
-						ctx.view.forEach(function (view,idx) {
-							view.remove(idx);
-						});
-
-						if(typeof cb!=="undefined" && cb.constructor === Function)
-							cb();
-
-						resolve();
-						// delete _item;
-					})
-					.catch(function (xhr) {
-						reject();
-					});
+					resolve();
+					// delete _item;
+				},function (xhr) {
+					reject();
+				}, _self);
 			});
 
 		};
@@ -914,137 +817,83 @@
 
 	/**
 	 *
-	 * @param params
-	 * @param item
+	 * @param options
 	 * @returns {{template: null, container: null, item: null, el: null}}
 	 */
-	function ItemView(params,item)
-	{
-		// params is actually an existing ItemView
-		if(params.isView) {
-			return params;
-		}
-
-		// params is actually a jquery object or an html node
-		// console.log("llllllllllllll",params);
-		if(params.length || params.nodeName) {
-			let $el = $(params);
-			if($el.data("view")) {
-				return $el.data("view");
-			}
-
-			let tmp = $("<div>").append($el.clone(true));
-			let html = tmp.html()
-				.replace(/&lt;%/gi, '<%')
-				.replace(/%&gt;/gi, "%>")
-				.replace(/&amp;/gi, "&");
-
-			params = {
-				template: _.template(html),
-				el: $el
-			};
-			if($el.attr("id")) {
-				params.id = $el.attr("id");
-			}
-			tmp.remove();
-
-		}
-
-		let _itemview = {
+	function ItemView(options) {
+		let _self = {
 			template: null,
 			container: null,
-			collectionView: null,
 			item: null,
 			el: null,
-			id: uid(),
-			isView: true
+			id: uid()
 		};
 
-		params = parseOptions(params);
-		Object.assign(_itemview,params);
-		let tmp = {};
-		Object.assign(tmp,_itemview);
-		console.log("2222222222222222222222",params,tmp);
+		options = parseOptions(options);
+		Object.assign(_self,options);
 
 		// todo: remove this check in future release
-		if (!_itemview.template) {
+		if (!_self.template)
 			throw "Invalid ItemView template";
-		}
 
 		let eventTypes = ['render','reset'];
-		Object.assign(_itemview,EventsEmitter(eventTypes));
+		Object.assign(_self,EventsEmitter(eventTypes));
 
 
 		function createElementFromTemplate() {
-			let el = $(_itemview.template(_itemview.item))
+			let el = $(_self.template(_self.item))
 				.attr("data-type","item")
-				.attr("id", _itemview.id)
-				.data("view",_itemview)
-				.data("instance",_itemview.item);
-			el.find("*").data("instance",_itemview.item);
+				.attr("id", _self.id)
+				.data("instance",_self.item);
+			el.find("*").data("instance",_self.item);
 			return el;
 		}
 
-		_itemview.unbind = function() {
-			this.item.unbindView(this);
-		};
-
 		/**
 		 *
-		 * @param returnView should be true when the element should not be rendered into the DOM
+		 * @param returnView
 		 * @returns {null|jQuery}
 		 */
-		_itemview.render = function (returnView) {
-
+		_self.render = function (returnView) {
 			if(returnView) {
 				this.el = createElementFromTemplate();
-				// this.el.data("view",_view);
-				console.log("return view");
-				return this.el;
+				return  this.el;
 			}
 
-
-			if(!_itemview.el) {
+			if(!_self.el || !_self.el.parents().length) {
 				throw "Invalid item view elemement";
 			}
 
-			let renderedEl = createElementFromTemplate();
+			let view = createElementFromTemplate();
+			if($(view).css("display")==="none")
+				$(view).css("display","block");
 
-			if(renderedEl.css("display")==="none") {
-				renderedEl.css("display", "");
-			}
+			view.insertBefore(_self.el);
+			_self.el.remove();
+			_self.el = view;
 
-			renderedEl.insertBefore(_itemview.el[0]);
-
-			_itemview.el.remove();
-			_itemview.el = renderedEl;
-			if(_itemview.id=="employeeDetails") {
-
-			}
-
-			_itemview.dispatch('render',{src:_itemview,item:_itemview.item});
-			return _itemview.el;
+			_self.dispatch('render',{src:_self,item:_self.item});
+			return _self.el;
 		};
 
-		_itemview.renderEmpty = function(returnView) {
-			if(_itemview.item.emptyview && this.el) {
-				this.el.replaceWith(_itemview.item.emptyview.clone(true).css("display","block"));
+		_self.renderEmpty = function(returnView) {
+			if(_self.item.emptyview && this.el) {
+				this.el.replaceWith(_self.item.emptyview.clone(true).css("display","block"));
 			}
 		};
 
-		_itemview.remove = function (idx) {
-			_itemview.el.fadeOut({
+		_self.remove = function () {
+			_self.el.fadeOut({
 				complete: ()=>{
-					_itemview.el.remove();
-					delete _itemview.items.view[idx];
-					// _view.item.collection.removeItem(_view.item);
+					_self.el.remove();
+					delete _self.item.view;
+					_self.item.collection.removeItem(_self.item);
 				}
 			});
 
-			this.dispatch('remove',{src:_view,item:_view.item});
+			this.dispatch('remove',{src:_self,item:_self.item});
 		};
-
-		return _itemview;
+		return _self;
 	}
 
 
@@ -1054,15 +903,12 @@
 	 * @returns {{path: string, protocol: string, fragment: string, fqdn: string, port: string, toString: (function(): string), parameters: string}|null}
 	 * @constructor
 	 */
-	function URL(url)
-	{
+	function URL(url) {
 
 		if(!url)
 			return null;
-
 		if(typeof url==="object" && url.hasOwnProperty("protocol") )
 			return url;
-
 		if(url.constructor!==String)
 			throw "URL is not a string: "+url.toString();
 
@@ -1136,8 +982,7 @@
 	 * @param opts
 	 * @returns {{template: null, view: null, total: null, offset: number, navtype: string, pageSize: number, paging: null, url: null}}
 	 */
-	function Collection(opts)
-	{
+	function Collection(opts) {
 		let _collection = {
 			url: null,
 			deleteUrl: null,
@@ -1151,8 +996,7 @@
 			template: null,
 			navtype: "page",
 			type: null,
-			emptyview: null,
-			items: []
+			emptyview: null
 		};
 		opts = parseOptions(opts);
 
@@ -1180,15 +1024,24 @@
 			throw "Invalid navigations type. Should be page or scroll";
 
 		let storage = opts.hasOwnProperty("storage") ? opts.storage : (
-			opts.hasOwnProperty("ajaxOpts") ? Storage(opts.ajaxOpts) : Storage()
+			opts.hasOwnProperty("ajaxOpts") ? new Storage(opts.ajaxOpts) : new Storage()
 		);
 		/**
 		 *
 		 * @param data
-		 * @returns {{template: null, insertUrl: null, offset: number, pageSize: number, paging: null, type: null, url: null, view: null, total: null, navtype: string, updateUrl: null, deleteUrl: null, emptyview: null}|{relationships: null, view: null, attributes: null, id: null, collection: null, type: null, url: null}}
+		 * @param statusTxt
+		 * @param xhr
+		 * @param ctx
 		 */
-		_collection.receiveRemoteData = function (data) {
+		_collection.receiveRemoteData = function (data,statusTxt,xhr,ctx) {
 			// console.log(data);
+			let obj = _collection;
+
+			if(this.hasOwnProperty("navtype"))
+				obj = this;
+			else if(ctx && ctx.hasOwnProperty("navtype"))
+				obj = ctx;
+
 			data = parse(data);
 
 			if(data == null)
@@ -1196,30 +1049,28 @@
 
 			// received data is a collection
 			if(data.constructor===Array) {
-				_collection.loadFromData(data);
+				obj.loadFromData(data);
 
-				if(_collection.view && _collection.view.el)
-					_collection.view.render();
+				if(obj.view && obj.view.el)
+					obj.view.render();
 
-				if (_collection.paging && typeof _collection.paging==="object") {
-					_collection.paging.render();
+				if (obj.paging && typeof obj.paging==="object") {
+					obj.paging.render();
 				}
 
-				_collection.dispatch("load",{source:_collection,type:"load",data:data});
+				obj.dispatch("load",{source:obj,type:"load",data:data});
 
-				return _collection;
+				return obj;
 			}
 
 			// received data is an item => add it
 			if(data.constructor===Object) {
-				let newItem = _collection.addItem(data);
+				let newItem = obj.addItem(data);
+				console.log("render new item as added to current collection");
+				if(obj.view && obj.view.el)
+					obj.view.render();
 
-				console.log("render new item as added to current collection",data);
-				if(_collection.view && _collection.view.el) {
-					_collection.view.render();
-				}
-
-				// _collection.dispatch("load",{source:_collection,type:"load",data:data});
+				obj.dispatch("load",{source:obj,type:"load",data:data});
 
 				return newItem;
 			}
@@ -1249,28 +1100,30 @@
 		 *
 		 */
 		_collection.loadFromRemote = function () {
-			return  new Promise(function (resolve,reject) {
-				if(!_collection.url) {
-					throw("No valid URL provided");
+			let _self = _collection;
+			return new Promise(function (resolve,reject) {
+				if(!_self.url) {
+					reject("No valid URL provided");
 				}
 
-				storage.read(_collection.url,{},_collection)
-					.then(function(data)
+				storage.read(_self.url,
+					{},
+					(data, textStatus, jqXHR, ctx)=> {
+						_self.receiveRemoteData(data, textStatus, jqXHR, ctx);
+						resolve(_self);
+					},
+					(jqXHR, textStatus, errorThrown, _self)=>
 					{
-						_collection.receiveRemoteData(data);
-						resolve.call(_collection);
-					})
-					.catch(function(jqXHR, textStatus, errorThrown)
-					{
-						_collection.fail(jqXHR, textStatus, errorThrown);
+						_self.fail(jqXHR, textStatus, errorThrown, _self);
 						reject(jqXHR);
-					});
+					}
+					, _self);
 			});
 
 		};
 
-		_collection.fail = function (xhr, txt, err) {
-			console.log(xhr, txt, err,_collection);
+		_collection.fail = function (xhr, txt, err,ctx) {
+			console.log(xhr, txt, err,ctx);
 		};
 
 
@@ -1310,19 +1163,19 @@
 			let _self = this;
 
 			return new Promise(function (resolve,reject) {
-				if(!_self.insertUrl) {
+				if(!_self.insertUrl)
 					_self.insertUrl = _self.url;
-				}
-
-				storage
-					.create(_self.insertUrl,{contentType:"application/vnd.api+json"},JSON.stringify(data),_self)
-					.then(function (data) {
-						let newItem = _self.receiveRemoteData(data);
+				storage.create(_self.insertUrl,
+					{contentType:"application/vnd.api+json"},
+					JSON.stringify(data),
+					function (data,statusTxt,xhr,ctx) {
+						let newItem = _self.receiveRemoteData(data,statusTxt,xhr,ctx);
 						resolve(newItem);
-					})
-					.catch(function (xhr) {
+					},
+					function (xhr) {
 						reject(xhr);
-					})
+					}
+					,_self);
 			});
 		};
 
@@ -1337,30 +1190,28 @@
 
 		_collection.addItem = function (itemData) {
 			// throw new Error("asda");
+			let _selfCollection = this;
 
 			let opts = {
-				type: _collection.type,
-				collection: _collection,
+				type: _selfCollection.type,
+				collection: _selfCollection,
+				view: ItemView({
+					template: _selfCollection.template,
+					container: _selfCollection.view
+				})
 			};
 
 			if(itemData.id) {
-				opts.url = Object.assign({},_collection.url);
+				opts.url = Object.assign({},_selfCollection.url);
 				opts.url.path += "/" + itemData.id;
-				opts.updateUrl = Object.assign({},_collection.updateUrl);
+				opts.updateUrl = Object.assign({},_selfCollection.updateUrl);
 				opts.updateUrl.path += "/" + itemData.id;
-				opts.deleteUrl = Object.assign({},_collection.deleteUrl);
+				opts.deleteUrl = Object.assign({},_selfCollection.deleteUrl);
 				opts.deleteUrl.path += "/" + itemData.id;
 			}
 
-			let newItem = Item(opts)
-				.bindView(ItemView({
-					template: _collection.template,
-					container: _collection.view
-				}))
-				.loadFromData(itemData);
-
-			_collection.items.push(newItem);
-
+			let newItem = Item(opts);
+			_selfCollection.items.push(newItem.loadFromData(itemData));
 			return newItem;
 		};
 
@@ -1400,8 +1251,7 @@
 	 * @param options
 	 * @returns {{container: null, el: null, collection: null, itemsContainer: null}}
 	 */
-	function CollectionView(options)
-	{
+	function CollectionView(options) {
 		let _collectionView = {
 			el: null,
 			container: null,
@@ -1411,47 +1261,35 @@
 		};
 
 		let eventTypes = ['reset','render'];
-
 		Object.assign(_collectionView,EventsEmitter(eventTypes));
 
 		Object.assign(_collectionView,parseOptions(options));
 
 		/**
 		 *
-		 * @returns {{container: null, el: null, collection: null, allowempty: boolean, itemsContainer: null}}
 		 */
 		_collectionView.reset = function () {
-			if(this.allowempty) {
+			if(this.allowempty===true)
 				_collectionView.itemsContainer.empty();
-			}
 			return _collectionView;
 		};
 
 		/**
 		 *
-		 * @returns {_collectionView}
 		 */
 		_collectionView.render = function () {
 			//console.log("render Collection View",this);
-			if($(this.itemsContainer.css("display")==="none")) {
-				$(this.itemsContainer).css("display", "");
-			}
+			if($(this.itemsContainer.css("display")==="none"))
+				$(this.itemsContainer).css("display","");
 
-			if(this.collection.navtype==="page") {
+			if(this.collection.navtype==="page")
 				this.reset();
-			}
 
-			if(!this.collection.items.length) {
+			if(!this.collection.items.length)
 				this.renderEmpty();
-			}
-			this.collection.items.forEach(function (item) {
-				item.views.forEach(function (view) {
-					if(view.container!==this) {
-						return;
-					}
-					this.append(view.render(true));
-				},this);
 
+			this.collection.items.forEach(function (item) {
+				this.append(item.view.render(true));
 			},this);
 
 			return this;
@@ -1488,8 +1326,7 @@
 	 * @param opts
 	 * @returns {$|void}
 	 */
-	$.fn.apiator = function (opts)
-	{
+	$.fn.apiator = function (opts) {
 		if(!this.length) {
 			throw "Invalid element for apiator";
 			// return console.log("Invalid element", opts, this);
@@ -1543,15 +1380,12 @@
 		}
 
 		$(this).data("instance",instance);
-
 		if(instance.url) {
-			instance.loadFromRemote()
-				.catch(function(jqxhr){
-					console.log("error",jqxhr)
-				})
-				// .finally(()=>{
-				// 	// console.log(instance,"instance loaded from server")
-				// });
+			instance.loadFromRemote().catch((a) => {
+				console.log("error",a)
+			}).finally(()=>{
+				// console.log(instance,"instance loaded from server")
+			});
 		}
 
 		return (options.hasOwnProperty("returninstance") && opts.returninstance)?instance:this;
@@ -1562,8 +1396,7 @@
 	 * @param options
 	 * @returns {{template: null, view: null, total: null, offset: number, navtype: string, pageSize: number, paging: null, url: null}}
 	 */
-	function createCollectionInstance(options)
-	{
+	function createCollectionInstance(options) {
 		// extract template
 		// set default to innerHTML
 
@@ -1678,8 +1511,7 @@
 	 * @param options
 	 * @returns {{relationships: null, view: null, attributes: null, id: null, collection: null, type: null, url: null}}
 	 */
-	function createItemInstance(options)
-	{
+	function createItemInstance(options) {
 		let container = options.hasOwnProperty("container") ? $(options.container) : this;
 
 		// extract template
@@ -1690,12 +1522,13 @@
 
 		options.template = _.template(templateTxt);
 
-
-		return Item(options).bindView(ItemView({
+		options.view = ItemView({
 			template: options.template,
 			el: this,
 			id: $(this).attr("id")?$(this).attr("id"):uid()
-		}));
+		});
+
+		return Item(options);
 	}
 
 	/*********************************************
@@ -1705,8 +1538,7 @@
 	/********************************************
 	 * DELETE
 	 ********************************************/
-	function prepareDeleteModal(event)
-	{
+	function prepareDeleteModal(event) {
 		let itemViewEl = $(event.relatedTarget).parents("[data-type=item]");
 		let modal = this;
 
@@ -1723,8 +1555,7 @@
 	/**********************************************
 	 * ADD / UPDATE
 	 ********************************************/
-	function prepareModal(event)
-	{
+	function prepareModal(event) {
 		let modal = $(this);
 		let form = $(this).find("form")[0];
 		form.reset();
@@ -1834,8 +1665,7 @@
 	 * @param collection
 	 * @constructor
 	 */
-	function Filtering(filterForm,collection)
-	{
+	function Filtering(filterForm,collection) {
 		// normalize filterFrom to jquery object
 		filterForm = $(filterForm);
 		let _self = {
@@ -1879,50 +1709,48 @@
 	 * @returns {{el: (jQuery.fn.init|jQuery|HTMLElement), collection: *}}
 	 * @constructor
 	 */
-	function Paging(pagingEl,collection)
-	{
-		let _paging = {
+	function Paging(pagingEl,collection) {
+		let _self = {
 			collection: collection,
 			el: $(pagingEl),
 		};
-		_paging.collection.paging = this;
-		let defaultPageSize = _paging.el.data("pagesize");
+		_self.collection.paging = this;
+		let defaultPageSize = _self.el.data("pagesize");
 		defaultPageSize = defaultPageSize?defaultPageSize:20;
 
-		let pageButton = _paging.el.find("[data-type=page]").clone(true);
-		let prevButton = _paging.el.find("[data-type=prev]").clone(true);
-		let nxtButton = _paging.el.find("[data-type=next]").clone(true);
-		let firstButton = _paging.el.find("[data-type=first]").clone(true);
-		let lastButton = _paging.el.find("[data-type=last]").clone(true);
-		_paging.el.empty();
+		let pageButton = _self.el.find("[data-type=page]").clone(true);
+		let prevButton = _self.el.find("[data-type=prev]").clone(true);
+		let nxtButton = _self.el.find("[data-type=next]").clone(true);
+		let firstButton = _self.el.find("[data-type=first]").clone(true);
+		let lastButton = _self.el.find("[data-type=last]").clone(true);
+		_self.el.empty();
 
-		_paging.el.find("[data-type=pages]").empty();
+		_self.el.find("[data-type=pages]").empty();
 
-		_paging.render = function () {
-
+		_self.render = function () {
 			let iniOffset = this.collection.offset;
 			this.collection.url.parameters["page["+this.collection.type+"][offset]"] = iniOffset;
 			iniOffset = iniOffset?iniOffset:0;
 			let total = this.collection.total;
-			_paging.el.empty();
+			_self.el.empty();
 
 			// todo: read page size
-			let pageSize = _paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"]*1;
+			let pageSize = _self.collection.url.parameters["page["+_self.collection.type+"][limit]"]*1;
 			pageSize = pageSize?pageSize:defaultPageSize;
 			// console.log(_self.collection.type,iniOffset,total,pageSize);
 
-			let first = firstButton.clone(true).attr("title", 0).addClass("disabled").appendTo(_paging.el);
-			let prev = prevButton.clone(true).attr("title", iniOffset - pageSize).addClass("disabled").appendTo(_paging.el);
+			let first = firstButton.clone(true).attr("title", 0).addClass("disabled").appendTo(_self.el);
+			let prev = prevButton.clone(true).attr("title", iniOffset - pageSize).addClass("disabled").appendTo(_self.el);
 
 			if(iniOffset>0) {
 				first.on("click", function () {
-					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = 0;
-					_paging.collection.loadFromRemote();
+					_self.collection.url.parameters["page["+_self.collection.type+"][offset]"] = 0;
+					_self.collection.loadFromRemote();
 				}).removeClass("disabled");
 
 				prev.on("click", function () {
-					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = iniOffset - pageSize;
-					_paging.collection.loadFromRemote();
+					_self.collection.url.parameters["page["+_self.collection.type+"][offset]"] = iniOffset - pageSize;
+					_self.collection.loadFromRemote();
 				}).removeClass("disabled");
 			}
 
@@ -1932,31 +1760,31 @@
 			upperLimit = upperLimit*pageSize<total?upperLimit:Math.ceil(total/pageSize);
 			for(let i=lowerLimit;i<upperLimit;i++) {
 				let b = pageButton.clone(true).text(i+1).on("click", function () {
-					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = i*pageSize;
-					_paging.collection.loadFromRemote();
-				}).attr("title", i*pageSize).appendTo(_paging.el);
+					_self.collection.url.parameters["page["+_self.collection.type+"][offset]"] = i*pageSize;
+					_self.collection.loadFromRemote();
+				}).attr("title", i*pageSize).appendTo(_self.el);
 				if(iniOffset/pageSize===i)
 					b.addClass("active");
 			}
 
 			let nxtOffset = iniOffset+pageSize;
-			let nxt = nxtButton.clone(true).attr("title", nxtOffset).addClass("disabled").appendTo(_paging.el);
+			let nxt = nxtButton.clone(true).attr("title", nxtOffset).addClass("disabled").appendTo(_self.el);
 			let lastPageOffset = (Math.ceil(total/pageSize)-1)*pageSize;
-			let lst = lastButton.clone(true).attr("title", lastPageOffset).addClass("disabled").appendTo(_paging.el);
+			let lst = lastButton.clone(true).attr("title", lastPageOffset).addClass("disabled").appendTo(_self.el);
 
 			if(iniOffset+pageSize<total) {
 				nxt.on("click", function () {
-					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = iniOffset+pageSize;
-					_paging.collection.loadFromRemote();
+					_self.collection.url.parameters["page["+_self.collection.type+"][offset]"] = iniOffset+pageSize;
+					_self.collection.loadFromRemote();
 				}).removeClass("disabled");
 				lst.on("click", function () {
-					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = lastPageOffset;
-					_paging.collection.loadFromRemote();
+					_self.collection.url.parameters["page["+_self.collection.type+"][offset]"] = lastPageOffset;
+					_self.collection.loadFromRemote();
 				}).removeClass("disabled");
 			}
 		};
 
-		return _paging;
+		return _self;
 	}
 
 	/**
@@ -1964,84 +1792,41 @@
 	 * @param options
 	 * @constructor
 	 */
-	function Storage(options)
-	{
-
+	function Storage(options) {
 		let defaultOptions = {
 			url: null,
 			method: "GET"
 		};
 
 		options = parseOptions(options);
-
 		Object.assign(defaultOptions, options);
 
-		let _storage = {};
 
 		/**
 		 *
-		 * @param options
-		 * @returns {Promise<unknown>}
+		 * @constructor
 		 */
-		_storage.sync = function (options) {
-
+		this.sync = function (options, onSuccess, onFail) {
 			options = Object.assign(
 				Object.assign({},defaultOptions),
 				parseOptions(options)
 			);
-
-			if (!options.hasOwnProperty("url")) {
+			if (!options.hasOwnProperty("url"))
 				throw "No URL provided";
-			}
-
-			return new Promise(function (resolve,reject) {
-				$.ajax(options)
-					.done(function (data, textStatus, jqXHR) {
-						resolve.call(options.context, data, textStatus, jqXHR);
-					})
-					.fail(function (jqXHR, textStatus, errorThrown) {
-						reject.call(options.context, jqXHR, textStatus, errorThrown);
-					});
-			});
-		};
-
-		/**
-		 *
-		 * @param location
-		 * @param opts
-		 * @param data
-		 * @param ctx
-		 * @returns {*|Promise<any>|void}
-		 */
-		_storage.create = function (location, opts, data, ctx) {
-			let options = {
-				url: location,
-				method: "POST",
-				data: data,
-				context: ctx
-			};
-			Object.assign(options, opts);
-			return _storage.sync(options);
-		};
-
-		/**
-		 *
-		 * @param location
-		 * @param opts
-		 * @param ctx
-		 * @returns {*|Promise<any>|void}
-		 */
-		_storage.read = function (location, opts, ctx) {
-			let options = {
-				url: location,
-				method: "GET",
-				context: ctx
+			options.success = function (data, textStatus, jqXHR) {
+				if(typeof onSuccess==="function")
+					onSuccess(data, textStatus, jqXHR, this)
 			};
 
-			Object.assign(options, opts);
+			options.error = function (jqXHR, textStatus, errorThrown) {
+				if(typeof onFail==="function")
+					onFail(jqXHR, textStatus, errorThrown, this);
+			};
 
-			return _storage.sync(options);
+			if(options.context===null)
+				delete options.context;
 
+			$.ajax(options);
 		};
 
 		/**
@@ -2052,9 +1837,46 @@
 		 * @param onSuccess
 		 * @param onFail
 		 * @param ctx
-		 * @returns {*|Promise<any>|void}
 		 */
-		_storage.update = function (location, opts, data,ctx) {
+		this.create = function (location, opts, data, onSuccess, onFail,ctx) {
+			let options = {
+				url: location,
+				method: "POST",
+				data: data,
+				context: ctx
+			};
+			Object.assign(options, opts);
+			this.sync(options, onSuccess, onFail);
+		};
+
+		/**
+		 *
+		 * @param location
+		 * @param opts
+		 * @param onSuccess
+		 * @param onFail
+		 * @param ctx
+		 */
+		this.read = function (location, opts, onSuccess, onFail,ctx) {
+			let options = {
+				url: location,
+				method: "GET",
+				context: ctx
+			};
+			Object.assign(options, opts);
+			this.sync(options, onSuccess, onFail);
+		};
+
+		/**
+		 *
+		 * @param location
+		 * @param opts
+		 * @param data
+		 * @param onSuccess
+		 * @param onFail
+		 * @param ctx
+		 */
+		this.update = function (location, opts, data, onSuccess, onFail,ctx) {
 			let options = {
 				url: location,
 				method: "PATCH",
@@ -2063,50 +1885,36 @@
 				context: ctx
 			};
 			Object.assign(options, opts);
-
-			return _storage.sync(options);
-
+			this.sync(options, onSuccess, onFail);
 		};
 
 		/**
 		 *
-		 * @param url
+		 * @param location
 		 * @param opts
 		 * @param data
 		 * @param onSuccess
 		 * @param onFail
 		 * @param ctx
 		 */
-		_storage.remove = function (url, opts, data, ctx) {
-			return new Promise(function (resolve, reject) {
-				console.log(url);
-				let options = {
-					url: url,
-					method: "DELETE",
-					context: ctx
-				};
-
-				if(data) {
-					options.data = data;
-				}
-
-				Object.assign(options, opts);
-
-				let onFailMod = function (jqXHR,textStatus,error) {
-					if(parseInt(jqXHR.status)===204) {
-						resolve(null, jqXHR.statusText, jqXHR);
-					}
-					else {
-						reject(jqXHR, textStatus, error);
-					}
-				};
-
-				_storage.sync(options).then(resolve).catch(onFailMod);
-			});
-
+		this.remove = function (location, opts, data, onSuccess, onFail,ctx) {
+			console.log(location);
+			let options = {
+				url: location,
+				method: "DELETE",
+				context: ctx
+			};
+			if(data)
+				options.data  = data;
+			Object.assign(options, opts);
+			let onFailMod = function (jqXHR,textStatus,error) {
+				if(parseInt(jqXHR.status)===204)
+					onSuccess(null,jqXHR.statusText,jqXHR);
+				else
+					onFail(jqXHR,textStatus,error);
+			};
+			this.sync(options, onSuccess, onFailMod);
 		};
-
-		return _storage;
 	}
 
 	function uid () {

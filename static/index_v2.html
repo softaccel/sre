@@ -55,7 +55,7 @@
     let _kPath = "komponents";
     let _kExt = ".html";
     let vPath = _kPath+"views/";
-    let apiRoot = '/spaleck/be/dbapi/api/';
+    let apiRoot = '/spaleck/be/dbapi/api';
     // let defaultKomponent = "/views/dashboard";
     let pageContentContainer = $('#pageContent');
 </script>
@@ -63,7 +63,7 @@
 
     $(document).ready(function () {
         if(komponentor.routing.path) {
-            komponentor.getKomponent({
+            komponentor.fetchKomponent({
                 $el: pageContentContainer,
                 url: komponentor.routing.path,
                 paras: komponentor.routing.paras
@@ -72,7 +72,7 @@
             })
         }
         else if(typeof defaultKomponent!=="undefined") {
-            komponentor.getKomponent({
+            komponentor.fetchKomponent({
                 $el: pageContentContainer,
                 url: defaultKomponent
             }).catch(function (a) {
