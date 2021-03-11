@@ -3,9 +3,9 @@
         <div class="page-title-wrapper">
             <div class="page-title-heading">
                 <div class="page-title-icon">
-                    <i class="pe-7s-car icon-gradient bg-mean-fruit"></i>
+                    <i class="fa fa-car icon-gradient bg-mean-fruit"></i>
                 </div>
-                <div>Comenzi
+                <div>Comenzi as
                     <div class="page-title-subheading"></div>
                 </div>
             </div>
@@ -26,13 +26,14 @@
                             <tr>
                                 <th>#</th>
                                 <th>Model</th>
+                                <th>Bestellnummer</th>
                                 <th>Client</th>
                                 <th>Status</th>
                                 <th>Completat</th>
                                 <th>Actiuni</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="ordersList" data-resourcetype="collection">
                             <tr>
                                 <td>A215</td>
                                 <td>FCV 2145</td>
@@ -58,3 +59,9 @@
         </div>
     </div>
 </div>
+<script>
+    function init_komponent(k,c) {
+        console.log(k,c)
+        $("#ordersList").apiator(apiRoot+"/orders");
+    }
+</script>

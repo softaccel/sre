@@ -1,82 +1,70 @@
-<style>
-#employees>div{
-    margin-bottom: 15px;
-}
-#employees .card{
-    min-height: 200px;
-}
-</style>
 <div class="app-main__inner">
-    <div class="row mb-3">
-        <div class="col">
-            <div class="card">
-                <div class="card-body">
-                    <form id="filterEmployees">
-
-                    </form>
-                    <div class="row" id="employees">
-                        <div class="col-xl-2 col-lg-3 col-sm-4">
-                            <div class="card ">
-                                <div class="card-body">
-                                    <h5>Spaleck GmbH</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-sm-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5>Softaccel Solutions SRL</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-sm-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5>UCMR SA</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-sm-4">
-                            <div class="card ">
-                                <div class="card-body">
-                                    <h5>Spaleck GmbH</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-sm-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5>Softaccel Solutions SRL</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-sm-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5>UCMR SA</h5>
-                                </div>
-                            </div>
-                        </div>
+    <div class="app-page-title">
+        <div class="page-title-wrapper">
+            <div class="page-title-heading">
+                <div class="page-title-icon"><i class="fa fa-users icon-gradient bg-mean-fruit"></i>
+                </div>
+                <div>Parteneri
+                    <div class="page-title-subheading"></div>
+                </div>
+            </div>
+            <div class="page-title-actions">
+                <div class="d-inline-block dropdown">
+                    <button class="btn btn-primary"><i class="fa fa-plus"></i> Partener nou</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Nume</th>
+                                <th>Adresa</th>
+                                <th>Actiuni</th>
+                            </tr>
+                            </thead>
+                            <tbody id="ordersList" data-resourcetype="collection">
+                            <tr onclick="openPartnerModal(this)">
+                                <td><%= id %></td>
+                                <td><%= attributes.name %></td>
+                                <td><%= attributes.address %></td>
+                                <td><button class="btn-primary btn btn-sm" onclick="return false;"><i class="fa fa-trash-alt"></i> Sterge</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <!-- HTML TEMPLATE SECTION: STOP-->
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 <script>
-
-    function init_komponent(k,html) {
-        // $("#employees").apiator({url:apiRoot+"/employees?page[employees][limit]=20&include=team"});
-        $("#employees").children("div").each(function (a) {
-            $(this).on("click",function (a) {
-                komponentor.intent("/views/partners/partner").send();
-            });
-        });
-
-        k.exec = function (options) {
-            console.log(options);
-        }
+    function openPartnerModal(src) {
+        console.log("asad")
+        if($(src).data("locked"))
+            return;
+        $(src).data("locked",true);
+        komponentor
+            .intent('/views/partners/partner')
+            .data({
+                instance:$(src).data('instance')
+            })
+            .send()
+            .then(function (kmp) {
+                // console.log("**************",kmp);
+            })
+            .finally(function () {
+                $(src).removeData("locked");
+            })
+    }
+    function init_komponent(k,c) {
+        console.log(k,c)
+        $("#ordersList").apiator(apiRoot+"/partners");
     }
 </script>

@@ -91,18 +91,18 @@
             $modal.remove();
         });
 
-        // console.log("++++++++++++++",k,b,$modal);
 
         $modal.find("#employeeDetails")
             .komponent()
             .then(function (detailsK) {
-                console.log("/////////////////////////////////",detailsK);
                 detailsK.exec(k.data.instance);
             })
             .catch(function () {
                 $modal.remove();
             });
+
         $modal.modal("show");
+
         k.exec = function (paras) {
             let instance = paras.instance;
 
@@ -114,9 +114,6 @@
                 .then(function (k) {
                     console.log("--------------",k);
                 });
-            // $("#employeeModal .modal-title").text(instance.attributes.fname + " "+instance.attributes.lname);
-            // console.log("data",instance);
-            // console.log(p);
             $modal.modal("show");
         };
         // k.exec();
