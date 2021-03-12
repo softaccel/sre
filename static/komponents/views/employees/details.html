@@ -189,8 +189,6 @@
 
 <script>
     function init_komponent(k) {
-        let $modal = k.$el.appendTo("body").filter(".modal");
-
         k.exec = function (instance) {
             let modUrl = {};
             Object.assign(modUrl,instance.url);
