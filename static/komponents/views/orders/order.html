@@ -11,211 +11,267 @@
         border-bottom: solid #e6e6e6 1px;
         padding: 5px;
         margin-bottom: 5px;
-
     }
     .order-summary-table td:first-child{
         font-weight: bold;
         background: #E6E6E6;
 
     }
-
     .bg-light-me{
         background-color: #d6d6d6 !important
     }
     a.bg-light-me:hover, a.bg-light:focus, button.bg-light:hover, button.bg-light:focus{
         background-color: #d5d5d5 !important
     }
+    .employeeIconDelete {
+        display: none;
+        cursor: pointer;
+
+    }
+    .employee:hover {
+        box-shadow:0 0.1rem 0.5rem rgba(0,0,0,0.15) !important;
+        position: relative;
+        top: 0.2rem;
+        left: 0.2rem;
+    }
+    .employee:hover .employeeIconDelete{
+        display: inline-block;
+    }
+    .employee:hover .employeeIcon{
+        display: none;
+    }
+    .employeeName{
+        font-weight: bold;
+        cursor: pointer;
+    }
 
 </style>
-<div class="modal" id="order_file_modal">
+
+
+
+<div class="modal" id="order_details_modal">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Comanda <span class="badge">A654</span></h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
             <div class="modal-body bg-light">
                 <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title">Sumar</h5>
+                    <div class="card-header-tab card-header-tab-animation card-header">
+                        <div class="card-header-title">
+                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
+                            Detalii comanda <span id="comandaid"></span>
+                        </div>
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#sumar" class="nav-link">Sumar</a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#elemente" class="nav-link">Elemente comanda</a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#resurse" class="nav-link active">Resurse alocate</a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" style="min-height: 400px">
+                        <div class="tab-content">
 
-                        <div class="row">
+                            <!--// sumar-->
+                            <div class="tab-pane fade  " id="sumar">
+                                <div class="row" >
+                                    <div class="col-6">
+                                        <table class="order-summary-table">
+                                            <tr>
+                                                <td>Nr. comanda intern</td>
+                                                <td>A654</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bestellung</td>
+                                                <td>D12542357</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Client</td>
+                                                <td><a href="#" onclick="komponentor.intent('/views/customers/customer').data({id:0}).send()">Spalek GmbH</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Stadiu</td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            Comandat
+                                                        </button>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" href="#">Da in lucru</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Data preluare comanda</td>
+                                                <td>2021-02-01</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Date dare in executie</td>
+                                                <td>-</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Data finalizare</td>
+                                                <td>-</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Data livrare</td>
+                                                <td>-</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Pret estimat</td>
+                                                <td>7958 EURO</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Pret curent</td>
+                                                <td>2587 EURO</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Pret final</td>
+                                                <td>-</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <img src="assets/img/product.jpg" width="300">
+                                    </div>
+                                </div>
+                            </div>
 
+                            <!--// resurse-->
+                            <div class="tab-pane fade show active" id="resurse">
+                                <button class="btn btn-primary" id="allocateEmpl"><i class="fa fa-user-plus"></i> Adauga</button>
+                                <hr>
+                                <div class="row" id="allocatedEmployees" data-resourcetype="collection">
+                                    <div class="col-3 mb-4 ">
+                                        <div class="employee shadow bg-light-me rounded p-2" >
+                                            <button class="btn employeeIcon rounded-circle bg-primary text-center float-left p-1 mr-2"
+                                                  style="width: 50px; height: 50px; color: white; font-size: 25px">
+                                                <i class="fa fa-user"></i>
+                                            </button>
+                                            <button class="employeeIconDelete btn rounded-circle bg-danger text-center float-left p-1 mr-2" onclick="removeEmpl(this)"
+                                                  style="width: 50px; height: 50px; color: white; font-size: 25px">
+                                                <i class="fa fa-user-minus"></i>
+                                            </button>
+                                            <span class="employeeName" onclick="editAssoc(this)">
+                                                <%= relationships.emplid.attributes.fname+" "+relationships.emplid.attributes.lname %></span><br>
+                                                <%= relationships.operation.attributes.name %>
+                                            </span>
 
-                            <div class="col-6">
-                                <table class="order-summary-table">
+                                            <div style="clear: left"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--// sumar-->
+                            <div class="tab-pane fade" id="elemente">
+                                <table class="table">
+                                    <thead class="thead-light">
                                     <tr>
-                                        <td>Nr. comanda intern</td>
-                                        <td>A654</td>
+                                        <th>Denumire</th>
+                                        <th>Date</th>
+                                        <th>Cantitate</th>
+                                        <th>Pret Unitar</th>
+                                        <th>Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Sudura</td>
+                                        <td>2020-02-02</td>
+                                        <td>100</td>
+                                        <td>30 EUR/ora</td>
+                                        <td>3000 EUR</td>
                                     </tr>
                                     <tr>
-                                        <td>Bestellung</td>
-                                        <td>D12542357</td>
+                                        <td>Sudura</td>
+                                        <td>2020-02-02</td>
+                                        <td>100</td>
+                                        <td>30 EUR/ora</td>
+                                        <td>3000 EUR</td>
                                     </tr>
-                                    <tr>
-                                        <td>Client</td>
-                                        <td><a href="#" onclick="komponentor.intent('/views/customers/customer').data({id:0}).send()">Spalek GmbH</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Stadiu</td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    Comandat
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#">Da in lucru</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Data preluare comanda</td>
-                                        <td>2021-02-01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Date dare in executie</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Data finalizare</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Data livrare</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Pret estimat</td>
-                                        <td>7958 EURO</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Pret curent</td>
-                                        <td>2587 EURO</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Pret final</td>
-                                        <td>-</td>
-                                    </tr>
+                                    </tbody>
                                 </table>
                             </div>
-                            <div class="col-6 text-center">
-                                <img src="assets/img/product.jpg" width="300">
-                            </div>
                         </div>
+
+                    </div>
+                    <div class="card-footer">
+                        <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
                     </div>
                 </div>
-
-                <div class="card mt-3">
-                    <div class="card-header">
-                        <div class="card-header-title m-0">Angajati alocati</div>
-                        <div class="btn-actions-pane-right">
-                            <button></button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-
-                            <div class="col-3">
-                                <div class="shadow bg-light-me rounded p-2" onclick="komponentor.intent('/views/employees/employee').send()">
-                                    <span class="rounded-circle bg-primary text-center float-left p-1 d-inline-block mr-2"
-                                          style="width: 50px; height: 50px; color: white; font-size: 25px">
-                                        <i class="fa fa-user"></i>
-                                    </span> <strong>Matei Basarab</strong><br>
-                                    muncitor
-                                    <div style="clear: left"></div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="shadow bg-light-me rounded p-2">
-                                    <span class="rounded-circle bg-primary text-center float-left p-1 d-inline-block mr-2"
-                                          style="width: 50px; height: 50px; color: white; font-size: 25px">
-                                        <i class="fa fa-user"></i>
-                                    </span> <strong>Matei Basarab</strong><br>
-                                    muncitor
-                                    <div style="clear: left"></div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="shadow bg-light-me rounded p-2">
-                                    <span class="rounded-circle bg-primary text-center float-left p-1 d-inline-block mr-2"
-                                          style="width: 50px; height: 50px; color: white; font-size: 25px">
-                                        <i class="fa fa-user"></i>
-                                    </span> <strong>Matei Basarab</strong><br>
-                                    muncitor
-                                    <div style="clear: left"></div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="shadow bg-light-me rounded p-2">
-                                    <span class="rounded-circle bg-primary text-center float-left p-1 d-inline-block mr-2"
-                                          style="width: 50px; height: 50px; color: white; font-size: 25px">
-                                        <i class="fa fa-user"></i>
-                                    </span> <strong>Matei Basarab</strong><br>
-                                    muncitor
-                                    <div style="clear: left"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="card mt-3">
-                    <div class="card-header">
-                        <div class="card-header-title m-0">Elemente comanda</div>
-                        <div class="btn-actions-pane-right">
-                            <button class="btn btn-primary"><i class="fa fa-plus"></i></button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <table class="table">
-                            <thead class="thead-light">
-                            <tr>
-                                <th>Denumire</th>
-                                <th>Date</th>
-                                <th>Cantitate</th>
-                                <th>Pret Unitar</th>
-                                <th>Total</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>Sudura</td>
-                                <td>2020-02-02</td>
-                                <td>100</td>
-                                <td>30 EUR/ora</td>
-                                <td>3000 EUR</td>
-                            </tr>
-                            <tr>
-                                <td>Sudura</td>
-                                <td>2020-02-02</td>
-                                <td>100</td>
-                                <td>30 EUR/ora</td>
-                                <td>3000 EUR</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
 </div>
 
-
 <script>
-    function init_komponent(k) {
-        let modal = $("#order_file_modal").remove().appendTo("body");
-        k.exec = function (data) {
-            modal.modal("show");
-        };
-        k.exec();
+    function removeEmpl(src) {
+        let emplid = ($(src).data("instance")).relationships.emplid;
+        komponentor.intent("/common/messagemodal").data({
+            body: "Sigur vrei sa dealoci angajatul <br><strong>"+ emplid.attributes.fname + " " + emplid.attributes.lname + "</strong>",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        $(src).data('instance').delete().then(()=>{console.log("ok",arguments)}).catch(function(data){
+                            console.log(data);
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
+    }
 
+    function editAssoc(src) {
+        console.log($(src).data("instance"));
+        komponentor.intent("/views/orders/assign_empl").data({instance: $(src).data("instance")}).send();
+
+    }
+
+    function init_komponent(k,d) {
+        console.log(k,d);
+        k.$el.appendTo("body");
+
+        el = k.$el;
+        let modal = $(k.$el.filter("#order_details_modal"));
+
+        let allocatedEmployees = $("#allocatedEmployees")
+            .apiator({url:apiRoot+"/orders/"+k.data.instance.id+"/orders_2_employees?include=emplid,operation&page[orders_2_employees][limit]=100"
+            ,type:"orders_2_employees"})
+            .data("instance");
+
+        $("#allocateEmpl").on("click",function () {
+            komponentor.intent("/views/orders/assign_empl").data({instance: allocatedEmployees}).send();
+            // modal.modal("hide");
+            // $("#allocate_empl_modal").modal("show");
+
+        });
+
+
+
+        console.log("URL:",apiRoot+"/orders/"+k.data.instance.id+"/orders_2_employees");
+
+        modal.modal("show").on("hidden.bs.modal",function () {
+            k.$el.remove();
+        });
+        console.log($("#comandaid").text(k.data.instance.id).text());
     }
 </script>

@@ -1,11 +1,135 @@
 <div class="app-main__inner">
     <div class="container-fluid">
-        <div class="card-group">
-            <div class="card">
-                <div class="card-body">
-                    indicatori
+        <div class="row">
+            <div class="col-md-3" id="offerCount">
+                <div class="card mb-3 widget-content bg-secondary">
+                    <div class="widget-content-wrapper text-white">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Oferte</div>
+                        </div>
+                        <div class="widget-content-right" style="display: block;" >
+                            <div class="widget-numbers text-white"><span><%= attributes.cnt %></span></div>
+                        </div>
+                        <div class="widget-content-right" style="display: none" id="noOfferCount">
+                            <div class="widget-numbers text-white"><span>0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" id="orderedCount">
+                <div class="card mb-3 widget-content bg-primary">
+                    <div class="widget-content-wrapper text-white">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Comanda preluata</div>
+                        </div>
+                        <div class="widget-content-right" style="display: block;" >
+                            <div class="widget-numbers text-white"><span><%= attributes.cnt %></span></div>
+                        </div>
+                        <div class="widget-content-right" style="display: none" id="noOrderedCount">
+                            <div class="widget-numbers text-white"><span>0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" id="processingCount">
+                <div class="card mb-3 widget-content bg-warning">
+                    <div class="widget-content-wrapper text-white">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">In lucru</div>
+                        </div>
+                        <div class="widget-content-right" style="display: block;" >
+                            <div class="widget-numbers text-white"><span><%= attributes.cnt %></span></div>
+                        </div>
+                        <div class="widget-content-right" style="display: none" id="noProcessingCount">
+                            <div class="widget-numbers text-white"><span>0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" id="ctcCount">
+                <div class="card mb-3 widget-content bg-dark">
+                    <div class="widget-content-wrapper text-white">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Verificare/CTC</div>
+                        </div>
+                        <div class="widget-content-right" style="display: block;" >
+                            <div class="widget-numbers text-white"><span><%= attributes.cnt %></span></div>
+                        </div>
+                        <div class="widget-content-right" style="display: none" id="noCtcCount">
+                            <div class="widget-numbers text-white"><span>0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" id="fixCount">
+                <div class="card mb-3 widget-content bg-info">
+                    <div class="widget-content-wrapper text-white">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Corectare</div>
+                        </div>
+                        <div class="widget-content-right" style="display: block;" >
+                            <div class="widget-numbers text-white"><span><%= attributes.cnt %></span></div>
+                        </div>
+                        <div class="widget-content-right" style="display: none" id="noFixCount">
+                            <div class="widget-numbers text-white"><span>0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" id="readyCount">
+                <div class="card mb-3 widget-content bg-tempting-azure">
+                    <div class="widget-content-wrapper text-white">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Gata de livrare</div>
+                        </div>
+                        <div class="widget-content-right" style="display: block;" >
+                            <div class="widget-numbers text-white"><span><%= attributes.cnt %></span></div>
+                        </div>
+                        <div class="widget-content-right" style="display: none" id="noReadyCount">
+                            <div class="widget-numbers text-white"><span>0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" id="deliveredCount">
+                <div class="card mb-3 widget-content bg-success">
+                    <div class="widget-content-wrapper text-white">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Livrate</div>
+                        </div>
+                        <div class="widget-content-right" style="display: block;" >
+                            <div class="widget-numbers text-white"><span><%= attributes.cnt %></span></div>
+                        </div>
+                        <div class="widget-content-right" style="display: none" id="noDeliveredCount">
+                            <div class="widget-numbers text-white"><span>0</span></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    function init_komponent(k) {
+        let opts = {type: "orders_count_bystate", resourcetype: "item",emptyview:"#noOrdered"};
+        try{
+            Object.assign(opts,{url: apiRoot+"/orders_count_bystate/ctc",emptyview: "#noCtcCount"});
+            $("#ctcCount").apiator(opts);
+            Object.assign(opts,{url: apiRoot+"/orders_count_bystate/fix",emptyview: "#noFixCount"});
+            $("#fixCount").apiator(opts);
+            Object.assign(opts,{url: apiRoot+"/orders_count_bystate/ready",emptyview: "#noReadyCount"});
+            $("#readyCount").apiator(opts);
+            Object.assign(opts,{url: apiRoot+"/orders_count_bystate/dlvd",emptyview: "#noDeliveredCount"});
+            $("#deliveredCount").apiator(opts);
+            Object.assign(opts,{url: apiRoot+"/orders_count_bystate/ord",emptyview: "#noOrderedCount"});
+            $("#orderedCount").apiator(opts);
+            Object.assign(opts,{url: apiRoot+"/orders_count_bystate/offer",emptyview: "#noOfferCount"});
+            $("#offerCount").apiator(opts);
+            Object.assign(opts,{url: apiRoot+"/orders_count_bystate/proc",emptyview: "#noProcessingCount"});
+            $("#processingCount").apiator(opts);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+</script>

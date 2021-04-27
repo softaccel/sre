@@ -1,95 +1,127 @@
-<table class="table table-sm table-hover listapontaj">
+<div>
+    <form id="timeTrackingEntriesFiltering"></form>
+    <table class="table table-striped">
     <thead class="thead-light">
     <tr>
-        <th class="form-group">
-            <label>Angajat</label>
-            <input type="text" class="form-control form-control-sm">
+        <th class="emplCol">
+            Angajat
+            <input type="text" name="empl_name" data-operator="~=~" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
         </th>
-        <th class="form-group">
-            <label>Comanda</label>
-            <input type="text" class="form-control form-control-sm">
+        <th>
+            Comanda
+            <input type="text" name="docnum" data-operator="~=~" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
         </th>
-        <th class="form-group">
-            <label>Operatiune</label>
-            <input type="text" class="form-control form-control-sm">
+        <th>
+            Operatie
+            <input type="text" name="op_name" data-operator="~=~" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
         </th>
-        <th class="form-group">
-            <label>Start</label>
-            <input type="text" class="form-control form-control-sm">
+        <th>
+            <a class="text-secondary" data-sortfld="start">Start
+                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+            <div class="input-group input-group-sm ">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">de la</span>
+                </div>
+                <input type="start" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+            </div>
+            <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">pana</span>
+                </div>
+                <input type="start" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+            </div>
         </th>
-        <th class="form-group">
-            <label>Stop</label>
-            <input type="text" class="form-control form-control-sm">
+        <th>
+            <a class="text-secondary" data-sortfld="stop">Durata
+                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+            <div class="input-group input-group-sm ">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">de la</span>
+                </div>
+                <input type="date" name="stop" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+            </div>
+            <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">pana</span>
+                </div>
+                <input type="date" name="stop" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+            </div>
         </th>
-        <th style="min-width: 100px">
-            <button type="button" class="btn btn-secondary"><i class="fa fa-search"></i></button>
-            <button type="button" class="btn btn-success"><i class="fa fa-file-excel"></i></button>
+        <th>
+            <a class="text-secondary" data-sortfld="duration">Durata
+                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+            <div class="input-group input-group-sm ">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">de la</span>
+                </div>
+                <input type="date" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+            </div>
+            <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">pana</span>
+                </div>
+                <input type="date" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+            </div>
+        </th>
+        <th class="align-top">
+            Tarif orar
+        </th>
+        <th class="align-top">
+            Valoare
         </th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="timeTrackingEntries" data-resourcetype="collection" data-paging="#timeTrackingEntriesPaging" data-filter="#timeTrackingEntriesFiltering">
     <tr>
-        <td>
-            <select class="custom-select">
-                <option>Pop Ionescu</option>
-                <option>Ion Popescu</option>
-            </select>
-        </td>
-        <td>
-            <select class="custom-select">
-                <option>A1235</option>
-                <option>B251</option>
-            </select>
-        </td>
+        <td class="emplCol"><%= attributes.empl_name %></td>
+        <td><%= attributes.docnum %></td>
+        <td><%= attributes.op_name %></td>
+        <td><%= attributes.start %></td>
+        <td><%= attributes.stop %></td>
+        <td><%= attributes.duration %></td>
+        <td><%= attributes.hourly_rate %> <%= attributes.currency %></td>
+        <td><% t = timeRegex.exec(attributes.duration); %> <%= t ? ((Math.ceil((t[1]*attributes.hourly_rate + t[2]/60*attributes.hourly_rate)*100)/100)+' ' +attributes.currency) : '-' %> </td>
 
-        <td>
-            <select class="custom-select">
-                <option>sudura</option>
-                <option>debitare</option>
-            </select>
-        </td>
-
-        <td><input class="form-control" type="datetime-local"></td>
-        <td><input class="form-control" type="datetime-local"></td>
-        <td>
-            <button type="button" class="btn btn-primary"><i class="fa fa-save"></i></button>
-        </td>
-    </tr>
-    <tr>
-        <td><a href="" onclick="komponentor.intent('/views/employees/employee').send();return false;">Ion Popescu</a></td>
-        <td>A325</td>
-        <td>sudura</td>
-        <td>2020-01-03 08:00</td>
-        <td>2020-01-03 11:00</td>
-        <td>
-            <button type="button" class="btn btn-warning"><i class="fa fa-edit"></i></button>
-            <button type="button" class="btn btn-danger"><i class="fa fa-trash-alt"></i></button>
-        </td>
-    </tr>
-    <tr>
-        <td><a href="" onclick="komponentor.intent('/views/employees/employee').send();return false;">Pop Ionescu</a></td>
-        <td>A325</td>
-        <td>sudura</td>
-        <td>2020-01-03 08:00</td>
-        <td>2020-01-03 11:00</td>
-        <td>
-            <button type="button" class="btn btn-warning"><i class="fa fa-edit"></i></button>
-            <button type="button" class="btn btn-danger"><i class="fa fa-trash-alt"></i></button>
-        </td>
     </tr>
     </tbody>
-
     <tfoot>
     <tr>
-        <td colspan="5" align="left">
-            <div class="btn-group" id="usersPaging" data-pagesize="20">
-                <button data-type="first" class="btn btn-outline-secondary">&lt;&lt;</button>
-                <button data-type="prev" class="btn btn-outline-secondary">&lt;</button>
-                <button data-type="page" class="btn btn-outline-secondary">1</button>
-                <button data-type="next" class="btn btn-outline-secondary">&gt;</button>
-                <button data-type="last" class="btn btn-outline-secondary">&gt;&gt;</button>
+        <td colspan="6">
+            <div class="btn-group"  id="timeTrackingEntriesPaging" data-pagesize="20">
+                <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+                <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+                <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+                <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+                <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
             </div>
+            Pagina <input type="number" name="offset" size="3" value="0" id="ordersOffsetInp">
+            <select id="ordersPageSizeInp">
+                <option></option>
+                <option>5</option>
+                <option>10</option>
+                <option>25</option>
+                <option>50</option>
+                <option>75</option>
+            </select> inregistrari pe pagina
         </td>
     </tr>
     </tfoot>
 </table>
+</div>
+<script>
+    timeRegex = /(\d+)\:(\d+)\:(\d+)/;
+
+    function init_komponent(k) {
+        let url = apiRoot + "/tt_expanded?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10";
+        if (k.data && k.data.instance && k.data.instance.type==="employees") {
+            $("#timeTrackingEntries").parent().find(".emplCol").remove();
+            url = apiRoot + "/tt_expanded?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=5&filter=employee="+k.data.instance.id;
+        }
+
+        $("#timeTrackingEntries").apiator({
+            type: "tt_expanded",
+            url: url
+        });
+        // ((Math.ceil((t[1]*attributes.hourly_rate + t[2]/60*attributes.hourly_rate)*100)/100)+' ' + attributes.currency)
+    }
+</script>

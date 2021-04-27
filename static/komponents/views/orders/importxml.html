@@ -1,0 +1,349 @@
+<div class="modal" id="order_form_modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Comanda noua</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form name="importForm" id="importForm">
+                    <input type="file" name="orderfile">
+                </form>
+
+                <form name="orderForm" id="ordeForm" style="display: none">
+                    <div class="position-relative form-group">
+                        <label for="partner_id" class="">Client</label>
+                        <select name="partner_id" id="partner_id" class="js-example-basic-single" style="width: 100%;" required>
+                        </select>
+<!--                        <input type="text" class="form-control">-->
+                    </div>
+                    <div class="position-relative form-group">
+                        <label for="belegnummer" class="">Belegnummer</label>
+                        <input name="belegnummer" id="belegnummer"  type="text" class="form-control">
+                    </div>
+                    <div class="position-relative form-group">
+                        <label for="model" class="">Descriere</label>
+                        <input name="model" id="model"  type="text" class="form-control">
+                    </div>
+                    <div class="position-relative form-group">
+                        <label for="orderdate" class="">Data comenzii</label>
+                        <input name="orderdate" id="orderdate"  type="date" class="form-control">
+                    </div>
+                    <div class="position-relative form-group">
+                        <label for="deliverydate" class="">Data estimata a livrarii</label>
+                        <input name="deliverydate" id="deliverydate"  type="date" class="form-control">
+                    </div>
+
+                    <div style="max-height: 500px; overflow: scroll;">
+                        <table class="table table-striped table-sm">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox" checked name="toggleall" data-toggle="cod" onclick="toggleCheck(this)"></th>
+                                <th>Cod</th>
+                                <th>Descriere</th>
+                                <th>Client</th>
+                                <th>asdas</th>
+                                <th>Total</th>
+                                <th>Altele</th>
+                            </tr>
+                            </thead>
+                            <tbody data-name="orderItems">
+                            <tr>
+                                <td><input type="checkbox" name="cod" data-toggleall="toggleall" value="<%= cod %>" checked onclick="toggleCheck(this)"></td>
+                                <td><%= cod %></td>
+                                <td><%= desc %></td>
+                                <td><%= qty %> <%= um %></td>
+                                <td><%= pu %><%= curr %></td>
+                                <td><%= total %><%= curr %></td>
+                                <td onmouseover="show(this)">
+                                    <div class="d-none">
+                                        <ul>
+                                            <% for(let i in others.fields) { %>
+                                            <% if (others.fields[i].type=='data') %>
+                                            <li><strong><%= i %> :</strong> <%= others.fields[i].data %></li>
+                                            <% }%>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="position-relative form-group">
+                        <label for="total" class="">Valoare total estimata</label>
+                        <input name="total" id="total"  type="number" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button data-name="uploadButton" form="importForm" type="button" class="btn-primary btn">Importa XML</button>
+                <button data-name="placeOrderButton" form="ordeForm" type="button" class="btn btn-success" style="display: none">Creaza comanda</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    function show(src) {
+        // $(src.)
+    }
+
+    function toggleCheck(src)
+    {
+        let checked = src.checked;
+
+        // toggleAll checkbox was pressed
+        let toggleTarget = $(src).attr("data-toggle");
+        if(toggleTarget) {
+            $(src.form).find("input[name="+toggleTarget+"]").each(function () {
+                $(this)[0].checked = checked;
+            });
+            return;
+        }
+
+        let toggleAll = src.form[$(src).data("toggleall")];
+        if(!checked) {
+            toggleAll.checked = false;
+            return;
+        }
+
+        let allchecked = true;
+        let inputs = $(src.form).find("input[name="+src.name+"]");
+        for(let i =0;i<inputs.length;i++) {
+            if(!inputs[i].checked) {
+                allchecked = false;
+                break;
+            }
+        }
+        toggleAll.checked = allchecked;
+    }
+
+
+    function init_komponent(k)
+    {
+
+        function partner_select() {
+            $("select[name=partner_id]").select2({
+                ajax:{
+                    url: apiRoot+"/partners",
+                    minimumInputLength: 2,
+                    dataType: 'json',
+                    data: function (params) {
+                        console.log(params);
+                        if(params.term) {
+                            return {
+                                filter: "name~=~" + params.term
+                            };
+                        }
+                        return {};
+                    },
+                    processResults: function (data) {
+                        let result = {
+                            results:[],
+
+                        };
+                        data.data.forEach(function (item) {
+                            result.results.push({
+                                id: item.id,
+                                text: item.attributes.name
+                            })
+                        });
+                        return result;
+                    }
+                }
+            });
+        }
+
+
+        let $items = k.$el.find("[data-name=orderItems]");
+        let templateTxt = $items.html().replace(/&lt;/gi, '<').replace(/&gt;/gi, ">");
+        let template;
+        if(templateTxt) {
+             template = _.template(templateTxt);
+             console.log("//////",template);
+        }
+        $items.empty();
+
+
+        let modal = k.$el.appendTo("body").filter(".modal");
+        modal.on("hidden.bs.modal",function (e) {
+            k.$el.remove();
+        });
+        let $orderButton = k.$el.find("[data-name=placeOrderButton]");
+        let $uploadButton = k.$el.find("[data-name=uploadButton]");
+
+        let orders = k.data.instance;
+
+        function publishHeader(response)
+        {
+            console.log(response);
+            let sectionIDs = Object.getOwnPropertyNames(response.sections);
+            let bestellung = null;
+            let sections = [];
+            let order = null;
+            for(let i=0;i<sectionIDs.length;i++) {
+                if(response.sections[sectionIDs[i]].SectionKey==="K.F") {
+                    bestellung = response.sections[sectionIDs[i]];
+                }
+
+                if(response.sections[sectionIDs[i]].SectionKey==="K.E") {
+                    order = response.sections[sectionIDs[i]];
+                }
+
+                if(response.sections[sectionIDs[i]].SectionKey==="P.A") {
+                    sections.push(response.sections[sectionIDs[i]]);
+                }
+            }
+
+            if(bestellung===null) {
+                return;
+            }
+
+            let $blgNo = $("#belegnummer");
+            $($blgNo[0].form).data("meta",response);
+
+            $("#model").val(order.fields["K.E.E_BelegKopf.BelegInfo"].data);
+            $blgNo.val(bestellung.fields["K.F.E_BelegKopf.BelegNummer"].data);
+            $("#orderdate").val(bestellung.fields["K.F.E_BelegKopf.BelegDatum"].data);
+            $("#deliverydate").val(bestellung.fields["K.F.E_BelegKopf.BelegDatum"].data.replaceAll(".","/"));
+        }
+
+
+        function publishItems(response)
+        {
+
+            let total = 0;
+            let entries = [];
+            Object.getOwnPropertyNames(response.sections).forEach(function (sectionId) {
+                let entry = response.sections[sectionId];
+
+                if(entry.SectionKey==="P.A") {
+                    let entryData = {
+                        cod: entry.fields["P.A.E_BelegPos.Artikel"].data,
+                        desc: entry.fields["P.A.S_ArtikelSpr.Bezeichnung[1]"].data+" / " +entry.fields["P.A.S_ArtikelSpr.Bezeichnung[2]"].data+" / "
+                            +entry.fields["P.A.S_ArtikelSpr.Bezeichnung[3]"].data+" / " +entry.fields["P.A.S_ArtikelSpr.Bezeichnung[4]"].data,
+                        pu: entry.fields["P.A.E_BelegPos.Einzelpreis"].data.replaceAll(".","").replaceAll(",",".")*1,
+                        qty: entry.fields["P.A.E_BelegPos.Menge"].data.replaceAll(".","").replaceAll(",",".")*1,
+                        curr: entry.fields["P.A.S_PreisEinheitSpr.KurzBez"].data,
+                        um: entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data,
+                        total: entry.fields["P.A.E_BelegPos.Warenwert"].data.replaceAll(".","").replaceAll(",",".")*1,
+                        others: entry
+                    };
+                    entries.push(entryData);
+                    total += entryData.total;
+                }
+            });
+
+            entries.forEach(function (entry) {
+                let $el = $(template(entry)).appendTo($items).data("instance",entry);
+                $el.find("*").data("instance",entry);
+                // console.log(entry);
+            });
+        }
+
+        function uploadFile(form)
+        {
+            let files = form.orderfile.files;
+            $items.empty();
+
+            if(files.length<1) {
+                console.log("no files");
+                return;
+            }
+
+            let fd = new FormData();
+            fd.append("file",files[0]);
+            return new Promise(function (resolve, reject) {
+
+                $.ajax({
+                        url: backendUrl+"/main/upload",
+                        data: fd,
+                        type: "post",
+                        contentType: false,
+                        processData: false,
+                    })
+                    .done(function(response){
+                        publishItems(response);
+                        publishHeader(response);
+                        partner_select();
+                        resolve();
+                    })
+                    .fail(function () {
+                        reject();
+                    })
+            });
+        }
+
+
+
+        function placeOrder(form)
+        {
+            let meta = $(form).data("meta");
+
+            let order = {
+                label: $(form.model).val(),
+                partner_id: $(form.partner_id).val(),
+                meta: meta ? JSON.stringify(meta) : null,
+                created_by: userData.sub,
+                orders_items: []
+            };
+
+
+            let total = 0;
+            $(form).find("input[name=cod]").filter(":checked").each(function () {
+                let instance = $(this).data("instance");
+                order.orders_items.push({
+                    type: "orders_items",
+                    attributes:
+                        {
+                            um: instance.um,
+                            name: instance.desc,
+                            qty: instance.qty,
+                            unit_price: instance.pu,
+                            currency: instance.curr,
+                            meta: JSON.stringify(instance.others)
+                        }
+                });
+                total += instance.qty*instance.pu;
+            });
+            console.log(orders);
+
+            order.estimated_value = total;
+            return orders.createItem(order);
+        }
+
+
+
+        $orderButton.on("click",function (src) {
+            placeOrder(src.target.form)
+                .then(function (a) {
+                    console.log(a);
+                    modal.modal("hide");
+                })
+                .catch(function () {
+                    
+                })
+        });
+
+        $uploadButton.on("click",function (src) {
+            uploadFile(src.target.form)
+                .then(function () {
+                    $($uploadButton.hide()[0].form).hide();
+                    $($orderButton.show()[0].form).show();
+                })
+                .catch(function () {
+
+                });
+        });
+
+        k.exec = function (data) {
+            modal.modal("show");
+        };
+        k.exec();
+    }
+</script>

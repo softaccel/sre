@@ -1,0 +1,173 @@
+<div class="modal" id="allocate_empl_modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong class="modal-title">Alocare angajat</strong>
+            </div>
+            <div class="modal-body">
+                <form id="allocEmplForm"></form>
+                <div class="position-relative form-group">
+                    <label for="emplidInput" class="">Angajat</label>
+                    <select name="emplid" id="emplidInput" form="allocEmplForm" class="js-example-basic-single" style="width: 100%;" required>
+                    </select>
+                </div>
+                <div class="position-relative form-group">
+                    <label for="operationInput" class="">Operatiune</label>
+                    <select name="operation" id="operationInput" form="allocEmplForm" class="js-example-basic-single" style="width: 100%;" required>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="hourlyrateInput">Tarif orar</label>
+                    <input type="number" class="form-control form-control-sm" form="allocEmplForm" name="hourlyrate" id="hourlyrateInput" required>
+                </div>
+                <div class="form-group">
+                    <label for="currencyInput">Valuta</label>
+                    <select name="currency" id="currencyInput" form="allocEmplForm" class="js-example-basic-single" style="width: 100%;" required>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" id="allocEmplFormSaveButt" form="allocEmplForm">Salveaza</button>
+                <button class="btn btn-secondary" data-dismiss="modal">Inchide</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function init_komponent(k,d) {
+        k.$el.appendTo("body");
+
+        let modal = $("#allocate_empl_modal").modal("show").on("hidden.bs.modal",function () {
+            k.$el.remove();
+        });
+        let $form = $("#allocEmplForm");
+        let $elements = $($form[0].elements);
+        let util = instance.getUtilities();
+
+        let instance = k.data.instance;
+        if(instance.attributes) {
+            util.fillForm($form,instance);
+
+            let $sele = $elements.filter("[name=emplid]").attr("disabled",true);
+            with(instance.relationships.emplid.attributes) {
+                $("<option>").text(fname+" "+lname).attr("value",id)
+                    .appendTo($sele.empty());
+            }
+
+            $sele = $elements.filter("[name=operation]");
+            with(instance.relationships.operation.attributes) {
+                $("<option>").text(name).attr("value",id)
+                    .appendTo($sele.empty());
+            }
+
+            $sele = $elements.filter("[name=currency]");
+            with(instance.relationships.currency) {
+                $("<option>").text(id).attr("value",id)
+                    .appendTo($sele.empty());
+            }
+
+            util.captureFormSubmit($form,function (data) {
+                instance.update(data)
+                    .then(function (data) {
+                        modal.modal("hide");
+                    })
+                    .catch(function (err) {
+                        // todo: show some error
+                    });
+            });
+        }
+        else {
+            util.captureFormSubmit($form,function (data) {
+                instance.createItem(data);
+            });
+        }
+        console.log(instance);
+
+
+
+        k.$el.find("select[name=operation]").select2({
+            ajax:{
+                url: apiRoot+"/operations",
+                minimumInputLength: 2,
+                dataType: 'json',
+                data: (params)=>{
+                    let limit = 5;
+                    let p = {
+                        "page[operations][offset]":params.page?(params.page-1)*limit:0,
+                        "page[operations][limit]":limit
+                    };
+                    if(params.term) {
+                        p.filter = "name~=~" + params.term;
+                    }
+                    return p;
+                },
+                processResults: function (data) {
+                    let result = {results:[]};
+                    data.data.forEach(function (item) {
+                        result.results.push({
+                            id: item.id,
+                            text: item.attributes.name,
+                            // data: item
+
+                        })
+                    });
+                    return result;
+                }
+            }
+        });
+
+        k.$el.find("select[name=currency]").select2({
+            ajax:{
+                url: apiRoot+"/currencies?sort=id",
+                minimumInputLength: 2,
+                dataType: 'json',
+                data: (params)=>{return params.term ? {filter: "name~=~" + params.term} : {}},
+                processResults: function (data) {
+                    let result = {results:[]};
+                    data.data.forEach(function (item) {
+                        result.results.push({
+                            id: item.id,
+                            text: item.id + " (" + item.attributes.desc + ")"
+                        })
+                    });
+                    return result;
+                }
+            }
+        });
+
+
+        k.$el.find("select[name=emplid]").select2({
+            ajax:{
+                url: apiRoot+"/employees_names",
+                minimumInputLength: 2,
+                dataType: 'json',
+                templateSelection: function(data,container) {
+                    console.log("-------",data,container);
+
+                },
+                data: (params)=>{
+                    let limit = 5;
+                    let p = {};
+                    p["page[employees_names][offset]"] = params.page?(params.page-1)*limit:0;
+                    p["page[employees_names][limit]"]  = limit;
+                    if(params.term) {
+                        p.filter = "fullname~=~" + params.term;
+                    }
+                    return p;
+                },
+                processResults: function (data) {
+                    let result = {results:[],pagination:{more:false}};
+                    data.data.forEach(function (item) {
+                        result.results.push({
+                            id: item.id,
+                            text: item.attributes.fullname
+                        })
+                    });
+                    result.pagination.more = (data.meta.totalRecords - data.meta.offset - data.data.length) > 0;
+                    return result;
+                }
+            }
+        });
+    }
+</script>

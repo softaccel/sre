@@ -489,7 +489,7 @@
 
 
 		/**
-		 * load data from remote storage. Trigger an AJAX call
+		 * load item data from remote storage.
 		 * @returns {Promise<unknown>}
 		 */
 		_item.loadFromRemote = function () {
@@ -498,8 +498,13 @@
 					throw("No valid URL provided");
 				}
 
-				storage.read(_item.url,{},_item)
-					.then(function (data, textStatus, jqXHR, ctx) {
+				storage.read(_item,_item.url,{})
+					.then(function (resp) {
+						console.log("Reading data",this,resp);
+						let data = resp.data;
+						let textStatus = resp.textStatus;
+						let jqXHR = resp.jqXHR;
+						let ctx = resp.ctx;
 						_item
 							.loadFromJSONAPIDoc(data, textStatus, jqXHR, ctx)
 							.views.forEach(function (view){
@@ -605,12 +610,11 @@
 
 			if(this.hasOwnProperty("collection"))
 				obj = this;
+
 			else if(ctx && ctx.hasOwnProperty("collection"))
 				obj = ctx;
 
-
 			Object.assign(obj,data);
-
 
 			obj.dispatch('load',{type:'load',src:obj,data:data});
 			return this;
@@ -701,8 +705,6 @@
 				relationships: {}
 			};
 
-			// console.log("\\\\\\\\\\\\\\",JSON.parse(JSON.stringify(toUpdate)));
-
 			// check attributes
 			Object.getOwnPropertyNames(itemData).forEach(function (attrName) {
 				if(!itemData.hasOwnProperty(attrName) && !this.strict ) {
@@ -721,7 +723,6 @@
 				}
 
 			}, this);
-			// console.log("\\\\\\\\\\\\\\",JSON.parse(JSON.stringify(toUpdate)));
 
 			// update relationships
 			if(this.relationships) {
@@ -753,8 +754,6 @@
 			}
 
 			return new Promise(function (resolve,reject) {
-				// console.log("++++++++++++++++++",JSON.parse(JSON.stringify(toUpdate)));
-
 				if(!Object.getOwnPropertyNames(toUpdate.attributes).length
 					&& !Object.getOwnPropertyNames(toUpdate.relationships).length) {
 					console.log("Nothing to update");
@@ -763,23 +762,22 @@
 
 				let patchData = JSON.stringify({data: toUpdate});
 
-				storage.update(_item.updateUrl, {},patchData,_item)
-					.then(function (data,txt,xhr)
+				storage.update(_item,_item.updateUrl, {},patchData)
+					.then(function (resp)
 					{
-						let newData = parseItemData(data,buildDb(data));
+						let newData = parseItemData(resp.data,buildDb(resp.data));
 						Object.assign(_item,newData);
 
-						console.log("Update OK. Render updated",_item);
-						// ctx.view.render();
 						_item.views.forEach(function (view){
 							view.render();
 						});
+
 						resolve(_item);
 					})
-					.catch(function (xhr,txt,err,ctx)
+					.catch(function (xhr)
 					{
-						console.log("Update NOK",_item.updateUrl,patchData,xhr);
-							reject(xhr);
+						// console.log("Update NOK",_item.updateUrl,patchData,xhr);
+						reject(xhr);
 					});
 			});
 
@@ -789,38 +787,40 @@
 		/**
 		 * delete item
 		 */
-		_item.delete = function (cb) {
-			return new Promise(function(resolve,reject){
-				// console.log(_self);
-				if(!_item.deleteUrl) {
-					_item.deleteUrl = _item.url + "/" + _item.id;
+		_item.delete = function () {
+			return new Promise((resolve,reject) => {
+				// set deleteUrl
+				_item.deleteUrl = _item.deleteUrl  ? _item.deleteUrl : _item.url + "/" + _item.id;
+
+
+				function onDeleteFail(resp) {
+					console.log("fail",resp);
+					reject(resp);
 				}
 
-				storage
-					.remove(_item.deleteUrl,{},null,_item)
-					.then(function (data,textStatus, jqXHR, ctx) {
-						for(let i=ctx.view.length-1;i>=0;i++) {
-							ctx.view[i].remove(i);
+				// remove from storage
+				storage.delete(_item,_item.deleteUrl,{})
+					.then(
+						function (resp) {
+							// console.log("Deleting stuff",resp,this);
+							for(let i=_item.views.length-1 ; i>=0 ; i--) {
+								_item.views[i].remove();
+							}
+							// todo: delete from collection
+							resolve();
 						}
-						ctx.view.forEach(function (view,idx) {
-							view.remove(idx);
-						});
 
-						if(typeof cb!=="undefined" && cb.constructor === Function)
-							cb();
-
-						resolve();
-						// delete _item;
-					})
-					.catch(function (xhr) {
-						reject();
-					});
+					)
+					.catch(onDeleteFail)
+					.finally(()=>{console.log("finaly",arguments)});
 			});
 
 		};
+
 		_item.getUtilities = function () {
 			return utilities;
 		};
+
 		return _item;
 	}
 
@@ -854,7 +854,7 @@
 				}
 				inp.val(val);
 
-				console.log("set ",attrName,val);
+				// console.log("set ",attrName,val);
 
 			});
 
@@ -894,7 +894,7 @@
 
 			// setup submit processing
 			$(form).off("submit").on("submit",function(event) {
-				console.log("form submit triggered",event);
+				// console.log("form submit triggered",event);
 				event.preventDefault();
 				let frm = $(form)[0];
 				let formElements = {};
@@ -904,11 +904,12 @@
 						return;
 					formElements[$item.attr("name")] = $item.val();
 				});
-				console.log(formElements,"////////////////",cb);
+				// console.log(formElements,"////////////////",cb);
 
 				cb(formElements);
 			});
 		}
+
 	};
 
 
@@ -964,7 +965,6 @@
 		Object.assign(_itemview,params);
 		let tmp = {};
 		Object.assign(tmp,_itemview);
-		console.log("2222222222222222222222",params,tmp);
 
 		// todo: remove this check in future release
 		if (!_itemview.template) {
@@ -1036,12 +1036,12 @@
 			_itemview.el.fadeOut({
 				complete: ()=>{
 					_itemview.el.remove();
-					delete _itemview.items.view[idx];
+					// delete _itemview.item.views[idx];
 					// _view.item.collection.removeItem(_view.item);
 				}
 			});
 
-			this.dispatch('remove',{src:_view,item:_view.item});
+			// this.dispatch('remove',{src:_view,item:_view.item});
 		};
 
 		return _itemview;
@@ -1167,14 +1167,22 @@
 		_collection.updateUrl = URL(_collection.updateUrl?_collection.updateUrl:_collection.url);
 		_collection.insertUrl = URL(_collection.insertUrl?_collection.insertUrl:_collection.url);
 
-		if(_collection.view)
+		if(_collection.view) {
 			_collection.view.collection = _collection;
-		if(_collection.url && _collection.url.parameters && _collection.url.parameters.hasOwnProperty("page["+_collection.type+"][offset]"))
-			_collection.offset =  self.url.parameters["page["+_collection.type+"][offset]"]*1;
-		if(_collection.url && _collection.url.parameters && _collection.url.parameters.hasOwnProperty("page["+_collection.type+"][limit]"))
-			_collection.pageSize =  _collection.url.parameters["page["+_collection.type+"][limit]"]*1;
-		if(_collection.total)
-			_collection.total = _collection.total*1;
+		}
+
+		if(_collection.url && _collection.url.parameters) {
+			if(_collection.url.parameters.hasOwnProperty("page["+_collection.type+"][offset]")) {
+				_collection.offset =  parseInt(_collection.url.parameters["page["+_collection.type+"][offset]"]);
+			}
+			if(_collection.url.parameters.hasOwnProperty("page["+_collection.type+"][limit]")) {
+				_collection.pageSize =  parseInt(_collection.url.parameters["page["+_collection.type+"][limit]"]);
+			}
+		}
+
+		if(_collection.total) {
+			_collection.total = _collection.total * 1;
+		}
 
 		if(["page","scroll"].indexOf(_collection.navtype)===-1)
 			throw "Invalid navigations type. Should be page or scroll";
@@ -1254,10 +1262,10 @@
 					throw("No valid URL provided");
 				}
 
-				storage.read(_collection.url,{},_collection)
-					.then(function(data)
+				storage.read(_collection,_collection.url,{})
+					.then(function(res)
 					{
-						_collection.receiveRemoteData(data);
+						_collection.receiveRemoteData(res.data);
 						resolve.call(_collection);
 					})
 					.catch(function(jqXHR, textStatus, errorThrown)
@@ -1294,18 +1302,30 @@
 			return this;
 		};
 
+
 		/**
 		 *
 		 * @param itemData
 		 */
 		_collection.createItem = function(itemData) {
 
-			let data = {
+			let jsonApiDoc = {
 				data: {
 					type: this.type,
-					attributes:  itemData
+					attributes:  {},
+					relationships: {}
 				}
 			};
+
+			for(let attr in itemData) {
+				if(itemData[attr] && typeof itemData[attr]==="object") {
+					jsonApiDoc.data.relationships[attr] = {
+						data: itemData[attr]
+					};
+					continue;
+				}
+				jsonApiDoc.data.attributes[attr] = itemData[attr];
+			}
 
 			let _self = this;
 
@@ -1315,13 +1335,15 @@
 				}
 
 				storage
-					.create(_self.insertUrl,{contentType:"application/vnd.api+json"},JSON.stringify(data),_self)
-					.then(function (data) {
+					.create(_self,_self.insertUrl,{contentType:"application/vnd.api+json"},JSON.stringify(jsonApiDoc))
+					.then(function (resp) {
+						console.log("Creting stuff",this,resp);
+						let data = resp.data;
 						let newItem = _self.receiveRemoteData(data);
 						resolve(newItem);
 					})
-					.catch(function (xhr) {
-						reject(xhr);
+					.catch(function (resp) {
+						reject(resp);
 					})
 			});
 		};
@@ -1657,13 +1679,11 @@
 		// setup filtering
 		if (options.hasOwnProperty("filter") && $(options.filter).length && $(options.filter).prop("tagName")==="FORM") {
 			instance.filtering = Filtering(options.filter, instance)
-			// console.log("setup filter",instance.filtering);
 		}
 
 		// setup edit modal
 		if(options.hasOwnProperty("addeditmodal")  && $(options.addeditmodal).length) {
-			$(options.addeditmodal)
-				.on("show.bs.modal", prepareModal);
+			$(options.addeditmodal).on("show.bs.modal", prepareModal);
 		}
 
 		// setup confirm delete
@@ -1783,12 +1803,15 @@
 				break;
 			case ADD_BUTTON_ACTION:
 				targetInstance = $($button.data("instance")).data("instance");
-				if(!targetInstance)
-					return console.log("Invalid targetInstance",event);
+				if(!targetInstance) {
+					return console.log("Invalid targetInstance", event);
+				}
 
 				$(form).data("instance",targetInstance);
-				if(form.elements.hasOwnProperty("id") && !$(form.elements.id).attr("data-required"))
+				if(form.elements.hasOwnProperty("id") && !$(form.elements.id).attr("data-required")) {
 					$(form.elements.id).remove();
+				}
+
 				form.method = "POST";
 				form.action = targetInstance.url;
 				break;
@@ -1887,32 +1910,52 @@
 		};
 		_paging.collection.paging = this;
 		let defaultPageSize = _paging.el.data("pagesize");
-		defaultPageSize = defaultPageSize?defaultPageSize:20;
+		defaultPageSize = defaultPageSize ? defaultPageSize : 20;
 
-		let pageButton = _paging.el.find("[data-type=page]").clone(true);
-		let prevButton = _paging.el.find("[data-type=prev]").clone(true);
-		let nxtButton = _paging.el.find("[data-type=next]").clone(true);
-		let firstButton = _paging.el.find("[data-type=first]").clone(true);
-		let lastButton = _paging.el.find("[data-type=last]").clone(true);
+		let offsetInp = $(_paging.collection.offsetinp).off("keyup").on("keyup",function () {
+			_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = offsetInp.val();
+			_paging.collection.loadFromRemote();
+		});
+
+		let pageSizeInp = $(_paging.collection.pagesizeinp).off("change").on("change",function () {
+			_paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"] = pageSizeInp.val();
+			_paging.collection.loadFromRemote();		});
+
+		let buttons = {
+			page: _paging.el.find("[name=page]").clone(true),
+			prev: _paging.el.find("[name=prev]").clone(true),
+			next: _paging.el.find("[name=next]").clone(true),
+			first: _paging.el.find("[name=first]").clone(true),
+			last: _paging.el.find("[name=last]").clone(true),
+		};
+
+
 		_paging.el.empty();
 
 		_paging.el.find("[data-type=pages]").empty();
 
 		_paging.render = function () {
 
-			let iniOffset = this.collection.offset;
+			let pagesToShow = 5;
+			let iniOffset = parseInt(this.collection.offset ? this.collection.offset : 0);
 			this.collection.url.parameters["page["+this.collection.type+"][offset]"] = iniOffset;
-			iniOffset = iniOffset?iniOffset:0;
 			let total = this.collection.total;
+			let currentPageSize = _paging.collection.items.length;
 			_paging.el.empty();
 
-			// todo: read page size
-			let pageSize = _paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"]*1;
+			// get page size from URL query parameter
+			let pageSize = parseInt(_paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"]);
+
+			// try to guess page size
+			if(!pageSize && total-iniOffset-currentPageSize>0) {
+				pageSize = currentPageSize;
+			}
+
 			pageSize = pageSize?pageSize:defaultPageSize;
 			// console.log(_self.collection.type,iniOffset,total,pageSize);
 
-			let first = firstButton.clone(true).attr("title", 0).addClass("disabled").appendTo(_paging.el);
-			let prev = prevButton.clone(true).attr("title", iniOffset - pageSize).addClass("disabled").appendTo(_paging.el);
+			let first = buttons.first.clone(true).attr("title", 0).addClass("disabled").appendTo(_paging.el);
+			let prev = buttons.prev.clone(true).attr("title", iniOffset - pageSize).addClass("disabled").appendTo(_paging.el);
 
 			if(iniOffset>0) {
 				first.on("click", function () {
@@ -1926,34 +1969,41 @@
 				}).removeClass("disabled");
 			}
 
-			let lowerLimit = iniOffset/pageSize-5;
-			lowerLimit = lowerLimit<0?0:lowerLimit;
-			let upperLimit = iniOffset/pageSize+6;
-			upperLimit = upperLimit*pageSize<total?upperLimit:Math.ceil(total/pageSize);
+			let lowerLimit = iniOffset / pageSize - Math.floor(pagesToShow/2);
+			lowerLimit = lowerLimit<0 ? 0 : lowerLimit;
+
+			let upperLimit = iniOffset / pageSize + Math.ceil(pagesToShow/2);
+			upperLimit = upperLimit*pageSize<total ? upperLimit : Math.ceil(total/pageSize);
+
 			for(let i=lowerLimit;i<upperLimit;i++) {
-				let b = pageButton.clone(true).text(i+1).on("click", function () {
+
+				let page = buttons.page.clone(true).text(i+1).on("click", function () {
 					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = i*pageSize;
 					_paging.collection.loadFromRemote();
 				}).attr("title", i*pageSize).appendTo(_paging.el);
+
 				if(iniOffset/pageSize===i)
-					b.addClass("active");
+					page.addClass("active").off("click");
 			}
 
-			let nxtOffset = iniOffset+pageSize;
-			let nxt = nxtButton.clone(true).attr("title", nxtOffset).addClass("disabled").appendTo(_paging.el);
-			let lastPageOffset = (Math.ceil(total/pageSize)-1)*pageSize;
-			let lst = lastButton.clone(true).attr("title", lastPageOffset).addClass("disabled").appendTo(_paging.el);
+			let nxtOffset = iniOffset + pageSize;
+			let next = buttons.next.clone(true).attr("title", nxtOffset).addClass("disabled").appendTo(_paging.el);
 
-			if(iniOffset+pageSize<total) {
-				nxt.on("click", function () {
+			let lastPageOffset = (Math.ceil(total/pageSize)-1)*pageSize;
+			let last = buttons.last.clone(true).attr("title", lastPageOffset).addClass("disabled").appendTo(_paging.el);
+			if(iniOffset + pageSize < total) {
+				next.removeClass("disabled").on("click", function () {
 					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = iniOffset+pageSize;
 					_paging.collection.loadFromRemote();
-				}).removeClass("disabled");
-				lst.on("click", function () {
+				});
+
+				last.removeClass("disabled").on("click", function () {
 					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = lastPageOffset;
 					_paging.collection.loadFromRemote();
-				}).removeClass("disabled");
+				});
 			}
+			offsetInp.val(iniOffset);
+
 		};
 
 		return _paging;
@@ -1964,150 +2014,135 @@
 	 * @param options
 	 * @constructor
 	 */
-	function Storage(options)
-	{
+function Storage(options)
+{
 
-		let defaultOptions = {
-			url: null,
+	let defaultOptions = {
+		url: null,
+		method: "GET"
+	};
+
+	options = parseOptions(options);
+
+	Object.assign(defaultOptions, options);
+
+	let _storage = {};
+
+	/**
+	 *
+	 * @param options
+	 * @returns {Promise<unknown>}
+	 */
+	_storage.sync = function (options) {
+		options = Object.assign(
+			Object.assign({},defaultOptions),
+			parseOptions(options)
+		);
+
+		if (!options.hasOwnProperty("url")) {
+			throw "No URL provided";
+		}
+
+		return new Promise(function (resolve,reject) {
+			$.ajax(options)
+				.done(function (data, textStatus, jqXHR) {
+					// console.log(data, textStatus, jqXHR,"111111111111");
+					resolve( {
+						data: data,
+						textStatus: textStatus,
+						jqXHR: jqXHR
+					});
+				})
+				.fail(function (jqXHR, textStatus, errorThrown) {
+					reject( {
+						options: options,
+						jqXHR: jqXHR,
+						textStatus: textStatus,
+						errorThrown: errorThrown
+					});
+				});
+		});
+	};
+
+	/**
+	 *
+	 * @param ctx
+	 * @param url
+	 * @param opts
+	 * @param data
+	 * @returns {Promise<unknown>}
+	 */
+	_storage.create = function (ctx, url, opts, data) {
+		let options = {
+			context: ctx,
+			url: url,
+			method: "POST",
+			data: data
+		};
+		Object.assign(options, opts);
+		return _storage.sync(options);
+	};
+
+	/**
+	 *
+	 * @param ctx
+	 * @param url
+	 * @param opts
+	 * @returns {Promise<unknown>}
+	 */
+	_storage.read = function (ctx, url, opts) {
+		let options = {
+			context: ctx,
+			url: url,
 			method: "GET"
 		};
+		Object.assign(options, opts);
 
-		options = parseOptions(options);
+		return _storage.sync(options);
+	};
 
-		Object.assign(defaultOptions, options);
-
-		let _storage = {};
-
-		/**
-		 *
-		 * @param options
-		 * @returns {Promise<unknown>}
-		 */
-		_storage.sync = function (options) {
-
-			options = Object.assign(
-				Object.assign({},defaultOptions),
-				parseOptions(options)
-			);
-
-			if (!options.hasOwnProperty("url")) {
-				throw "No URL provided";
-			}
-
-			return new Promise(function (resolve,reject) {
-				$.ajax(options)
-					.done(function (data, textStatus, jqXHR) {
-						resolve.call(options.context, data, textStatus, jqXHR);
-					})
-					.fail(function (jqXHR, textStatus, errorThrown) {
-						reject.call(options.context, jqXHR, textStatus, errorThrown);
-					});
-			});
+	/**
+	 *
+	 * @param ctx
+	 * @param url
+	 * @param opts
+	 * @returns {Promise<unknown>}
+	 */
+	_storage.delete = function (ctx, url, opts) {
+		let options = {
+			context: ctx,
+			url: url,
+			method: "DELETE"
 		};
+		Object.assign(options, opts);
 
-		/**
-		 *
-		 * @param location
-		 * @param opts
-		 * @param data
-		 * @param ctx
-		 * @returns {*|Promise<any>|void}
-		 */
-		_storage.create = function (location, opts, data, ctx) {
-			let options = {
-				url: location,
-				method: "POST",
-				data: data,
-				context: ctx
-			};
-			Object.assign(options, opts);
-			return _storage.sync(options);
+		return _storage.sync(options);
+	};
+
+	/**
+	 *
+	 * @param ctx
+	 * @param url
+	 * @param opts
+	 * @param data
+	 * @returns {Promise<unknown>}
+	 */
+	_storage.update = function (ctx, url, opts, data) {
+		let options = {
+			context: ctx,
+			url: url,
+			method: "PATCH",
+			contentType: "application/vnd.api+json",
+			data: data
 		};
+		Object.assign(options, opts);
 
-		/**
-		 *
-		 * @param location
-		 * @param opts
-		 * @param ctx
-		 * @returns {*|Promise<any>|void}
-		 */
-		_storage.read = function (location, opts, ctx) {
-			let options = {
-				url: location,
-				method: "GET",
-				context: ctx
-			};
+		return _storage.sync(options);
 
-			Object.assign(options, opts);
+	};
 
-			return _storage.sync(options);
-
-		};
-
-		/**
-		 *
-		 * @param location
-		 * @param opts
-		 * @param data
-		 * @param onSuccess
-		 * @param onFail
-		 * @param ctx
-		 * @returns {*|Promise<any>|void}
-		 */
-		_storage.update = function (location, opts, data,ctx) {
-			let options = {
-				url: location,
-				method: "PATCH",
-				contentType: "application/vnd.api+json",
-				data: data,
-				context: ctx
-			};
-			Object.assign(options, opts);
-
-			return _storage.sync(options);
-
-		};
-
-		/**
-		 *
-		 * @param url
-		 * @param opts
-		 * @param data
-		 * @param onSuccess
-		 * @param onFail
-		 * @param ctx
-		 */
-		_storage.remove = function (url, opts, data, ctx) {
-			return new Promise(function (resolve, reject) {
-				console.log(url);
-				let options = {
-					url: url,
-					method: "DELETE",
-					context: ctx
-				};
-
-				if(data) {
-					options.data = data;
-				}
-
-				Object.assign(options, opts);
-
-				let onFailMod = function (jqXHR,textStatus,error) {
-					if(parseInt(jqXHR.status)===204) {
-						resolve(null, jqXHR.statusText, jqXHR);
-					}
-					else {
-						reject(jqXHR, textStatus, error);
-					}
-				};
-
-				_storage.sync(options).then(resolve).catch(onFailMod);
-			});
-
-		};
-
-		return _storage;
-	}
+	return _storage;
+}
 
 	function uid () {
 		// Math.random should be unique because of its seeding algorithm.

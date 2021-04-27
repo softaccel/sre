@@ -1,0 +1,100 @@
+<div class="modal" id="order_file_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+<!--                <button class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function init_komponent(k) {
+        let modal = k.$el.appendTo("body")
+            .filter(".modal")
+            .modal()
+            .on("hidden.bs.modal",function () {
+                k.$el.remove();
+            });
+
+        let modalData = {
+            title: null,
+            body: "",
+            buttons: [
+                {
+                    label: "Inchide",
+                    attrs: {
+                        "data-dismiss": "modal",
+                    },
+                    class: "btn btn-secondary"
+                }
+            ]
+        };
+
+        Object.assign(modalData,k.data);
+        console.log("++++++",modalData)
+
+        if(modalData.size) {
+            switch(modalData.size){
+                case "lg":
+                    modal.find(".modal-dialog").addClass("modal-lg");
+                    break;
+                case "xl":
+                    modal.find(".modal-dialog").addClass("modal-xl");
+                    break;
+            }
+        }
+
+        if(modalData.title===null) {
+            modal.find(".modal-header").remove();
+        }
+        else {
+            modal.find(".modal-title").html(modalData.title);
+        }
+
+        if(modalData.buttons===null) {
+            modal.find(".modal-footer").remove();
+        }
+        else {
+            modal.find(".modal-body").html(modalData.body);
+        }
+
+        if(modalData.body===null) {
+            modal.find(".modal-body").remove();
+        }
+
+
+        let footer = modal.find(".modal-footer").empty();
+
+        modalData.buttons.forEach(function (button) {
+            footer.append(renderButton(button));
+        });
+
+        function renderButton(data) {
+            console.log(data);
+            let b = $("<button>").html(data.label).addClass("btn").addClass(data.class);
+            if(data.attrs) {
+                Object.getOwnPropertyNames(data.attrs).forEach(function (attrName) {
+                    b.attr(attrName, data.attrs[attrName]);
+                });
+            }
+            if(data.callback) {
+                b.on("click",data.callback);
+            }
+            console.log("-------",b)
+            return b;
+        }
+
+        // k.exec = function (data) {
+        //     console.log(data);
+        //     modal.modal("show");
+        // };
+    }
+</script>

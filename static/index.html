@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <meta content="utf-8" http-equiv="encoding">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Language" content="en">
@@ -17,110 +18,106 @@
     <link href="main.css" rel="stylesheet">
     <link href="assets/css/spinner.css" rel="stylesheet">
     <link href="assets/css/jquery-ui.css" rel="stylesheet">
-    <link href="assets/css/selectize.bootstrap3.css" rel="stylesheet">
+<!--    <link href="assets/css/selectize.bootstrap3.css" rel="stylesheet">-->
+    <link href="assets/css/select2.min.css" rel="stylesheet">
     <style>
 
     </style>
 </head>
 <body>
+<div id="page"></div>
+<div class='pageOverlay'><div class='spinner'></div></div>
 
 
-
-<!--<div class="app-container app-theme-white body-tabs-shadow fixed-header" id="mainc">-->
-<div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar" id="mainc">
-    <div class="app-header header-shadow" is='komponent' data-url="/common/header"></div>
-    <div class="app-main">
-        <div class="app-sidebar sidebar-shadow" is='komponent' data-url="/common/sidebar" id="sidebar"></div>
-
-        <div class="app-main__outer" id="pageContent">
-
-<button onclick="sendIntent()">asd</button>
-            <ul id="tree">
-
-            </ul>
-        </div>
-    </div>
-</div>
 
 
 <script src="assets/js/jquery.js"></script>
 <script src="assets/js/jwt-decode.js"></script>
 <script src="assets/js/komponentor.js?v=1"></script>
-<script src="assets/js/selectize.min.js?v=1"></script>
+<!--<script src="assets/js/selectize.min.js?v=1"></script>-->
 <script src="assets/js/popper.min.js"></script>
 <script src="assets/js/bootstrap.bundle.js"></script>
 <script src="assets/js/jquery-ui.js"></script>
 <script src="assets/js/underscore-min.js"></script>
 <script src="assets/js/apiator.js"></script>
+<script src="assets/js/jquery.scannerdetection.js"></script>
+<script src="assets/js/select2.min.js"></script>
 
 
 <script>
-    let _kPath = "komponents";
-    let _kExt = ".html";
-    let vPath = _kPath+"views/";
-    let apiRoot = '/spaleck/be/dbapi/v2/spaleck/';
+    const localStorageLabel = "spaleck";
+    const _kPath = "komponents";
+    const _kExt = ".html";
+    const vPath = _kPath+"views/";
+    const backendUrl = '/spaleck/be';
+    const apiRoot = backendUrl + '/dbapi/v2/spaleck';
+    const authUrl = backendUrl + '/main/auth/login';
+
     // let defaultKomponent = "/views/dashboard";
-    let pageContentContainer = $('#pageContent');
+
 </script>
 <script>
-
-    function sendIntent(){
-        console.log("*****************");
-        komponentor.intent('/common/test').data({a:1})
-            .send()
-            .then(function (a,b,c) {
-                console.log(a,b,c);
-            })
+    function logout() {
+        userData = null;
+        localData.jwt  = null;
+        localStorage.setItem("spaleck",JSON.stringify(localData));
     }
 
+    function checkAuth() {
+        let localData = {
+
+        };
+        let userData;
+        Object.assign(localData,JSON.parse(localStorage.getItem(localStorageLabel)));
+
+        if(localData.jwt) {
+            try {
+                userData = jwt_decode(localData.jwt);
+                let d = new Date();
+                if(d.getTime()/1000>userData.exp) {
+                    logout();
+                }
+            }
+            catch($e) {
+                // console.log($e);
+            }
+        }
+        return [localData,userData];
+    }
+
+    // let localData,userData;
+    let [localData,userData] = checkAuth();
+
+
+    let url = "/views/app";
+    if(!userData) {
+        url = "/views/login";
+    }
     autoload = false;
-    $(document).ready(function () {
-        // load static defined komponents
-        let $overlay = $("<div class='pageOverlay'><div class='spinner'></div></div>").appendTo("body");
-        komponentor.loadKomponents($("body"))
-            .then(function () {
-                $overlay.remove();
-            })
-            .catch(function () {
-                $overlay.remove();
-            });
-
-        // load main app according to routing path
-        if(komponentor.routing.path) {
-            $(pageContentContainer).komponent({
-                url: komponentor.routing.path,
-                paras: komponentor.routing.paras
-            });
-            return;
-        }
-
-        //
-        if(typeof defaultKomponent!=="undefined") {
-            komponentor.fetchKomponent({
-                $el: pageContentContainer,
-                url: defaultKomponent
-            }).catch(function (a) {
-                $('#pageContent').html("<h3>Page not found</h3>");
-            });
-            return;
-        }
+    $("#page").komponent({url:url}).finally(function () {
+        $(".pageOverlay").remove();
 
     });
+
 
     /**
      *
      * @param  items Array
      * @param target
      */
-    function render_recusive(items,target) {
-        items.forEach(function (item) {
-            let li = $("<li>").text(item.name).data("path",item.path).appendTo(target);
-            if(item.hasOwnProperty("files")) {
-                render_recusive(item.files,$("<ul>").appendTo(li));
-            }
-        })
-    }
+    // function render_recusive(items,target) {
+    //     items.forEach(function (item) {
+    //         let li = $("<li>").text(item.name).data("path",item.path).appendTo(target);
+    //         if(item.hasOwnProperty("files")) {
+    //             render_recusive(item.files,$("<ul>").appe0006075014
+    //             ndTo(li));
+    //         }
+    //     })
+    // }
+
+
 </script>
+
 
 
 

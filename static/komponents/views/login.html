@@ -1,0 +1,136 @@
+<div class="app-container app-theme-white body-tabs-shadow">
+    <div class="app-container">
+        <div class="h-100 bg-plum-plate bg-animation">
+            <div class="d-flex h-100 justify-content-center align-items-center">
+                <div class="mx-auto app-login-box col-md-8">
+                    <div class="app-logo-inverse mx-auto mb-3"></div>
+                    <div class="modal-dialog w-100 mx-auto">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="h5 modal-title text-center">
+                                    <h4 class="mt-2">
+                                        <div style="text-transform: capitalize;">Spaleck </div>
+                                        <span style="font-size: 0.6em">Resita</span>
+                                    </h4>
+                                </div>
+                                <form class="" id="loginForm">
+                                    <div class="form-row">
+                                        <div class="col-md-12">
+                                            <div class="position-relative form-group"><input name="login" id="login" placeholder="Nume utilizator" type="text" class="form-control"></div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="position-relative form-group"><input name="password" id="pass" placeholder="Parola" type="password" class="form-control"></div>
+                                        </div>
+                                    </div>
+                                    <div class="position-relative form-check">
+                                        <input name="remember" id="rememberMe" type="checkbox" class="form-check-input">
+                                        <label for="rememberMe" class="form-check-label">Tine minte datele de login</label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class=" mt-5 alert alert-danger alert-dismissible fade show" role="alert" id="failedLoginFeedback">
+                                                <div class="message"></div>
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer clearfix">
+                                								<div class="float-left"><a href="javascript:void(0);" class="btn-lg btn btn-link">Am uitat parola</a></div>
+                                <div class="float-right">
+                                    <button class="btn btn-primary btn-lg" type="submit" form="loginForm">Autentificare</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center text-white opacity-8 mt-3">&copy; Softaccel Solutions 2021</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function init_komponent() {
+        $("#failedLoginFeedback").hide();
+        $("#registrationErrors").hide();
+        $("#loginForm").on("submit",function(e){
+            e.preventDefault();
+            login(e);
+        });
+    }
+
+    defaultAuthOkRedirect = "./";
+
+    function login(event)
+    {
+        $("#failedLoginFeedback").hide();
+
+        let form = event.target;
+        let loginData = {
+            login: form.login.value,
+            password: form.password.value,
+            remember: form.remember.checked?1:0
+        };
+
+        // auth against backend
+        $.post(authUrl,loginData)
+            .done(function (data,b,xhr) {
+                if(!saveToken(data,xhr)) {
+                    return $("#failedLoginFeedback").empty().show().text("Server error: invalid token. Please contact administrator");
+                }
+
+                let origin = (new URL(window.location.href)).searchParams.get("origin");
+                if(origin) window.location.href = origin;
+                else window.location.href = defaultAuthOkRedirect;
+            })
+            .fail(function (xhr) {
+                console.log(xhr)
+                let $failedLoginFeedback = $("#failedLoginFeedback");
+                switch (xhr.status) {
+                    case 405:
+                        $failedLoginFeedback.show().fadeOut(3000).find(".message").empty().text("Invalid request");
+                        break;
+                    case 400:
+                        $failedLoginFeedback.show().fadeOut(3000).find(".message").empty().text("Invalid request");
+                        break;
+                    case 500:
+                        $failedLoginFeedback.show().fadeOut(3000).find(".message").empty().text("Server error. Please try again later.");
+                        break;
+                    case 404:
+                        $failedLoginFeedback.show().fadeOut(3000).find(".message").empty().text("Username or password not found");
+                        break;
+                }
+            });
+
+    }
+
+
+    /**
+     *
+     * @param data
+     * @param xhr
+     * @returns {boolean}
+     */
+    function  saveToken(data,xhr)
+    {
+        console.log(data);
+        if(typeof data!=="undefined" && data.constructor===Object && data.hasOwnProperty("jwt")) {
+            localData.jwt = data.jwt;
+            localStorage.setItem(localStorageLabel, JSON.stringify(localData));
+            // throw localData;
+            return true;
+        }
+
+        let auth = /^Bearer\s(.+)/.exec(xhr.getResponseHeader("Authorization"));
+        if(auth) {
+            localData.jwt = auth[1];
+            localStorage.setItem(localStorageLabel, JSON.stringify(localData));
+            return  true;
+        }
+
+        return false;
+    }
+</script>

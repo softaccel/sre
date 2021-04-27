@@ -6,6 +6,9 @@
     .ul-cards li{
         margin: 0px;
     }
+    .card:hover{
+        box-shadow: 2px 2px 2px silver;
+    }
 </style>
 
 <div class="app-main__inner">
@@ -13,7 +16,7 @@
         <div class="page-title-wrapper">
             <div class="page-title-heading">
                 <div class="page-title-icon">
-                    <i class="fa fa-industry"></i>
+                    <i class="fa fa-users"></i>
                 </div>
                 <div>Angajati
                     <div class="page-title-subheading"></div>
@@ -33,10 +36,14 @@
                 <div class="card">
                     <div class="card-body">
                         <form id="filterEmployees"></form>
-                        <ul class="row ul-cards" data-resourcetype="collection" id="employees"
-                            data-filter="filterEmployees"
+                        <input type="text" name="card" data-operator="=" form="filterEmployees">
+                        <input type="reset" form="filterEmployees" onclick="function f() {
+                            $(this).blur();
+                        }">
+                        <div class="row mt-4" data-resourcetype="collection" id="employees"
+                            data-filter="#filterEmployees"
                             data-paging="#employeesPaging" data-filter="#filterEmployees">
-                            <li class="m-3" onclick="openEmployeeModal(this)">
+                            <div class="col-3 mb-3" onclick="openEmployeeModal(this)">
                                 <div class="card" style="width: 200px; height: 150px">
                                     <div class="card-body text-center">
                                         <span class="d-inline-block" style="width: 60px">
@@ -47,9 +54,8 @@
 
                                     </div>
                                 </div>
-                            </li>
-
-                        </ul>
+                            </div>
+                        </div>
                         <!-- HTML TEMPLATE SECTION: STOP-->
                     </div>
                     <div class="card-footer" id="employeesPaging">
@@ -73,9 +79,12 @@
      * @param src
      */
     function openEmployeeModal(src) {
-        if($(src).data("locked"))
+        if($(src).data("locked")) {
             return;
+        }
+
         $(src).data("locked",true);
+
         komponentor
             .intent('/views/employees/employee')
             .data({
@@ -111,6 +120,30 @@
      */
     function init_komponent(k,html) {
         $("#employees").apiator({url:apiRoot+"/employees?page[employees][limit]=20&include=team,jobtitle&fields[employees]=fname,lname"});
+
+        function codeRcvd(code,qty){
+            let frm = $("#filterEmployees");
+            console.log(frm);
+            frm[0].card.value = code;
+            frm.submit();
+        }
+
+        function longPress(){
+            console.log(arguments);
+        }
+
+        $(document).scannerDetection({
+            timeBeforeScanTest: 200, // wait for the next character for upto 200m0006075014s
+            endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+            avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+            ignoreIfFocusOn: 'input', // turn off scanner detection if an input has focus
+            onComplete: codeRcvd, // main callback function
+            scanButtonKeyCode: 116, // the hardware scan button acts as key 116 (F5)
+            scanButtonLongPressThreshold: 5, // assume a long press if 5 or more events come in sequence
+            onScanButtonLongPressed: longPress, // callback for long pressing the scan button
+            onError: function(string){alert('Error ' + string);}
+        });
+
 
         k.exec = function (options) {
             console.log(options);

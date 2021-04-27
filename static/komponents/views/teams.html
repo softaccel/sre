@@ -1,23 +1,14 @@
 <style>
-    .ul-cards {
-        list-style: none;
-        padding: 0px;
-    }
-    .ul-cards li{
-        margin: 0px;
-    }
+
 </style>
 <div class="app-main__inner">
     <div class="row mb-3">
         <div class="col">
             <div class="card">
                 <div class="card-body">
-                    <form id="filterEmployees"></form>
-                    <ul class="row ul-cards" data-resourcetype="collection" id="employees"
-                        data-filter="filterEmployees" data-type="employees"
-                        data-paging="#employeesPaging" data-filter="#filterEmployees">
-                        <li class="" onclick="komponentor.intent('/views/employees/team').data($(this).data('instance')).send()">
-                            <div class="card" style="width: 150px">
+                    <div class="row" data-resourcetype="collection" id="teamsList" data-type="teams" >
+                        <div class="col-2" onclick="komponentor.intent('/views/employees/team').data($(this).data('instance')).send()">
+                            <div class="card" >
                                 <div class="card-body text-center">
                                     <div class="d-inline-block" style="width: 60px">
                                         <span class="rounded-circle warning-feedback bg-secondary" style="color: white; font-size: 40px;padding: 5px">
@@ -29,79 +20,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </li>
+                        </div>
 
-                    </ul>
-                    <table class="table table-sm table-hover d-none">
-                        <thead class="thead-light" id="employeesThead">
-                        <tr>
-                            <th>
-                                <label>
-                                    Nume
-                                    <a class="text-secondary" data-sortfld="fname">
-                                        <i class="fa fa-sort-up sort-up"  style="display: none"></i>
-                                        <i class="fa fa-sort-down sort-down" style="display: none"></i>
-                                        <i class="fa fa-sort sort-default text-light"></i>
-                                    </a>
-                                </label>
-                                <input form="filterEmployees" type="text" name="fname" data-operator="~=~" class="form-control form-control-sm" onkeyup="this.form.submit.click()">
-                            </th>
-                            <th>
-                                <label>
-                                    Prenume
-                                    <a class="text-secondary" data-sortfld="fname">
-                                        <i class="fa fa-sort-up sort-up"  style="display: none"></i>
-                                        <i class="fa fa-sort-down sort-down" style="display: none"></i>
-                                        <i class="fa fa-sort sort-default text-light"></i>
-                                    </a>
-                                </label>
-                                <input form="filterEmployees" type="text" name="fname" data-operator="~=~" class="form-control form-control-sm" onkeyup="this.form.submit.click()">
-                            </th>
-                            <th class="align-top">
-                                Echipa
-                            </th>
-                            <th>
-                                <label>
-                                    Active
-                                    <a class="text-secondary" data-sortfld="active">
-                                        <i class="fa fa-sort-up sort-up"  style="display: none"></i>
-                                        <i class="fa fa-sort-down sort-down" style="display: none"></i>
-                                        <i class="fa fa-sort sort-default text-light"></i>
-                                    </a>
-                                </label>
-                                <select form="filterEmployees" name="active" class="form-control custom-select custom-select-sm" onchange="this.form.submit.click()">
-                                    <option value="__EMPTY__"></option>
-                                    <option value="1">Active</option>
-                                    <option value="0">Blocat</option>
-                                </select>
-                            </th>
-                            <th width="100">
-                                <button type="button" class="btn btn-success" data-toggle="modal"
-                                        data-target="#addEditModal" data-action="showCreateModal" data-instance="#employees">Adauga</button>
-                            </th>
-                        </tr>
-                        </thead>
-
-                        <tbody >
-                        <tr >
-                            <td><%= attributes.fname %></td>
-                            <td><%= attributes.lname %></td>
-                            <td><%= relationships.team?relationships.team.attributes.name:"-" %></td>
-                            <td><span class="badge badge-<%= attributes.locked*1?'danger':'success' %>"><%= attributes.locked*1?'blocat':'activ' %></span> </td>
-                            <td>
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal" data-action="showDeleteConfirm">Sterge</button>
-                            </td>
-                        </tr>
-                        </tbody>
-
-                        <tfoot>
-                        <tr>
-                            <td colspan="5" align="left">
-
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
+                    </div>
                     <!-- HTML TEMPLATE SECTION: STOP-->
                 </div>
                 <div class="card-footer" id="employeesPaging">
@@ -121,7 +42,7 @@
 <script>
 
     function init_komponent(k,html) {
-        $("#employees").apiator({url:apiRoot+"/teams"});
+        $("#teamsList").apiator({url:apiRoot+"/teams"});
 
         k.exec = function (options) {
             console.log(options);

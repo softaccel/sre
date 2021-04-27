@@ -258,10 +258,12 @@
                 init_data.data[attr] = val;
                 return this;
             },
-            send: function () {
+            send: function (data) {
+                if(data) {
+                    obj.data(data);
+                }
                 // add overlay
-                let k =  Komponent(init_data);
-                return k;
+                return   Komponent(init_data);
             }
         };
 

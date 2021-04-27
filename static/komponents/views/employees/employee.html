@@ -31,37 +31,46 @@
     #detaliiPanel div.edit{
         display: none;
     }
-    #pontajPanel th:first-child,#pontajPanel td:first-child {
-        display: none;
-
-    }
 </style>
 <div class="modal" id="employeeModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title font-weight-bold">Detalii</div>
-                <div class="btn-actions-pane-right">
-                    <div class="nav">
-                        <a data-toggle="tab" href="#detaliiPanel" class="btn-pill btn-wide active btn btn-outline-alternate btn-sm">Sumar</a>
-                        <a data-toggle="tab" href="#pontajPanel" class="btn-pill btn-wide mr-1 ml-1  btn btn-outline-alternate btn-sm">Pontaj</a>
-                        <a data-toggle="tab" href="#docsPanel" class="btn-pill btn-wide  btn btn-outline-alternate btn-sm">Documente</a>
-                        <a data-toggle="tab" href="#reportsPanel" class="btn-pill btn-wide  btn btn-outline-alternate btn-sm">Rapoarte</a>
-                    </div>
-                </div>
-<!--                <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--                    <span aria-hidden="true">&times;</span>-->
-<!--                </button>-->
-            </div>
-            <div class="modal-body">
+            <div class="modal-body bg-light">
+                <div class="card">
+                    <div class="card-header-tab card-header-tab-animation card-header">
+                        <div class="card-header-title">
+                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
+                            Detalii comanda <span id="comandaid"></span>
+                        </div>
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#detaliiPanel" class="nav-link active">Sumar</a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#pontajPanel" class="nav-link">Pontaj</a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#docsPanel" class="nav-link">Documente</a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#reportsPanel" class="nav-link">Rapoarte</a>
+                            </li>
 
-                <div class="tab-content">
-                    <div class="tab-pane active" role="tabpanel" aria-labelledby="detaliiTab" id="detaliiPanel">
-                        <div id="employeeDetails" is="komponent" data-replace="true" data-url="/views/employees/details"></div>
+                        </ul>
                     </div>
-                    <div class="tab-pane" id="docsPanel" role="tabpanel" aria-labelledby="docsTab"></div>
-                    <div class="tab-pane" id="pontajPanel" role="tabpanel" aria-labelledby="pontajTab">
-                        <div is="komponent" data-url="/views/pontaj/lista"></div>
+                    <div class="card-body" style="min-height: 400px">
+
+                        <div class="tab-content">
+                            <div class="tab-pane active" role="tabpanel" aria-labelledby="detaliiTab" id="detaliiPanel">
+                                <div id="employeeDetails" is="komponent" data-replace="true" data-url="/views/employees/details"></div>
+                            </div>
+                            <div class="tab-pane" id="reportsPanel" role="tabpanel" aria-labelledby="docsTab">reportsPanel</div>
+                            <div class="tab-pane" id="docsPanel" role="tabpanel" aria-labelledby="docsTab">docsPanel</div>
+                            <div class="tab-pane" id="pontajPanel" role="tabpanel" aria-labelledby="pontajTab">
+                                pontajPanel
+                                <div id="employeeTimetracking" is="komponent" data-url="/views/pontaj/lista"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -69,22 +78,31 @@
     </div>
 </div>
 <script>
-    function edit(src) {
-        $(src).parents("tr").addClass("edit");
-    }
 
-    function save(src) {
+
+    function saveEmployee(src) {
         $(src).parents("tr").removeClass("edit");
-        let inp = $(src).parents("tr").find("input");
+        let inp = $(src).parents("tr").find(".form-control");
         let update = {};
         inp.each(function () {
             update[$(this).attr("name")] = $(this).val();
         });
-        $(src).data("instance").update(update);
+        $(src).data("instance").update(update).then(function (a) {
+            console.log(a);
+        })
+            .catch(function (jqxhr) {
+                if(jqxhr.errorThrown==="Conflict") {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "Card-ul este asociat cu alt angajat.<br> Pentru a il asociat cu acest angajat, mai intai trebuie sa il dezasociati."
+                    }).send();
+                }
+                console.log(jqxhr);
+            });
     }
 
-    function init_komponent(k,b) {
+    function init_komponent(k) {
         let $modal = k.$el.appendTo("body").filter(".modal");
+
         $modal.on("hidden.bs.modal",function (event) {
             console.log($modal.find("#employeeDetails"));
             $modal.find("#employeeDetails").data("view").unbind();
@@ -92,16 +110,26 @@
         });
 
 
-        $modal.find("#employeeDetails")
-            .komponent()
+        $("#employeeDetails").komponent()
             .then(function (detailsK) {
                 detailsK.exec(k.data.instance);
+                $modal.modal("show");
             })
             .catch(function () {
                 $modal.remove();
+            })
+            .finally(function () {
+
             });
 
-        $modal.modal("show");
+        $("#employeeTimetracking").komponent({data:{instance:k.data.instance}})
+            .then(function (k) {
+
+            })
+            .catch(function (a) {
+
+            });
+
 
         k.exec = function (paras) {
             let instance = paras.instance;
@@ -114,7 +142,7 @@
                 .then(function (k) {
                     console.log("--------------",k);
                 });
-            $modal.modal("show");
+            // $modal.modal("show");
         };
         // k.exec();
     }

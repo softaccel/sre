@@ -1,0 +1,43 @@
+
+<div class="modal" id="employeeModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title font-weight-bold">Detalii</div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" id="detaliiTab" data-toggle="tab" href="#detaliiPanel"
+                           role="tab" aria-controls="detaliiPanel" aria-selected="true">Detalii</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pontajTab" data-toggle="tab" href="#pontajPanel"
+                           role="tab" aria-controls="pontajPanel" aria-eselected="false">Pontaj</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="docsTab" data-toggle="tab" href="#docsPanel"
+                           role="tab" aria-controls="docsPanel" aria-selected="false">Documente</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade" id="detaliiPanel" role="tabpanel" aria-labelledby="detaliiTab" data-resourcetype="item" data-type="catalog"></div>
+                    <div class="tab-pane fade" id="pontajPanel" role="tabpanel" aria-labelledby="pontajTab" data-resourcetype="item" data-type="catalog"></div>
+                    <div class="tab-pane fade" id="docsPanel" role="tabpanel" aria-labelledby="docsTab" data-resourcetype="item" data-type="catalog"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function init(k,data) {
+        let $modal =  $("#employeeModal").appendTo("body");
+        k.exec = function (data) {
+            $("#employeeModal .modal-title").html(data.instance.attributes.fname+' '+ data.instance.attributes.lname);
+            $modal.modal("show");
+        }
+    }
+</script>

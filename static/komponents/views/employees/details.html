@@ -16,9 +16,9 @@
                 <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
             </div>
             <div class="edit input-group">
-                <input name="fname" value="<%= attributes.fname %>" class="form-control form-control-sm" type="text">
+                <input name="fname" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);">
                 <div class="input-group-append">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="saveEmployee(this)"><i class="fa fa-save"></i></button>
                 </div>
 
             </div>
@@ -32,14 +32,30 @@
                 <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
             </div>
             <div class="edit input-group">
-                <input name="lname" value="<%= attributes.lname %>" class="form-control form-control-sm" type="text">
+                <input name="lname" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);">
                 <div class="input-group-append">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="saveEmployee(this)"><i class="fa fa-save"></i></button>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>Card</td>
+        <td>
+            <div class="view">
+                <span class="label"><%= attributes.card %></span>
+                <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this,true,true);"><i class="fa fa-edit"></i></button>
+            </div>
+            <div class="edit input-group">
+                <input name="card" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);" >
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="saveEmployee(this)"><i class="fa fa-save"></i></button>
                 </div>
 
             </div>
         </td>
     </tr>
+
     <tr>
         <td>Functia</td>
         <td>
@@ -48,11 +64,10 @@
                 <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
             </div>
             <div class="edit input-group">
-                <input name="jobtitle" value="<%= relationships.jobtitle.id %>" class="form-control form-control-sm" type="text">
+                <select class="form-control" name="jobtitle" data-source="<%= apiRoot+'/jobs' %>" data-type="operations" data-labelfld="name"  data-searchfld="name" data-searchop="~=~"></select>
                 <div class="input-group-append">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="saveEmployee(this)"><i class="fa fa-save"></i></button>
                 </div>
-
             </div>
         </td>
     </tr>
@@ -64,15 +79,13 @@
                 <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
             </div>
             <div class="edit input-group">
-                <input name="jobtitle" value="<%= relationships.jobtitle.id %>" class="form-control form-control-sm" type="text">
+                <select class="form-control" name="team" data-source="<%= apiRoot+'/teams' %>" data-type="teams" data-labelfld="name"  data-searchfld="name" data-searchop="~=~"></select>
                 <div class="input-group-append">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="saveEmployee(this)"><i class="fa fa-save"></i></button>
                 </div>
-
             </div>
         </td>
     </tr>
-
 
     <tr>
         <td>Data nasterii</td>
@@ -82,9 +95,9 @@
                 <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
             </div>
             <div class="edit input-group inpgrp">
-                <input name="bdate" value="<%= attributes.bdate %>" class="form-control form-control-sm" type="text">
+                <input name="bdate" class="form-control form-control-sm" type="date" onkeyup="if(event.keyCode==13) saveEmployee(this);">
                 <div class="input-group-append">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="saveEmployee(this)"><i class="fa fa-save"></i></button>
                 </div>
             </div>
         </td>
@@ -97,9 +110,9 @@
                 <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
             </div>
             <div class="edit input-group">
-                <input name="bdate" value="<%= attributes.cnp %>" class="form-control form-control-sm" type="text">
+                <input name="cnp" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);">
                 <div class="input-group-append">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="saveEmployee(this)"><i class="fa fa-save"></i></button>
                 </div>
             </div>
         </td>
@@ -123,13 +136,13 @@
                         <div class="col-md-6">
                             <div class="position-relative form-group">
                                 <label for="address_1_input" class="">Adresa 1</label>
-                                <input name="address_1" value="<%= attributes.address_1 %>" id="address_1_input" type="text" class="form-control">
+                                <input name="address_1" value="<%= attributes.address_1 %>" id="address_1_input" type="text" class="form-control form-control-sm">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="position-relative form-group">
                                 <label for="address_2_input" class="">Adresa 2</label>
-                                <input name="address_2" value="<%= attributes.address_2 %>" id="address_2_input" type="text" class="form-control">
+                                <input name="address_2" value="<%= attributes.address_2 %>" id="address_2_input" type="text" class="form-control form-control-sm">
                             </div>
                         </div>
                     </div>
@@ -137,31 +150,31 @@
                         <div class="col-md-3">
                             <div class="position-relative form-group">
                                 <label for="city_input" class="">Localitate</label>
-                                <input name="city" id="city_input" value="<%= attributes.city %>" type="text" class="form-control">
+                                <input name="city" id="city_input" value="<%= attributes.city %>" type="text" class="form-control form-control-sm">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="position-relative form-group">
                                 <label for="postcode_input" class="">Cod postal</label>
-                                <input name="postcode" id="postcode_input" value="<%= attributes.postcode %>" type="text" class="form-control">
+                                <input name="postcode" id="postcode_input" value="<%= attributes.postcode %>" type="text" class="form-control form-control-sm">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="position-relative form-group">
                                 <label for="county_input" class="">Judet</label>
-                                <input name="county" id="county_input" value="<%= attributes.county %>" type="text" class="form-control">
+                                <input name="county" id="county_input" value="<%= attributes.county %>" type="text" class="form-control form-control-sm">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="position-relative form-group">
                                 <label for="country_input" class="">Tara</label>
-                                <input name="country" id="country_input" value="<%= attributes.country %>" type="text" class="form-control">
+                                <input name="country" id="country_input" value="<%= attributes.country %>" type="text" class="form-control form-control-sm">
                             </div>
                         </div>
                     </div>
-                    <div class="form-row">
+                    <div class="row">
                         <div class="col text-center">
-                            <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="saveEmployee(this)"><i class="fa fa-save"></i></button>
                         </div>
                     </div>
                 </div>
@@ -174,13 +187,12 @@
         <td>
             <div class="view">
                 <span><%= relationships.userid?relationships.userid.id:"-" %></span>
-
                 <button class="btn btn-sm btn-sm btn-warning" onclick="edit(this)"><i class="fa fa-edit"></i></button>
             </div>
             <div class="edit input-group">
-                <input name="userid" value="<%= relationships.userid?relationships.userid.id:null %>" class="form-control form-control-sm" type="text">
+                <input name="userid" value="<%= relationships.userid?relationships.userid.id:null %>" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);">
                 <div class="input-group-append">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="save(this)"><i class="fa fa-save"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="saveEmployee(this)"><i class="fa fa-save"></i></button>
                 </div>
             </div>
         </td>
@@ -188,14 +200,92 @@
 </table>
 
 <script>
+    function edit(src,focus,select) {
+        let item = $(src).parents("tr");
+        item.addClass("edit");
+        let input = item.find(".form-control")[0];
+        let $input = $(input);
+
+        let instance = item.data("instance");
+        let val = null;
+        let attrs = null;
+        if(instance.attributes.hasOwnProperty(input.name)) {
+            val = instance.attributes[input.name];
+        }
+        if(instance.relationships.hasOwnProperty(input.name)) {
+            val = instance.relationships[input.name].id;
+            attrs = instance.relationships[input.name].attributes;
+        }
+
+
+        if(input.tagName==="INPUT") {
+            $input.val(val);
+        }
+        if(input.tagName==="SELECT") {
+            let opt = $("<option>").attr('value',val).text(val);
+            if($input.data("labelfld")) {
+                opt.text(attrs[$input.data("labelfld")]);
+            }
+
+            $input.empty().append(opt);
+            if($input.data("select2-id")) {
+                $input.select2("destroy");
+            }
+
+            $input.select2({
+                ajax:{
+                    url: $input.data("source"),
+                    minimumInputLength: 2,
+                    dataType: 'json',
+                    data: (params)=>{
+                        let limit = 5;
+                        let p = {};
+                        p["page["+$input.data("type")+"][offset]"] = params.page?(params.page-1)*limit:0;
+                        p["page["+$input.data("type")+"][limit]"] = limit;
+                        if(params.term) {
+                            p.filter = $input.data("searchfld") + $input.data("searchop") + params.term;
+                        }
+                        return p;
+                    },
+                    processResults: function (data) {
+                        let result = {results:[]};
+                        data.data.forEach(function (item) {
+                            result.results.push({
+                                id: item.id,
+                                text: item.attributes.name,
+                                // data: item
+
+                            })
+                        });
+                        return result;
+                    }
+                }
+            });
+        }
+        if(focus) {
+            input.focus();
+        }
+        if(select) {
+            input.select();
+        }
+
+
+    }
+
     function init_komponent(k) {
         k.exec = function (instance) {
+
+            if(instance.hasOwnProperty("items")) {
+                return;
+            }
+
             let modUrl = {};
             Object.assign(modUrl,instance.url);
-            if(modUrl.parameters['fields[employees]']) {
-                delete modUrl.parameters['fields[employees]'];
-            }
-            instance.bindView($(k.$el)).setUrl(modUrl).loadFromRemote();
+            delete modUrl.parameters['fields[employees]'];
+
+            instance.bindView($(k.$el))
+                .setUrl(modUrl)
+                .loadFromRemote();
         };
 
         return k;
