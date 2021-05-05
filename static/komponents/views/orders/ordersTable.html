@@ -25,17 +25,18 @@
             <th class="align-top" style="width: 100px">
                 <a class="text-secondary" data-sortfld="docnum">Nr. crt.
                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                <input type="text" name="docnum" class="form-control-sm form-control" form="ordersListFilter" data-operator="~=~">
+                <select id="docNumFilter" name="doc_id" class="form-control-sm form-control" form="ordersListFilter" data-operator="="><option> </option></select>
             </th>
             <th class="align-top">
                 <a class="text-secondary" data-sortfld="label">Denumire
                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 <input type="text" name="label" class="form-control-sm form-control" form="ordersListFilter" data-operator="~=~">
             </th>
-            <th class="customerColumn align-top">
+            <th class="customerColumn align-top" style="min-width: 150px">
                 <a class="text-secondary" data-sortfld="pname">Client
                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                <input type="text" name="pname" class="form-control-sm form-control" form="ordersListFilter" data-operator="~=~">
+                <br>
+                <select id="partnerNameFilter" name="partner_id" class="form-control-sm form-control" form="ordersListFilter" data-operator="="><option> </option></select>
             </th>
             <th class="align-top">
                 <a class="text-secondary" data-sortfld="state">Status
@@ -90,10 +91,10 @@
         <tr class="order <%= attributes.state %>">
             <td>
                 <span class="actions"><button class="btn btn-danger btn-sm" onclick="deleteOrder(this)"><i class="fa fa-trash-alt"></i></button></span>
-                <span class="auftragNumLbl bnt btn-sm btn-secondary"><%= attributes.docnum %></span>
+                <span class="auftragNumLbl bnt btn-sm btn-secondary"><%= relationships.doc_id.attributes.docnum %></span>
             </td>
             <td onclick="orderDetailsModal(this)" style="cursor: pointer"><%= attributes.label %></td>
-            <td class="customerColumn"><%= attributes.pname %></td>
+            <td class="customerColumn"><%= relationships.partner_id.attributes.name %></td>
             <td class="state"><span class="badge badge-pill <%= attributes.state %>"> </span></td>
             <td><%= attributes.created_on.substr(0,10) %></td>
             <td><%= attributes.closed_on?attributes.closed_on.substr(0,10):"-" %></td>
@@ -170,22 +171,93 @@
     }
 
     function init_komponent(k) {
-        let url = apiRoot+"/orders_extended?page[orders_extended][offset]=0&page[orders_extended][limit]=10";
+        let url = apiRoot+"/orders?page[orders_extended][offset]=0&page[orders_extended][limit]=10&include=doc_id,partner_id";
+        // let insertUrl = apiRoot+"/orders?page[orders_extended][offset]=0&page[orders_extended][limit]=10";
 
         if(k.data && k.data.instance && k.data.instance.type==="partners") {
             k.$el.find(".customerColumn").remove();
             $("#newOrderButtons").remove();
-            url = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
+            url = apiRoot+"/orders?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10&include=doc_id,partner_id";
+            // insertUrl = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
         }
 
         $("#ordersList").apiator({
             url: url,
-            type: "orders_extended",
+            type: "orders",
             resourcetype: "collection",
             filter: "#ordersListFilter",
             paging: "#ordersListPaging",
-            sort: "#ordersListHeader"
+            sort: "#ordersListHeader",
+            // insertUrl: insertUrl
         });
+
+        k.$el.find("#partnerNameFilter").select2({
+            placeholder: 'This is my placeholder',
+            allowClear: true,
+            ajax:{
+                url: apiRoot+"/partners",
+
+                minimumInputLength: 2,
+                dataType: 'json',
+                data: (params)=>{
+                    let limit = 5;
+                    let p = {
+                        "page[partners][offset]":params.page?(params.page-1)*limit:0,
+                        "page[partners][limit]":limit
+                    };
+                    if(params.term) {
+                        p.filter = "name~=~" + params.term;
+                    }
+                    return p;
+                },
+                processResults: function (data) {
+                    let result = {results:[]};
+                    data.data.forEach(function (item) {
+                        result.results.push({
+                            id: item.id,
+                            text: item.attributes.name,
+                            // data: item
+
+                        })
+                    });
+                    return result;
+                }
+            }
+        });
+
+        k.$el.find("#docNumFilter").select2({
+            allowClear: true,
+            placeholder: "Doc num",
+            ajax:{
+                url: apiRoot+"/documents",
+                minimumInputLength: 2,
+                dataType: 'json',
+                data: (params)=>{
+                    let limit = 5;
+                    let p = {
+                        "page[documents][offset]":params.page?(params.page-1)*limit:0,
+                        "page[documents][limit]":limit
+                    };
+                    if(params.term) {
+                        p.filter = "docnum~=~" + params.term;
+                    }
+                    return p;
+                },
+                processResults: function (data) {
+                    let result = {results:[]};
+                    data.data.forEach(function (item) {
+                        result.results.push({
+                            id: item.id,
+                            text: item.attributes.docnum,
+                            // data: item
+
+                        })
+                    });
+                    return result;
+                }
+            }
+        });
+
         let formElements = $($("#ordersListFilter")[0].elements);
         formElements.filter("input").on("keyup",function () {
                 formElements.filter("button[type=submit]").click();

@@ -1,0 +1,34 @@
+<table class="table">
+    <thead class="thead-light">
+    <tr>
+        <th>Denumire</th>
+        <th>Date</th>
+        <th>Cantitate</th>
+        <th>Pret Unitar</th>
+        <th>Total</th>
+    </tr>
+    </thead>
+    <tbody id="orderPartsList">
+    <tr>
+        <td><%= id %></td>
+        <td>2020-02-02</td>
+        <td>100</td>
+        <td>30 EUR/ora</td>
+        <td>3000 EUR</td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="4"></td>
+    </tr>
+    </tfoot>
+</table>
+<script>
+    function init_komponent(k) {
+        $("#orderPartsList").apiator({
+            url: apiRoot+"/orders/"+k.data.orderId,
+            type: "orders_parts",
+            resourcetype: "collection"
+        })
+    }
+</script>

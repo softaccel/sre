@@ -1,43 +1,49 @@
 
-<div class="modal" id="employeeModal">
+<div class="modal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title font-weight-bold">Detalii</div>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link" id="detaliiTab" data-toggle="tab" href="#detaliiPanel"
-                           role="tab" aria-controls="detaliiPanel" aria-selected="true">Detalii</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="pontajTab" data-toggle="tab" href="#pontajPanel"
-                           role="tab" aria-controls="pontajPanel" aria-eselected="false">Pontaj</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="docsTab" data-toggle="tab" href="#docsPanel"
-                           role="tab" aria-controls="docsPanel" aria-selected="false">Documente</a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade" id="detaliiPanel" role="tabpanel" aria-labelledby="detaliiTab" data-resourcetype="item" data-type="catalog"></div>
-                    <div class="tab-pane fade" id="pontajPanel" role="tabpanel" aria-labelledby="pontajTab" data-resourcetype="item" data-type="catalog"></div>
-                    <div class="tab-pane fade" id="docsPanel" role="tabpanel" aria-labelledby="docsTab" data-resourcetype="item" data-type="catalog"></div>
+            <div class="modal-body bg-light">
+                <div class="card">
+                    <div class="card-header-tab card-header-tab-animation card-header">
+                        <div class="card-header-title">
+                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
+                            Detalii comanda <span id="comandaid"></span>
+                        </div>
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#tab1Content" class="nav-link active">Date client</a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#tab2Content" class="nav-link">Comenzi</a>
+                            </li>
+
+
+                        </ul>
+                    </div>
+                    <div class="card-body" style="min-height: 400px">
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade active show" id="tab1Content" role="tabpanel" aria-labelledby="detaliiPartener-tab">
+                                1
+                            </div>
+
+                            <div class="tab-pane" id="tab2Content" data-resourcetype="collection" role="tabpanel">
+                                2
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <script>
-    function init(k,data) {
-        let $modal =  $("#employeeModal").appendTo("body");
-        k.exec = function (data) {
-            $("#employeeModal .modal-title").html(data.instance.attributes.fname+' '+ data.instance.attributes.lname);
-            $modal.modal("show");
-        }
+    function init_komponent(k,data) {
+        let $modal =  k.$el.appendTo("body").filter(".modal").modal();
+        console.log($modal);
+        // k.exec = function (data) {
+        //     $("#employeeModal .modal-title").html(data.instance.attributes.fname+' '+ data.instance.attributes.lname);
+        //     $modal.modal("show");
+        // }
     }
 </script>

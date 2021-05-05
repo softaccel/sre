@@ -43,9 +43,9 @@
         });
         let $form = $("#allocEmplForm");
         let $elements = $($form[0].elements);
-        let util = instance.getUtilities();
-
         let instance = k.data.instance;
+
+        let util = instance.getUtilities();
         if(instance.attributes) {
             util.fillForm($form,instance);
 

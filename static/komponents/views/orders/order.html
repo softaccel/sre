@@ -55,27 +55,29 @@
             <div class="modal-body bg-light">
                 <div class="card">
                     <div class="card-header-tab card-header-tab-animation card-header">
-                        <div class="card-header-title">
-                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
-                            Detalii comanda <span id="comandaid"></span>
-                        </div>
+<!--                        <div class="card-header-title">-->
+<!--                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>-->
+<!--                            Detalii comanda <span id="comandaid"></span>-->
+<!--                        </div>-->
                         <ul class="nav">
                             <li class="nav-item">
-                                <a data-toggle="tab" href="#sumar" class="nav-link">Sumar</a>
+                                <a data-toggle="tab" href="#sumar" class="nav-link active">Sumar</a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#repere" class="nav-link">Repere fizice</a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#resurse" class="nav-link">Resurse alocate</a>
                             </li>
                             <li class="nav-item">
                                 <a data-toggle="tab" href="#elemente" class="nav-link">Elemente comanda</a>
-                            </li>
-                            <li class="nav-item">
-                                <a data-toggle="tab" href="#resurse" class="nav-link active">Resurse alocate</a>
                             </li>
                         </ul>
                     </div>
                     <div class="card-body" style="min-height: 400px">
                         <div class="tab-content">
-
                             <!--// sumar-->
-                            <div class="tab-pane fade  " id="sumar">
+                            <div class="tab-pane fade show active" id="sumar">1
                                 <div class="row" >
                                     <div class="col-6">
                                         <table class="order-summary-table">
@@ -141,21 +143,21 @@
                             </div>
 
                             <!--// resurse-->
-                            <div class="tab-pane fade show active" id="resurse">
+                            <div class="tab-pane fade" id="resurse">
                                 <button class="btn btn-primary" id="allocateEmpl"><i class="fa fa-user-plus"></i> Adauga</button>
                                 <hr>
-                                <div class="row" id="allocatedEmployees" data-resourcetype="collection">
+                                <div class="row" id="allocatedEmployees">
                                     <div class="col-3 mb-4 ">
                                         <div class="employee shadow bg-light-me rounded p-2" >
                                             <button class="btn employeeIcon rounded-circle bg-primary text-center float-left p-1 mr-2"
                                                   style="width: 50px; height: 50px; color: white; font-size: 25px">
                                                 <i class="fa fa-user"></i>
                                             </button>
-                                            <button class="employeeIconDelete btn rounded-circle bg-danger text-center float-left p-1 mr-2" onclick="removeEmpl(this)"
+                                            <button class="employeeIconDelete btn rounded-circle bg-danger text-center float-left p-1 mr-2" onclick="remove_employee_from_order(this)"
                                                   style="width: 50px; height: 50px; color: white; font-size: 25px">
                                                 <i class="fa fa-user-minus"></i>
                                             </button>
-                                            <span class="employeeName" onclick="editAssoc(this)">
+                                            <span class="employeeName" onclick="edit_employee_association(this)">
                                                 <%= relationships.emplid.attributes.fname+" "+relationships.emplid.attributes.lname %></span><br>
                                                 <%= relationships.operation.attributes.name %>
                                             </span>
@@ -167,34 +169,12 @@
                             </div>
 
                             <!--// sumar-->
-                            <div class="tab-pane fade" id="elemente">
-                                <table class="table">
-                                    <thead class="thead-light">
-                                    <tr>
-                                        <th>Denumire</th>
-                                        <th>Date</th>
-                                        <th>Cantitate</th>
-                                        <th>Pret Unitar</th>
-                                        <th>Total</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>Sudura</td>
-                                        <td>2020-02-02</td>
-                                        <td>100</td>
-                                        <td>30 EUR/ora</td>
-                                        <td>3000 EUR</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Sudura</td>
-                                        <td>2020-02-02</td>
-                                        <td>100</td>
-                                        <td>30 EUR/ora</td>
-                                        <td>3000 EUR</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                            <div class="tab-pane fade" id="repere">
+                                <div is="komponent" data-url="/views/orders/parts" id="orderParts"></div>
+                            </div>
+
+                            <div class="tab-pane fade" id="elemente">4
+<!--                                <div is="komponent" data-url="/views/orders/items" id="orderItems"></div>-->
                             </div>
                         </div>
 
@@ -209,7 +189,7 @@
 </div>
 
 <script>
-    function removeEmpl(src) {
+    function remove_employee_from_order(src) {
         let emplid = ($(src).data("instance")).relationships.emplid;
         komponentor.intent("/common/messagemodal").data({
             body: "Sigur vrei sa dealoci angajatul <br><strong>"+ emplid.attributes.fname + " " + emplid.attributes.lname + "</strong>",
@@ -240,30 +220,32 @@
         }).send();
     }
 
-    function editAssoc(src) {
+    function edit_employee_association(src) {
         console.log($(src).data("instance"));
         komponentor.intent("/views/orders/assign_empl").data({instance: $(src).data("instance")}).send();
 
     }
 
     function init_komponent(k,d) {
-        console.log(k,d);
         k.$el.appendTo("body");
 
-        el = k.$el;
         let modal = $(k.$el.filter("#order_details_modal"));
 
-        let allocatedEmployees = $("#allocatedEmployees")
-            .apiator({url:apiRoot+"/orders/"+k.data.instance.id+"/orders_2_employees?include=emplid,operation&page[orders_2_employees][limit]=100"
-            ,type:"orders_2_employees"})
-            .data("instance");
+        let url = apiRoot+"/orders/"+k.data.instance.id+"/orders_2_employees?include=emplid,operation&page[orders_2_employees][limit]=100";
+        try {
+            let allocatedEmployees = $("#allocatedEmployees")
+                .apiator({url: url, type: "orders_2_employees", resourcetype: "collection"})
+                .data("instance");
+        }
+        catch (e) {
+
+        }
 
         $("#allocateEmpl").on("click",function () {
             komponentor.intent("/views/orders/assign_empl").data({instance: allocatedEmployees}).send();
-            // modal.modal("hide");
-            // $("#allocate_empl_modal").modal("show");
-
         });
+
+        $("#orderParts").komponent({data:{orderId:k.data.instance.id}});
 
 
 

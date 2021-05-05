@@ -290,15 +290,15 @@
                 partner_id: $(form.partner_id).val(),
                 meta: meta ? JSON.stringify(meta) : null,
                 created_by: userData.sub,
-                orders_items: []
+                orders_parts: []
             };
 
 
             let total = 0;
             $(form).find("input[name=cod]").filter(":checked").each(function () {
                 let instance = $(this).data("instance");
-                order.orders_items.push({
-                    type: "orders_items",
+                order.orders_parts.push({
+                    type: "orders_parts",
                     attributes:
                         {
                             um: instance.um,
