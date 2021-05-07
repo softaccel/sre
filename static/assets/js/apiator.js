@@ -1206,11 +1206,8 @@
 			if(data.constructor===Array) {
 				_collection.loadFromData(data);
 
-				if(_collection.view && _collection.view.el)
+				if(_collection.view && _collection.view.el) {
 					_collection.view.render();
-
-				if (_collection.paging && typeof _collection.paging==="object") {
-					_collection.paging.render();
 				}
 
 				_collection.dispatch("load",{source:_collection,type:"load",data:data});
@@ -1475,6 +1472,22 @@
 				},this);
 
 			},this);
+
+
+			if (this.collection.paging && typeof this.collection.paging==="object") {
+				this.collection.paging.render();
+			}
+
+
+			// if(this.collection.items.lenght===0) {
+			// 	$(this.collection.emptyview).css("display",null);
+			// 	this.collection.paging.el.css("display",null);
+			// }
+			// else {
+			// 	$(this.collection.emptyview).css("display","none");
+			// 	this.collection.paging.el.css("display","none");
+			// }
+
 
 			return this;
 		};
@@ -1912,7 +1925,9 @@
 		let defaultPageSize = _paging.el.data("pagesize");
 		defaultPageSize = defaultPageSize ? defaultPageSize : 20;
 
-		let offsetInp = $(_paging.collection.offsetinp).off("keyup").on("keyup",function () {
+		let offsetInp = $(_paging.collection.offsetinp).off("keyup").on("keyup",function (e) {
+			if(e.originalEvent.keyCode!==13)
+				return;
 			_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = offsetInp.val();
 			_paging.collection.loadFromRemote();
 		});

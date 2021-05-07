@@ -34,15 +34,19 @@
         <div class="row mb-3">
             <div class="col">
                 <div class="card">
+
+
+
                     <div class="card-body">
-                        <form id="filterEmployees"></form>
-                        <input type="text" name="card" data-operator="=" form="filterEmployees">
-                        <input type="reset" form="filterEmployees" onclick="function f() {
-                            $(this).blur();
-                        }">
-                        <div class="row mt-4" data-resourcetype="collection" id="employees"
-                            data-filter="#filterEmployees"
-                            data-paging="#employeesPaging" data-filter="#filterEmployees">
+                        <form id="filterEmployees">
+                            <input type="text" name="fname" data-operator="~=~">
+                            <input type="text" name="card" data-operator="=">
+                            <input type="reset" onclick="$(this).blur();">
+                            <input type="submit" class="d-none">
+                        </form>
+
+                        <div class="row mt-4" id="employees">
+
                             <div class="col-3 mb-3" onclick="openEmployeeModal(this)">
                                 <div class="card" style="width: 200px; height: 150px">
                                     <div class="card-body text-center">
@@ -55,9 +59,14 @@
                                     </div>
                                 </div>
                             </div>
+
+
                         </div>
+
                         <!-- HTML TEMPLATE SECTION: STOP-->
                     </div>
+
+
                     <div class="card-footer" id="employeesPaging">
                         <div class="btn-group" id="" data-pagesize="20">
                             <button data-type="first" class="btn btn-outline-secondary">&lt;&lt;</button>
@@ -85,15 +94,11 @@
 
         $(src).data("locked",true);
 
-        komponentor
-            .intent('/views/employees/employee')
+        komponentor.intent('/views/employees/employee')
             .data({
                 instance:$(src).data('instance')
             })
             .send()
-            .then(function (kmp) {
-                // console.log("**************",kmp);
-            })
             .finally(function () {
                 $(src).removeData("locked");
             })
@@ -104,7 +109,7 @@
      */
     function addNewEmployee() {
         komponentor
-            .intent('/views/employees/employee')
+            .intent('/views/employees/newemployee')
             .data({
                 instance:$("#employees").data('instance'),
                 action:'new',
@@ -119,7 +124,16 @@
      * @param html
      */
     function init_komponent(k,html) {
-        $("#employees").apiator({url:apiRoot+"/employees?page[employees][limit]=20&include=team,jobtitle&fields[employees]=fname,lname"});
+
+        $("#employees").apiator(
+            {
+                url: apiRoot+"/employees?page[employees][limit]=5&include=team,jobtitle&fields[employees]=fname,lname",
+                resourcetype: "collection",
+                filter: "#filterEmployees",
+                paging: "#employeesPaging",
+                type: "employees"
+            }
+        );
 
         function codeRcvd(code,qty){
             let frm = $("#filterEmployees");

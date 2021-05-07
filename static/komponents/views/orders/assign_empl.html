@@ -38,12 +38,15 @@
     function init_komponent(k,d) {
         k.$el.appendTo("body");
 
-        let modal = $("#allocate_empl_modal").modal("show").on("hidden.bs.modal",function () {
-            k.$el.remove();
-        });
+        let modal = $("#allocate_empl_modal")
+            .modal("show")
+            .on("hidden.bs.modal",function () {
+                k.$el.remove();
+            });
         let $form = $("#allocEmplForm");
         let $elements = $($form[0].elements);
         let instance = k.data.instance;
+        console.log(instance);
 
         let util = instance.getUtilities();
         if(instance.attributes) {

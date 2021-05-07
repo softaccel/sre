@@ -25,7 +25,6 @@
 
 
     window.onhashchange = function (el) {
-        console.log(el,this);
         window.location.reload();
     };
 
@@ -36,39 +35,33 @@
      * @returns {Promise<unknown>}
      */
     $.fn.komponent = function (opts) {
-        // console.log("loaded 2",this);
-        let $el = $(this);
+        if(typeof opts==="undefined") {
+            opts = {};
+        }
+
         let options = this.data();
-
+        if(typeof options==="undefined") {
+            options = {};
+        }
+        console.log(this,options,opts);
         Object.assign(options,opts);
-        options.$el = $el;
-
-        options.onload = (options.onload && typeof options.onload==="function") ? options.onload : new Function ();
-        options.onfinish = (options.onfinish && typeof options.onfinish==="function") ? options.onfinish : new Function ();
-        options.onfail = (options.onfail && typeof options.onfail==="function") ? options.onfail : new Function ();
-
-        options.onload($el);
+        options.$el = this;
 
         return new Promise(function (resolve, reject) {
-            // console.log("options...................",options);
             Komponent(options)
                 .then(function (k) {
                     if(!k) {
                         return;
                     }
                     k.$el.data("komponent",k);
-                    // console.log("loaded",k,Date.now());
                     resolve(k);
                 })
                 .catch(function (msg) {
-                    options.onfail(msg);
-                    console.log("Could not create komponent",msg);
-                    $el.html("Failed to load Komponent");
+                    options.$el.html("Failed to load Komponent");
                     reject(msg);
                 })
                 .finally(function () {
                     options.$el.removeData("locked");
-                    options.onfinish($el);
                 });
         });
 
@@ -92,10 +85,10 @@
 
         return new Promise(function (resolve,reject) {
             if(kmp.$el && (kmp.$el.data("komponent") || kmp.$el.data("locked"))) {
-                console.log("existing komponent");
                 resolve(options.$el.data("komponent"));
                 return;
             }
+
             if(kmp.$el) {
                 kmp.$el.data("locked",true);
             }
@@ -137,23 +130,16 @@
         let $renderedKomponent = $(data).appendTo(dummy);
         $renderedKomponent = $renderedKomponent.remove();
         dummy.remove();
-        // console.log("/////////////////////////////////",k,$renderedKomponent);
 
         let initFunc = typeof init_komponent==="function" ? init_komponent : new Function();
         delete init_komponent;
 
         if(k.$el && $renderedKomponent.length) {
             if(k.replace) {
-                // cnt ++;
                 let id = k.$el.attr("id");
-                // $renderedKomponent.insertBefore(k.$el);
-                // k.$el.remove();
-                // k.$el = $renderedKomponent;
-                // console.log($("<div>").append($renderedKomponent).html());
                 k.$el.replaceWith($renderedKomponent);
                 k.$el = $renderedKomponent;
                 k.$el.attr("id",id);
-                console.log("repl@ce",k,$renderedKomponent.outerWidth);
             }
             else {
                 k.$el.append($renderedKomponent);
@@ -163,6 +149,7 @@
         if(!k.$el) {
             k.$el = $renderedKomponent;
         }
+
         k.$el.data("komponent",k).attr("is","komponent");
 
         return initFunc(k);
@@ -188,10 +175,10 @@
                 url += _kExt;
             }
 
-            // console.log(url);
 
-            if(options.url.indexOf("?")===-1)
+            if(options.url.indexOf("?")===-1) {
                 url += "?v=1";
+            }
 
             // load component
             $.get(url)
@@ -215,7 +202,6 @@
         $(container).find("[is=komponent]").each(function () {
             ps.push($(this).komponent());
         });
-        // console.log(ps);
 
         return Promise.all(ps);
     }
@@ -277,8 +263,6 @@
 
     komponentor.sendIntent = function(options)
     {
-        // let $overlay = $("<div class='pageOverlay'><div class='spinner'></div></div>").appendTo("body");
-
         komponentor.fetchKomponent(options)
             .then(  function (c) {
                 if(!c)
@@ -292,13 +276,11 @@
             .finally(()=>{
                 $overlay.remove();
             });
-
     };
 
     komponentor.loadKomponents = function(container)
     {
         return loadKomponents(container);
     }
-
 
 })($);

@@ -71,7 +71,8 @@
         </th>
     </tr>
     </thead>
-    <tbody id="timeTrackingEntries" data-resourcetype="collection" data-paging="#timeTrackingEntriesPaging" data-filter="#timeTrackingEntriesFiltering">
+    <tbody id="timeTrackingEntries" data-resourcetype="collection" data-paging="#timeTrackingEntriesPaging" data-filter="#timeTrackingEntriesFiltering"
+           data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset">
     <tr>
         <td class="emplCol"><%= attributes.empl_name %></td>
         <td><%= attributes.docnum %></td>
@@ -94,8 +95,8 @@
                 <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
                 <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
             </div>
-            Pagina <input type="number" name="offset" size="3" value="0" id="ordersOffsetInp">
-            <select id="ordersPageSizeInp">
+            Pagina <input type="number" name="offset" size="3" value="0" id="timeTrackingEntriesOffset">
+            <select id="timeTrackingEntriesLimit">
                 <option></option>
                 <option>5</option>
                 <option>10</option>
@@ -113,10 +114,21 @@
 
     function init_komponent(k) {
         let url = apiRoot + "/tt_expanded?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10";
-        if (k.data && k.data.instance && k.data.instance.type==="employees") {
-            $("#timeTrackingEntries").parent().find(".emplCol").remove();
-            url = apiRoot + "/tt_expanded?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=5&filter=employee="+k.data.instance.id;
+
+        if (!k.data) {
+            let emplid;
+            if(k.data.instance && k.data.instance.type==="employees") {
+                emplid = k.data.instance.id;
+            }
+            if(k.data.emplid) {
+                emplid = k.data.emplid;
+            }
+            if(!emplid) {
+                return;
+            }
+            url = apiRoot + "/tt_expanded?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=5&filter=employee="+emplid;
         }
+
 
         $("#timeTrackingEntries").apiator({
             type: "tt_expanded",

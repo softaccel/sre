@@ -3,7 +3,6 @@
     <div class="app-header header-shadow" is='komponent' data-url="/common/header"></div>
     <div class="app-main">
         <div class="app-sidebar sidebar-shadow" is='komponent' data-url="/common/sidebar" id="sidebar"></div>
-
         <div class="app-main__outer" id="pageContent"></div>
     </div>
 </div>
@@ -15,25 +14,23 @@
         komponentor.loadKomponents(k.$el);
 
         // load main app according to routing path
+        let url = typeof defaultKomponent!=="undefined" ? defaultKomponent : null;
+        let paras;
+
         if(komponentor.routing.path) {
-            $(pageContentContainer).komponent({
-                url: komponentor.routing.path,
-                paras: komponentor.routing.paras
-            });
+            url = komponentor.routing.path;
+            paras = komponentor.routing.paras;
+        }
+
+        if(!url) {
             return;
         }
 
-        //
-        if(typeof defaultKomponent!=="undefined") {
-            komponentor.fetchKomponent({
-                $el: $(pageContentContainer),
-                url: defaultKomponent
-            }).catch(function (a) {
-                $('#pageContent').html("<h3>Page not found</h3>");
-            });
-            return;
-        }
-
-
+        $(pageContentContainer).komponent({
+            url: url,
+            paras: paras
+        }).catch(function () {
+            $('#pageContent').html("<h3>Page not found</h3>");
+        });
     }
 </script>

@@ -236,14 +236,16 @@
             let allocatedEmployees = $("#allocatedEmployees")
                 .apiator({url: url, type: "orders_2_employees", resourcetype: "collection"})
                 .data("instance");
+
+            $("#allocateEmpl").on("click",function () {
+                komponentor.intent("/views/orders/assign_empl").data({instance: allocatedEmployees}).send();
+            });
         }
         catch (e) {
-
+            console.log("//////////",e);
         }
 
-        $("#allocateEmpl").on("click",function () {
-            komponentor.intent("/views/orders/assign_empl").data({instance: allocatedEmployees}).send();
-        });
+
 
         $("#orderParts").komponent({data:{orderId:k.data.instance.id}});
 

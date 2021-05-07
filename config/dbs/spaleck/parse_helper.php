@@ -122,5 +122,13 @@ return [
         "comment"=> "",
         "type"=> "view",
         "keyFld"=> "state"
+    ],
+    "emplToOrdAssoc"=> [
+        "fields"=> [
+            "id"=> [
+                "iskey"=> true
+            ]
+        ],
+        "keyFld"=> "id"
     ]
 ];
