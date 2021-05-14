@@ -111,9 +111,7 @@
         komponentor
             .intent('/views/employees/newemployee')
             .data({
-                instance:$("#employees").data('instance'),
-                action:'new',
-                loadrecursive:'inhibit'
+                instance:$("#employees").data('instance')
             })
             .send();
     }
@@ -124,7 +122,6 @@
      * @param html
      */
     function init_komponent(k,html) {
-
         $("#employees").apiator(
             {
                 url: apiRoot+"/employees?page[employees][limit]=5&include=team,jobtitle&fields[employees]=fname,lname",

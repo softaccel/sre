@@ -1,0 +1,48 @@
+<div class="modal" id="employeeModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body bg-light">
+        <div class="card">
+          <div class="card-header-tab card-header-tab-animation card-header">
+            <div class="card-header-title">
+              <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
+              Introducere partener nou <span id="comandaid"></span>
+            </div>
+          </div>
+          <div class="card-body" style="">
+            <div id="newPartnerModal" is="komponent" data-url="/views/partners/details"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function init_komponent(k) {
+
+    k.hideModal = function() {
+      $modal.modal("hide");
+    };
+
+    let $modal = k.$el.appendTo("body")
+        .filter(".modal")
+        .on("hidden.bs.modal",function (event) {
+          k.$el.remove();
+        });
+
+    k.$el.find("#newPartnerModal")
+        .komponent({
+          data: {
+            instance: k.data.instance,
+          },
+          parent: k
+        })
+        .then(function (d) {
+          $modal.modal();
+          // console.log("*///////////////",d);
+          // editMode(d.data.instance);
+        });
+
+
+  }
+</script>

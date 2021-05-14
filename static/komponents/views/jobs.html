@@ -1,0 +1,93 @@
+<div class="app-main__inner">
+    <div class="app-page-title">
+        <div class="page-title-wrapper">
+            <div class="page-title-heading">
+                <div class="page-title-icon"><i class="fa fa-address-card icon-gradient bg-mean-fruit"></i>
+                </div>
+                <div>Posturi
+                    <div class="page-title-subheading"></div>
+                </div>
+            </div>
+            <div class="page-title-actions">
+                <div class="d-inline-block dropdown">
+                    <button class="btn btn-primary" id="newJobModalButton"><i class="fa fa-plus"></i> Post nou</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Nume</th>
+                                <th>Actiuni</th>
+                            </tr>
+                            </thead>
+                            <tbody id="jobsList" data-resourcetype="collection" data-type="jobs">
+                            <tr class="tr-job" onclick="openJobModal(this)" style="cursor:pointer;">
+                                <td><%= id %></td>
+                                <td><%= attributes.name %></td>
+                                <td><button class="btn-primary btn btn-sm" onclick="openDeleteModal(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function openJobModal(src){
+        $(src).data("locked", true);
+        // console.log(src);
+        komponentor
+            .intent('/views/jobs/job')
+            .data({instance:$(src).data('instance')})
+            .send()
+            .then(function (k) {
+                // console.log("**************",k);
+            })
+            .finally(function () {
+                $(src).removeData("locked");
+            })
+    }
+
+    function openDeleteModal(src, e){
+        $(src).data("locked", true);
+        // $(src).data('instance') =
+        komponentor
+            .intent('/views/jobs/deleteJobModal')
+            .data({instance:$(src).data('instance')})
+            .send()
+            .then(function (k) {
+                // console.log("**************",k);
+            })
+            .finally(function () {
+                $(src).removeData("locked");
+            })
+        e.stopPropagation();
+
+    }
+
+
+    function init_komponent(k,c) {
+        let instance = $("#jobsList").apiator(apiRoot+"/jobs").data("instance");
+
+        $("#newJobModalButton").on("click", function () {
+            komponentor.intent("/views/jobs/addJob")
+                .data({instance: instance})
+                .send();
+        })
+    }
+
+    // function del_job(src, e){
+    //     console.log($(src).parent().parent())
+    //     console.log(src, "yooooooooooooooooooooooooooooooooooooohohoho");
+    // }
+</script>

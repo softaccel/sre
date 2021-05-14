@@ -142,26 +142,11 @@
 <script>
 
     function update(data,instance) {
-        instance.update(data)
-            .then(function () {
-                $('#employeeSummary').removeClass('editMode');
-            })
-            .catch(function (jqxhr) {
-                if(jqxhr.errorThrown==="Conflict") {
-                    komponentor.intent("/common/errormodal").data({
-                        body: "Card-ul este asociat cu alt angajat.<br> Pentru a il asociat cu acest angajat, mai intai trebuie sa il dezasociati."
-                    }).send();
-                }
-                console.log(jqxhr);
-            })
+
     }
     
     function create(data,instance) {
-        delete data.id;
-        console.log(instance);
-        instance.createItem(data).then(function () {
-            $("#cancelButton").click();
-        });
+
     }
 
     function editMode(instance) {
@@ -176,11 +161,28 @@
         form.reset();
 
         util.captureFormSubmit(form,function (data) {
-            if(data.id!=="") {
-                update(data,instance);
+            // instance is collection
+            if(instance.hasOwnProperty("items")) {
+                delete data.id;
+                instance.createItem(data).then(function () {
+                    $("#cancelButton").click();
+                });
             }
+            // instance is item
             else {
-                create(data,instance);
+                instance.update(data)
+                    .then(function () {
+                        $('#employeeSummary').removeClass('editMode');
+                    })
+                    .catch(function (jqxhr) {
+                        if(jqxhr.errorThrown==="Conflict") {
+                            komponentor.intent("/common/errormodal").data({
+                                body: "Card-ul este asociat cu alt angajat.<br> Pentru a il asociat cu acest angajat, mai intai trebuie sa il dezasociati."
+                            }).send();
+                        }
+                        console.log(jqxhr);
+                    })
+
             }
         });
 
@@ -276,11 +278,9 @@
     }
 
     function init_komponent(k) {
-        console.log("-------------",k);
         let instance = k.data.instance;
         let parent = k.parent;
 
-        console.log("////cancelButton////",k.$el.find("#cancelButton"));
         k.$el.find("#cancelButton").on("click",function (e) {
             console.log(e,parent);
             if(e.target.form.id.value!=="") {
@@ -292,7 +292,7 @@
         });
 
         if(instance.hasOwnProperty("items")) {
-            return
+            return;
         }
 
         let modUrl = {};

@@ -1,0 +1,105 @@
+<div class="modal" id="jobModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body bg-light">
+                <div class="card">
+                    <div class="card-header-tab card-header-tab-animation card-header">
+                        <div class="card-header-title">
+                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
+                            Confirmare
+                            <span style="position: absolute; right: 50px; cursor: pointer" id="closeModal">X</span>
+
+                        </div>
+                    </div>
+                    <div class="card-body" style="min-height: 200px">
+                        <div class="alert alert-success d-none" role="alert" id="deleteJobSuccessAlert">
+                            Datele au fost sterse cu succes!
+                        </div>
+
+                        <div class="alert alert-danger d-none" role="alert" id="deleteJobServerErrorAlert">
+                            A aparut o eroare la stergere
+                            <button type="button" class="close" aria-label="Close" onclick="$(this).parent().addClass('d-none')">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <pre class="errorMsg bg-light border border-focus mt-2 p-3 rounded"></pre>
+                            <button class="btn btn-primary" onclick="komponentor.intent('/common/report').send({data:$(this).prev().data('error')})">Raporteaza eroare</button>
+                        </div>
+                        <div data-resourcetype="item" data-type="item">
+                            <span>Stergeti Postul cu datele: </span>
+                            <form id="customerDataForm"></form>
+                            <div class="form-row">
+                                <div class="form-group col-3">
+                                    <label for="codcorInput">Cod Cor</label>
+                                    <input form="customerDataForm" disabled type="text" maxlength="7" id="codcorInput" name="codcor" class="form-control form-control-sm" required="" value="123456">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-12">
+                                    <label for="nameInput">Denumire</label>
+                                    <input form="customerDataForm" disabled type="text" maxlength="155" id="nameInput" name="name" class="form-control form-control-sm" required="" value="Tehnician">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <span>Confirmati?</span>
+                            <br>
+                            <button type="submit" form="customerDataForm">Da</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function init_komponent(k){
+        k.hideModal = function() {
+            $modal.modal("hide");
+        };
+
+        let $modal = k.$el.appendTo("body").filter(".modal");
+        $modal.modal().on("hidden.bs.modal",()=>k.$el.remove());
+
+        let util = k.data.instance.getUtilities();
+        let form = $("#customerDataForm")[0];
+        form.reset();
+
+        util.fillForm(form, k.data.instance);
+        util.captureFormSubmit(form, deleteJob);
+
+        $("#closeModal").on("click", function () {
+            k.hideModal();
+        });
+
+        function displayServerError(errorData, errorText) {
+            $("#deleteJobServerErrorAlert").removeClass("d-none").find("pre")
+                .text(errorText)
+                .data("error", errorData);
+        }
+
+        function deleteJob(attrs){
+            $(form.elements).removeClass("is-invalid");
+            k.data.instance.delete(attrs)
+                .then(function (d) {
+                    // console.log("--------------",d);
+                    $("#deleteJobSuccessAlert").removeClass("d-none");
+                    setTimeout(function () {
+                        $("#deleteJobSuccessAlert").addClass("d-none");
+                    },1000);
+                })
+                .catch(function (errorData) {
+                    // no valid JSONAPI error is provided
+                    // => this is some server side error
+                    // => display it and prepare it for reporting
+                    if (errorData.jqXHR.status == 500){
+                        displayServerError(errorData, "Verificati sa nu fie vreun angajat pe acest post inainte de a-l sterge.");
+                        return;
+                    } else {
+                        displayServerError(errorData, errorData.errorThrown);
+                        return;
+                    }
+                    })
+        }
+
+    }
+</script>

@@ -10,7 +10,7 @@
             </div>
             <div class="page-title-actions">
                 <div class="d-inline-block dropdown">
-                    <button class="btn btn-primary"><i class="fa fa-plus"></i> Partener nou</button>
+                    <button class="btn btn-primary" id="newPartnerModalButton"><i class="fa fa-plus"></i> Partener nou</button>
                 </div>
             </div>
         </div>
@@ -29,7 +29,7 @@
                                 <th>Actiuni</th>
                             </tr>
                             </thead>
-                            <tbody id="partnertsList" data-resourcetype="collection">
+                            <tbody id="partnertsList" data-resourcetype="collection" data-type="partners">
                             <tr onclick="openPartnerModal(this)" style="cursor:pointer;">
                                 <td><%= id %></td>
                                 <td><%= attributes.name %></td>
@@ -45,6 +45,7 @@
     </div>
 </div>
 <script>
+
     function openPartnerModal(src) {
         $(src).data("locked",true);
         komponentor
@@ -58,7 +59,15 @@
                 $(src).removeData("locked");
             })
     }
+
+
     function init_komponent(k,c) {
-        $("#partnertsList").apiator(apiRoot+"/partners");
+        let instance = $("#partnertsList").apiator(apiRoot+"/partners").data("instance");
+
+        $("#newPartnerModalButton").on("click",function (){
+            komponentor.intent("/views/partners/newpartnermodal")
+                .data({instance: instance})
+                .send();
+        })
     }
 </script>
