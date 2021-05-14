@@ -39,7 +39,7 @@
 
                     <div class="card-body">
                         <form id="filterEmployees">
-                            <input type="text" name="fname" data-operator="~=~">
+                            <input type="text" name="lname" data-operator="~=~">
                             <input type="text" name="card" data-operator="=">
                             <input type="reset" onclick="$(this).blur();">
                             <input type="submit" class="d-none">
@@ -121,10 +121,9 @@
     /**
      *
      * @param k
-     * @param html
      */
-    function init_komponent(k,html) {
-
+    function init_komponent(k) {
+        console.log("--------------",k);
         $("#employees").apiator(
             {
                 url: apiRoot+"/employees?page[employees][limit]=5&include=team,jobtitle&fields[employees]=fname,lname",
@@ -134,6 +133,8 @@
                 type: "employees"
             }
         );
+
+
 
         function codeRcvd(code,qty){
             let frm = $("#filterEmployees");

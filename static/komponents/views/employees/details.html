@@ -149,7 +149,7 @@
             .catch(function (jqxhr) {
                 if(jqxhr.errorThrown==="Conflict") {
                     komponentor.intent("/common/errormodal").data({
-                        body: "Card-ul este asociat cu alt angajat.<br> Pentru a il asociat cu acest angajat, mai intai trebuie sa il dezasociati."
+                        body: "Card-ul este asociat cu alt angajat.<br> Pentru a-l asocia acestui angajat, intai trebuie sa il dezasociati."
                     }).send();
                 }
                 console.log(jqxhr);

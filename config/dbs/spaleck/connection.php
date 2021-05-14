@@ -2,8 +2,8 @@
 return [
     "dsn"=> "",
     "hostname"=> "localhost",
-    "username"=> "vsergiu",
-    "password"=> "parola123",
+    "username"=> "bogdan",
+    "password"=> "Parola123!",
     "database"=> "spaleck",
     "dbdriver"=> "mysqli",
     "dbprefix"=> "",

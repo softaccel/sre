@@ -1,0 +1,121 @@
+<div class="modal" id="partnerModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body bg-light">
+                <div class="card">
+                    <div class="card-header-tab card-header-tab-animation card-header">
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#partnerModalPanelDetails" class="nav-link active">Date client</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body" style="min-height:  170px">
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade active show" id="partnerModalPanelDetails" role="tabpanel" aria-labelledby="detaliiPartener-tab">
+                                <div data-resourcetype="item" data-type="item">
+                                    <form id="customerDataForm"></form>
+
+                                    <div class="alert alert-success d-none" role="alert" id="savePartnerSuccessAlert">
+                                        Datele au fost salvate cu succes!
+                                    </div>
+
+                                    <div class="alert alert-danger d-none" role="alert" id="savePartnerServerErrorAlert">
+                                        A aparut o eroare la salvare
+                                        <button type="button" class="close" aria-label="Close" onclick="$(this).parent().addClass('d-none')">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <pre class="errorMsg bg-light border border-focus mt-2 p-3 rounded"></pre>
+                                        <button class="btn btn-primary" onclick="komponentor.intent('/common/report').send({data:$(this).prev().data('error')})">Raporteaza eroare</button>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group col-6">
+                                            <label for="unitInput">Unitate de masura</label>
+                                            <input form="customerDataForm" type="text" maxlength="155" id="unitInput" data-sync="unit"  name="unit" class="form-control form-control-sm" required="">
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                        <div class="form-group col-3">
+                                            <label for="typeInput">Tip</label>
+                                            <input form="customerDataForm" type="text" maxlength="20" id="typeInput" name="type" class="form-control form-control-sm">
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" form="customerDataForm">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function init_komponent(k) {
+        console.log("---------",k);
+        let $modal = k.$el.appendTo("body").filter(".modal");
+        $modal.modal().on("hidden.bs.modal",()=>k.$el.remove());
+
+       // $("#ordersTableKomponent").komponent({data:{instance: k.data.instance}});
+
+
+        let util = k.data.instance.getUtilities();
+        let form = $("#customerDataForm")[0];
+        form.reset();
+
+        util.fillForm(form,k.data.instance);
+        util.captureFormSubmit(form,updatePartner);
+
+        let $formElements = $(form.elements);
+        // $formElements.on("change",function (e) {
+        //     $formElements.filter("button[type=submit]").click();
+        // });
+
+        function displayServerError(errorData) {
+            $("#savePartnerServerErrorAlert").removeClass("d-none").find("pre")
+                .text(errorData.jqXHR.responseText)
+                .data("error", errorData);
+        }
+
+        function updatePartner(attrs){
+            $(form.elements).removeClass("is-invalid");
+            // console.log(arguments);
+            k.data.instance.update(attrs)
+                .then(function (d) {
+                    console.log("--------------",d);
+                    $("#savePartnerSuccessAlert").removeClass("d-none");
+                    setTimeout(function () {
+                        $("#savePartnerSuccessAlert").addClass("d-none");
+                    },1000);
+                })
+                .catch(function (errorData) {
+                    // no valid JSONAPI error is provided
+                    // => this is some server side error
+                    // => display it and prepare it for reporting
+                    if(!errorData.jqXHR.responseJSON || !errorData.jqXHR.responseJSON.errors
+                        || !errorData.jqXHR.responseJSON.errors.length || !errorData.jqXHR.responseJSON.errors[0]
+                        || !errorData.jqXHR.responseJSON.errors[0].code) {
+                        displayServerError(errorData);
+                        return;
+                    }
+
+                    switch (errorData.jqXHR.responseJSON.errors[0].code*1) {
+                        // highlight faulty field
+                        case 1062:
+                            let res = /Duplicate entry \'(.+)\' for key \'(.+)\.(.+)\'/.exec(errorData.jqXHR.responseJSON.errors[0].title);
+                            if(res) {
+                                $(form[res[3]]).addClass("is-invalid").next().text("Date duplicate");
+                            }
+                            break;
+                    }
+                })
+        }
+
+
+    }
+</script>
+

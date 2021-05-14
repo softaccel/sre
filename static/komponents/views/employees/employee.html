@@ -80,6 +80,7 @@
 
 <script>
     function init_komponent(k) {
+        console.log("---------",k);
         let $modal = k.$el.appendTo("body")
             .filter(".modal")
             .on("hidden.bs.modal",function () {

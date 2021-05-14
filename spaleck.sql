@@ -1064,7 +1064,7 @@ CREATE TABLE `users_rights` (
 --
 DROP TABLE IF EXISTS `alloc_orders`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VIEW `alloc_orders`  AS  select `e`.`id` AS `emplid`,`e`.`fname` AS `fname`,`e`.`lname` AS `lname`,`e`.`card` AS `card`,`op`.`name` AS `op_name`,`op`.`id` AS `op_id`,`d`.`docnum` AS `order_name`,`o`.`oid` AS `order_id`,`o2e`.`hourlyrate` AS `hourlyrate`,`o2e`.`currency` AS `currency`,concat(`e`.`id`,`d`.`docnum`,`op`.`name`) AS `unq` from ((((`employees` `e` left join `orders_2_employees` `o2e` on((`o2e`.`emplid` = `e`.`id`))) left join `orders` `o` on((`o`.`oid` = `o2e`.`orderid`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) left join `operations` `op` on((`op`.`id` = `o2e`.`operation`))) where (`d`.`docnum` is not null) ;
+CREATE ALGORITHM=UNDEFINED   VIEW `alloc_orders`  AS  select `e`.`id` AS `emplid`,`e`.`fname` AS `fname`,`e`.`lname` AS `lname`,`e`.`card` AS `card`,`op`.`name` AS `op_name`,`op`.`id` AS `op_id`,`d`.`docnum` AS `order_name`,`o`.`oid` AS `order_id`,`o2e`.`hourlyrate` AS `hourlyrate`,`o2e`.`currency` AS `currency`,concat(`e`.`id`,`d`.`docnum`,`op`.`name`) AS `unq` from ((((`employees` `e` left join `orders_2_employees` `o2e` on((`o2e`.`emplid` = `e`.`id`))) left join `orders` `o` on((`o`.`oid` = `o2e`.`orderid`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) left join `operations` `op` on((`op`.`id` = `o2e`.`operation`))) where (`d`.`docnum` is not null) ;
 
 -- --------------------------------------------------------
 
@@ -1073,7 +1073,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `employees_names`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VIEW `employees_names`  AS  select `employees`.`id` AS `id`,concat(`employees`.`fname`,' ',`employees`.`lname`) AS `fullname` from `employees` ;
+CREATE ALGORITHM=UNDEFINED   VIEW `employees_names`  AS  select `employees`.`id` AS `id`,concat(`employees`.`fname`,' ',`employees`.`lname`) AS `fullname` from `employees` ;
 
 -- --------------------------------------------------------
 
@@ -1082,7 +1082,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `orders_count_bystate`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VIEW `orders_count_bystate`  AS  select `orders`.`state` AS `state`,count(0) AS `cnt` from `orders` group by `orders`.`state` ;
+CREATE ALGORITHM=UNDEFINED   VIEW `orders_count_bystate`  AS  select `orders`.`state` AS `state`,count(0) AS `cnt` from `orders` group by `orders`.`state` ;
 
 -- --------------------------------------------------------
 
@@ -1091,7 +1091,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `orders_extended`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VIEW `orders_extended`  AS  select `o`.`oid` AS `oid`,`o`.`label` AS `label`,`o`.`state` AS `state`,`o`.`doc_id` AS `doc_id`,`o`.`partner_id` AS `partner_id`,`o`.`created_on` AS `created_on`,`o`.`closed_on` AS `closed_on`,`o`.`estimated_value` AS `estimated_value`,`o`.`final_value` AS `final_value`,`o`.`meta` AS `meta`,`o`.`created_by` AS `created_by`,`p`.`name` AS `pname`,`d`.`docnum` AS `docnum` from ((`orders` `o` left join `partners` `p` on((`p`.`id` = `o`.`partner_id`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) ;
+CREATE ALGORITHM=UNDEFINED   VIEW `orders_extended`  AS  select `o`.`oid` AS `oid`,`o`.`label` AS `label`,`o`.`state` AS `state`,`o`.`doc_id` AS `doc_id`,`o`.`partner_id` AS `partner_id`,`o`.`created_on` AS `created_on`,`o`.`closed_on` AS `closed_on`,`o`.`estimated_value` AS `estimated_value`,`o`.`final_value` AS `final_value`,`o`.`meta` AS `meta`,`o`.`created_by` AS `created_by`,`p`.`name` AS `pname`,`d`.`docnum` AS `docnum` from ((`orders` `o` left join `partners` `p` on((`p`.`id` = `o`.`partner_id`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) ;
 
 -- --------------------------------------------------------
 
@@ -1100,7 +1100,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `started_work`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VIEW `started_work`  AS  select `tt`.`id` AS `id`,`tt`.`employee` AS `employee`,`tt`.`start` AS `start`,`tt`.`stop` AS `stop`,timediff(now(),`tt`.`start`) AS `worktime`,`tt`.`operation` AS `operation`,`op`.`name` AS `operation_name`,`tt`.`order` AS `order`,`doc`.`docnum` AS `order_label`,`tt`.`hourly_rate` AS `hourly_rate`,`tt`.`currency` AS `currency`,`e`.`card` AS `card` from ((((`timetracking` `tt` left join `employees` `e` on((`e`.`id` = `tt`.`employee`))) left join `operations` `op` on((`op`.`id` = `tt`.`operation`))) left join `orders` `o` on((`o`.`oid` = `tt`.`order`))) left join `documents` `doc` on((`doc`.`id` = `o`.`doc_id`))) where (`tt`.`stop` is null) ;
+CREATE ALGORITHM=UNDEFINED   VIEW `started_work`  AS  select `tt`.`id` AS `id`,`tt`.`employee` AS `employee`,`tt`.`start` AS `start`,`tt`.`stop` AS `stop`,timediff(now(),`tt`.`start`) AS `worktime`,`tt`.`operation` AS `operation`,`op`.`name` AS `operation_name`,`tt`.`order` AS `order`,`doc`.`docnum` AS `order_label`,`tt`.`hourly_rate` AS `hourly_rate`,`tt`.`currency` AS `currency`,`e`.`card` AS `card` from ((((`timetracking` `tt` left join `employees` `e` on((`e`.`id` = `tt`.`employee`))) left join `operations` `op` on((`op`.`id` = `tt`.`operation`))) left join `orders` `o` on((`o`.`oid` = `tt`.`order`))) left join `documents` `doc` on((`doc`.`id` = `o`.`doc_id`))) where (`tt`.`stop` is null) ;
 
 -- --------------------------------------------------------
 
@@ -1109,7 +1109,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `tags`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VIEW `tags`  AS  select `employees`.`id` AS `emplid`,`employees`.`fname` AS `fname`,`employees`.`lname` AS `lname`,`employees`.`card` AS `card` from `employees` where (`employees`.`card` is not null) ;
+CREATE ALGORITHM=UNDEFINED   VIEW `tags`  AS  select `employees`.`id` AS `emplid`,`employees`.`fname` AS `fname`,`employees`.`lname` AS `lname`,`employees`.`card` AS `card` from `employees` where (`employees`.`card` is not null) ;
 
 -- --------------------------------------------------------
 
@@ -1118,7 +1118,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `tt_expanded`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VIEW `tt_expanded`  AS  select `tt`.`id` AS `id`,`tt`.`employee` AS `employee`,`tt`.`start` AS `start`,`tt`.`stop` AS `stop`,`tt`.`operation` AS `operation`,timediff(`tt`.`stop`,`tt`.`start`) AS `duration`,`tt`.`order` AS `order`,`tt`.`hourly_rate` AS `hourly_rate`,`tt`.`currency` AS `currency`,`tt`.`status` AS `status`,concat(`e`.`fname`,' ',`e`.`lname`) AS `empl_name`,`ops`.`name` AS `op_name`,`doc`.`docnum` AS `docnum` from ((((`timetracking` `tt` left join `employees` `e` on((`e`.`id` = `tt`.`employee`))) left join `operations` `ops` on((`ops`.`id` = `tt`.`operation`))) left join `orders` `o` on((`o`.`oid` = `tt`.`order`))) left join `documents` `doc` on((`doc`.`id` = `o`.`doc_id`))) ;
+CREATE ALGORITHM=UNDEFINED   VIEW `tt_expanded`  AS  select `tt`.`id` AS `id`,`tt`.`employee` AS `employee`,`tt`.`start` AS `start`,`tt`.`stop` AS `stop`,`tt`.`operation` AS `operation`,timediff(`tt`.`stop`,`tt`.`start`) AS `duration`,`tt`.`order` AS `order`,`tt`.`hourly_rate` AS `hourly_rate`,`tt`.`currency` AS `currency`,`tt`.`status` AS `status`,concat(`e`.`fname`,' ',`e`.`lname`) AS `empl_name`,`ops`.`name` AS `op_name`,`doc`.`docnum` AS `docnum` from ((((`timetracking` `tt` left join `employees` `e` on((`e`.`id` = `tt`.`employee`))) left join `operations` `ops` on((`ops`.`id` = `tt`.`operation`))) left join `orders` `o` on((`o`.`oid` = `tt`.`order`))) left join `documents` `doc` on((`doc`.`id` = `o`.`doc_id`))) ;
 
 -- --------------------------------------------------------
 
@@ -1127,7 +1127,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `usergroups`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`vsergiu`@`localhost` SQL SECURITY DEFINER VIEW `usergroups`  AS  select `g`.`groupid` AS `groupid`,`g`.`description` AS `description`,`u2g`.`userid` AS `userid` from (`users_2_groups` `u2g` left join `groups` `g` on((`u2g`.`groupid` = `g`.`groupid`))) ;
+CREATE ALGORITHM=UNDEFINED   VIEW `usergroups`  AS  select `g`.`groupid` AS `groupid`,`g`.`description` AS `description`,`u2g`.`userid` AS `userid` from (`users_2_groups` `u2g` left join `groups` `g` on((`u2g`.`groupid` = `g`.`groupid`))) ;
 
 --
 -- Indexes for dumped tables
