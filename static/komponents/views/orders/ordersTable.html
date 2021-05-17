@@ -143,7 +143,7 @@
                         "data-dismiss":"modal"
                     },
                     callback: function () {
-                        $(src).data('instance').delete().then(()=>{console.log("ok",arguments)}).catch(function(data){
+                        $(src).data('instance').delete().catch(function(data){
                             console.log(data);
                             komponentor.intent("/common/errormodal").data({
                                 body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
