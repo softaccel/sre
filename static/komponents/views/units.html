@@ -2,15 +2,15 @@
     <div class="app-page-title">
         <div class="page-title-wrapper">
             <div class="page-title-heading">
-                <div class="page-title-icon"><i class="fa fa-users icon-gradient bg-mean-fruit"></i>
+                <div class="page-title-icon"><i class="fa fa-address-card icon-gradient bg-mean-fruit"></i>
                 </div>
-                <div>Parteneri
+                <div>Unitati de masura
                     <div class="page-title-subheading"></div>
                 </div>
             </div>
             <div class="page-title-actions">
                 <div class="d-inline-block dropdown">
-                    <button class="btn btn-primary"><i class="fa fa-plus"></i> Partener nou</button>
+                    <button class="btn btn-primary" id="newUnitModalButton"><i class="fa fa-plus"></i> Unitate noua</button>
                 </div>
             </div>
         </div>
@@ -20,25 +20,22 @@
             <div class="col">
                 <div class="card">
                     <div class="card-body">
-                        <table class="table table-hover" is="komponent">
+                        <table class="table table-hover">
                             <thead class="thead-light">
                             <tr>
-                                <th>Unitate de masura</th>
+                                <th>Unitate</th>
                                 <th>Tip</th>
                                 <th style="text-align:center">Actiune</th>
                             </tr>
                             </thead>
-                            <tbody id="unitsList" data-resourcetype="collection">
-                            <tr onclick="openUnitModal(this)">
+                            <tbody id="unitsList" data-resourcetype="collection" data-type="units">
+                            <tr class="tr-job" onclick="openJobModal(this)" style="cursor:pointer;">
                                 <td><%= attributes.unit %></td>
                                 <td><%= attributes.type %></td>
-                                <td align="center">
-                                    <button class="btn-primary btn btn-sm" onclick="return false;"><i class="fa fa-trash-alt"></i> Sterge</button>
-                                </td>
+                                <td align="center"><button class="btn-primary btn btn-sm" onclick="openDeleteModal(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
                             </tr>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
@@ -46,21 +43,51 @@
     </div>
 </div>
 <script>
-    function init_komponent(k) {
-        $("#unitsList").apiator(apiRoot+"/units");
-    }
-
-    function openUnitModal(src) {
-        $(src).data("locked",true);
+    function openJobModal(src){
+        $(src).data("locked", true);
+        // console.log(src);
         komponentor
             .intent('/views/units/unit')
             .data({instance:$(src).data('instance')})
             .send()
             .then(function (k) {
-                console.log("**************",k);
+                // console.log("**************",k);
             })
             .finally(function () {
                 $(src).removeData("locked");
             })
     }
+
+    function openDeleteModal(src, e){
+        $(src).data("locked", true);
+        // $(src).data('instance') =
+        komponentor
+            .intent('/views/units/deleteUnit')
+            .data({instance:$(src).data('instance')})
+            .send()
+            .then(function (k) {
+                // console.log("**************",k);
+            })
+            .finally(function () {
+                $(src).removeData("locked");
+            })
+        e.stopPropagation();
+
+    }
+
+
+    function init_komponent(k,c) {
+        let instance = $("#unitsList").apiator(apiRoot+"/units").data("instance");
+
+        $("#newUnitModalButton").on("click", function () {
+            komponentor.intent("/views/units/addUnit")
+                .data({instance: instance})
+                .send();
+        })
+    }
+
+    // function del_job(src, e){
+    //     console.log($(src).parent().parent())
+    //     console.log(src, "yooooooooooooooooooooooooooooooooooooohohoho");
+    // }
 </script>
