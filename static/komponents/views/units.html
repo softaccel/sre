@@ -29,7 +29,7 @@
                             </tr>
                             </thead>
                             <tbody id="unitsList" data-resourcetype="collection" data-type="units">
-                            <tr class="tr-job" onclick="openJobModal(this)" style="cursor:pointer;">
+                            <tr class="tr-unit" onclick="openUnitModal(this)" style="cursor:pointer;">
                                 <td><%= attributes.unit %></td>
                                 <td><%= attributes.type %></td>
                                 <td align="center"><button class="btn-warning btn btn-sm" onclick="deleteUnit(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
@@ -43,15 +43,15 @@
     </div>
 </div>
 <script>
-    function openJobModal(src){
+    function openUnitModal(src){
         $(src).data("locked", true);
-        // console.log(src);
+        console.log(src);
         komponentor
-            .intent('/views/units/unit')
+            .intent('/views/units/addUnit')
             .data({instance:$(src).data('instance')})
             .send()
             .then(function (k) {
-                // console.log("**************",k);
+                console.log("**************",k);
             })
             .finally(function () {
                 $(src).removeData("locked");
@@ -59,10 +59,10 @@
     }
 
     function deleteUnit(src, e){
-        console.log("////",$(src).data("instance"))
+        console.log("////",$(src).data("instance").attributes.unit)
 
         komponentor.intent("/common/messagemodal").data({
-            body: "Esti sigur ca vrei sa stergi comanda<br><strong>"+$(src).data("instance").attributes.label + "</strong>",
+            body: "Esti sigur ca vrei sa stergi unitatea <br><strong>"+$(src).data("instance").attributes.unit   + "</strong>",
             buttons: [
                 {
                     label: "Da",
@@ -94,16 +94,16 @@
 
     function init_komponent(k,c) {
         let instance = $("#unitsList").apiator(apiRoot+"/units").data("instance");
-
+        console.log("---------**",k);
         $("#newUnitModalButton").on("click", function () {
+            //prepare the modal behindthe curtain
             komponentor.intent("/views/units/addUnit")
+                //Take the data from the form and send them to beckend
                 .data({instance: instance})
                 .send();
         })
-    }
 
-    // function del_job(src, e){
-    //     console.log($(src).parent().parent())
-    //     console.log(src, "yooooooooooooooooooooooooooooooooooooohohoho");
-    // }
+
+
+    }
 </script>
