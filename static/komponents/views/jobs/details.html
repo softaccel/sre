@@ -16,18 +16,18 @@
   <div class="form-row">
     <div class="form-group col-3">
       <label for="codcorInput">Cod Cor</label>
-      <input form="customerDataForm" id="codcorInput" name="codcor" class="form-control form-control-sm" required="" pattern="[0-9]{6}">
+      <input form="customerDataForm" id="codcorInput" name="codcor" class="form-control form-control-sm" required="" pattern="[0-9]{6}" autocomplete="off">
       <div class="invalid-feedback"></div>
     </div>
   </div>
   <div class="form-row">
     <div class="form-group col-12">
       <label for="nameInput">Denumire</label>
-      <input form="customerDataForm" type="text" maxlength="155" id="nameInput" name="name" class="form-control form-control-sm" required="">
+      <input form="customerDataForm" type="text" maxlength="155" id="nameInput" name="name" class="form-control form-control-sm" required="" autocomplete="off">
       <div class="invalid-feedback"></div>
     </div>
   </div>
-  <button type="submit" form="customerDataForm">Save</button>
+  <button class="btn btn-success" type="submit" form="customerDataForm">Save</button>
 </div>
 
 <script>
@@ -39,7 +39,6 @@ function init_komponent(k){
   util.captureFormSubmit(form,function (data){
     if(!k.data.instance.hasOwnProperty("items")) {
       updateJob(data);
-      // console.log("item");
     }
     else {
       createJob(data);
@@ -50,6 +49,7 @@ function init_komponent(k){
   if(k.data.instance.hasOwnProperty("items")){
       return;
     }
+    form.codcor.disabled = true;
     util.fillForm(form,k.data.instance);
 
 

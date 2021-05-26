@@ -29,7 +29,8 @@
         $(pageContentContainer).komponent({
             url: url,
             paras: paras
-        }).catch(function () {
+        }).catch(function (e) {
+            console.log(e);
             $('#pageContent').html("<h3>Page not found</h3>");
         });
     }

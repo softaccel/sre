@@ -2,15 +2,15 @@
     <div class="app-page-title">
         <div class="page-title-wrapper">
             <div class="page-title-heading">
-                <div class="page-title-icon"><i class="fa fa-users icon-gradient bg-mean-fruit"></i>
+                <div class="page-title-icon"><i class="fa fa-address-card icon-gradient bg-mean-fruit"></i>
                 </div>
-                <div>Parteneri
+                <div>Unitati de masura
                     <div class="page-title-subheading"></div>
                 </div>
             </div>
             <div class="page-title-actions">
                 <div class="d-inline-block dropdown">
-                    <button class="btn btn-primary" id="newUnitModalButton"><i class="fa fa-plus"></i> Partener nou</button>
+                    <button class="btn btn-primary" id="newUnitModalButton"><i class="fa fa-plus"></i> Unitate noua</button>
                 </div>
             </div>
         </div>
@@ -23,18 +23,16 @@
                         <table class="table table-hover">
                             <thead class="thead-light">
                             <tr>
-                                <th>#</th>
-                                <th>Nume</th>
-                                <th>Adresa</th>
-                                <th style="text-align:center">Actiuni</th>
+                                <th>Unitate</th>
+                                <th>Tip</th>
+                                <th style="text-align:center">Actiune</th>
                             </tr>
                             </thead>
-                            <tbody id="partnersList" data-resourcetype="collection" data-type="partners">
-                            <tr onclick="openPartnerModal(this)" style="cursor:pointer;">
-                                <td><%= id %></td>
-                                <td><%= attributes.name %></td>
-                                <td><%= attributes.address1 %></td>
-                                <td align="center"><button class="btn-primary btn btn-sm" onclick="deletePartner(this,event)"><i class="fa fa-trash-alt"></i> Sterge</button></td>
+                            <tbody id="unitsList" data-resourcetype="collection" data-type="units">
+                            <tr class="tr-unit" onclick="openUnitModal(this)" style="cursor:pointer;">
+                                <td><%= attributes.unit %></td>
+                                <td><%= attributes.type %></td>
+                                <td align="center"><button class="btn-warning btn btn-sm" onclick="deleteUnit(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
                             </tr>
                             </tbody>
                         </table>
@@ -45,25 +43,26 @@
     </div>
 </div>
 <script>
-    function openPartnerModal(src) {
-        $(src).data("locked",true);
+    function openUnitModal(src){
+        $(src).data("locked", true);
+        console.log(src);
         komponentor
-            .intent('/views/partners/addPartner')
+            .intent('/views/units/addUnit')
             .data({instance:$(src).data('instance')})
             .send()
             .then(function (k) {
-                //console.log("**************",k);
+                console.log("**************",k);
             })
             .finally(function () {
                 $(src).removeData("locked");
             })
     }
 
-    function deletePartner(src, e){
-        //console.log("////",$(src).data("instance").attributes.name)
+    function deleteUnit(src, e){
+        console.log("////",$(src).data("instance").attributes.unit)
 
         komponentor.intent("/common/messagemodal").data({
-            body: "Esti sigur ca vrei sa stergi unitatea <br><strong>"+$(src).data("instance").attributes.name+ "</strong>",
+            body: "Esti sigur ca vrei sa stergi unitatea <br><strong>"+$(src).data("instance").attributes.unit   + "</strong>",
             buttons: [
                 {
                     label: "Da",
@@ -92,13 +91,13 @@
         e.stopPropagation();
     }
 
+
     function init_komponent(k,c) {
-        let instance = $("#partnersList").apiator(apiRoot+"/partners").data("instance");
-
-
+        let instance = $("#unitsList").apiator(apiRoot+"/units").data("instance");
+        console.log("---------**",k);
         $("#newUnitModalButton").on("click", function () {
-            //prepare the modal behindthe curtain
-            komponentor.intent("/views/partners/addPartner")
+            //prepare the modal behind the curtain
+            komponentor.intent("/views/units/addUnit")
                 //Take the data from the form and send them to beckend
                 .data({instance: instance})
                 .send();

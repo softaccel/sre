@@ -36,30 +36,6 @@ return [
     ],
     "alloc_orders"=> [
         "fields"=> [
-            "card"=> [
-                "description"=> "",
-                "name"=> "card",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "30"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "currency"=> [
-                "description"=> "",
-                "name"=> "currency",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
             "emplid"=> [
                 "description"=> "",
                 "name"=> "emplid",
@@ -83,17 +59,6 @@ return [
                 "required"=> true,
                 "default"=> null
             ],
-            "hourlyrate"=> [
-                "description"=> "",
-                "name"=> "hourlyrate",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "float"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
             "lname"=> [
                 "description"=> "",
                 "name"=> "lname",
@@ -104,6 +69,30 @@ return [
                 ],
                 "iskey"=> false,
                 "required"=> true,
+                "default"=> null
+            ],
+            "card"=> [
+                "description"=> "",
+                "name"=> "card",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "30"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "op_name"=> [
+                "description"=> "",
+                "name"=> "op_name",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "50"
+                ],
+                "iskey"=> false,
+                "required"=> false,
                 "default"=> null
             ],
             "op_id"=> [
@@ -117,13 +106,13 @@ return [
                 "required"=> false,
                 "default"=> "0"
             ],
-            "op_name"=> [
+            "order_name"=> [
                 "description"=> "",
-                "name"=> "op_name",
+                "name"=> "order_name",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
-                    "length"=> "50"
+                    "length"=> "45"
                 ],
                 "iskey"=> false,
                 "required"=> false,
@@ -140,13 +129,24 @@ return [
                 "required"=> false,
                 "default"=> "0"
             ],
-            "order_name"=> [
+            "hourlyrate"=> [
                 "description"=> "",
-                "name"=> "order_name",
+                "name"=> "hourlyrate",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
-                    "length"=> "45"
+                    "length"=> "10"
                 ],
                 "iskey"=> false,
                 "required"=> false,
@@ -197,60 +197,6 @@ return [
                     ]
                 ]
             ],
-            "catalog_catid"=> [
-                "description"=> "",
-                "name"=> "catalog_catid",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
-                ]
-            ],
-            "employeeid"=> [
-                "description"=> "",
-                "name"=> "employeeid",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "employees",
-                    "field"=> "id"
-                ]
-            ],
-            "location"=> [
-                "description"=> "",
-                "name"=> "location",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "model"=> [
-                "description"=> "",
-                "name"=> "model",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
             "name"=> [
                 "description"=> "",
                 "name"=> "name",
@@ -260,18 +206,6 @@ return [
                     "length"=> "45"
                 ],
                 "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "sn"=> [
-                "description"=> "",
-                "name"=> "sn",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "100"
-                ],
-                "iskey"=> true,
                 "required"=> false,
                 "default"=> null
             ],
@@ -298,6 +232,72 @@ return [
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> null
+            ],
+            "model"=> [
+                "description"=> "",
+                "name"=> "model",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "location"=> [
+                "description"=> "",
+                "name"=> "location",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "employeeid"=> [
+                "description"=> "",
+                "name"=> "employeeid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "employees",
+                    "field"=> "id"
+                ]
+            ],
+            "sn"=> [
+                "description"=> "",
+                "name"=> "sn",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "100"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
+            "catalog_catid"=> [
+                "description"=> "",
+                "name"=> "catalog_catid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "products",
+                    "field"=> "id"
+                ]
             ]
         ],
         "name"=> "assets",
@@ -313,8 +313,8 @@ return [
                 "fkfield"=> "employeeid"
             ],
             "catalog_catid"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
+                "table"=> "products",
+                "field"=> "id",
                 "type"=> "outbound",
                 "fkfield"=> "catalog_catid"
             ],
@@ -327,21 +327,16 @@ return [
     ],
     "assignemnts"=> [
         "fields"=> [
-            "currency"=> [
+            "id"=> [
                 "description"=> "",
-                "name"=> "currency",
+                "name"=> "id",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
+                    "proto"=> "int"
                 ],
-                "iskey"=> false,
+                "iskey"=> true,
                 "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "currencies",
-                    "field"=> "id"
-                ]
+                "default"=> null
             ],
             "employees_id"=> [
                 "description"=> "",
@@ -358,29 +353,6 @@ return [
                     "field"=> "id"
                 ]
             ],
-            "hourly_rate"=> [
-                "description"=> "",
-                "name"=> "hourly_rate",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> null
-            ],
             "order"=> [
                 "description"=> "",
                 "name"=> "order",
@@ -394,6 +366,34 @@ return [
                 "foreignKey"=> [
                     "table"=> "orders",
                     "field"=> "oid"
+                ]
+            ],
+            "hourly_rate"=> [
+                "description"=> "",
+                "name"=> "hourly_rate",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "currencies",
+                    "field"=> "id"
                 ]
             ]
         ],
@@ -423,425 +423,8 @@ return [
             ]
         ]
     ],
-    "catalog"=> [
-        "fields"=> [
-            "active"=> [
-                "description"=> "",
-                "name"=> "active",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "tinyint"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "1"
-            ],
-            "catid"=> [
-                "description"=> "",
-                "name"=> "catid",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null,
-                "referencedBy"=> [
-                    [
-                        "table"=> "assets",
-                        "field"=> "catalog_catid"
-                    ],
-                    [
-                        "table"=> "catalog_product_structure",
-                        "field"=> "parent"
-                    ],
-                    [
-                        "table"=> "catalog_product_structure",
-                        "field"=> "item"
-                    ],
-                    [
-                        "table"=> "catalog_properties",
-                        "field"=> "catid"
-                    ],
-                    [
-                        "table"=> "employees_ops",
-                        "field"=> "catalog_id"
-                    ],
-                    [
-                        "table"=> "orders_parts",
-                        "field"=> "catalog_id"
-                    ],
-                    [
-                        "table"=> "stocks_content",
-                        "field"=> "catalog_id"
-                    ],
-                    [
-                        "table"=> "stocks_initial",
-                        "field"=> "catalog_catid"
-                    ],
-                    [
-                        "table"=> "stocks_registry",
-                        "field"=> "catalog_id"
-                    ]
-                ]
-            ],
-            "code"=> [
-                "description"=> "",
-                "name"=> "code",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "currency"=> [
-                "description"=> "",
-                "name"=> "currency",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "currencies",
-                    "field"=> "id"
-                ]
-            ],
-            "default_stock"=> [
-                "description"=> "",
-                "name"=> "default_stock",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "stocks",
-                    "field"=> "id"
-                ]
-            ],
-            "docs"=> [
-                "description"=> "",
-                "name"=> "docs",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "text"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "name"=> [
-                "description"=> "",
-                "name"=> "name",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> null
-            ],
-            "type"=> [
-                "description"=> "",
-                "name"=> "type",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "enum",
-                    "vals"=> [
-                        "pcomposed",
-                        "product",
-                        "service",
-                        "asset"
-                    ]
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "unit_price"=> [
-                "description"=> "",
-                "name"=> "unit_price",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "units_unit"=> [
-                "description"=> "",
-                "name"=> "units_unit",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "units",
-                    "field"=> "unit"
-                ]
-            ]
-        ],
-        "name"=> "catalog",
-        "description"=> "",
-        "comment"=> "",
-        "type"=> "table",
-        "keyFld"=> "catid",
-        "relations"=> [
-            "units_unit"=> [
-                "table"=> "units",
-                "field"=> "unit",
-                "type"=> "outbound",
-                "fkfield"=> "units_unit"
-            ],
-            "default_stock"=> [
-                "table"=> "stocks",
-                "field"=> "id",
-                "type"=> "outbound",
-                "fkfield"=> "default_stock"
-            ],
-            "currency"=> [
-                "table"=> "currencies",
-                "field"=> "id",
-                "type"=> "outbound",
-                "fkfield"=> "currency"
-            ],
-            "assets"=> [
-                "table"=> "assets",
-                "field"=> "catalog_catid",
-                "type"=> "inbound"
-            ],
-            "catalog_product_structure"=> [
-                "table"=> "catalog_product_structure",
-                "field"=> "item",
-                "type"=> "inbound"
-            ],
-            "catalog_product_structure_item"=> [
-                "table"=> "catalog_product_structure",
-                "field"=> "item",
-                "type"=> "inbound"
-            ],
-            "catalog_product_structure_parent"=> [
-                "table"=> "catalog_product_structure",
-                "field"=> "parent",
-                "type"=> "inbound"
-            ],
-            "catalog_properties"=> [
-                "table"=> "catalog_properties",
-                "field"=> "catid",
-                "type"=> "inbound"
-            ],
-            "employees_ops"=> [
-                "table"=> "employees_ops",
-                "field"=> "catalog_id",
-                "type"=> "inbound"
-            ],
-            "orders_parts"=> [
-                "table"=> "orders_parts",
-                "field"=> "catalog_id",
-                "type"=> "inbound"
-            ],
-            "stocks_content"=> [
-                "table"=> "stocks_content",
-                "field"=> "catalog_id",
-                "type"=> "inbound"
-            ],
-            "stocks_initial"=> [
-                "table"=> "stocks_initial",
-                "field"=> "catalog_catid",
-                "type"=> "inbound"
-            ],
-            "stocks_registry"=> [
-                "table"=> "stocks_registry",
-                "field"=> "catalog_id",
-                "type"=> "inbound"
-            ]
-        ]
-    ],
-    "catalog_product_structure"=> [
-        "fields"=> [
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null
-            ],
-            "item"=> [
-                "description"=> "",
-                "name"=> "item",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
-                ]
-            ],
-            "parent"=> [
-                "description"=> "",
-                "name"=> "parent",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
-                ]
-            ],
-            "qty"=> [
-                "description"=> "",
-                "name"=> "qty",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ]
-        ],
-        "name"=> "catalog_product_structure",
-        "description"=> "",
-        "comment"=> "",
-        "type"=> "table",
-        "keyFld"=> "id",
-        "relations"=> [
-            "parent"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
-                "type"=> "outbound",
-                "fkfield"=> "parent"
-            ],
-            "item"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
-                "type"=> "outbound",
-                "fkfield"=> "item"
-            ]
-        ]
-    ],
-    "catalog_properties"=> [
-        "fields"=> [
-            "catid"=> [
-                "description"=> "",
-                "name"=> "catid",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
-                ]
-            ],
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> null
-            ],
-            "name"=> [
-                "description"=> "",
-                "name"=> "name",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "unit"=> [
-                "description"=> "",
-                "name"=> "unit",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "val"=> [
-                "description"=> "",
-                "name"=> "val",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ]
-        ],
-        "name"=> "catalog_properties",
-        "description"=> "",
-        "comment"=> "",
-        "type"=> "table",
-        "keyFld"=> "id",
-        "relations"=> [
-            "catid"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
-                "type"=> "outbound",
-                "fkfield"=> "catid"
-            ]
-        ]
-    ],
     "currencies"=> [
         "fields"=> [
-            "desc"=> [
-                "description"=> "",
-                "name"=> "desc",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
             "id"=> [
                 "description"=> "",
                 "name"=> "id",
@@ -859,10 +442,6 @@ return [
                         "field"=> "currency"
                     ],
                     [
-                        "table"=> "catalog",
-                        "field"=> "currency"
-                    ],
-                    [
                         "table"=> "currency_series",
                         "field"=> "currency"
                     ],
@@ -875,6 +454,10 @@ return [
                         "field"=> "currency"
                     ],
                     [
+                        "table"=> "products",
+                        "field"=> "currency"
+                    ],
+                    [
                         "table"=> "stocks_initial",
                         "field"=> "currency"
                     ],
@@ -883,6 +466,18 @@ return [
                         "field"=> "currency"
                     ]
                 ]
+            ],
+            "desc"=> [
+                "description"=> "",
+                "name"=> "desc",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
             ],
             "prio"=> [
                 "description"=> "",
@@ -907,11 +502,6 @@ return [
                 "field"=> "currency",
                 "type"=> "inbound"
             ],
-            "catalog"=> [
-                "table"=> "catalog",
-                "field"=> "currency",
-                "type"=> "inbound"
-            ],
             "currency_series"=> [
                 "table"=> "currency_series",
                 "field"=> "currency",
@@ -924,6 +514,11 @@ return [
             ],
             "orders_2_employees"=> [
                 "table"=> "orders_2_employees",
+                "field"=> "currency",
+                "type"=> "inbound"
+            ],
+            "products"=> [
+                "table"=> "products",
                 "field"=> "currency",
                 "type"=> "inbound"
             ],
@@ -985,18 +580,6 @@ return [
     ],
     "documents"=> [
         "fields"=> [
-            "docnum"=> [
-                "description"=> "",
-                "name"=> "docnum",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
             "id"=> [
                 "description"=> "",
                 "name"=> "id",
@@ -1018,6 +601,18 @@ return [
                     ]
                 ]
             ],
+            "docnum"=> [
+                "description"=> "",
+                "name"=> "docnum",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
             "issued_date"=> [
                 "description"=> "",
                 "name"=> "issued_date",
@@ -1028,6 +623,22 @@ return [
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> "CURRENT_TIMESTAMP"
+            ],
+            "userid"=> [
+                "description"=> "",
+                "name"=> "userid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "20"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "users",
+                    "field"=> "userid"
+                ]
             ],
             "partners_id"=> [
                 "description"=> "",
@@ -1058,22 +669,6 @@ return [
                 "foreignKey"=> [
                     "table"=> "settings_document_types",
                     "field"=> "type"
-                ]
-            ],
-            "userid"=> [
-                "description"=> "",
-                "name"=> "userid",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "20"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "users",
-                    "field"=> "userid"
                 ]
             ]
         ],
@@ -1115,135 +710,6 @@ return [
     ],
     "employees"=> [
         "fields"=> [
-            "activ"=> [
-                "description"=> "",
-                "name"=> "activ",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "tinyint"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "1"
-            ],
-            "address_1"=> [
-                "description"=> "",
-                "name"=> "address_1",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "address_2"=> [
-                "description"=> "",
-                "name"=> "address_2",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "bdate"=> [
-                "description"=> "",
-                "name"=> "bdate",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "date"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "card"=> [
-                "description"=> "",
-                "name"=> "card",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "30"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null
-            ],
-            "city"=> [
-                "description"=> "",
-                "name"=> "city",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "cnp"=> [
-                "description"=> "",
-                "name"=> "cnp",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "15"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "country"=> [
-                "description"=> "",
-                "name"=> "country",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "Romania"
-            ],
-            "county"=> [
-                "description"=> "",
-                "name"=> "county",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "docs"=> [
-                "description"=> "",
-                "name"=> "docs",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "text"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "fname"=> [
-                "description"=> "",
-                "name"=> "fname",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
             "id"=> [
                 "description"=> "",
                 "name"=> "id",
@@ -1281,25 +747,80 @@ return [
                     ]
                 ]
             ],
-            "jobtitle"=> [
+            "fname"=> [
                 "description"=> "",
-                "name"=> "jobtitle",
+                "name"=> "fname",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
-                    "length"=> "50"
+                    "length"=> "45"
                 ],
                 "iskey"=> false,
                 "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "jobs",
-                    "field"=> "codcor"
-                ]
+                "default"=> null
             ],
             "lname"=> [
                 "description"=> "",
                 "name"=> "lname",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "bdate"=> [
+                "description"=> "",
+                "name"=> "bdate",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "date"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "cnp"=> [
+                "description"=> "",
+                "name"=> "cnp",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "15"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "address_1"=> [
+                "description"=> "",
+                "name"=> "address_1",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "address_2"=> [
+                "description"=> "",
+                "name"=> "address_2",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "city"=> [
+                "description"=> "",
+                "name"=> "city",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
@@ -1320,20 +841,29 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "team"=> [
+            "county"=> [
                 "description"=> "",
-                "name"=> "team",
+                "name"=> "county",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "int"
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "country"=> [
+                "description"=> "",
+                "name"=> "country",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
                 ],
                 "iskey"=> false,
                 "required"=> false,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "teams",
-                    "field"=> "tid"
-                ]
+                "default"=> "Romania"
             ],
             "userid"=> [
                 "description"=> "",
@@ -1350,6 +880,71 @@ return [
                     "table"=> "users",
                     "field"=> "userid"
                 ]
+            ],
+            "docs"=> [
+                "description"=> "",
+                "name"=> "docs",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "team"=> [
+                "description"=> "",
+                "name"=> "team",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "teams",
+                    "field"=> "tid"
+                ]
+            ],
+            "activ"=> [
+                "description"=> "",
+                "name"=> "activ",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "tinyint"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "1"
+            ],
+            "jobtitle"=> [
+                "description"=> "",
+                "name"=> "jobtitle",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "50"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "jobs",
+                    "field"=> "codcor"
+                ]
+            ],
+            "card"=> [
+                "description"=> "",
+                "name"=> "card",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "30"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
             ]
         ],
         "name"=> "employees",
@@ -1410,6 +1005,17 @@ return [
     ],
     "employees_names"=> [
         "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> "0"
+            ],
             "fullname"=> [
                 "description"=> "",
                 "name"=> "fullname",
@@ -1421,17 +1027,6 @@ return [
                 "iskey"=> false,
                 "required"=> true,
                 "default"=> ""
-            ],
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> "0"
             ]
         ],
         "relations"=> [],
@@ -1442,6 +1037,17 @@ return [
     ],
     "employees_ops"=> [
         "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> null
+            ],
             "catalog_id"=> [
                 "description"=> "",
                 "name"=> "catalog_id",
@@ -1453,8 +1059,8 @@ return [
                 "required"=> true,
                 "default"=> null,
                 "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
+                    "table"=> "products",
+                    "field"=> "id"
                 ]
             ],
             "employees_id"=> [
@@ -1471,17 +1077,6 @@ return [
                     "table"=> "employees",
                     "field"=> "id"
                 ]
-            ],
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> null
             ]
         ],
         "name"=> "employees_ops",
@@ -1491,8 +1086,8 @@ return [
         "keyFld"=> "id",
         "relations"=> [
             "catalog_id"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
+                "table"=> "products",
+                "field"=> "id",
                 "type"=> "outbound",
                 "fkfield"=> "catalog_id"
             ],
@@ -1506,17 +1101,6 @@ return [
     ],
     "groups"=> [
         "fields"=> [
-            "description"=> [
-                "description"=> "",
-                "name"=> "description",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "text"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
             "groupid"=> [
                 "description"=> "",
                 "name"=> "groupid",
@@ -1534,6 +1118,17 @@ return [
                         "field"=> "groupid"
                     ]
                 ]
+            ],
+            "description"=> [
+                "description"=> "",
+                "name"=> "description",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
             ]
         ],
         "name"=> "groups",
@@ -1597,6 +1192,29 @@ return [
     ],
     "maintenance"=> [
         "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> null
+            ],
+            "operation"=> [
+                "description"=> "",
+                "name"=> "operation",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
             "assets_aid"=> [
                 "description"=> "",
                 "name"=> "assets_aid",
@@ -1612,15 +1230,15 @@ return [
                     "field"=> "aid"
                 ]
             ],
-            "document_docid"=> [
+            "scheduled_date"=> [
                 "description"=> "",
-                "name"=> "document_docid",
+                "name"=> "scheduled_date",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "text"
+                    "proto"=> "datetime"
                 ],
                 "iskey"=> false,
-                "required"=> false,
+                "required"=> true,
                 "default"=> null
             ],
             "exec_date"=> [
@@ -1650,38 +1268,15 @@ return [
                     "field"=> "userid"
                 ]
             ],
-            "id"=> [
+            "document_docid"=> [
                 "description"=> "",
-                "name"=> "id",
+                "name"=> "document_docid",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> null
-            ],
-            "operation"=> [
-                "description"=> "",
-                "name"=> "operation",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
+                    "proto"=> "text"
                 ],
                 "iskey"=> false,
                 "required"=> false,
-                "default"=> null
-            ],
-            "scheduled_date"=> [
-                "description"=> "",
-                "name"=> "scheduled_date",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "datetime"
-                ],
-                "iskey"=> false,
-                "required"=> true,
                 "default"=> null
             ]
         ],
@@ -1707,46 +1302,6 @@ return [
     ],
     "operations"=> [
         "fields"=> [
-            "currency"=> [
-                "description"=> "",
-                "name"=> "currency",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "currencies",
-                    "field"=> "id"
-                ]
-            ],
-            "desc"=> [
-                "description"=> "",
-                "name"=> "desc",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "hourly_price"=> [
-                "description"=> "",
-                "name"=> "hourly_price",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,2"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
             "id"=> [
                 "description"=> "",
                 "name"=> "id",
@@ -1779,6 +1334,46 @@ return [
                 "iskey"=> false,
                 "required"=> true,
                 "default"=> null
+            ],
+            "desc"=> [
+                "description"=> "",
+                "name"=> "desc",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "hourly_price"=> [
+                "description"=> "",
+                "name"=> "hourly_price",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "currencies",
+                    "field"=> "id"
+                ]
             ]
         ],
         "name"=> "operations",
@@ -1807,106 +1402,6 @@ return [
     ],
     "orders"=> [
         "fields"=> [
-            "closed_on"=> [
-                "description"=> "",
-                "name"=> "closed_on",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "datetime"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "created_by"=> [
-                "description"=> "",
-                "name"=> "created_by",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "20"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "users",
-                    "field"=> "userid"
-                ]
-            ],
-            "created_on"=> [
-                "description"=> "",
-                "name"=> "created_on",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "datetime"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "CURRENT_TIMESTAMP"
-            ],
-            "doc_id"=> [
-                "description"=> "",
-                "name"=> "doc_id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "documents",
-                    "field"=> "id"
-                ]
-            ],
-            "estimated_value"=> [
-                "description"=> "",
-                "name"=> "estimated_value",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,2"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "final_value"=> [
-                "description"=> "",
-                "name"=> "final_value",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,2"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "label"=> [
-                "description"=> "",
-                "name"=> "label",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "meta"=> [
-                "description"=> "",
-                "name"=> "meta",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "json"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
             "oid"=> [
                 "description"=> "",
                 "name"=> "oid",
@@ -1940,20 +1435,17 @@ return [
                     ]
                 ]
             ],
-            "partner_id"=> [
+            "label"=> [
                 "description"=> "",
-                "name"=> "partner_id",
+                "name"=> "label",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "int"
+                    "proto"=> "varchar",
+                    "length"=> "255"
                 ],
                 "iskey"=> false,
                 "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "partners",
-                    "field"=> "id"
-                ]
+                "default"=> null
             ],
             "state"=> [
                 "description"=> "",
@@ -1974,6 +1466,109 @@ return [
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> "ord"
+            ],
+            "doc_id"=> [
+                "description"=> "",
+                "name"=> "doc_id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "documents",
+                    "field"=> "id"
+                ]
+            ],
+            "partner_id"=> [
+                "description"=> "",
+                "name"=> "partner_id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "partners",
+                    "field"=> "id"
+                ]
+            ],
+            "created_on"=> [
+                "description"=> "",
+                "name"=> "created_on",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "datetime"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "CURRENT_TIMESTAMP"
+            ],
+            "closed_on"=> [
+                "description"=> "",
+                "name"=> "closed_on",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "datetime"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "estimated_value"=> [
+                "description"=> "",
+                "name"=> "estimated_value",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "final_value"=> [
+                "description"=> "",
+                "name"=> "final_value",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "meta"=> [
+                "description"=> "",
+                "name"=> "meta",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "json"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "created_by"=> [
+                "description"=> "",
+                "name"=> "created_by",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "20"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "users",
+                    "field"=> "userid"
+                ]
             ]
         ],
         "name"=> "orders",
@@ -2029,20 +1624,30 @@ return [
     ],
     "orders_2_employees"=> [
         "fields"=> [
-            "currency"=> [
+            "id"=> [
                 "description"=> "",
-                "name"=> "currency",
+                "name"=> "id",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
+            "orderid"=> [
+                "description"=> "",
+                "name"=> "orderid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
                 ],
                 "iskey"=> false,
-                "required"=> false,
+                "required"=> true,
                 "default"=> null,
                 "foreignKey"=> [
-                    "table"=> "currencies",
-                    "field"=> "id"
+                    "table"=> "orders",
+                    "field"=> "oid"
                 ]
             ],
             "emplid"=> [
@@ -2060,28 +1665,6 @@ return [
                     "field"=> "id"
                 ]
             ],
-            "hourlyrate"=> [
-                "description"=> "",
-                "name"=> "hourlyrate",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "float"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null
-            ],
             "operation"=> [
                 "description"=> "",
                 "name"=> "operation",
@@ -2097,19 +1680,31 @@ return [
                     "field"=> "id"
                 ]
             ],
-            "orderid"=> [
+            "hourlyrate"=> [
                 "description"=> "",
-                "name"=> "orderid",
+                "name"=> "hourlyrate",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "int"
+                    "proto"=> "float"
                 ],
                 "iskey"=> false,
-                "required"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> false,
                 "default"=> null,
                 "foreignKey"=> [
-                    "table"=> "orders",
-                    "field"=> "oid"
+                    "table"=> "currencies",
+                    "field"=> "id"
                 ]
             ]
         ],
@@ -2147,17 +1742,6 @@ return [
     ],
     "orders_count_bystate"=> [
         "fields"=> [
-            "cnt"=> [
-                "description"=> "",
-                "name"=> "cnt",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "bigint"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> "0"
-            ],
             "state"=> [
                 "description"=> "",
                 "name"=> "state",
@@ -2177,6 +1761,17 @@ return [
                 "iskey"=> true,
                 "required"=> false,
                 "default"=> "ord"
+            ],
+            "cnt"=> [
+                "description"=> "",
+                "name"=> "cnt",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "bigint"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> "0"
             ]
         ],
         "relations"=> [],
@@ -2187,27 +1782,69 @@ return [
     ],
     "orders_extended"=> [
         "fields"=> [
-            "closed_on"=> [
+            "oid"=> [
                 "description"=> "",
-                "name"=> "closed_on",
+                "name"=> "oid",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "datetime"
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> "0"
+            ],
+            "label"=> [
+                "description"=> "",
+                "name"=> "label",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "state"=> [
+                "description"=> "",
+                "name"=> "state",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "enum",
+                    "vals"=> [
+                        "offer",
+                        "ord",
+                        "proc",
+                        "ctc",
+                        "fix",
+                        "ready",
+                        "dlvd"
+                    ]
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "ord"
+            ],
+            "doc_id"=> [
+                "description"=> "",
+                "name"=> "doc_id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
                 ],
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> null
             ],
-            "created_by"=> [
+            "partner_id"=> [
                 "description"=> "",
-                "name"=> "created_by",
+                "name"=> "partner_id",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "20"
+                    "proto"=> "int"
                 ],
                 "iskey"=> false,
-                "required"=> false,
+                "required"=> true,
                 "default"=> null
             ],
             "created_on"=> [
@@ -2221,24 +1858,12 @@ return [
                 "required"=> false,
                 "default"=> "CURRENT_TIMESTAMP"
             ],
-            "doc_id"=> [
+            "closed_on"=> [
                 "description"=> "",
-                "name"=> "doc_id",
+                "name"=> "closed_on",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "docnum"=> [
-                "description"=> "",
-                "name"=> "docnum",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
+                    "proto"=> "datetime"
                 ],
                 "iskey"=> false,
                 "required"=> false,
@@ -2268,18 +1893,6 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "label"=> [
-                "description"=> "",
-                "name"=> "label",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
             "meta"=> [
                 "description"=> "",
                 "name"=> "meta",
@@ -2291,26 +1904,16 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "oid"=> [
+            "created_by"=> [
                 "description"=> "",
-                "name"=> "oid",
+                "name"=> "created_by",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> "0"
-            ],
-            "partner_id"=> [
-                "description"=> "",
-                "name"=> "partner_id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
+                    "proto"=> "varchar",
+                    "length"=> "20"
                 ],
                 "iskey"=> false,
-                "required"=> true,
+                "required"=> false,
                 "default"=> null
             ],
             "pname"=> [
@@ -2325,25 +1928,17 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "state"=> [
+            "docnum"=> [
                 "description"=> "",
-                "name"=> "state",
+                "name"=> "docnum",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "enum",
-                    "vals"=> [
-                        "offer",
-                        "ord",
-                        "proc",
-                        "ctc",
-                        "fix",
-                        "ready",
-                        "dlvd"
-                    ]
+                    "proto"=> "varchar",
+                    "length"=> "45"
                 ],
                 "iskey"=> false,
                 "required"=> false,
-                "default"=> "ord"
+                "default"=> null
             ]
         ],
         "relations"=> [],
@@ -2420,33 +2015,6 @@ return [
     ],
     "orders_parts"=> [
         "fields"=> [
-            "catalog_id"=> [
-                "description"=> "",
-                "name"=> "catalog_id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
-                ]
-            ],
-            "currency"=> [
-                "description"=> "",
-                "name"=> "currency",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
             "id"=> [
                 "description"=> "",
                 "name"=> "id",
@@ -2464,28 +2032,6 @@ return [
                     ]
                 ]
             ],
-            "meta"=> [
-                "description"=> "",
-                "name"=> "meta",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "json"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "name"=> [
-                "description"=> "",
-                "name"=> "name",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "tinytext"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
             "order"=> [
                 "description"=> "",
                 "name"=> "order",
@@ -2501,29 +2047,31 @@ return [
                     "field"=> "oid"
                 ]
             ],
-            "qty"=> [
+            "name"=> [
                 "description"=> "",
-                "name"=> "qty",
+                "name"=> "name",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,3"
+                    "proto"=> "tinytext"
                 ],
                 "iskey"=> false,
-                "required"=> false,
+                "required"=> true,
                 "default"=> null
             ],
-            "total_price"=> [
+            "catalog_id"=> [
                 "description"=> "",
-                "name"=> "total_price",
+                "name"=> "catalog_id",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,2"
+                    "proto"=> "int"
                 ],
                 "iskey"=> false,
                 "required"=> false,
-                "default"=> null
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "products",
+                    "field"=> "id"
+                ]
             ],
             "um"=> [
                 "description"=> "",
@@ -2535,6 +2083,18 @@ return [
                 ],
                 "iskey"=> false,
                 "required"=> true,
+                "default"=> null
+            ],
+            "qty"=> [
+                "description"=> "",
+                "name"=> "qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,3"
+                ],
+                "iskey"=> false,
+                "required"=> false,
                 "default"=> null
             ],
             "unit_price"=> [
@@ -2572,6 +2132,41 @@ return [
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> null
+            ],
+            "total_price"=> [
+                "description"=> "",
+                "name"=> "total_price",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "meta"=> [
+                "description"=> "",
+                "name"=> "meta",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "json"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
             ]
         ],
         "name"=> "orders_parts",
@@ -2587,8 +2182,8 @@ return [
                 "fkfield"=> "order"
             ],
             "catalog_id"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
+                "table"=> "products",
+                "field"=> "id",
                 "type"=> "outbound",
                 "fkfield"=> "catalog_id"
             ],
@@ -2601,6 +2196,75 @@ return [
     ],
     "partners"=> [
         "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null,
+                "referencedBy"=> [
+                    [
+                        "table"=> "documents",
+                        "field"=> "partners_id"
+                    ],
+                    [
+                        "table"=> "orders",
+                        "field"=> "partner_id"
+                    ]
+                ]
+            ],
+            "cod_saga"=> [
+                "description"=> "",
+                "name"=> "cod_saga",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "name"=> [
+                "description"=> "",
+                "name"=> "name",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
+            "cod_fiscal"=> [
+                "description"=> "",
+                "name"=> "cod_fiscal",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
+            "reg_com"=> [
+                "description"=> "",
+                "name"=> "reg_com",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
             "address1"=> [
                 "description"=> "",
                 "name"=> "address1",
@@ -2625,28 +2289,40 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "agent"=> [
+            "city"=> [
                 "description"=> "",
-                "name"=> "agent",
+                "name"=> "city",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
                     "length"=> "255"
                 ],
                 "iskey"=> false,
-                "required"=> false,
+                "required"=> true,
                 "default"=> null
             ],
-            "agent_name"=> [
+            "county"=> [
                 "description"=> "",
-                "name"=> "agent_name",
+                "name"=> "county",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
                     "length"=> "255"
                 ],
                 "iskey"=> false,
-                "required"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "country"=> [
+                "description"=> "",
+                "name"=> "country",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> true,
                 "default"=> null
             ],
             "analitic"=> [
@@ -2661,9 +2337,21 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "bank_account"=> [
+            "zs"=> [
                 "description"=> "",
-                "name"=> "bank_account",
+                "name"=> "zs",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "discount"=> [
+                "description"=> "",
+                "name"=> "discount",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
@@ -2685,9 +2373,9 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "blocked"=> [
+            "bank_account"=> [
                 "description"=> "",
-                "name"=> "blocked",
+                "name"=> "bank_account",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
@@ -2721,9 +2409,9 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "cb_card"=> [
+            "personal_id_serie"=> [
                 "description"=> "",
-                "name"=> "cb_card",
+                "name"=> "personal_id_serie",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
@@ -2733,33 +2421,33 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "city"=> [
+            "personal_id_number"=> [
                 "description"=> "",
-                "name"=> "city",
+                "name"=> "personal_id_number",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
                     "length"=> "255"
                 ],
                 "iskey"=> false,
-                "required"=> true,
+                "required"=> false,
                 "default"=> null
             ],
-            "cod_fiscal"=> [
+            "personal_id_issuer"=> [
                 "description"=> "",
-                "name"=> "cod_fiscal",
+                "name"=> "personal_id_issuer",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
                     "length"=> "255"
                 ],
-                "iskey"=> true,
+                "iskey"=> false,
                 "required"=> false,
                 "default"=> null
             ],
-            "cod_saga"=> [
+            "license_plate"=> [
                 "description"=> "",
-                "name"=> "cod_saga",
+                "name"=> "license_plate",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
@@ -2781,44 +2469,9 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "country"=> [
+            "agent"=> [
                 "description"=> "",
-                "name"=> "country",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "county"=> [
-                "description"=> "",
-                "name"=> "county",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "create_date"=> [
-                "description"=> "",
-                "name"=> "create_date",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "timestamp"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "CURRENT_TIMESTAMP"
-            ],
-            "credit_limit"=> [
-                "description"=> "",
-                "name"=> "credit_limit",
+                "name"=> "agent",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
@@ -2828,45 +2481,9 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "date_s_vat"=> [
+            "agent_name"=> [
                 "description"=> "",
-                "name"=> "date_s_vat",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "date_v_vat"=> [
-                "description"=> "",
-                "name"=> "date_v_vat",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "discount"=> [
-                "description"=> "",
-                "name"=> "discount",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "email"=> [
-                "description"=> "",
-                "name"=> "email",
+                "name"=> "agent_name",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
@@ -2888,26 +2505,124 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "id"=> [
+            "type_tert"=> [
                 "description"=> "",
-                "name"=> "id",
+                "name"=> "type_tert",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "int"
+                    "proto"=> "varchar",
+                    "length"=> "255"
                 ],
-                "iskey"=> true,
+                "iskey"=> false,
                 "required"=> false,
-                "default"=> null,
-                "referencedBy"=> [
-                    [
-                        "table"=> "documents",
-                        "field"=> "partners_id"
-                    ],
-                    [
-                        "table"=> "orders",
-                        "field"=> "partner_id"
-                    ]
-                ]
+                "default"=> null
+            ],
+            "phone"=> [
+                "description"=> "",
+                "name"=> "phone",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "email"=> [
+                "description"=> "",
+                "name"=> "email",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "is_vat"=> [
+                "description"=> "",
+                "name"=> "is_vat",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "blocked"=> [
+                "description"=> "",
+                "name"=> "blocked",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "date_v_vat"=> [
+                "description"=> "",
+                "name"=> "date_v_vat",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "cb_card"=> [
+                "description"=> "",
+                "name"=> "cb_card",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "date_s_vat"=> [
+                "description"=> "",
+                "name"=> "date_s_vat",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "credit_limit"=> [
+                "description"=> "",
+                "name"=> "credit_limit",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "create_date"=> [
+                "description"=> "",
+                "name"=> "create_date",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "timestamp"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "CURRENT_TIMESTAMP"
             ],
             "is_customer"=> [
                 "description"=> "",
@@ -2932,126 +2647,6 @@ return [
                 "iskey"=> false,
                 "required"=> true,
                 "default"=> "0"
-            ],
-            "is_vat"=> [
-                "description"=> "",
-                "name"=> "is_vat",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "license_plate"=> [
-                "description"=> "",
-                "name"=> "license_plate",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "name"=> [
-                "description"=> "",
-                "name"=> "name",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null
-            ],
-            "personal_id_issuer"=> [
-                "description"=> "",
-                "name"=> "personal_id_issuer",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "personal_id_number"=> [
-                "description"=> "",
-                "name"=> "personal_id_number",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "personal_id_serie"=> [
-                "description"=> "",
-                "name"=> "personal_id_serie",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "phone"=> [
-                "description"=> "",
-                "name"=> "phone",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "reg_com"=> [
-                "description"=> "",
-                "name"=> "reg_com",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "type_tert"=> [
-                "description"=> "",
-                "name"=> "type_tert",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "zs"=> [
-                "description"=> "",
-                "name"=> "zs",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
             ]
         ],
         "name"=> "partners",
@@ -3072,25 +2667,413 @@ return [
             ]
         ]
     ],
-    "rights"=> [
+    "products"=> [
         "fields"=> [
-            "acces_type"=> [
+            "id"=> [
                 "description"=> "",
-                "name"=> "acces_type",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null,
+                "referencedBy"=> [
+                    [
+                        "table"=> "assets",
+                        "field"=> "catalog_catid"
+                    ],
+                    [
+                        "table"=> "employees_ops",
+                        "field"=> "catalog_id"
+                    ],
+                    [
+                        "table"=> "orders_parts",
+                        "field"=> "catalog_id"
+                    ],
+                    [
+                        "table"=> "products_meta",
+                        "field"=> "prod_id"
+                    ],
+                    [
+                        "table"=> "products_structure",
+                        "field"=> "parent_prod_id"
+                    ],
+                    [
+                        "table"=> "products_structure",
+                        "field"=> "prod_id"
+                    ],
+                    [
+                        "table"=> "stocks_content",
+                        "field"=> "catalog_id"
+                    ],
+                    [
+                        "table"=> "stocks_initial",
+                        "field"=> "catalog_catid"
+                    ],
+                    [
+                        "table"=> "stocks_registry",
+                        "field"=> "catalog_id"
+                    ]
+                ]
+            ],
+            "name"=> [
+                "description"=> "",
+                "name"=> "name",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> null
+            ],
+            "code"=> [
+                "description"=> "",
+                "name"=> "code",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "type"=> [
+                "description"=> "",
+                "name"=> "type",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "enum",
                     "vals"=> [
-                        "create",
-                        "read",
-                        "update",
-                        "delete"
+                        "pcomposed",
+                        "product",
+                        "service",
+                        "asset"
                     ]
                 ],
                 "iskey"=> false,
                 "required"=> true,
                 "default"=> null
             ],
+            "unit_price"=> [
+                "description"=> "",
+                "name"=> "unit_price",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "units_unit"=> [
+                "description"=> "",
+                "name"=> "units_unit",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "units",
+                    "field"=> "unit"
+                ]
+            ],
+            "docs"=> [
+                "description"=> "",
+                "name"=> "docs",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "active"=> [
+                "description"=> "",
+                "name"=> "active",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "tinyint"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "1"
+            ],
+            "default_stock"=> [
+                "description"=> "",
+                "name"=> "default_stock",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "stocks",
+                    "field"=> "id"
+                ]
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "currencies",
+                    "field"=> "id"
+                ]
+            ]
+        ],
+        "name"=> "products",
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "table",
+        "keyFld"=> "id",
+        "relations"=> [
+            "units_unit"=> [
+                "table"=> "units",
+                "field"=> "unit",
+                "type"=> "outbound",
+                "fkfield"=> "units_unit"
+            ],
+            "default_stock"=> [
+                "table"=> "stocks",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "default_stock"
+            ],
+            "currency"=> [
+                "table"=> "currencies",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "currency"
+            ],
+            "assets"=> [
+                "table"=> "assets",
+                "field"=> "catalog_catid",
+                "type"=> "inbound"
+            ],
+            "employees_ops"=> [
+                "table"=> "employees_ops",
+                "field"=> "catalog_id",
+                "type"=> "inbound"
+            ],
+            "orders_parts"=> [
+                "table"=> "orders_parts",
+                "field"=> "catalog_id",
+                "type"=> "inbound"
+            ],
+            "products_meta"=> [
+                "table"=> "products_meta",
+                "field"=> "prod_id",
+                "type"=> "inbound"
+            ],
+            "products_structure"=> [
+                "table"=> "products_structure",
+                "field"=> "parent_prod_id",
+                "type"=> "inbound"
+            ],
+            "products_structure_parent_prod_id"=> [
+                "table"=> "products_structure",
+                "field"=> "parent_prod_id",
+                "type"=> "inbound"
+            ],
+            "products_structure_prod_id"=> [
+                "table"=> "products_structure",
+                "field"=> "prod_id",
+                "type"=> "inbound"
+            ],
+            "stocks_content"=> [
+                "table"=> "stocks_content",
+                "field"=> "catalog_id",
+                "type"=> "inbound"
+            ],
+            "stocks_initial"=> [
+                "table"=> "stocks_initial",
+                "field"=> "catalog_catid",
+                "type"=> "inbound"
+            ],
+            "stocks_registry"=> [
+                "table"=> "stocks_registry",
+                "field"=> "catalog_id",
+                "type"=> "inbound"
+            ]
+        ]
+    ],
+    "products_meta"=> [
+        "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> null
+            ],
+            "name"=> [
+                "description"=> "",
+                "name"=> "name",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "val"=> [
+                "description"=> "",
+                "name"=> "val",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "unit"=> [
+                "description"=> "",
+                "name"=> "unit",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "prod_id"=> [
+                "description"=> "",
+                "name"=> "prod_id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "products",
+                    "field"=> "id"
+                ]
+            ]
+        ],
+        "name"=> "products_meta",
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "table",
+        "keyFld"=> "id",
+        "relations"=> [
+            "prod_id"=> [
+                "table"=> "products",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "prod_id"
+            ]
+        ]
+    ],
+    "products_structure"=> [
+        "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
+            "parent_prod_id"=> [
+                "description"=> "",
+                "name"=> "parent_prod_id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "products",
+                    "field"=> "id"
+                ]
+            ],
+            "prod_id"=> [
+                "description"=> "",
+                "name"=> "prod_id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "products",
+                    "field"=> "id"
+                ]
+            ],
+            "qty"=> [
+                "description"=> "",
+                "name"=> "qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ]
+        ],
+        "name"=> "products_structure",
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "table",
+        "keyFld"=> "id",
+        "relations"=> [
+            "parent_prod_id"=> [
+                "table"=> "products",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "parent_prod_id"
+            ],
+            "prod_id"=> [
+                "table"=> "products",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "prod_id"
+            ]
+        ]
+    ],
+    "rights"=> [
+        "fields"=> [
             "id"=> [
                 "description"=> "",
                 "name"=> "id",
@@ -3109,6 +3092,23 @@ return [
                 "type"=> [
                     "proto"=> "varchar",
                     "length"=> "200"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "acces_type"=> [
+                "description"=> "",
+                "name"=> "acces_type",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "enum",
+                    "vals"=> [
+                        "create",
+                        "read",
+                        "update",
+                        "delete"
+                    ]
                 ],
                 "iskey"=> false,
                 "required"=> true,
@@ -3134,9 +3134,37 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
+            "type"=> [
+                "description"=> "",
+                "name"=> "type",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "50"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "settings_document_types",
+                    "field"=> "type"
+                ]
+            ],
             "label"=> [
                 "description"=> "",
                 "name"=> "label",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "series"=> [
+                "description"=> "",
+                "name"=> "series",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
@@ -3167,34 +3195,6 @@ return [
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> null
-            ],
-            "series"=> [
-                "description"=> "",
-                "name"=> "series",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "type"=> [
-                "description"=> "",
-                "name"=> "type",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "50"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "settings_document_types",
-                    "field"=> "type"
-                ]
             ],
             "validfrom"=> [
                 "description"=> "",
@@ -3235,17 +3235,6 @@ return [
     ],
     "settings_document_types"=> [
         "fields"=> [
-            "description"=> [
-                "description"=> "",
-                "name"=> "description",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "text"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
             "type"=> [
                 "description"=> "",
                 "name"=> "type",
@@ -3267,6 +3256,17 @@ return [
                         "field"=> "type"
                     ]
                 ]
+            ],
+            "description"=> [
+                "description"=> "",
+                "name"=> "description",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
             ]
         ],
         "name"=> "settings_document_types",
@@ -3289,29 +3289,16 @@ return [
     ],
     "started_work"=> [
         "fields"=> [
-            "card"=> [
+            "id"=> [
                 "description"=> "",
-                "name"=> "card",
+                "name"=> "id",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "30"
+                    "proto"=> "int"
                 ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "currency"=> [
-                "description"=> "",
-                "name"=> "currency",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
-                ],
-                "iskey"=> false,
+                "iskey"=> true,
                 "required"=> true,
-                "default"=> null
+                "default"=> "0"
             ],
             "employee"=> [
                 "description"=> "",
@@ -3324,28 +3311,38 @@ return [
                 "required"=> true,
                 "default"=> null
             ],
-            "hourly_rate"=> [
+            "start"=> [
                 "description"=> "",
-                "name"=> "hourly_rate",
+                "name"=> "start",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,2"
+                    "proto"=> "datetime"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "CURRENT_TIMESTAMP"
+            ],
+            "stop"=> [
+                "description"=> "",
+                "name"=> "stop",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "datetime"
                 ],
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> null
             ],
-            "id"=> [
+            "worktime"=> [
                 "description"=> "",
-                "name"=> "id",
+                "name"=> "worktime",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "int"
+                    "proto"=> "time"
                 ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> "0"
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
             ],
             "operation"=> [
                 "description"=> "",
@@ -3393,34 +3390,37 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "start"=> [
+            "hourly_rate"=> [
                 "description"=> "",
-                "name"=> "start",
+                "name"=> "hourly_rate",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "datetime"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "CURRENT_TIMESTAMP"
-            ],
-            "stop"=> [
-                "description"=> "",
-                "name"=> "stop",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "datetime"
+                    "proto"=> "float",
+                    "length"=> "10,2"
                 ],
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> null
             ],
-            "worktime"=> [
+            "currency"=> [
                 "description"=> "",
-                "name"=> "worktime",
+                "name"=> "currency",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "time"
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "card"=> [
+                "description"=> "",
+                "name"=> "card",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "30"
                 ],
                 "iskey"=> false,
                 "required"=> false,
@@ -3447,7 +3447,7 @@ return [
                 "default"=> null,
                 "referencedBy"=> [
                     [
-                        "table"=> "catalog",
+                        "table"=> "products",
                         "field"=> "default_stock"
                     ],
                     [
@@ -3476,18 +3476,6 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "location"=> [
-                "description"=> "",
-                "name"=> "location",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
             "type"=> [
                 "description"=> "",
                 "name"=> "type",
@@ -3502,6 +3490,18 @@ return [
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> null
+            ],
+            "location"=> [
+                "description"=> "",
+                "name"=> "location",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
             ]
         ],
         "name"=> "stocks",
@@ -3510,8 +3510,8 @@ return [
         "type"=> "table",
         "keyFld"=> "id",
         "relations"=> [
-            "catalog"=> [
-                "table"=> "catalog",
+            "products"=> [
+                "table"=> "products",
                 "field"=> "default_stock",
                 "type"=> "inbound"
             ],
@@ -3534,21 +3534,6 @@ return [
     ],
     "stocks_content"=> [
         "fields"=> [
-            "catalog_id"=> [
-                "description"=> "",
-                "name"=> "catalog_id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
-                ]
-            ],
             "id"=> [
                 "description"=> "",
                 "name"=> "id",
@@ -3560,17 +3545,20 @@ return [
                 "required"=> true,
                 "default"=> null
             ],
-            "qty"=> [
+            "catalog_id"=> [
                 "description"=> "",
-                "name"=> "qty",
+                "name"=> "catalog_id",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
+                    "proto"=> "int"
                 ],
                 "iskey"=> false,
-                "required"=> false,
-                "default"=> null
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "products",
+                    "field"=> "id"
+                ]
             ],
             "stocks_id"=> [
                 "description"=> "",
@@ -3586,6 +3574,18 @@ return [
                     "table"=> "stocks",
                     "field"=> "id"
                 ]
+            ],
+            "qty"=> [
+                "description"=> "",
+                "name"=> "qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
             ],
             "value"=> [
                 "description"=> "",
@@ -3607,8 +3607,8 @@ return [
         "keyFld"=> "id",
         "relations"=> [
             "catalog_id"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
+                "table"=> "products",
+                "field"=> "id",
                 "type"=> "outbound",
                 "fkfield"=> "catalog_id"
             ],
@@ -3622,37 +3622,6 @@ return [
     ],
     "stocks_initial"=> [
         "fields"=> [
-            "catalog_catid"=> [
-                "description"=> "",
-                "name"=> "catalog_catid",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
-                ]
-            ],
-            "currency"=> [
-                "description"=> "",
-                "name"=> "currency",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "currencies",
-                    "field"=> "id"
-                ]
-            ],
             "id"=> [
                 "description"=> "",
                 "name"=> "id",
@@ -3664,13 +3633,12 @@ return [
                 "required"=> true,
                 "default"=> null
             ],
-            "qty"=> [
+            "ts"=> [
                 "description"=> "",
-                "name"=> "qty",
+                "name"=> "ts",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,3"
+                    "proto"=> "datetime"
                 ],
                 "iskey"=> false,
                 "required"=> true,
@@ -3691,12 +3659,28 @@ return [
                     "field"=> "id"
                 ]
             ],
-            "ts"=> [
+            "catalog_catid"=> [
                 "description"=> "",
-                "name"=> "ts",
+                "name"=> "catalog_catid",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "datetime"
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "products",
+                    "field"=> "id"
+                ]
+            ],
+            "qty"=> [
+                "description"=> "",
+                "name"=> "qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,3"
                 ],
                 "iskey"=> false,
                 "required"=> true,
@@ -3713,6 +3697,22 @@ return [
                 "iskey"=> false,
                 "required"=> true,
                 "default"=> null
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "currencies",
+                    "field"=> "id"
+                ]
             ]
         ],
         "name"=> "stocks_initial",
@@ -3728,8 +3728,8 @@ return [
                 "fkfield"=> "stocks_id"
             ],
             "catalog_catid"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
+                "table"=> "products",
+                "field"=> "id",
                 "type"=> "outbound",
                 "fkfield"=> "catalog_catid"
             ],
@@ -3743,36 +3743,6 @@ return [
     ],
     "stocks_registry"=> [
         "fields"=> [
-            "catalog_id"=> [
-                "description"=> "",
-                "name"=> "catalog_id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
-                ]
-            ],
-            "documents_docid"=> [
-                "description"=> "",
-                "name"=> "documents_docid",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "documents",
-                    "field"=> "id"
-                ]
-            ],
             "id"=> [
                 "description"=> "",
                 "name"=> "id",
@@ -3784,9 +3754,20 @@ return [
                 "required"=> true,
                 "default"=> null
             ],
-            "oiid"=> [
+            "ts"=> [
                 "description"=> "",
-                "name"=> "oiid",
+                "name"=> "ts",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "datetime"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "catalog_id"=> [
+                "description"=> "",
+                "name"=> "catalog_id",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "int"
@@ -3795,7 +3776,7 @@ return [
                 "required"=> true,
                 "default"=> null,
                 "foreignKey"=> [
-                    "table"=> "orders_parts",
+                    "table"=> "products",
                     "field"=> "id"
                 ]
             ],
@@ -3813,17 +3794,6 @@ return [
                     "table"=> "stocks",
                     "field"=> "id"
                 ]
-            ],
-            "ts"=> [
-                "description"=> "",
-                "name"=> "ts",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "datetime"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
             ],
             "type"=> [
                 "description"=> "",
@@ -3842,6 +3812,36 @@ return [
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> null
+            ],
+            "documents_docid"=> [
+                "description"=> "",
+                "name"=> "documents_docid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "documents",
+                    "field"=> "id"
+                ]
+            ],
+            "oiid"=> [
+                "description"=> "",
+                "name"=> "oiid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "orders_parts",
+                    "field"=> "id"
+                ]
             ]
         ],
         "name"=> "stocks_registry",
@@ -3851,8 +3851,8 @@ return [
         "keyFld"=> "id",
         "relations"=> [
             "catalog_id"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
+                "table"=> "products",
+                "field"=> "id",
                 "type"=> "outbound",
                 "fkfield"=> "catalog_id"
             ],
@@ -3878,18 +3878,6 @@ return [
     ],
     "tags"=> [
         "fields"=> [
-            "card"=> [
-                "description"=> "",
-                "name"=> "card",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "30"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null
-            ],
             "emplid"=> [
                 "description"=> "",
                 "name"=> "emplid",
@@ -3928,6 +3916,18 @@ return [
                 "iskey"=> false,
                 "required"=> true,
                 "default"=> null
+            ],
+            "card"=> [
+                "description"=> "",
+                "name"=> "card",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "30"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
             ]
         ],
         "relations"=> [
@@ -3955,6 +3955,23 @@ return [
     ],
     "teams"=> [
         "fields"=> [
+            "tid"=> [
+                "description"=> "",
+                "name"=> "tid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null,
+                "referencedBy"=> [
+                    [
+                        "table"=> "employees",
+                        "field"=> "team"
+                    ]
+                ]
+            ],
             "name"=> [
                 "description"=> "",
                 "name"=> "name",
@@ -3981,23 +3998,6 @@ return [
                     "table"=> "employees",
                     "field"=> "id"
                 ]
-            ],
-            "tid"=> [
-                "description"=> "",
-                "name"=> "tid",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null,
-                "referencedBy"=> [
-                    [
-                        "table"=> "employees",
-                        "field"=> "team"
-                    ]
-                ]
             ]
         ],
         "name"=> "teams",
@@ -4021,21 +4021,16 @@ return [
     ],
     "timetracking"=> [
         "fields"=> [
-            "currency"=> [
+            "id"=> [
                 "description"=> "",
-                "name"=> "currency",
+                "name"=> "id",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
+                    "proto"=> "int"
                 ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "currencies",
-                    "field"=> "id"
-                ]
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
             ],
             "employee"=> [
                 "description"=> "",
@@ -4052,26 +4047,25 @@ return [
                     "field"=> "id"
                 ]
             ],
-            "hourly_rate"=> [
+            "start"=> [
                 "description"=> "",
-                "name"=> "hourly_rate",
+                "name"=> "start",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,2"
+                    "proto"=> "datetime"
                 ],
                 "iskey"=> false,
                 "required"=> false,
-                "default"=> null
+                "default"=> "CURRENT_TIMESTAMP"
             ],
-            "id"=> [
+            "stop"=> [
                 "description"=> "",
-                "name"=> "id",
+                "name"=> "stop",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "int"
+                    "proto"=> "datetime"
                 ],
-                "iskey"=> true,
+                "iskey"=> false,
                 "required"=> false,
                 "default"=> null
             ],
@@ -4105,16 +4099,33 @@ return [
                     "field"=> "oid"
                 ]
             ],
-            "start"=> [
+            "hourly_rate"=> [
                 "description"=> "",
-                "name"=> "start",
+                "name"=> "hourly_rate",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "datetime"
+                    "proto"=> "float",
+                    "length"=> "10,2"
                 ],
                 "iskey"=> false,
                 "required"=> false,
-                "default"=> "CURRENT_TIMESTAMP"
+                "default"=> null
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "currencies",
+                    "field"=> "id"
+                ]
             ],
             "status"=> [
                 "description"=> "",
@@ -4130,17 +4141,6 @@ return [
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> "w"
-            ],
-            "stop"=> [
-                "description"=> "",
-                "name"=> "stop",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "datetime"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
             ]
         ],
         "name"=> "timetracking",
@@ -4177,28 +4177,59 @@ return [
     ],
     "tt_expanded"=> [
         "fields"=> [
-            "currency"=> [
+            "id"=> [
                 "description"=> "",
-                "name"=> "currency",
+                "name"=> "id",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> "0"
+            ],
+            "employee"=> [
+                "description"=> "",
+                "name"=> "employee",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
                 ],
                 "iskey"=> false,
                 "required"=> true,
                 "default"=> null
             ],
-            "docnum"=> [
+            "start"=> [
                 "description"=> "",
-                "name"=> "docnum",
+                "name"=> "start",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
+                    "proto"=> "datetime"
                 ],
                 "iskey"=> false,
                 "required"=> false,
+                "default"=> "CURRENT_TIMESTAMP"
+            ],
+            "stop"=> [
+                "description"=> "",
+                "name"=> "stop",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "datetime"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "operation"=> [
+                "description"=> "",
+                "name"=> "operation",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
                 "default"=> null
             ],
             "duration"=> [
@@ -4212,21 +4243,9 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "empl_name"=> [
+            "order"=> [
                 "description"=> "",
-                "name"=> "empl_name",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "91"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "employee"=> [
-                "description"=> "",
-                "name"=> "employee",
+                "name"=> "order",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "int"
@@ -4247,61 +4266,17 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "id"=> [
+            "currency"=> [
                 "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> "0"
-            ],
-            "op_name"=> [
-                "description"=> "",
-                "name"=> "op_name",
+                "name"=> "currency",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
-                    "length"=> "50"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "operation"=> [
-                "description"=> "",
-                "name"=> "operation",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
+                    "length"=> "10"
                 ],
                 "iskey"=> false,
                 "required"=> true,
                 "default"=> null
-            ],
-            "order"=> [
-                "description"=> "",
-                "name"=> "order",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "start"=> [
-                "description"=> "",
-                "name"=> "start",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "datetime"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "CURRENT_TIMESTAMP"
             ],
             "status"=> [
                 "description"=> "",
@@ -4318,12 +4293,37 @@ return [
                 "required"=> false,
                 "default"=> "w"
             ],
-            "stop"=> [
+            "empl_name"=> [
                 "description"=> "",
-                "name"=> "stop",
+                "name"=> "empl_name",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "datetime"
+                    "proto"=> "varchar",
+                    "length"=> "91"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "op_name"=> [
+                "description"=> "",
+                "name"=> "op_name",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "50"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "docnum"=> [
+                "description"=> "",
+                "name"=> "docnum",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
                 ],
                 "iskey"=> false,
                 "required"=> false,
@@ -4338,18 +4338,6 @@ return [
     ],
     "units"=> [
         "fields"=> [
-            "type"=> [
-                "description"=> "",
-                "name"=> "type",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
             "unit"=> [
                 "description"=> "",
                 "name"=> "unit",
@@ -4363,10 +4351,22 @@ return [
                 "default"=> null,
                 "referencedBy"=> [
                     [
-                        "table"=> "catalog",
+                        "table"=> "products",
                         "field"=> "units_unit"
                     ]
                 ]
+            ],
+            "type"=> [
+                "description"=> "",
+                "name"=> "type",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
             ]
         ],
         "name"=> "units",
@@ -4375,8 +4375,8 @@ return [
         "type"=> "table",
         "keyFld"=> "unit",
         "relations"=> [
-            "catalog"=> [
-                "table"=> "catalog",
+            "products"=> [
+                "table"=> "products",
                 "field"=> "units_unit",
                 "type"=> "inbound"
             ]
@@ -4384,17 +4384,6 @@ return [
     ],
     "usergroups"=> [
         "fields"=> [
-            "description"=> [
-                "description"=> "",
-                "name"=> "description",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "text"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
             "groupid"=> [
                 "description"=> "",
                 "name"=> "groupid",
@@ -4404,6 +4393,17 @@ return [
                     "length"=> "50"
                 ],
                 "iskey"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
+            "description"=> [
+                "description"=> "",
+                "name"=> "description",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
                 "required"=> false,
                 "default"=> null
             ],
@@ -4428,103 +4428,6 @@ return [
     ],
     "users"=> [
         "fields"=> [
-            "active"=> [
-                "description"=> "",
-                "name"=> "active",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "tinyint"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "1"
-            ],
-            "creationtime"=> [
-                "description"=> "",
-                "name"=> "creationtime",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "datetime"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "CURRENT_TIMESTAMP"
-            ],
-            "email"=> [
-                "description"=> "",
-                "name"=> "email",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "fname"=> [
-                "description"=> "",
-                "name"=> "fname",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "lastlogin"=> [
-                "description"=> "",
-                "name"=> "lastlogin",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "datetime"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "lname"=> [
-                "description"=> "",
-                "name"=> "lname",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "password"=> [
-                "description"=> "",
-                "name"=> "password",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "type"=> [
-                "description"=> "",
-                "name"=> "type",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "enum",
-                    "vals"=> [
-                        "sys",
-                        "empl",
-                        "adm"
-                    ]
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
             "userid"=> [
                 "description"=> "",
                 "name"=> "userid",
@@ -4562,6 +4465,103 @@ return [
                         "field"=> "users_userid"
                     ]
                 ]
+            ],
+            "password"=> [
+                "description"=> "",
+                "name"=> "password",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "fname"=> [
+                "description"=> "",
+                "name"=> "fname",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "lname"=> [
+                "description"=> "",
+                "name"=> "lname",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "email"=> [
+                "description"=> "",
+                "name"=> "email",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "creationtime"=> [
+                "description"=> "",
+                "name"=> "creationtime",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "datetime"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "CURRENT_TIMESTAMP"
+            ],
+            "lastlogin"=> [
+                "description"=> "",
+                "name"=> "lastlogin",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "datetime"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "active"=> [
+                "description"=> "",
+                "name"=> "active",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "tinyint"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "1"
+            ],
+            "type"=> [
+                "description"=> "",
+                "name"=> "type",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "enum",
+                    "vals"=> [
+                        "sys",
+                        "empl",
+                        "adm"
+                    ]
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
             ]
         ],
         "name"=> "users",
@@ -4664,6 +4664,17 @@ return [
     ],
     "users_rights"=> [
         "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
             "access_rights_name"=> [
                 "description"=> "",
                 "name"=> "access_rights_name",
@@ -4679,17 +4690,6 @@ return [
                     "table"=> "access_rights",
                     "field"=> "name"
                 ]
-            ],
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null
             ],
             "users_userid"=> [
                 "description"=> "",

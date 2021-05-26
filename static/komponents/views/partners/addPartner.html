@@ -1,4 +1,4 @@
-<div class="modal" id="jobModal">
+<div class="modal" id="partnerModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body bg-light">
@@ -6,13 +6,11 @@
                     <div class="card-header-tab card-header-tab-animation card-header">
                         <div class="card-header-title">
                             <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
-                             <span id="jobid">Adaugati un Post</span>
-                            <span style="position: absolute; right: 50px; cursor: pointer" id="closeModal">X</span>
-
+                            Adaugati partener <span id="unitid"></span>
                         </div>
                     </div>
                     <div class="card-body" style="min-height: 200px">
-                        <div id="newJobModal" is="komponent" data-url="/views/jobs/details"></div>
+                        <div id="newPartnerModal" is="komponent" data-url="/views/partners/details"></div>
                     </div>
                 </div>
             </div>
@@ -31,11 +29,7 @@
                 k.$el.remove();
             });
 
-        if(k.data.instance.hasOwnProperty("id")){
-            $("#jobid").text("Vizualizare Post");
-        }
-
-        k.$el.find("#newJobModal")
+        k.$el.find("#newPartnerModal")
             .komponent({
                 data: {
                     instance: k.data.instance,

@@ -32,7 +32,7 @@
                             <tr class="tr-job" onclick="openJobModal(this)" style="cursor:pointer;">
                                 <td><%= id %></td>
                                 <td><%= attributes.name %></td>
-                                <td><button class="btn-primary btn btn-sm" onclick="openDeleteModal(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
+                                <td><button class="btn-primary btn btn-sm" onclick="deleteUnit(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
                             </tr>
                             </tbody>
                         </table>
@@ -47,7 +47,7 @@
         $(src).data("locked", true);
         // console.log(src);
         komponentor
-            .intent('/views/jobs/job')
+            .intent('/views/jobs/addJob')
             .data({instance:$(src).data('instance')})
             .send()
             .then(function (k) {
@@ -58,21 +58,37 @@
             })
     }
 
-    function openDeleteModal(src, e){
-        $(src).data("locked", true);
-        // $(src).data('instance') =
-        komponentor
-            .intent('/views/jobs/deleteJobModal')
-            .data({instance:$(src).data('instance')})
-            .send()
-            .then(function (k) {
-                // console.log("**************",k);
-            })
-            .finally(function () {
-                $(src).removeData("locked");
-            })
-        e.stopPropagation();
+    function deleteUnit(src, e){
+        console.log("////",$(src).data("instance").attributes.unit)
 
+        komponentor.intent("/common/messagemodal").data({
+            body: "Esti sigur ca vrei sa stergi postul <br><strong>"+$(src).data("instance").attributes.name + "</strong> cu codul <strong>" + $(src).data("instance").id + "?</strong>",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        $(src).data('instance').delete().catch(function(data){
+                            console.log(data);
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
+        e.stopPropagation();
     }
 
 
@@ -85,9 +101,4 @@
                 .send();
         })
     }
-
-    // function del_job(src, e){
-    //     console.log($(src).parent().parent())
-    //     console.log(src, "yooooooooooooooooooooooooooooooooooooohohoho");
-    // }
 </script>

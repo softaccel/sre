@@ -6,18 +6,18 @@
           <div class="card-header-tab card-header-tab-animation card-header">
             <div class="card-header-title">
               <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
-              Detalii Post <span id="jobid"></span>
-             <span style="position: absolute; right: 50px; cursor: pointer" id="closeModal">X</span>
+              Detalii Produs <span id="jobid"></span>
+              <span style="position: absolute; right: 50px; cursor: pointer" id="closeModal">X</span>
             </div>
           </div>
           <div class="card-body" style="min-height: 200px">
-              <div id="updateJobModal" is="komponent" data-url="/views/jobs/details"></div>
-            </div>
+            <div id="updateProductModal" is="komponent" data-url="/views/products/details"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 </div>
 <script>
   function init_komponent(k){
@@ -30,7 +30,7 @@
               k.$el.remove();
             });
 
-    k.$el.find("#updateJobModal")
+    k.$el.find("#updateProductModal")
             .komponent({
               data: {
                 instance: k.data.instance,

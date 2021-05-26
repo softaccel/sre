@@ -3,7 +3,7 @@
         <div class="page-title-wrapper">
             <div class="page-title-heading">
                 <div class="page-title-icon">
-                    <i class="pe-7s-car icon-gradient bg-mean-fruit"></i>
+                    <i class="metismenu-icon fa fa-book icon-gradient bg-mean-fruit"></i>
                 </div>
                 <div>Catalog
                     <div class="page-title-subheading"></div>
@@ -19,7 +19,7 @@
     <div>
         <div class="row">
             <div class="col">
-                    <div class="card">
+                <div class="card">
                         <div class="card-body">
                             <form id="filterUsers"></form>
                             <table class="table table-sm table-hover">
@@ -29,32 +29,26 @@
                                     <th>Denumire</th>
                                     <th>Tip</th>
                                     <th>P.U.</th>
+                                    <th>U.M.</th>
+                                    <th>Cod</th>
+                                    <th>Documente</th>
+                                    <th>Stoc</th>
+<!--                                    <th>Moneda</th>-->
                                     <th>Stare</th>
-                                    <th width="100">
-                                        <button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Adauga</button>
-                                    </th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr>
-                                    <td>3</td>
-                                    <td>tabla metal 4mm</td>
-                                    <td>materie prima</td>
-                                    <td>4 EURO / kg</td>
-                                    <td><span class="badge badge-secondary">inactiv</span></td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm" onclick="komponentor.intent('/views/catalog/reper').send()"><i class="fa fa-edit"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>lacatuserie</td>
-                                    <td>servicii</td>
-                                    <td>10 EURO / ora</td>
-                                    <td><span class="badge badge-secondary">inactiv</span></td>
-                                    <td width="100">
-                                        <button class="btn btn-warning btn-sm" onclick="komponentor.intent('/views/catalog/reper').send()"><i class="fa fa-edit"></i></button>
-                                    </td>
+                                <tbody id="catalogList" data-resourcetype="collection">
+                                <tr onclick="openJobModal(this)" style="cursor:pointer;">
+                                    <td><%= id %></td>
+                                    <td><%= attributes.name %></td>
+                                    <td><%= attributes.type %></td>
+                                    <td><%= attributes.unit_price + " " + relationships.currency.id + "/ " + relationships.units_unit.id %></td>
+                                    <td><%= relationships.units_unit.id %></td>
+                                    <td><%= attributes.code %></td>
+                                    <td><%= attributes.docs===null ? "None" : attributes.docs %></td>
+                                    <td><%= relationships.default_stock.type %></td>
+<!--                                    <td><%= attributes.currency %></td>-->
+                                    <td><span class="badge badge-secondary"><%= attributes.active === "1" ? "Activ" : "Inactiv" %></span></td>
                                 </tr>
                                 </tbody>
 
@@ -72,19 +66,33 @@
                                 </tr>
                                 </tfoot>
                             </table>
-
-                            <script>
-                                function init_komponent(k,html) {
-                                    // $("#users").apiator({url:apiRoot+"/users?page[users][limit]=20"});
-
-                                    // k.exec = function (options) {
-                                    //     console.log(options);
-                                    // }
-                                }
-                            </script>
                         </div>
                     </div>
-                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    function openJobModal(src){
+        $(src).data("locked", true);
+        // console.log(src);
+        komponentor
+            .intent('/views/products/updateProduct')
+            .data({instance:$(src).data('instance')})
+            .send()
+            .then(function (k) {
+                console.log("**************",k);
+            })
+            .finally(function () {
+                $(src).removeData("locked");
+            })
+    }
+
+    function init_komponent(k){
+        // console.log(apiRoot+"/products");
+
+        let instance = $("#catalogList").apiator(apiRoot+"/products").data("instance");
+        console.log(instance);
+    }
+</script>
