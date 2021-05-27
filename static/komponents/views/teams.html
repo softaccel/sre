@@ -6,8 +6,8 @@
         <div class="col">
             <div class="card">
                 <div class="card-body">
-                    <div class="row" data-resourcetype="collection" id="teamsList" data-type="teams" >
-                        <div class="col-2" onclick="komponentor.intent('/views/teams/team').data($(this).data('instance')).send()">
+                    <div class="row" data-resourcetype="collection" id="teamsList" data-type="teams" data-paging="#teamsListPaging">
+                        <div class="col-2" onclick="teamModal(this)">
                             <div class="card" >
                                 <div class="card-body text-center">
                                     <div class="d-inline-block" style="width: 60px">
@@ -21,11 +21,10 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <!-- HTML TEMPLATE SECTION: STOP-->
                 </div>
-                <div class="card-footer" id="employeesPaging">
+                <div class="card-footer" id="teamsListPaging">
                     <div class="btn-group" id="" data-pagesize="20">
                         <button data-type="first" class="btn btn-outline-secondary">&lt;&lt;</button>
                         <button data-type="prev" class="btn btn-outline-secondary">&lt;</button>
@@ -41,6 +40,9 @@
 
 <script>
 
+    function teamModal(src) {
+        komponentor.intent('/views/teams/team').data({instance: $(src).data('instance')}).send();
+    }
     function init_komponent(k,html) {
         $("#teamsList").apiator({url:apiRoot+"/teams"});
 

@@ -500,7 +500,6 @@
 
 				storage.read(_item,_item.url,{})
 					.then(function (resp) {
-						console.log("Reading data",this,resp);
 						let data = resp.data;
 						let textStatus = resp.textStatus;
 						let jqXHR = resp.jqXHR;
@@ -783,6 +782,22 @@
 
 		};
 
+		_item.remove = function() {
+			console.log("removing");
+			for(let i=_item.views.length-1 ; i>=0 ; i--) {
+				_item.views[i].remove();
+			}
+
+			if(!_item.collection) {
+				return;
+			}
+			for(i=0;i<_item.collection.children.length;i++) {
+				if(_item.collection.children[i].id===_item.id) {
+					_item.collection.children.splice(i,1);
+					break;
+				}
+			}
+		};
 
 		/**
 		 * delete item
@@ -801,12 +816,8 @@
 				// remove from storage
 				storage.delete(_item,_item.deleteUrl,{})
 					.then(
-						function (resp) {
-							// console.log("Deleting stuff",resp,this);
-							for(let i=_item.views.length-1 ; i>=0 ; i--) {
-								_item.views[i].remove();
-							}
-							// todo: delete from collection
+						function () {
+							_item.remove();
 							resolve();
 						}
 
@@ -996,10 +1007,9 @@
 		 */
 		_itemview.render = function (returnView) {
 
+			console.log("rendering");
 			if(returnView) {
 				this.el = createElementFromTemplate();
-				// this.el.data("view",_view);
-				console.log("return view");
 				return this.el;
 			}
 
@@ -1014,15 +1024,13 @@
 				renderedEl.css("display", "");
 			}
 
-			renderedEl.insertBefore(_itemview.el[0]);
-
-			_itemview.el.remove();
+			// renderedEl.insertBefore(_itemview.el[0]);
+			//
+			// _itemview.el.remove();
+			_itemview.el.replaceWith(renderedEl);
 			_itemview.el = renderedEl;
-			if(_itemview.id=="employeeDetails") {
 
-			}
-
-			_itemview.dispatch('render',{src:_itemview,item:_itemview.item});
+			// _itemview.dispatch('render',{src:_itemview,item:_itemview.item});
 			return _itemview.el;
 		};
 
@@ -1036,12 +1044,9 @@
 			_itemview.el.fadeOut({
 				complete: ()=>{
 					_itemview.el.remove();
-					// delete _itemview.item.views[idx];
-					// _view.item.collection.removeItem(_view.item);
 				}
 			});
 
-			// this.dispatch('remove',{src:_view,item:_view.item});
 		};
 
 		return _itemview;
@@ -1210,8 +1215,6 @@
 					_collection.view.render();
 				}
 
-				_collection.dispatch("load",{source:_collection,type:"load",data:data});
-
 				return _collection;
 			}
 
@@ -1219,7 +1222,6 @@
 			if(data.constructor===Object) {
 				let newItem = _collection.addItem(data);
 
-				console.log("render new item as added to current collection",data);
 				if(_collection.view && _collection.view.el) {
 					_collection.view.render();
 				}
@@ -1303,44 +1305,95 @@
 		/**
 		 *
 		 * @param itemData
+		 * @returns {{data: null}}
 		 */
-		_collection.createItem = function(itemData) {
+		function parseData4InsertUpdate(itemData)
+		{
 
-			let jsonApiDoc = {
-				data: {
-					type: this.type,
-					attributes:  {},
-					relationships: {}
-				}
-			};
 
-			for(let attr in itemData) {
-				if(itemData[attr] && typeof itemData[attr]==="object") {
-					jsonApiDoc.data.relationships[attr] = {
-						data: itemData[attr]
-					};
-					continue;
-				}
-				jsonApiDoc.data.attributes[attr] = itemData[attr];
+			if(itemData===null) {
+				return null;
 			}
 
+			if(typeof itemData !== "object") {
+				throw "Invalid item data: "+itemData;
+			}
+
+			if(itemData.constructor===Array) {
+				let resource = [];
+				itemData.forEach(function (item) {
+					resource.push(parseData4InsertUpdate(item));
+				});
+				return resource;
+			}
+
+			if(itemData.constructor!==Object) {
+				throw "Invalid case";
+			}
+
+			let resource = {};
+
+
+			if(!itemData.hasOwnProperty("type") && !itemData.hasOwnProperty("attributes") ) {
+				let tmp = {attributes:{}};
+				Object.assign(tmp.attributes, itemData);
+				itemData = tmp;
+			}
+			else if(itemData.hasOwnProperty("type")) {
+				resource.type = itemData.type;
+			}
+
+			Object.getOwnPropertyNames(itemData.attributes).forEach(function (attr) {
+				if(itemData.attributes[attr] && typeof itemData.attributes[attr]==="object") {
+					if(!resource.relationships) {
+						resource.relationships = {}
+					}
+					resource.relationships[attr] = {
+						data: parseData4InsertUpdate(itemData.attributes[attr])
+					};
+					return;
+				}
+				if(!resource.attributes) {
+					resource.attributes = {}
+				}
+				resource.attributes[attr] = itemData.attributes[attr];
+			});
+			// for(let attr in itemData.attributes) {
+			//
+			// }
+
+			return resource;
+		}
+		/**
+		 *
+		 * @param itemData
+		 */
+		_collection.createItem = function(itemData) {
+			let jsonApiDoc = {data: parseData4InsertUpdate(itemData)};
 			let _self = this;
 
 			return new Promise(function (resolve,reject) {
 				if(!_self.insertUrl) {
 					_self.insertUrl = _self.url;
 				}
+				// console.log(JSON.stringify(jsonApiDoc));
+				console.log("createItem");
 
 				storage
 					.create(_self,_self.insertUrl,{contentType:"application/vnd.api+json"},JSON.stringify(jsonApiDoc))
 					.then(function (resp) {
-						console.log("Creting stuff",this,resp);
 						let data = resp.data;
 						let newItem = _self.receiveRemoteData(data);
+						console.log("recv data");
+
 						resolve(newItem);
 					})
 					.catch(function (resp) {
+						console.log("fail recv data");
 						reject(resp);
+					})
+					.finally(function () {
+						console.log("finally recv data");
 					})
 			});
 		};
@@ -1391,6 +1444,7 @@
 		function parse(data) {
 			flattenDoc(data);
 			let doc = buildDb(data);
+			// console.log(data);
 
 			if (!data.hasOwnProperty("data"))
 				return data;
@@ -1451,24 +1505,23 @@
 		 * @returns {_collectionView}
 		 */
 		_collectionView.render = function () {
-			//console.log("render Collection View",this);
 			if($(this.itemsContainer.css("display")==="none")) {
-				$(this.itemsContainer).css("display", "");
+				$(this.itemsContainer).css("display", null);
 			}
 
 			if(this.collection.navtype==="page") {
 				this.reset();
 			}
 
-			if(!this.collection.items.length) {
+			if(this.collection.items.length===0) {
 				this.renderEmpty();
 			}
+
 			this.collection.items.forEach(function (item) {
 				item.views.forEach(function (view) {
-					if(view.container!==this) {
-						return;
+					if(view.container===this) {
+						this.append(view.render(true));
 					}
-					this.append(view.render(true));
 				},this);
 
 			},this);
@@ -1492,7 +1545,7 @@
 			return this;
 		};
 
-		_collectionView.renderEmpty = function(returnView) {
+		_collectionView.renderEmpty = function() {
 			if(!this.collection.emptyview)
 				return this;
 
@@ -1529,6 +1582,7 @@
 			throw "Invalid element for apiator";
 			// return console.log("Invalid element", opts, this);
 		}
+
 		if(typeof opts==="string") {
 			opts = {
 				url: opts
@@ -1577,7 +1631,7 @@
 					" Please define a valid resource on element "+this.attr("id"));
 		}
 
-		$(this).data("instance",instance);
+		this.data("instance",instance);
 
 		if(instance.url) {
 			instance.loadFromRemote()
@@ -1589,6 +1643,7 @@
 				// });
 		}
 
+		console.log(instance);
 		return (options.hasOwnProperty("returninstance") && opts.returninstance)?instance:this;
 	};
 

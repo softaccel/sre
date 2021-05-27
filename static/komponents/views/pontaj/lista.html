@@ -115,7 +115,7 @@
     function init_komponent(k) {
         let url = apiRoot + "/tt_expanded?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10";
 
-        if (!k.data) {
+        if (k.data) {
             let emplid;
             if(k.data.instance && k.data.instance.type==="employees") {
                 emplid = k.data.instance.id;

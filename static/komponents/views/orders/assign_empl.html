@@ -89,88 +89,9 @@
 
 
 
-        k.$el.find("select[name=operation]").select2({
-            ajax:{
-                url: apiRoot+"/operations",
-                minimumInputLength: 2,
-                dataType: 'json',
-                data: (params)=>{
-                    let limit = 5;
-                    let p = {
-                        "page[operations][offset]":params.page?(params.page-1)*limit:0,
-                        "page[operations][limit]":limit
-                    };
-                    if(params.term) {
-                        p.filter = "name~=~" + params.term;
-                    }
-                    return p;
-                },
-                processResults: function (data) {
-                    let result = {results:[]};
-                    data.data.forEach(function (item) {
-                        result.results.push({
-                            id: item.id,
-                            text: item.attributes.name,
-                            // data: item
+        k.$el.find("select[name=operation]").select2wrapper({placeholder:null,url:apiRoot+"/operations",labelfld:"name"});
+        k.$el.find("select[name=currency]").select2wrapper({placeholder:null,url:apiRoot+"/currencies?sort=id",labelfld:"id"});
+        k.$el.find("select[name=emplid]").select2wrapper({placeholder:null,url:apiRoot+"/employees_names",labelfld:"fullname"});
 
-                        })
-                    });
-                    return result;
-                }
-            }
-        });
-
-        k.$el.find("select[name=currency]").select2({
-            ajax:{
-                url: apiRoot+"/currencies?sort=id",
-                minimumInputLength: 2,
-                dataType: 'json',
-                data: (params)=>{return params.term ? {filter: "name~=~" + params.term} : {}},
-                processResults: function (data) {
-                    let result = {results:[]};
-                    data.data.forEach(function (item) {
-                        result.results.push({
-                            id: item.id,
-                            text: item.id + " (" + item.attributes.desc + ")"
-                        })
-                    });
-                    return result;
-                }
-            }
-        });
-
-
-        k.$el.find("select[name=emplid]").select2({
-            ajax:{
-                url: apiRoot+"/employees_names",
-                minimumInputLength: 2,
-                dataType: 'json',
-                templateSelection: function(data,container) {
-                    console.log("-------",data,container);
-
-                },
-                data: (params)=>{
-                    let limit = 5;
-                    let p = {};
-                    p["page[employees_names][offset]"] = params.page?(params.page-1)*limit:0;
-                    p["page[employees_names][limit]"]  = limit;
-                    if(params.term) {
-                        p.filter = "fullname~=~" + params.term;
-                    }
-                    return p;
-                },
-                processResults: function (data) {
-                    let result = {results:[],pagination:{more:false}};
-                    data.data.forEach(function (item) {
-                        result.results.push({
-                            id: item.id,
-                            text: item.attributes.fullname
-                        })
-                    });
-                    result.pagination.more = (data.meta.totalRecords - data.meta.offset - data.data.length) > 0;
-                    return result;
-                }
-            }
-        });
     }
 </script>

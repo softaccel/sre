@@ -1,0 +1,224 @@
+<style>
+
+    #orderPartsList{
+        list-style: none;
+        padding: 0px;
+        margin: 0px;
+    }
+    .btn input{
+        width: 60px;
+        padding: 0px;
+        font-size: 0.9em;
+    }
+
+    #orderPartsList>li{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        box-shadow: silver 2px 2px 2px;
+        background: #f5f5f5;
+        margin-bottom: 5px;
+        padding: 5px;
+    }
+    #orderPartsList>li>span{
+        flex-grow: 3;
+        flex-basis: 25%;
+        /*margin: 10px;*/
+
+    }
+    #orderPartsList>li>span.checkbox{
+        flex-shrink: 0;
+        flex-grow: 0;
+        flex-basis: 5%;
+    }
+    #orderPartsList>li>span.partid{
+        flex-shrink: 0;
+        flex-grow: 1;
+        flex-basis: 15%;
+    }
+
+    #orderPartsList>li>span:last-child{
+        text-align: right;
+    }
+    #orderPartsList>li.selected{
+        background: #555555;
+        color: white;
+
+    }
+</style>
+<div class="orderPartsMe">
+    <div class="alert alert-primary " role="alert">
+        <i class="fa fa-filter"></i> Filtrare
+        <button class="btn btn-sm btn-secondary" onclick="showSelected()">Selectate</button>
+        <button class="btn btn-sm btn-secondary" onclick="showZero()">Zero bucati</button>
+        <button class="btn btn-sm btn-secondary" onclick="showNonZero()">Diferit de zero</button>
+        <button class="btn btn-sm btn-secondary" onclick="showAll()">Toate</button>
+    </div>
+    <div class="alert alert-info " role="alert">
+        <i class="fa fa-sort"></i>  Ordonare
+        <button class="btn btn-sm btn-secondary">Denumire</button>
+        <button class="btn btn-sm btn-secondary">Bucati</button>
+    </div>
+    <div class="alert alert-success " role="alert">
+        <i class="fa fa-traffic-light"></i> Actiuni
+        <button class="btn btn-sm btn-secondary" id="printButton">Tiparire etichete</button>
+    </div>
+    <div class="orderPartsListHeader mt-3">
+        <input type="checkbox" onclick="toggleAll(this)" id="toggleAllCheckbox"/>
+        <!--<button  class="btn btn-success"><i class="fa fa-print"></i> </button>-->
+    </div>
+    <ul id="orderPartsList">
+        <li onclick="toggleSelect(this)">
+            <span class="checkbox">
+                <input type="checkbox" onclick="event.stopPropagation();toggleSelect(this.parentNode)">
+            </span>
+            <span class="partid"><%= attributes.partid %></span>
+            <span class="name"><%= attributes.name %></span>
+            <span class="count"><input class="countNo" type="number" value="<%= Math.round(attributes.qty) %>" size="3" onclick="event.stopPropagation()"> bucati</span>
+        </li>
+    </ul>
+</div>
+<!--<div class="row printable">-->
+<!--    <div class="card mb-2 col-sm-6 col-md-4 col-lg-3" >-->
+<!--        <div class="card-body text-center">-->
+<!--            <div class="count"><%= Math.round(attributes.qty*100)/100 %> bucati</div>-->
+<!--            <svg class="barcode" jsbarcode-height="50" jsbarcode-width="1"-->
+<!--                 jsbarcode-value="<%= attributes.partid %>"-->
+<!--                 jsbarcode-textmargin="0"-->
+<!--                 jsbarcode-fontoptions="bold">-->
+<!--            </svg><br>-->
+<!--            <div class="name"><%= attributes.name %></div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+
+<script>
+    function showSelected() {
+        showAll();
+        $("#orderPartsList").children().not(".selected").addClass("d-none")
+    }
+    function showAll() {
+        $("#orderPartsList").children().removeClass("d-none");
+    }
+    
+    function showNonZero() {
+        showAll();
+        $("#orderPartsList").children().each(function () {
+            if($(this).find(".countNo").val()*1===0) {
+                $(this).addClass("d-none");
+            }
+        });
+    }
+
+    function showZero() {
+        showAll();
+        $("#orderPartsList").children().each(function () {
+            if($(this).find(".countNo").val()*1!==0) {
+                $(this).addClass("d-none");
+            }
+        });
+    }
+
+    function toggleAll(src) {
+        let checked = $(src).prop("checked");
+        $("#orderPartsList").children().each(function (i) {
+            toggleSelect(this,checked);
+        });
+    }
+
+    function toggleSelect(src,state) {
+        state = state!==undefined?state:!$(src).hasClass('selected');
+        $(src).find("input[type=checkbox]").prop("checked",state);
+        if(state) {
+            $(src).addClass('selected').find("input[type=checkbox]").prop("checked",true);
+        }
+        else {
+            $(src).removeClass('selected');
+        }
+        let tmp = $("#orderPartsList").children();
+        $("#toggleAllCheckbox").prop("checked",(tmp.length===tmp.filter(".selected").length));
+    }
+
+
+
+    function init_komponent(k) {
+        $("#orderPartsList").apiator({
+            type: "inventory",
+            resourcetype: "collection"
+        }).data("instance").setUrl(apiRoot+"/orders/"+k.data.instance.id+"/inventory_wmeta?page[inventory_wmeta][limit]=1000").loadFromRemote().then(function () {
+            JsBarcode(".barcode").init();
+        });
+
+        function printLabels() {
+            let els = $("#orderPartsList").children(".selected").clone(true);
+            if(!els.length) {
+                return;
+            }
+
+            console.log( k.data.instance);
+            // return;;
+            let ronum = k.data.instance.relationships.doc_id.attributes.docnum;
+            let belegnum;
+            for(let i=0;i<k.data.instance.relationships.orders_meta.length;i++) {
+                if(k.data.instance.relationships.orders_meta[i].attributes.meta_key==="K.F.E_BelegKopf.BelegNummer") {
+                    belegnum = k.data.instance.relationships.orders_meta[i].attributes.meta_val;
+                    break;
+                }
+            }
+            let printJob = {
+                name: "container",
+                children:[]
+            };
+            els.each(function () {
+                for(i=0;i<$(this).find(".countNo").val();i++) {
+                    let elInstance = $(this).data("instance");
+                    printJob.children.push(
+                        {
+                            name: "container",
+                            attributes:{
+                                justification: "center"
+                            },
+                            children: [
+                                {
+                                    name: "text",
+                                    val: elInstance.attributes.name.substr(0,60).padEnd(60," ")
+                                },
+                                {
+                                    name: "barcode",
+                                    val: elInstance.id
+                                },
+                                {
+                                    name: "text",
+                                    val: elInstance.attributes.partid
+                                },
+                                {
+                                    name: "text",
+                                    val: "Bestellnum: " + belegnum
+                                },
+                                {
+                                    name: "text",
+                                    val: "Auftragnum: " + ronum
+                                },
+                                {
+                                    name: "feed",
+                                    attributes:{
+                                        lines: 3
+                                    }
+                                }
+                            ]
+                        }
+                    );
+                }
+            });
+
+            // return console.log(printJob);
+            komponentor.intent("/common/posprint").data(printJob).send();
+        }
+
+
+        k.$el.find("#printButton").on("click",printLabels)
+
+    }
+</script>
+

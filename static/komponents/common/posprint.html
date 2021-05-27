@@ -1,0 +1,15 @@
+<script src="assets/js/obj2xml.js"></script>
+
+<script>
+    function init_komponent(k) {
+        $(document).ready(function () {
+
+            let xml = "<?xml version='1.0' standalone='yes'?>" + obj2xml(k.data);
+            $.post({
+                url: posPrintUrl,
+                data: xml
+            });
+        });
+
+    }
+</script>

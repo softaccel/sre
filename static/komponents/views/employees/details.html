@@ -39,7 +39,7 @@
         <div class="row hide-on-edit">
             <div class="col-3">ID Angajat</div>
             <div class="col-9"><%= id %></div>
-            <div class="col-9"><input name="id" class="form-control form-control-sm" type="text" disabled></div>
+            <div class="col-9"><input name="id" class="form-control form-control-sm" type="text"></div>
         </div>
         <div class="row">
             <div class="col-3">Prenume</div>
@@ -142,18 +142,7 @@
 <script>
 
     function update(data,instance) {
-        instance.update(data)
-            .then(function () {
-                $('#employeeSummary').removeClass('editMode');
-            })
-            .catch(function (jqxhr) {
-                if(jqxhr.errorThrown==="Conflict") {
-                    komponentor.intent("/common/errormodal").data({
-                        body: "Card-ul este asociat cu alt angajat.<br> Pentru a il asociat cu acest angajat, mai intai trebuie sa il dezasociati."
-                    }).send();
-                }
-                console.log(jqxhr);
-            })
+
     }
     
     function create(data,instance) {
@@ -176,11 +165,25 @@
         form.reset();
 
         util.captureFormSubmit(form,function (data) {
+            console.log("/////////////////",data);
             if(data.id!=="") {
-                update(data,instance);
+                instance.update(data)
+                    .then(function () {
+                        $('#employeeSummary').removeClass('editMode');
+                    })
+                    .catch(function (jqxhr) {
+                        if(jqxhr.errorThrown==="Conflict") {
+                            komponentor.intent("/common/errormodal").data({
+                                body: "Card-ul este asociat cu alt angajat.<br> Pentru a il asociat cu acest angajat, mai intai trebuie sa il dezasociati."
+                            }).send();
+                        }
+                        console.log(jqxhr);
+                    });
             }
             else {
-                create(data,instance);
+                instance.createItem(data).then(function () {
+                    $("#cancelButton").click();
+                });
             }
         });
 
@@ -203,116 +206,57 @@
 
 
         if(!$jobtitle.data("select2-id")) {
-            $jobtitle.select2({
-                placeholder: 'Alege functia',
-                allowClear: false,
-                ajax:{
-                    url: apiRoot+"/jobs",
-                    minimumInputLength: 2,
-                    dataType: 'json',
-                    data: (params)=>{
-                        let limit = 5;
-                        let p = {
-                            "page[jobs][offset]":params.page?(params.page-1)*limit:0,
-                            "page[jobs][limit]":limit
-                        };
-                        if(params.term) {
-                            p.filter = "name~=~" + params.term;
-                        }
-                        return p;
-                    },
-                    processResults: function (data) {
-                        let result = {results:[]};
-                        data.data.forEach(function (item) {
-                            result.results.push({
-                                id: item.id,
-                                text: item.attributes.name,
-                                // data: item
-
-                            })
-                        });
-                        return result;
-                    }
-                }
-            });
+            $jobtitle.select2wrapper({url: apiRoot+"/jobs",placeholder:"Alege functia",labelfld:"name"});
         }
 
 
         if(!$team.data("select2-id")) {
-            $team.select2({
-                placeholder: 'Alege echipa',
-                allowClear: false,
-                ajax: {
-                    url: apiRoot + "/teams",
-
-                    minimumInputLength: 2,
-                    dataType: 'json',
-                    data: (params) => {
-                        let limit = 5;
-                        let p = {
-                            "page[jobs][offset]": params.page ? (params.page - 1) * limit : 0,
-                            "page[jobs][limit]": limit
-                        };
-                        if (params.term) {
-                            p.filter = "name~=~" + params.term;
-                        }
-                        return p;
-                    },
-                    processResults: function (data) {
-                        let result = {results: []};
-                        data.data.forEach(function (item) {
-                            result.results.push({
-                                id: item.id,
-                                text: item.attributes.name,
-                                // data: item
-
-                            })
-                        });
-                        return result;
-                    }
-                }
-            });
+            $jobtitle.select2wrapper({url: apiRoot+"/teams",placeholder:"Alege echipa",labelfld:"name"});
         }
     }
 
     function init_komponent(k) {
-        console.log("-------------",k);
-        let instance = k.data.instance;
-        let parent = k.parent;
-
-        console.log("////cancelButton////",k.$el.find("#cancelButton"));
-        k.$el.find("#cancelButton").on("click",function (e) {
-            console.log(e,parent);
-            if(e.target.form.id.value!=="") {
+        k.$el.find("#cancelButton").on("click", function (e) {
+            if (e.target.form.id.value !== "") {
                 $('#employeeSummary').removeClass('editMode');
                 return;
             }
-
-            parent.hideModal();
+            k.parent.hideModal();
         });
 
-        if(instance.hasOwnProperty("items")) {
-            return
+        if(k.data.instance) {
+            let instance = k.data.instance;
+
+            if (instance.hasOwnProperty("items")) {
+                return k;
+            }
+
+            let modUrl = {};
+            Object.assign(modUrl, instance.url);
+            delete modUrl.parameters['fields[employees]'];
+
+            instance.bindView($('#employeeSummary'))
+                .setUrl(modUrl)
+                .loadFromRemote()
+                .then(function () {
+                    k.$el.find("#cancelButton").off("click").on("click", function (e) {
+                        if (e.target.form.id.value !== "") {
+                            $('#employeeSummary').removeClass('editMode');
+                            return;
+                        }
+
+                        k.parent.hideModal();
+                    });
+                });
         }
 
-        let modUrl = {};
-        Object.assign(modUrl,instance.url);
-        delete modUrl.parameters['fields[employees]'];
-
-        instance.bindView($('#employeeSummary'))
-            .setUrl(modUrl)
-            .loadFromRemote()
-            .then(function () {
-                k.$el.find("#cancelButton").off("click").on("click",function (e) {
-                    console.log(e,parent);
-                    if(e.target.form.id.value!=="") {
-                        $('#employeeSummary').removeClass('editMode');
-                        return;
-                    }
-
-                    parent.hideModal();
-                });
+        if(k.data.emplId) {
+            $('#employeeSummary').apiator({
+                url: apiRoot+"/employees/"+k.data.emplId+"?include=team,jobtitle",
+                resourcetype: "item",
+                type: "employees"
             });
+        }
 
         return k;
     }

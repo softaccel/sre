@@ -1,0 +1,32 @@
+<div class="app-main__inner">
+    <div class="app-page-title">
+        <div class="page-title-wrapper">
+            <div class="page-title-heading">
+                <div class="page-title-icon">
+                    <i class="fa fa-truck icon-gradient bg-mean-fruit"></i>
+                </div>
+                <div>Livrari
+                    <div class="page-title-subheading"></div>
+                </div>
+            </div>
+            <div class="page-title-actions">
+            </div>
+        </div>
+    </div>
+    <div class="">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div is="komponent" data-url="/views/deliveries/list" data-replace="true"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function init_komponent(k) {
+        komponentor.loadKomponents(k.$el);
+    }
+</script>

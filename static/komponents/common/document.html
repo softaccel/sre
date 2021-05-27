@@ -1,0 +1,92 @@
+<div class="modal" id="newDocModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Comanda A654</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="about:blank" id="newDocIframe" width="100%"></iframe>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function makeDocument(iframe,content) {
+        console.log(iframe);
+        var destDocument = iframe.contentWindow.document;
+
+        try {
+            $(destDocument.body).html(content);
+            console.log($(destDocument.body).text());
+        } catch(e) {
+            console.log(e);
+        }
+
+
+        // Copy the new HTML document into the frame
+        //
+        // var destDocument = frame.contentDocument;
+        // var srcNode = doc.documentElement;
+        // var newNode = destDocument.importNode(srcNode, true);
+        // console.log(destDocument.body);
+        // destDocument.replaceChild(newNode, destDocument.documentElement);
+    }
+
+
+    function makeDocument1(content) {
+        var frame = document.getElementById("newDocIframe");
+
+        var doc = document.implementation.createHTMLDocument("New Document");
+        var $content = $(content);
+
+        try {
+            $(doc.body).append($content);
+        } catch(e) {
+            console.log(e);
+        }
+        // Copy the new HTML document into the frame
+
+        var destDocument = frame.contentDocument;
+        var srcNode = doc.documentElement;
+        var newNode = destDocument.importNode(srcNode, true);
+
+        destDocument.replaceChild(newNode, destDocument.documentElement);
+    }
+
+    function init_komponent(k) {
+        let $modal = k.$el.filter(".modal").remove().appendTo("body")
+                .on("hidden.bs.modal",function () {
+                    k.$el.remove();
+                })
+                .modal();
+        setTimeout(function (){
+            makeDocument(k.$el.find("iframe")[0],k.data.content);
+        },200);
+        // makeDocument($modal.find("iframe")[0]);
+        // makeDocument();
+
+        // let frame = document.getElementById("newDocIframe");
+        //
+        // let doc = document.implementation.createHTMLDocument("New Document");
+        // console.log(k.data.content);
+        // try {
+        //     $(doc.body).html(k.data.content);
+        // } catch(e) {
+        //     console.log(e);
+        // }
+        //
+        // // Copy the new HTML document into the frame
+        //
+        // let destDocument = frame.contentDocument;
+        // let srcNode = doc.documentElement;
+        // let newNode = destDocument.importNode(srcNode, true);
+        //
+        // destDocument.replaceChild(newNode, destDocument.documentElement);
+    }
+
+</script>

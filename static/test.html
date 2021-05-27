@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        @media print {
+            @page {
+                size: 50mm 150mm;
+            }
+        }
+
+        .pagebreak{
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+<div class="pagebreak">a</div>
+<div class="pagebreak">b</div>
+<div class="pagebreak">c</div>
+
+
+</body>
+</html>

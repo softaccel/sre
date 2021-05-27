@@ -1,0 +1,83 @@
+<style>
+    #deliveryContentsTable tr>td:first-child,#deliveryContentsTable tr>th:first-child{
+        display: none;
+    }
+
+    /*#deliveryContentsTable:hover tr>td:first-child,#deliveryContentsTable:hover tr>th:first-child{*/
+    /*    display: table-cell;*/
+    /*}*/
+</style>
+<div>
+    <button class="btn btn-primary" id="startScanBut"><i class="fa fa-barcode"></i> Scaneaza elemente</button>
+    <form id="deliveryContentsFilter"></form>
+    <table class="table table-striped table-hover" id="deliveryContentsTable">
+        <thead class="thead-light" id="deliveriesListHeader">
+        <tr>
+            <th></th>
+            <th class="align-top">
+                <a class="text-secondary" data-sortfld="label">Denumire
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                <input type="text" name="label" class="form-control-sm form-control" form="deliveryContentsFilter" data-operator="~=~">
+            </th>
+            <th class="align-top" style="width: 100px">
+                <a class="text-secondary" data-sortfld="label">Bucati
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+            </th>
+            <th class="align-top" style="min-width: 250px">
+                <a class="text-secondary" data-sortfld="docnum">Comanda
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+            </th>
+        </tr>
+        </thead>
+        <tbody id="deliveryContentsList" data-paging="#deliveryContentsListPaging" data-type="deliveries" data-resourcetype="collection"
+               data-offsetinp="#deliveryContentsOffsetInp" data-pagesizeinp="#deliveryContentsPageSizeInp">
+        <tr class="">
+            <td><button class="btn-success btn">OK</button></td>
+            <td></td>
+            <td><%= attributes.qty %></td>
+            <td></td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td></td>
+            <td colspan="6">
+
+                <div class="btn-group"  id="deliveryContentsListPaging" data-pagesize="10">
+                    <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+                    <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+                    <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+                    <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+                    <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+                </div>
+                Pagina <input type="number" name="offset" size="3" value="0" id="deliveryContentsOffsetInp">
+                <select id="deliveryContentsPageSizeInp">
+                    <option></option>
+                    <option>5</option>
+                    <option>10</option>
+                    <option>25</option>
+                    <option>50</option>
+                    <option>75</option>
+                </select> inregistrari pe pagina
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+
+<script>
+
+    function init_komponent(k) {
+        if(!k.data || !k.data.instance) {
+            return;
+        }
+        let url = apiRoot + "/deliveries/"+k.data.instance.id+"/deliveries_contents?include=inventory,inventory.order";
+        console.log(url);
+        k.$el.find("#deliveryContentsList").apiator(url);
+        k.$el.find("#startScanBut").on("click",function () {
+            komponentor.intent("/views/deliveries/scan").data({data:k.data}).send();
+        });
+    }
+
+
+</script>

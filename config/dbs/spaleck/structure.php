@@ -1,39 +1,5 @@
 <?php
 return [
-    "access_rights"=> [
-        "fields"=> [
-            "name"=> [
-                "description"=> "",
-                "name"=> "name",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "40"
-                ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> null,
-                "referencedBy"=> [
-                    [
-                        "table"=> "users_rights",
-                        "field"=> "access_rights_name"
-                    ]
-                ]
-            ]
-        ],
-        "name"=> "access_rights",
-        "description"=> "",
-        "comment"=> "",
-        "type"=> "table",
-        "keyFld"=> "name",
-        "relations"=> [
-            "users_rights"=> [
-                "table"=> "users_rights",
-                "field"=> "access_rights_name",
-                "type"=> "inbound"
-            ]
-        ]
-    ],
     "alloc_orders"=> [
         "fields"=> [
             "emplid"=> [
@@ -295,7 +261,7 @@ return [
                 "required"=> true,
                 "default"=> null,
                 "foreignKey"=> [
-                    "table"=> "catalog",
+                    "table"=> "products",
                     "field"=> "catid"
                 ]
             ]
@@ -313,7 +279,7 @@ return [
                 "fkfield"=> "employeeid"
             ],
             "catalog_catid"=> [
-                "table"=> "catalog",
+                "table"=> "products",
                 "field"=> "catid",
                 "type"=> "outbound",
                 "fkfield"=> "catalog_catid"
@@ -322,411 +288,6 @@ return [
                 "table"=> "maintenance",
                 "field"=> "assets_aid",
                 "type"=> "inbound"
-            ]
-        ]
-    ],
-    "catalog"=> [
-        "fields"=> [
-            "catid"=> [
-                "description"=> "",
-                "name"=> "catid",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null,
-                "referencedBy"=> [
-                    [
-                        "table"=> "assets",
-                        "field"=> "catalog_catid"
-                    ],
-                    [
-                        "table"=> "catalog_product_structure",
-                        "field"=> "parent"
-                    ],
-                    [
-                        "table"=> "catalog_product_structure",
-                        "field"=> "item"
-                    ],
-                    [
-                        "table"=> "catalog_properties",
-                        "field"=> "catid"
-                    ],
-                    [
-                        "table"=> "employees_ops",
-                        "field"=> "catalog_id"
-                    ],
-                    [
-                        "table"=> "orders_parts",
-                        "field"=> "catalog_id"
-                    ],
-                    [
-                        "table"=> "stocks_content",
-                        "field"=> "catalog_id"
-                    ],
-                    [
-                        "table"=> "stocks_initial",
-                        "field"=> "catalog_catid"
-                    ],
-                    [
-                        "table"=> "stocks_registry",
-                        "field"=> "catalog_id"
-                    ]
-                ]
-            ],
-            "name"=> [
-                "description"=> "",
-                "name"=> "name",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> null
-            ],
-            "code"=> [
-                "description"=> "",
-                "name"=> "code",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "type"=> [
-                "description"=> "",
-                "name"=> "type",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "enum",
-                    "vals"=> [
-                        "pcomposed",
-                        "product",
-                        "service",
-                        "asset"
-                    ]
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "unit_price"=> [
-                "description"=> "",
-                "name"=> "unit_price",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "units_unit"=> [
-                "description"=> "",
-                "name"=> "units_unit",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "units",
-                    "field"=> "unit"
-                ]
-            ],
-            "docs"=> [
-                "description"=> "",
-                "name"=> "docs",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "text"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "active"=> [
-                "description"=> "",
-                "name"=> "active",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "tinyint"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "1"
-            ],
-            "default_stock"=> [
-                "description"=> "",
-                "name"=> "default_stock",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "stocks",
-                    "field"=> "id"
-                ]
-            ],
-            "currency"=> [
-                "description"=> "",
-                "name"=> "currency",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "currencies",
-                    "field"=> "id"
-                ]
-            ]
-        ],
-        "name"=> "catalog",
-        "description"=> "",
-        "comment"=> "",
-        "type"=> "table",
-        "keyFld"=> "catid",
-        "relations"=> [
-            "units_unit"=> [
-                "table"=> "units",
-                "field"=> "unit",
-                "type"=> "outbound",
-                "fkfield"=> "units_unit"
-            ],
-            "default_stock"=> [
-                "table"=> "stocks",
-                "field"=> "id",
-                "type"=> "outbound",
-                "fkfield"=> "default_stock"
-            ],
-            "currency"=> [
-                "table"=> "currencies",
-                "field"=> "id",
-                "type"=> "outbound",
-                "fkfield"=> "currency"
-            ],
-            "assets"=> [
-                "table"=> "assets",
-                "field"=> "catalog_catid",
-                "type"=> "inbound"
-            ],
-            "catalog_product_structure"=> [
-                "table"=> "catalog_product_structure",
-                "field"=> "parent",
-                "type"=> "inbound"
-            ],
-            "catalog_product_structure_parent"=> [
-                "table"=> "catalog_product_structure",
-                "field"=> "parent",
-                "type"=> "inbound"
-            ],
-            "catalog_product_structure_item"=> [
-                "table"=> "catalog_product_structure",
-                "field"=> "item",
-                "type"=> "inbound"
-            ],
-            "catalog_properties"=> [
-                "table"=> "catalog_properties",
-                "field"=> "catid",
-                "type"=> "inbound"
-            ],
-            "employees_ops"=> [
-                "table"=> "employees_ops",
-                "field"=> "catalog_id",
-                "type"=> "inbound"
-            ],
-            "orders_parts"=> [
-                "table"=> "orders_parts",
-                "field"=> "catalog_id",
-                "type"=> "inbound"
-            ],
-            "stocks_content"=> [
-                "table"=> "stocks_content",
-                "field"=> "catalog_id",
-                "type"=> "inbound"
-            ],
-            "stocks_initial"=> [
-                "table"=> "stocks_initial",
-                "field"=> "catalog_catid",
-                "type"=> "inbound"
-            ],
-            "stocks_registry"=> [
-                "table"=> "stocks_registry",
-                "field"=> "catalog_id",
-                "type"=> "inbound"
-            ]
-        ]
-    ],
-    "catalog_product_structure"=> [
-        "fields"=> [
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null
-            ],
-            "parent"=> [
-                "description"=> "",
-                "name"=> "parent",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
-                ]
-            ],
-            "item"=> [
-                "description"=> "",
-                "name"=> "item",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
-                ]
-            ],
-            "qty"=> [
-                "description"=> "",
-                "name"=> "qty",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ]
-        ],
-        "name"=> "catalog_product_structure",
-        "description"=> "",
-        "comment"=> "",
-        "type"=> "table",
-        "keyFld"=> "id",
-        "relations"=> [
-            "parent"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
-                "type"=> "outbound",
-                "fkfield"=> "parent"
-            ],
-            "item"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
-                "type"=> "outbound",
-                "fkfield"=> "item"
-            ]
-        ]
-    ],
-    "catalog_properties"=> [
-        "fields"=> [
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> null
-            ],
-            "name"=> [
-                "description"=> "",
-                "name"=> "name",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "val"=> [
-                "description"=> "",
-                "name"=> "val",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "255"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "unit"=> [
-                "description"=> "",
-                "name"=> "unit",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "catid"=> [
-                "description"=> "",
-                "name"=> "catid",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
-                ]
-            ]
-        ],
-        "name"=> "catalog_properties",
-        "description"=> "",
-        "comment"=> "",
-        "type"=> "table",
-        "keyFld"=> "id",
-        "relations"=> [
-            "catid"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
-                "type"=> "outbound",
-                "fkfield"=> "catid"
             ]
         ]
     ],
@@ -745,10 +306,6 @@ return [
                 "default"=> null,
                 "referencedBy"=> [
                     [
-                        "table"=> "catalog",
-                        "field"=> "currency"
-                    ],
-                    [
                         "table"=> "currency_series",
                         "field"=> "currency"
                     ],
@@ -757,7 +314,15 @@ return [
                         "field"=> "currency"
                     ],
                     [
+                        "table"=> "orders",
+                        "field"=> "currency"
+                    ],
+                    [
                         "table"=> "orders_2_employees",
+                        "field"=> "currency"
+                    ],
+                    [
+                        "table"=> "products",
                         "field"=> "currency"
                     ],
                     [
@@ -800,11 +365,6 @@ return [
         "type"=> "table",
         "keyFld"=> "id",
         "relations"=> [
-            "catalog"=> [
-                "table"=> "catalog",
-                "field"=> "currency",
-                "type"=> "inbound"
-            ],
             "currency_series"=> [
                 "table"=> "currency_series",
                 "field"=> "currency",
@@ -815,8 +375,18 @@ return [
                 "field"=> "currency",
                 "type"=> "inbound"
             ],
+            "orders"=> [
+                "table"=> "orders",
+                "field"=> "currency",
+                "type"=> "inbound"
+            ],
             "orders_2_employees"=> [
                 "table"=> "orders_2_employees",
+                "field"=> "currency",
+                "type"=> "inbound"
+            ],
+            "products"=> [
+                "table"=> "products",
                 "field"=> "currency",
                 "type"=> "inbound"
             ],
@@ -873,6 +443,155 @@ return [
                 "field"=> "id",
                 "type"=> "outbound",
                 "fkfield"=> "currency"
+            ]
+        ]
+    ],
+    "deliveries"=> [
+        "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null,
+                "referencedBy"=> [
+                    [
+                        "table"=> "deliveries_contents",
+                        "field"=> "delivery"
+                    ]
+                ]
+            ],
+            "label"=> [
+                "description"=> "",
+                "name"=> "label",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "status"=> [
+                "description"=> "",
+                "name"=> "status",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "enum",
+                    "vals"=> [
+                        "created",
+                        "loading",
+                        "ready",
+                        "delivered",
+                        "received"
+                    ]
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "created"
+            ],
+            "dlv_date"=> [
+                "description"=> "",
+                "name"=> "dlv_date",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "date"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "lastupdate"=> [
+                "description"=> "",
+                "name"=> "lastupdate",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "datetime"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "CURRENT_TIMESTAMP"
+            ]
+        ],
+        "name"=> "deliveries",
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "table",
+        "keyFld"=> "id",
+        "relations"=> [
+            "deliveries_contents"=> [
+                "table"=> "deliveries_contents",
+                "field"=> "delivery",
+                "type"=> "inbound"
+            ]
+        ]
+    ],
+    "deliveries_contents"=> [
+        "fields"=> [
+            "delivery"=> [
+                "description"=> "",
+                "name"=> "delivery",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "deliveries",
+                    "field"=> "id"
+                ]
+            ],
+            "inventory"=> [
+                "description"=> "",
+                "name"=> "inventory",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "inventory",
+                    "field"=> "id"
+                ]
+            ],
+            "qty"=> [
+                "description"=> "",
+                "name"=> "qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ]
+        ],
+        "name"=> "deliveries_contents",
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "table",
+        "keyFld"=> "delivery",
+        "relations"=> [
+            "delivery"=> [
+                "table"=> "deliveries",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "delivery"
+            ],
+            "inventory"=> [
+                "table"=> "inventory",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "inventory"
             ]
         ]
     ],
@@ -1437,6 +1156,248 @@ return [
             ]
         ]
     ],
+    "employeesExtended"=> [
+        "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> "0"
+            ],
+            "fname"=> [
+                "description"=> "",
+                "name"=> "fname",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "lname"=> [
+                "description"=> "",
+                "name"=> "lname",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "bdate"=> [
+                "description"=> "",
+                "name"=> "bdate",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "date"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "cnp"=> [
+                "description"=> "",
+                "name"=> "cnp",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "15"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "address_1"=> [
+                "description"=> "",
+                "name"=> "address_1",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "address_2"=> [
+                "description"=> "",
+                "name"=> "address_2",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "city"=> [
+                "description"=> "",
+                "name"=> "city",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "postcode"=> [
+                "description"=> "",
+                "name"=> "postcode",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "county"=> [
+                "description"=> "",
+                "name"=> "county",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "country"=> [
+                "description"=> "",
+                "name"=> "country",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "Romania"
+            ],
+            "userid"=> [
+                "description"=> "",
+                "name"=> "userid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "20"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "docs"=> [
+                "description"=> "",
+                "name"=> "docs",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "team"=> [
+                "description"=> "",
+                "name"=> "team",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "teams",
+                    "field"=> "tid"
+                ]
+            ],
+            "activ"=> [
+                "description"=> "",
+                "name"=> "activ",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "tinyint"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "1"
+            ],
+            "jobtitle"=> [
+                "description"=> "",
+                "name"=> "jobtitle",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "50"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "card"=> [
+                "description"=> "",
+                "name"=> "card",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "30"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "jobname"=> [
+                "description"=> "",
+                "name"=> "jobname",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "100"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "teamname"=> [
+                "description"=> "",
+                "name"=> "teamname",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ]
+        ],
+        "relations"=> [
+            "team"=> [
+                "table"=> "teams",
+                "field"=> "tid",
+                "type"=> "outbound",
+                "fkfield"=> "team"
+            ]
+        ],
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "view",
+        "keyFld"=> "id"
+    ],
     "employees_names"=> [
         "fields"=> [
             "id"=> [
@@ -1493,7 +1454,7 @@ return [
                 "required"=> true,
                 "default"=> null,
                 "foreignKey"=> [
-                    "table"=> "catalog",
+                    "table"=> "products",
                     "field"=> "catid"
                 ]
             ],
@@ -1520,7 +1481,7 @@ return [
         "keyFld"=> "id",
         "relations"=> [
             "catalog_id"=> [
-                "table"=> "catalog",
+                "table"=> "products",
                 "field"=> "catid",
                 "type"=> "outbound",
                 "fkfield"=> "catalog_id"
@@ -1577,6 +1538,430 @@ return [
                 "type"=> "inbound"
             ]
         ]
+    ],
+    "inventory"=> [
+        "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null,
+                "referencedBy"=> [
+                    [
+                        "table"=> "deliveries_contents",
+                        "field"=> "inventory"
+                    ],
+                    [
+                        "table"=> "inventory_meta",
+                        "field"=> "order_part_id"
+                    ],
+                    [
+                        "table"=> "stocks_registry",
+                        "field"=> "oiid"
+                    ]
+                ]
+            ],
+            "order"=> [
+                "description"=> "",
+                "name"=> "order",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "orders",
+                    "field"=> "oid"
+                ]
+            ],
+            "name"=> [
+                "description"=> "",
+                "name"=> "name",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "tinytext"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "catalog_id"=> [
+                "description"=> "",
+                "name"=> "catalog_id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "products",
+                    "field"=> "catid"
+                ]
+            ],
+            "um"=> [
+                "description"=> "",
+                "name"=> "um",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "qty"=> [
+                "description"=> "",
+                "name"=> "qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,3"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "unit_price"=> [
+                "description"=> "",
+                "name"=> "unit_price",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "vat_proc"=> [
+                "description"=> "",
+                "name"=> "vat_proc",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "vat_value"=> [
+                "description"=> "",
+                "name"=> "vat_value",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "total_price"=> [
+                "description"=> "",
+                "name"=> "total_price",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ]
+        ],
+        "name"=> "inventory",
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "table",
+        "keyFld"=> "id",
+        "relations"=> [
+            "order"=> [
+                "table"=> "orders",
+                "field"=> "oid",
+                "type"=> "outbound",
+                "fkfield"=> "order"
+            ],
+            "catalog_id"=> [
+                "table"=> "products",
+                "field"=> "catid",
+                "type"=> "outbound",
+                "fkfield"=> "catalog_id"
+            ],
+            "deliveries_contents"=> [
+                "table"=> "deliveries_contents",
+                "field"=> "inventory",
+                "type"=> "inbound"
+            ],
+            "inventory_meta"=> [
+                "table"=> "inventory_meta",
+                "field"=> "order_part_id",
+                "type"=> "inbound"
+            ],
+            "stocks_registry"=> [
+                "table"=> "stocks_registry",
+                "field"=> "oiid",
+                "type"=> "inbound"
+            ]
+        ]
+    ],
+    "inventory_meta"=> [
+        "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
+            "order_part_id"=> [
+                "description"=> "",
+                "name"=> "order_part_id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "inventory",
+                    "field"=> "id"
+                ]
+            ],
+            "meta_key"=> [
+                "description"=> "",
+                "name"=> "meta_key",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "100"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "meta_val"=> [
+                "description"=> "",
+                "name"=> "meta_val",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ]
+        ],
+        "name"=> "inventory_meta",
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "table",
+        "keyFld"=> "id",
+        "relations"=> [
+            "order_part_id"=> [
+                "table"=> "inventory",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "order_part_id"
+            ]
+        ]
+    ],
+    "inventory_wmeta"=> [
+        "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> "0"
+            ],
+            "order"=> [
+                "description"=> "",
+                "name"=> "order",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "orders",
+                    "field"=> "oid"
+                ]
+            ],
+            "name"=> [
+                "description"=> "",
+                "name"=> "name",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "tinytext"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "catalog_id"=> [
+                "description"=> "",
+                "name"=> "catalog_id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "um"=> [
+                "description"=> "",
+                "name"=> "um",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "qty"=> [
+                "description"=> "",
+                "name"=> "qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,3"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "unit_price"=> [
+                "description"=> "",
+                "name"=> "unit_price",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "vat_proc"=> [
+                "description"=> "",
+                "name"=> "vat_proc",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "vat_value"=> [
+                "description"=> "",
+                "name"=> "vat_value",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "total_price"=> [
+                "description"=> "",
+                "name"=> "total_price",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "partid"=> [
+                "description"=> "",
+                "name"=> "partid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "design"=> [
+                "description"=> "",
+                "name"=> "design",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ]
+        ],
+        "relations"=> [
+            "order_id"=> [
+                "table"=> "orders",
+                "field"=> "oid",
+                "type"=> "outbound",
+                "fkfield"=> "order_id"
+            ]
+        ],
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "view",
+        "keyFld"=> "id"
     ],
     "jobs"=> [
         "fields"=> [
@@ -1848,16 +2233,16 @@ return [
                 "default"=> null,
                 "referencedBy"=> [
                     [
+                        "table"=> "inventory",
+                        "field"=> "order"
+                    ],
+                    [
                         "table"=> "orders_2_employees",
                         "field"=> "orderid"
                     ],
                     [
-                        "table"=> "orders_metaproperties",
+                        "table"=> "orders_meta",
                         "field"=> "order_id"
-                    ],
-                    [
-                        "table"=> "orders_parts",
-                        "field"=> "order"
                     ],
                     [
                         "table"=> "timetracking",
@@ -1938,6 +2323,28 @@ return [
                 "required"=> false,
                 "default"=> "CURRENT_TIMESTAMP"
             ],
+            "startwork_on"=> [
+                "description"=> "",
+                "name"=> "startwork_on",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "datetime"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "readytodeliver_on"=> [
+                "description"=> "",
+                "name"=> "readytodeliver_on",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "datetime"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
             "closed_on"=> [
                 "description"=> "",
                 "name"=> "closed_on",
@@ -1949,9 +2356,21 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "estimated_value"=> [
+            "order_value"=> [
                 "description"=> "",
-                "name"=> "estimated_value",
+                "name"=> "order_value",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "calculated_value"=> [
+                "description"=> "",
+                "name"=> "calculated_value",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "float",
@@ -1972,6 +2391,22 @@ return [
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> null
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "currencies",
+                    "field"=> "id"
+                ]
             ],
             "meta"=> [
                 "description"=> "",
@@ -1999,6 +2434,21 @@ return [
                     "table"=> "users",
                     "field"=> "userid"
                 ]
+            ],
+            "team"=> [
+                "description"=> "",
+                "name"=> "team",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "teams",
+                    "field"=> "tid"
+                ]
             ]
         ],
         "name"=> "orders",
@@ -2019,33 +2469,92 @@ return [
                 "type"=> "outbound",
                 "fkfield"=> "partner_id"
             ],
+            "currency"=> [
+                "table"=> "currencies",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "currency"
+            ],
             "created_by"=> [
                 "table"=> "users",
                 "field"=> "userid",
                 "type"=> "outbound",
                 "fkfield"=> "created_by"
             ],
+            "team"=> [
+                "table"=> "teams",
+                "field"=> "tid",
+                "type"=> "outbound",
+                "fkfield"=> "team"
+            ],
+            "inventory"=> [
+                "table"=> "inventory",
+                "field"=> "order",
+                "type"=> "inbound"
+            ],
             "orders_2_employees"=> [
                 "table"=> "orders_2_employees",
                 "field"=> "orderid",
                 "type"=> "inbound"
             ],
-            "orders_metaproperties"=> [
-                "table"=> "orders_metaproperties",
+            "orders_meta"=> [
+                "table"=> "orders_meta",
                 "field"=> "order_id",
-                "type"=> "inbound"
-            ],
-            "orders_parts"=> [
-                "table"=> "orders_parts",
-                "field"=> "order",
                 "type"=> "inbound"
             ],
             "timetracking"=> [
                 "table"=> "timetracking",
                 "field"=> "order",
                 "type"=> "inbound"
+            ],
+            "inventory_wmeta"=> [
+                "table"=> "inventory_wmeta",
+                "field"=> "order",
+                "type"=> "inbound"
             ]
         ]
+    ],
+    "orders_2_deliveries"=> [
+        "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
+            "order"=> [
+                "description"=> "",
+                "name"=> "order",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "delivery"=> [
+                "description"=> "",
+                "name"=> "delivery",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ]
+        ],
+        "name"=> "orders_2_deliveries",
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "table",
+        "keyFld"=> "id"
     ],
     "orders_2_employees"=> [
         "fields"=> [
@@ -2294,18 +2803,6 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "estimated_value"=> [
-                "description"=> "",
-                "name"=> "estimated_value",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,2"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
             "final_value"=> [
                 "description"=> "",
                 "name"=> "final_value",
@@ -2372,7 +2869,7 @@ return [
         "type"=> "view",
         "keyFld"=> "oid"
     ],
-    "orders_metaproperties"=> [
+    "orders_meta"=> [
         "fields"=> [
             "id"=> [
                 "description"=> "",
@@ -2400,9 +2897,9 @@ return [
                     "field"=> "oid"
                 ]
             ],
-            "prop"=> [
+            "meta_key"=> [
                 "description"=> "",
-                "name"=> "prop",
+                "name"=> "meta_key",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "varchar",
@@ -2412,9 +2909,9 @@ return [
                 "required"=> true,
                 "default"=> null
             ],
-            "value"=> [
+            "meta_val"=> [
                 "description"=> "",
-                "name"=> "value",
+                "name"=> "meta_val",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "text"
@@ -2424,7 +2921,7 @@ return [
                 "default"=> null
             ]
         ],
-        "name"=> "orders_metaproperties",
+        "name"=> "orders_meta",
         "description"=> "",
         "comment"=> "",
         "type"=> "table",
@@ -2435,187 +2932,6 @@ return [
                 "field"=> "oid",
                 "type"=> "outbound",
                 "fkfield"=> "order_id"
-            ]
-        ]
-    ],
-    "orders_parts"=> [
-        "fields"=> [
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null,
-                "referencedBy"=> [
-                    [
-                        "table"=> "stocks_registry",
-                        "field"=> "oiid"
-                    ]
-                ]
-            ],
-            "order"=> [
-                "description"=> "",
-                "name"=> "order",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "orders",
-                    "field"=> "oid"
-                ]
-            ],
-            "name"=> [
-                "description"=> "",
-                "name"=> "name",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "tinytext"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "catalog_id"=> [
-                "description"=> "",
-                "name"=> "catalog_id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "catalog",
-                    "field"=> "catid"
-                ]
-            ],
-            "um"=> [
-                "description"=> "",
-                "name"=> "um",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "45"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "qty"=> [
-                "description"=> "",
-                "name"=> "qty",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,3"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "unit_price"=> [
-                "description"=> "",
-                "name"=> "unit_price",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,2"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "vat_proc"=> [
-                "description"=> "",
-                "name"=> "vat_proc",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,2"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "vat_value"=> [
-                "description"=> "",
-                "name"=> "vat_value",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,2"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "total_price"=> [
-                "description"=> "",
-                "name"=> "total_price",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,2"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "currency"=> [
-                "description"=> "",
-                "name"=> "currency",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "meta"=> [
-                "description"=> "",
-                "name"=> "meta",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "json"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ]
-        ],
-        "name"=> "orders_parts",
-        "description"=> "",
-        "comment"=> "",
-        "type"=> "table",
-        "keyFld"=> "id",
-        "relations"=> [
-            "order"=> [
-                "table"=> "orders",
-                "field"=> "oid",
-                "type"=> "outbound",
-                "fkfield"=> "order"
-            ],
-            "catalog_id"=> [
-                "table"=> "catalog",
-                "field"=> "catid",
-                "type"=> "outbound",
-                "fkfield"=> "catalog_id"
-            ],
-            "stocks_registry"=> [
-                "table"=> "stocks_registry",
-                "field"=> "oiid",
-                "type"=> "inbound"
             ]
         ]
     ],
@@ -3092,6 +3408,411 @@ return [
             ]
         ]
     ],
+    "products"=> [
+        "fields"=> [
+            "catid"=> [
+                "description"=> "",
+                "name"=> "catid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null,
+                "referencedBy"=> [
+                    [
+                        "table"=> "assets",
+                        "field"=> "catalog_catid"
+                    ],
+                    [
+                        "table"=> "employees_ops",
+                        "field"=> "catalog_id"
+                    ],
+                    [
+                        "table"=> "inventory",
+                        "field"=> "catalog_id"
+                    ],
+                    [
+                        "table"=> "products_meta",
+                        "field"=> "catid"
+                    ],
+                    [
+                        "table"=> "products_structure",
+                        "field"=> "parent"
+                    ],
+                    [
+                        "table"=> "products_structure",
+                        "field"=> "item"
+                    ],
+                    [
+                        "table"=> "stocks_content",
+                        "field"=> "catalog_id"
+                    ],
+                    [
+                        "table"=> "stocks_initial",
+                        "field"=> "catalog_catid"
+                    ],
+                    [
+                        "table"=> "stocks_registry",
+                        "field"=> "catalog_id"
+                    ]
+                ]
+            ],
+            "name"=> [
+                "description"=> "",
+                "name"=> "name",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> null
+            ],
+            "code"=> [
+                "description"=> "",
+                "name"=> "code",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "type"=> [
+                "description"=> "",
+                "name"=> "type",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "enum",
+                    "vals"=> [
+                        "pcomposed",
+                        "product",
+                        "service",
+                        "asset"
+                    ]
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "unit_price"=> [
+                "description"=> "",
+                "name"=> "unit_price",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "units_unit"=> [
+                "description"=> "",
+                "name"=> "units_unit",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "units",
+                    "field"=> "unit"
+                ]
+            ],
+            "docs"=> [
+                "description"=> "",
+                "name"=> "docs",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "active"=> [
+                "description"=> "",
+                "name"=> "active",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "tinyint"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "1"
+            ],
+            "default_stock"=> [
+                "description"=> "",
+                "name"=> "default_stock",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "stocks",
+                    "field"=> "id"
+                ]
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "currencies",
+                    "field"=> "id"
+                ]
+            ]
+        ],
+        "name"=> "products",
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "table",
+        "keyFld"=> "catid",
+        "relations"=> [
+            "units_unit"=> [
+                "table"=> "units",
+                "field"=> "unit",
+                "type"=> "outbound",
+                "fkfield"=> "units_unit"
+            ],
+            "default_stock"=> [
+                "table"=> "stocks",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "default_stock"
+            ],
+            "currency"=> [
+                "table"=> "currencies",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "currency"
+            ],
+            "assets"=> [
+                "table"=> "assets",
+                "field"=> "catalog_catid",
+                "type"=> "inbound"
+            ],
+            "employees_ops"=> [
+                "table"=> "employees_ops",
+                "field"=> "catalog_id",
+                "type"=> "inbound"
+            ],
+            "inventory"=> [
+                "table"=> "inventory",
+                "field"=> "catalog_id",
+                "type"=> "inbound"
+            ],
+            "products_meta"=> [
+                "table"=> "products_meta",
+                "field"=> "catid",
+                "type"=> "inbound"
+            ],
+            "products_structure"=> [
+                "table"=> "products_structure",
+                "field"=> "parent",
+                "type"=> "inbound"
+            ],
+            "products_structure_parent"=> [
+                "table"=> "products_structure",
+                "field"=> "parent",
+                "type"=> "inbound"
+            ],
+            "products_structure_item"=> [
+                "table"=> "products_structure",
+                "field"=> "item",
+                "type"=> "inbound"
+            ],
+            "stocks_content"=> [
+                "table"=> "stocks_content",
+                "field"=> "catalog_id",
+                "type"=> "inbound"
+            ],
+            "stocks_initial"=> [
+                "table"=> "stocks_initial",
+                "field"=> "catalog_catid",
+                "type"=> "inbound"
+            ],
+            "stocks_registry"=> [
+                "table"=> "stocks_registry",
+                "field"=> "catalog_id",
+                "type"=> "inbound"
+            ]
+        ]
+    ],
+    "products_meta"=> [
+        "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> null
+            ],
+            "name"=> [
+                "description"=> "",
+                "name"=> "name",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "val"=> [
+                "description"=> "",
+                "name"=> "val",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "255"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "unit"=> [
+                "description"=> "",
+                "name"=> "unit",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "catid"=> [
+                "description"=> "",
+                "name"=> "catid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "products",
+                    "field"=> "catid"
+                ]
+            ]
+        ],
+        "name"=> "products_meta",
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "table",
+        "keyFld"=> "id",
+        "relations"=> [
+            "catid"=> [
+                "table"=> "products",
+                "field"=> "catid",
+                "type"=> "outbound",
+                "fkfield"=> "catid"
+            ]
+        ]
+    ],
+    "products_structure"=> [
+        "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
+            "parent"=> [
+                "description"=> "",
+                "name"=> "parent",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "products",
+                    "field"=> "catid"
+                ]
+            ],
+            "item"=> [
+                "description"=> "",
+                "name"=> "item",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "products",
+                    "field"=> "catid"
+                ]
+            ],
+            "qty"=> [
+                "description"=> "",
+                "name"=> "qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ]
+        ],
+        "name"=> "products_structure",
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "table",
+        "keyFld"=> "id",
+        "relations"=> [
+            "parent"=> [
+                "table"=> "products",
+                "field"=> "catid",
+                "type"=> "outbound",
+                "fkfield"=> "parent"
+            ],
+            "item"=> [
+                "table"=> "products",
+                "field"=> "catid",
+                "type"=> "outbound",
+                "fkfield"=> "item"
+            ]
+        ]
+    ],
     "rights"=> [
         "fields"=> [
             "id"=> [
@@ -3467,7 +4188,7 @@ return [
                 "default"=> null,
                 "referencedBy"=> [
                     [
-                        "table"=> "catalog",
+                        "table"=> "products",
                         "field"=> "default_stock"
                     ],
                     [
@@ -3530,8 +4251,8 @@ return [
         "type"=> "table",
         "keyFld"=> "id",
         "relations"=> [
-            "catalog"=> [
-                "table"=> "catalog",
+            "products"=> [
+                "table"=> "products",
                 "field"=> "default_stock",
                 "type"=> "inbound"
             ],
@@ -3576,7 +4297,7 @@ return [
                 "required"=> true,
                 "default"=> null,
                 "foreignKey"=> [
-                    "table"=> "catalog",
+                    "table"=> "products",
                     "field"=> "catid"
                 ]
             ],
@@ -3627,7 +4348,7 @@ return [
         "keyFld"=> "id",
         "relations"=> [
             "catalog_id"=> [
-                "table"=> "catalog",
+                "table"=> "products",
                 "field"=> "catid",
                 "type"=> "outbound",
                 "fkfield"=> "catalog_id"
@@ -3690,7 +4411,7 @@ return [
                 "required"=> true,
                 "default"=> null,
                 "foreignKey"=> [
-                    "table"=> "catalog",
+                    "table"=> "products",
                     "field"=> "catid"
                 ]
             ],
@@ -3748,7 +4469,7 @@ return [
                 "fkfield"=> "stocks_id"
             ],
             "catalog_catid"=> [
-                "table"=> "catalog",
+                "table"=> "products",
                 "field"=> "catid",
                 "type"=> "outbound",
                 "fkfield"=> "catalog_catid"
@@ -3796,7 +4517,7 @@ return [
                 "required"=> true,
                 "default"=> null,
                 "foreignKey"=> [
-                    "table"=> "catalog",
+                    "table"=> "products",
                     "field"=> "catid"
                 ]
             ],
@@ -3859,7 +4580,7 @@ return [
                 "required"=> true,
                 "default"=> null,
                 "foreignKey"=> [
-                    "table"=> "orders_parts",
+                    "table"=> "inventory",
                     "field"=> "id"
                 ]
             ]
@@ -3871,7 +4592,7 @@ return [
         "keyFld"=> "id",
         "relations"=> [
             "catalog_id"=> [
-                "table"=> "catalog",
+                "table"=> "products",
                 "field"=> "catid",
                 "type"=> "outbound",
                 "fkfield"=> "catalog_id"
@@ -3889,7 +4610,7 @@ return [
                 "fkfield"=> "documents_docid"
             ],
             "oiid"=> [
-                "table"=> "orders_parts",
+                "table"=> "inventory",
                 "field"=> "id",
                 "type"=> "outbound",
                 "fkfield"=> "oiid"
@@ -3989,6 +4710,10 @@ return [
                     [
                         "table"=> "employees",
                         "field"=> "team"
+                    ],
+                    [
+                        "table"=> "orders",
+                        "field"=> "team"
                     ]
                 ]
             ],
@@ -4034,6 +4759,11 @@ return [
             ],
             "employees"=> [
                 "table"=> "employees",
+                "field"=> "team",
+                "type"=> "inbound"
+            ],
+            "orders"=> [
+                "table"=> "orders",
                 "field"=> "team",
                 "type"=> "inbound"
             ]
@@ -4371,7 +5101,7 @@ return [
                 "default"=> null,
                 "referencedBy"=> [
                     [
-                        "table"=> "catalog",
+                        "table"=> "products",
                         "field"=> "units_unit"
                     ]
                 ]
@@ -4395,8 +5125,8 @@ return [
         "type"=> "table",
         "keyFld"=> "unit",
         "relations"=> [
-            "catalog"=> [
-                "table"=> "catalog",
+            "products"=> [
+                "table"=> "products",
                 "field"=> "units_unit",
                 "type"=> "inbound"
             ]
@@ -4479,10 +5209,6 @@ return [
                     [
                         "table"=> "users_2_groups",
                         "field"=> "userid"
-                    ],
-                    [
-                        "table"=> "users_rights",
-                        "field"=> "users_userid"
                     ]
                 ]
             ],
@@ -4615,11 +5341,6 @@ return [
                 "field"=> "userid",
                 "type"=> "inbound"
             ],
-            "users_rights"=> [
-                "table"=> "users_rights",
-                "field"=> "users_userid",
-                "type"=> "inbound"
-            ],
             "groups"=> [
                 "table"=> "usergroups",
                 "field"=> "userid",
@@ -4679,72 +5400,6 @@ return [
                 "field"=> "userid",
                 "type"=> "outbound",
                 "fkfield"=> "userid"
-            ]
-        ]
-    ],
-    "users_rights"=> [
-        "fields"=> [
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null
-            ],
-            "access_rights_name"=> [
-                "description"=> "",
-                "name"=> "access_rights_name",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "40"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "access_rights",
-                    "field"=> "name"
-                ]
-            ],
-            "users_userid"=> [
-                "description"=> "",
-                "name"=> "users_userid",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "20"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "users",
-                    "field"=> "userid"
-                ]
-            ]
-        ],
-        "name"=> "users_rights",
-        "description"=> "",
-        "comment"=> "",
-        "type"=> "table",
-        "keyFld"=> "id",
-        "relations"=> [
-            "access_rights_name"=> [
-                "table"=> "access_rights",
-                "field"=> "name",
-                "type"=> "outbound",
-                "fkfield"=> "access_rights_name"
-            ],
-            "users_userid"=> [
-                "table"=> "users",
-                "field"=> "userid",
-                "type"=> "outbound",
-                "fkfield"=> "users_userid"
             ]
         ]
     ]

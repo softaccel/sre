@@ -1,0 +1,87 @@
+<div class="modal" id="scanModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body bg-light">
+                <div class="card">
+                    <div class="card-header">
+                        Scaneaza
+                    </div>
+
+                    <div class="card-body" style="min-height: 400px">
+                        <ul id="checkOutList"></ul>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-success">OK</button>
+                        <button class="btn btn-secondary" data-dismiss="modal">Anuleaza</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ul class="d-none">
+    <li id="liTemplate">
+        <span class="name"><%= attributes.name %></span>
+        <span class="qty"><%= attributes.qty %></span>
+    </li>
+</ul>
+
+
+<script>
+
+
+    function init_komponent(k) {
+        k.$el.filter(".modal").remove().appendTo("body").modal().on("hidden.bs.modal",function () {
+            k.$el.remove();
+            $(document).scannerDetection(false);
+        });
+
+        $(document).scannerDetection({
+            timeBeforeScanTest: 200, // wait for the next character for upto 200m0006075014s
+            endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+            avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+            ignoreIfFocusOn: 'input', // turn off scanner detection if an input has focus
+            onComplete: search, // main callback function
+            scanButtonKeyCode: 116, // the hardware scan button acts as key 116 (F5)
+            scanButtonLongPressThreshold: 5, // assume a long press if 5 or more events come in sequence
+            // onScanButtonLongPressed: longPress, // callback for long pressing the scan button
+            minLength: 2,
+            onError: function(string){alert('Error ' + string);}
+        });
+
+        function search(code) {
+            let container = k.$el.find("#checkOutList");
+            let $litpl = k.$el.find("#liTemplate").clone(true)
+                .attr("id",null)
+                .appendTo(container)
+                .addClass("d-none");
+            let cinstance = $litpl.apiator({resourcetype: "item",returninstance:true});
+
+            cinstance.setUrl(apiRoot+"/inventory/"+code+"?include=order")
+                .loadFromRemote()
+                .then(function (a) {
+                    let els = container.children();
+                    console.log(cinstance,els);
+                    for (let i = 0; i < els.length; i++) {
+                        cinstance.views[0].el.removeClass("d-none");
+                        let instance = $(els[i]).data("instance");
+                        console.log(instance,cinstance);
+                        if (!instance) {
+                            continue;
+                        }
+
+                        if (instance.id === cinstance.id && instance!==cinstance) {
+                            console.log("equal");
+                            cinstance.remove();
+                            // if(cinstance.attributes.qty)
+                            return;
+                        }
+
+                    }
+                })
+                .catch(function (b) {
+                    $litpl.remove();
+                })
+        }
+    }
+</script>

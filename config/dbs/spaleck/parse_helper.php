@@ -130,5 +130,58 @@ return [
             ]
         ],
         "keyFld"=> "id"
+    ],
+    "employeesExtended"=> [
+        "fields"=> [
+            "id"=> [
+                "iskey"=> true
+            ],
+            "team"=> [
+                "foreignKey"=> [
+                    "table"=> "teams",
+                    "field"=> "tid"
+                ]
+            ]
+        ],
+        "keyFld"=> "id",
+        "relations"=> [
+            "team"=> [
+                "table"=> "teams",
+                "field"=> "tid",
+                "type"=> "outbound",
+                "fkfield"=> "team"
+            ]
+        ]
+    ],
+    "inventory_wmeta"=> [
+        "fields"=> [
+            "id"=> [
+                "iskey"=> true
+            ],
+            "order"=> [
+                "foreignKey"=> [
+                    "table"=> "orders",
+                    "field"=> "oid"
+                ]
+            ]
+        ],
+        "relations"=> [
+            "order_id"=> [
+                "table"=> "orders",
+                "field"=> "oid",
+                "type"=> "outbound",
+                "fkfield"=> "order_id"
+            ]
+        ],
+        "keyFld"=> "id"
+    ],
+    "orders"=> [
+        "relations"=> [
+            "inventory_wmeta"=> [
+                "table"=> "inventory_wmeta",
+                "field"=> "order",
+                "type"=> "inbound"
+            ]
+        ]
     ]
 ];

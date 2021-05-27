@@ -12,7 +12,7 @@
                     <input type="file" name="orderfile">
                 </form>
 
-                <form name="orderForm" id="ordeForm" style="display: none">
+                <form name="orderForm" id="orderForm" style="display: none">
                     <div class="position-relative form-group">
                         <label for="partner_id" class="">Client</label>
                         <select name="partner_id" id="partner_id" class="js-example-basic-single" style="width: 100%;" required>
@@ -72,14 +72,14 @@
                         </table>
                     </div>
                     <div class="position-relative form-group">
-                        <label for="total" class="">Valoare total estimata</label>
-                        <input name="total" id="total"  type="number" class="form-control">
+                        <label for="calculated_valueInput" class="">Valoare total estimata</label>
+                        <input name="calculated_value" id="calculated_valueInput"  type="number" class="form-control">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button data-name="uploadButton" form="importForm" type="button" class="btn-primary btn">Importa XML</button>
-                <button data-name="placeOrderButton" form="ordeForm" type="button" class="btn btn-success" style="display: none">Creaza comanda</button>
+                <button data-name="placeOrderButton" form="orderForm" type="button" class="btn btn-success" style="display: none">Creaza comanda</button>
             </div>
         </div>
     </div>
@@ -127,36 +127,9 @@
     function init_komponent(k)
     {
 
-        function partner_select() {
-            $("select[name=partner_id]").select2({
-                ajax:{
-                    url: apiRoot+"/partners",
-                    minimumInputLength: 2,
-                    dataType: 'json',
-                    data: function (params) {
-                        console.log(params);
-                        if(params.term) {
-                            return {
-                                filter: "name~=~" + params.term
-                            };
-                        }
-                        return {};
-                    },
-                    processResults: function (data) {
-                        let result = {
-                            results:[],
-
-                        };
-                        data.data.forEach(function (item) {
-                            result.results.push({
-                                id: item.id,
-                                text: item.attributes.name
-                            })
-                        });
-                        return result;
-                    }
-                }
-            });
+        let orderMeta;
+        function init_partner_select() {
+            $("select[name=partner_id]").select2wrapper({url: apiRoot+"/partners",labelfld:"name"});
         }
 
 
@@ -165,7 +138,6 @@
         let template;
         if(templateTxt) {
              template = _.template(templateTxt);
-             console.log("//////",template);
         }
         $items.empty();
 
@@ -181,11 +153,11 @@
 
         function publishHeader(response)
         {
-            console.log(response);
             let sectionIDs = Object.getOwnPropertyNames(response.sections);
             let bestellung = null;
-            let sections = [];
+            // let sections = [];
             let order = null;
+            orderMeta = [];
             for(let i=0;i<sectionIDs.length;i++) {
                 if(response.sections[sectionIDs[i]].SectionKey==="K.F") {
                     bestellung = response.sections[sectionIDs[i]];
@@ -195,8 +167,19 @@
                     order = response.sections[sectionIDs[i]];
                 }
 
+                // if(response.sections[sectionIDs[i]].SectionKey==="P.A") {
+                //     sections.push(response.sections[sectionIDs[i]]);
+                // }
+
                 if(response.sections[sectionIDs[i]].SectionKey==="P.A") {
-                    sections.push(response.sections[sectionIDs[i]]);
+                    continue;
+                }
+
+                for(let fldName in response.sections[sectionIDs[i]].fields) {
+                    orderMeta.push({
+                        meta_key: fldName,
+                        meta_val: response.sections[sectionIDs[i]].fields[fldName].data
+                    });
                 }
             }
 
@@ -268,9 +251,10 @@
                         processData: false,
                     })
                     .done(function(response){
+                        console.log(response);
                         publishItems(response);
                         publishHeader(response);
-                        partner_select();
+                        init_partner_select();
                         resolve();
                     })
                     .fail(function () {
@@ -283,22 +267,28 @@
 
         function placeOrder(form)
         {
+            console.log(orderMeta);
+            // return ;
             let meta = $(form).data("meta");
 
             let order = {
-                label: $(form.model).val(),
-                partner_id: $(form.partner_id).val(),
-                meta: meta ? JSON.stringify(meta) : null,
-                created_by: userData.sub,
-                orders_parts: []
+                attributes: {
+                    label: $(form.model).val(),
+                    partner_id: $(form.partner_id).val(),
+                    // meta: meta ? JSON.stringify(meta) : null,
+                    created_by: userData.sub,
+                    calculated_value: $(form.calculated_value).val(),
+                    inventory: [],
+                    orders_meta: orderMeta
+                }
             };
 
 
             let total = 0;
             $(form).find("input[name=cod]").filter(":checked").each(function () {
                 let instance = $(this).data("instance");
-                order.orders_parts.push({
-                    type: "orders_parts",
+                let order_part = {
+                    type: "inventory",
                     attributes:
                         {
                             um: instance.um,
@@ -306,14 +296,30 @@
                             qty: instance.qty,
                             unit_price: instance.pu,
                             currency: instance.curr,
-                            meta: JSON.stringify(instance.others)
-                        }
-                });
+                            inventory_meta: []
+                        },
+                };
+                for(let key in instance.others.fields) {
+
+                    if(instance.others.fields[key].data!=="") {
+                        order_part.attributes.inventory_meta.push({
+                            type: "inventory_meta",
+                            attributes: {
+                                meta_key: key,
+                                meta_val: instance.others.fields[key].data
+                            }
+                        });
+                    }
+                }
+
+                order.attributes.inventory.push(order_part);
                 total += instance.qty*instance.pu;
             });
-            console.log(orders);
 
-            order.estimated_value = total;
+            // return ;
+            order.attributes.order_value = total;
+            // console.log(order);
+            // return ;
             return orders.createItem(order);
         }
 
@@ -325,8 +331,8 @@
                     console.log(a);
                     modal.modal("hide");
                 })
-                .catch(function () {
-                    
+                .catch(function (a) {
+                    console.log(a);
                 })
         });
 

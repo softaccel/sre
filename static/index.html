@@ -16,6 +16,9 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <link href="main.css" rel="stylesheet">
+<!--    <link href="assets/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link href="https://adminlte.io/themes/AdminLTE/dist/css/AdminLTE.min.css" rel="stylesheet">-->
+<!--    <link href="https://adminlte.io/themes/AdminLTE/dist/css/skins/_all-skins.min.css" rel="stylesheet">-->
     <link href="assets/css/spinner.css" rel="stylesheet">
     <link href="assets/css/jquery-ui.css" rel="stylesheet">
 <!--    <link href="assets/css/selectize.bootstrap3.css" rel="stylesheet">-->
@@ -42,8 +45,9 @@
 <script src="assets/js/apiator.js"></script>
 <script src="assets/js/jquery.scannerdetection.js"></script>
 <script src="assets/js/select2.min.js"></script>
-
-
+<script src="assets/js/select2wrapper.js"></script>
+<script src="assets/js/JsBarcode.all.min.js"></script>
+<!--<script src="assets/js/obj2xml.js"></script>-->
 <script>
     const localStorageLabel = "spaleck";
     const _kPath = "komponents";
@@ -52,8 +56,9 @@
     const backendUrl = '/spaleck/be';
     const apiRoot = backendUrl + '/dbapi/v2/spaleck';
     const authUrl = backendUrl + '/main/auth/login';
+    const posPrintUrl = backendUrl + '/main/POS/print';
 
-    let defaultKomponent = "/views/dashboard";
+    let defaultView = "/views/dashboard";
 
 </script>
 <script>
@@ -96,24 +101,8 @@
     autoload = false;
     $("#page").komponent({url:url}).finally(function () {
         $(".pageOverlay").remove();
-
     });
 
-
-    /**
-     *
-     * @param  items Array
-     * @param target
-     */
-    // function render_recusive(items,target) {
-    //     items.forEach(function (item) {
-    //         let li = $("<li>").text(item.name).data("path",item.path).appendTo(target);
-    //         if(item.hasOwnProperty("files")) {
-    //             render_recusive(item.files,$("<ul>").appe0006075014
-    //             ndTo(li));
-    //         }
-    //     })
-    // }
 
 
 </script>

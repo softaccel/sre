@@ -139,7 +139,7 @@
                 let id = k.$el.attr("id");
                 k.$el.replaceWith($renderedKomponent);
                 k.$el = $renderedKomponent;
-                k.$el.attr("id",id);
+                // k.$el.attr("id",id);
             }
             else {
                 k.$el.append($renderedKomponent);
@@ -198,12 +198,12 @@
      */
     function loadKomponents(container)
     {
-        let ps = [];
+        let promises = [];
         $(container).find("[is=komponent]").each(function () {
-            ps.push($(this).komponent());
+            promises.push($(this).komponent());
         });
 
-        return Promise.all(ps);
+        return Promise.all(promises);
     }
 
 

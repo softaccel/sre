@@ -1,20 +1,56 @@
-<table class="table">
+<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #partsTable * {
+            visibility: visible;
+        }
+        #partsTable {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    }
+</style>
+
+
+<table class="table" id="partsTable">
     <thead class="thead-light">
     <tr>
-        <th>Denumire</th>
-        <th>Date</th>
-        <th>Cantitate</th>
-        <th>Pret Unitar</th>
-        <th>Total</th>
+        <th>
+            Denumire
+            <input type="text" class="form-control form-control-sm">
+        </th>
+        <th class="align-top">
+            Cantitate
+        </th>
+        <th class="align-top">
+            Pret Unitar
+        </th>
+        <th class="align-top">
+        Total</th>
     </tr>
     </thead>
     <tbody id="orderPartsList">
     <tr>
-        <td><%= id %></td>
-        <td>2020-02-02</td>
-        <td>100</td>
-        <td>30 EUR/ora</td>
-        <td>3000 EUR</td>
+        <td><%= attributes.name %></td>
+        <td><%= Math.round(attributes.qty*100)/100+"/"+attributes.um %></td>
+        <td><%= attributes.unit_price + "" + attributes.currency %></td>
+        <td><%= Math.round(attributes.unit_price*attributes.qty*100)/100 + "" + attributes.currency %></td>
+        <td>
+<!--            <svg class="barcode"-->
+<!--                 jsbarcode-format="upc"-->
+<!--                 jsbarcode-value="asdas"-->
+<!--                 jsbarcode-textmargin="0"-->
+<!--                 jsbarcode-fontoptions="bold"></svg>-->
+            <svg class="barcode" jsbarcode-height="50"
+                 jsbarcode-value="<%= attributes.partid %>"
+                 jsbarcode-textmargin="0"
+                 jsbarcode-fontoptions="bold">
+            </svg>
+            </td>
+        <td><%= attributes.design %></td>
     </tr>
     </tbody>
     <tfoot>
@@ -26,9 +62,11 @@
 <script>
     function init_komponent(k) {
         $("#orderPartsList").apiator({
-            url: apiRoot+"/orders/"+k.data.orderId,
-            type: "orders_parts",
+            type: "inventory",
             resourcetype: "collection"
-        })
+        }).data("instance").setUrl(apiRoot+"/orders/"+k.data.orderId+"/inventory_wmeta").loadFromRemote().then(function () {
+            JsBarcode(".barcode").init();
+        });
+
     }
 </script>
