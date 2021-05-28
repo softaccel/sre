@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta content="utf-8" http-equiv="encoding">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>SRE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+<!--    <base href="/" />-->
+<!--    <meta name="description" content="This is an example dashboard created using build-in elements and components.">-->
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+<!--    <link href="main.css" rel="stylesheet">-->
+<!--    <link href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">-->
+
+    <link rel="stylesheet" href="assets/fontawesome/css/all.min_adminlte.css">
+
+    <link href="https://adminlte.io/themes/v3/dist/css/adminlte.min.css" rel="stylesheet">
+    <link href="https://adminlte.io/themes/v3/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet">
+    <link href="https://adminlte.io/themes/v3/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+
+    <link href="adminlte.min.css" rel="stylesheet">
+
+    <link href="assets/css/spinner.css" rel="stylesheet">
+    <link href="assets/css/jquery-ui.css" rel="stylesheet">
+    <!--    <link href="assets/css/selectize.bootstrap3.css" rel="stylesheet">-->
+    <link href="assets/css/select2.min.css" rel="stylesheet">
+
+
+
+
+    <!--    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>-->
+    <style>
+
+    </style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+
+<div class="wrapper">
+
+    <div id="page"></div>
+    <div class='pageOverlay'>
+        <div class='spinner'>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script src="assets/js/jquery.js"></script>
+<script src="assets/js/jwt-decode.js"></script>
+<script src="assets/js/komponentor.js?v=1"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.bundle.js"></script>
+<script src="assets/js/jquery-ui.js"></script>
+<script src="assets/js/underscore-min.js"></script>
+<script src="assets/js/apiator.js"></script>
+<script src="assets/js/jquery.scannerdetection.js"></script>
+<script src="assets/js/select2.min.js"></script>
+<script src="assets/js/select2wrapper.js"></script>
+
+
+
+<script>
+    const localStorageLabel = "spaleck";
+    const _kPath = "komponents";
+    const _kExt = ".html";
+    const vPath = _kPath+"views/";
+    const backendUrl = '/sre/be';
+    const apiRoot = backendUrl + '/dbapi/v2/spaleck';
+    const authUrl = backendUrl + '/main/auth/login';
+
+    let defaultKomponent = "/views/dashboard_adminlte";
+
+</script>
+<script>
+    function logout() {
+        userData = null;
+        localData.jwt  = null;
+        localStorage.setItem("spaleck",JSON.stringify(localData));
+    }
+
+    function checkAuth() {
+        let localData = {
+
+        };
+        let userData;
+        Object.assign(localData,JSON.parse(localStorage.getItem(localStorageLabel)));
+
+        if(localData.jwt) {
+            try {
+                userData = jwt_decode(localData.jwt);
+                let d = new Date();
+                if(d.getTime()/1000>userData.exp) {
+                    logout();
+                }
+            }
+            catch($e) {
+                // console.log($e);
+            }
+        }
+        return [localData,userData];
+    }
+
+    // let localData,userData;
+    let [localData,userData] = checkAuth();
+
+
+    let url = "/views/app_adminlte";
+    if(!userData) {
+        url = "/views/login";
+    }
+    autoload = false;
+    $("#page").komponent({url:url}).finally(function () {
+        $(".pageOverlay").remove();
+
+    });
+
+
+    /**
+     *
+     * @param  items Array
+     * @param target
+     */
+    // function render_recusive(items,target) {
+    //     items.forEach(function (item) {
+    //         let li = $("<li>").text(item.name).data("path",item.path).appendTo(target);
+    //         if(item.hasOwnProperty("files")) {
+    //             render_recusive(item.files,$("<ul>").appe0006075014
+    //             ndTo(li));
+    //         }
+    //     })
+    // }
+
+
+</script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<div class="content-wrapper">
+    <div class="app-main__inner">
+    <div class="row mb-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row" data-resourcetype="collection" id="teamsList" data-type="teams" >
+                        <div class="col-2" onclick="komponentor.intent('/views/teams/team').data($(this).data('instance')).send()">
+                            <div class="card" >
+                                <div class="card-body text-center">
+                                    <div class="d-inline-block" style="width: 60px">
+                                        <span class="rounded-circle warning-feedback bg-secondary" style="color: white; font-size: 40px;padding: 5px">
+                                            <i class="fa fa-users"></i>
+                                        </span>
+                                    </div>
+                                    <div class="d-block">
+                                        <%=attributes.name%>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- HTML TEMPLATE SECTION: STOP-->
+                </div>
+                <div class="card-footer" id="employeesPaging">
+                    <div class="btn-group" id="" data-pagesize="20">
+                        <button data-type="first" class="btn btn-outline-secondary">&lt;&lt;</button>
+                        <button data-type="prev" class="btn btn-outline-secondary">&lt;</button>
+                        <button data-type="page" class="btn btn-outline-secondary">1</button>
+                        <button data-type="next" class="btn btn-outline-secondary">&gt;</button>
+                        <button data-type="last" class="btn btn-outline-secondary">&gt;&gt;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script>
+
+    function init_komponent(k,html) {
+        $("#teamsList").apiator({url:apiRoot+"/teams"});
+
+        k.exec = function (options) {
+            console.log(options);
+        }
+    }
+</script>

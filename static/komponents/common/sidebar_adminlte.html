@@ -1,0 +1,160 @@
+<!--<div class="mainc">-->
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <div class="app-header__logo">
+        <a href="index_adminlte.html" class="brand-link">
+            <img class="logo-src" src="assets/images/spaleck_logo-2.svg" style="width: 150px">
+        </a>
+
+        <div class="header__pane ml-auto">
+            <div>
+                <button type="button" class="hamburger close-sidebar-btn hamburger--elastic"
+                        onclick="!$(body).hasClass('closed-sidebar')?$(body).removeClass('fixed-sidebar').addClass('closed-sidebar'):$(body).removeClass('closed-sidebar').addClass('fixed-sidebar')">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="app-header__mobile-menu">
+        <div>
+            <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
+            <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+            </span>
+            </button>
+        </div>
+    </div>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+<!--        <div class="user-panel mt-3 pb-3 mb-3 d-flex">-->
+<!--            <div class="image">-->
+<!--                <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">-->
+<!--            </div>-->
+<!--            <div class="info">-->
+<!--                <a href="#" class="d-block">Alexander Pierce</a>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <!-- SidebarSearch Form -->
+<!--        <div class="form-inline">-->
+<!--            <div class="input-group" data-widget="sidebar-search">-->
+<!--                <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">-->
+<!--                <div class="input-group-append">-->
+<!--                    <button class="btn btn-sidebar">-->
+<!--                        <i class="fas fa-search fa-fw"></i>-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <!-- Sidebar Menu -->
+
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-item">
+                    <a href="#" title="" class="nav-link">
+                        <i class="metismenu-icon fa fa-home"></i>
+                        Home
+                    </a>
+                </li>
+                <li class="nav-header">Operational</li>
+                <li class="nav-item">
+                    <a href="#/views/dashboard_adminlte" class="nav-link">
+                        <i class="metismenu-icon fa fa-tachometer-alt"></i>
+                        <p> Dashboard</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#/views/orders_adminlte" class="nav-link">
+                        <i class="metismenu-icon fa fa-funnel-dollar"></i> Comenzi
+                    </a>
+                </li>
+<!--                <li class="nav-item">-->
+<!--                    <a href="#/views/pontaj" class="nav-link">-->
+<!--                        <i class="metismenu-icon fa fa-clock"></i>-->
+<!--                        <p>-->
+<!--                            Pontaj-->
+<!--&lt;!&ndash;                            <span class="right badge badge-danger">New</span>&ndash;&gt;-->
+<!--                        </p>-->
+<!--                    </a>-->
+<!--                </li>-->
+                <li class="nav-item">
+                    <a href="#/views/pontaj_adminlte" class="nav-link">
+                        <i class="metismenu-icon fa fa-clock"></i> Pontaj
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#/views/jobs_adminlte" class="nav-link">
+                        <i class="metismenu-icon fa fa-address-card"></i> Posturi
+                    </a>
+                </li>
+                <!--                <li>-->
+                <!--                    <a href="#/views/receptii" title="">-->
+                <!--                        <i class="metismenu-icon fa fa-truck"></i> Receptii-->
+                <!--                    </a>-->
+                <!--                </li>-->
+                <li class="nav-header">Administrativ</li>
+                <li class="nav-item">
+                    <a href="#/views/partners_adminlte" class="nav-link">
+                        <i class="metismenu-icon fa fa-handshake"></i> Parteneri
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#/views/employees_adminlte" class="nav-link">
+                        <i class="metismenu-icon fa fa-user-friends"></i> Angajati
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#/views/teams_adminlte" class="nav-link">
+                        <i class="metismenu-icon fa fa-sitemap"></i> Echipe
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#/views/units_adminlte" class="nav-link">
+                        <i class="metismenu-icon fa fa-balance-scale"></i> Unitati de masura
+                    </a>
+                </li>
+                <!--                <li>-->
+                <!--                    <a href="#/views/teams" title="">-->
+                <!--                        <i class="metismenu-icon fa fa-sitemap"></i> Echipe-->
+                <!--                    </a>-->
+                <!--                </li>-->
+
+                <!--                <li>-->
+                <!--                    <a href="#/views/stocks" title="">-->
+                <!--                        <i class="metismenu-icon fa fa-cubes"></i> Stocuri-->
+                <!--                    </a>-->
+                <!--                </li>-->
+                <li class="nav-item">
+                    <a href="#/views/products_adminlte" class="nav-link">
+                        <i class="metismenu-icon fa fa-book"></i> Catalog
+                    </a>
+                </li>
+                <li class="nav-header">Aplicatie</li>
+                <li class="nav-item">
+                    <a href="#/views/users_adminlte" class="nav-link">
+                        <i class="metismenu-icon fa fa-users"></i> Utilizatori
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#/views/users_adminlte" class="nav-link">
+                        <i class="metismenu-icon fa fa-sliders-h"></i> Setari
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>
+<!--</div>-->
+<script>
+    function init_komponent(k) {
+
+        k.exec = function (options) {
+            console.log(options);
+        };
+    }
+</script>

@@ -1,0 +1,38 @@
+
+<!--<div class="app-container app-theme-white body-tabs-shadow fixed-header" id="mainc">-->
+<div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar" id="mainc">
+    <div class="app-header header-shadow" is='komponent' data-url="/common/header_adminlte"></div>
+    <div class="app-main">
+        <div class="sidebar-menu pushmenu" is='komponent' data-url="/common/sidebar_adminlte" id="sidebar_adminlte"></div>
+        <div class="app-main__outer" id="pageContent"></div>
+    </div>
+</div>
+<script>
+
+    function init_komponent(k) {
+        const pageContentContainer = '#pageContent';
+        // load static defined komponents
+        komponentor.loadKomponents(k.$el);
+
+        // load main app according to routing path
+        let url = typeof defaultKomponent!=="undefined" ? defaultKomponent : null;
+        let paras;
+
+        if(komponentor.routing.path) {
+            url = komponentor.routing.path;
+            paras = komponentor.routing.paras;
+        }
+
+        if(!url) {
+            return;
+        }
+
+        $(pageContentContainer).komponent({
+            url: url,
+            paras: paras
+        }).catch(function (e) {
+            console.log(e);
+            $('#pageContent').html("<h3>Page not found</h3>");
+        });
+    }
+</script>
