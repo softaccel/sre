@@ -167,7 +167,6 @@
     function init_komponent(k,d) {
         k.$el.appendTo("body");
 
-
         let url = apiRoot+"/orders/"+k.data.instance.id+"/orders_2_employees?include=emplid,operation&page[orders_2_employees][limit]=100";
         try {
             let allocatedEmployees = $("#allocatedEmployees")
