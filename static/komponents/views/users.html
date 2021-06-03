@@ -1,4 +1,4 @@
-<div class="content-fluid">
+<div class="container-fluid">
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -7,15 +7,14 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6 ">
                     <div class="breadcrumb float-sm-right">
-                        <!-- loc de button -->
+                        <button class="btn btn-primary" id="newJobModalButton"><i class="fa fa-user-plus"></i> Adauga</button>
                     </div>
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </section>
-
     <section class="content">
-        <div class="content-fluid">
+        <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
                     <form id="filterUsers"></form>
@@ -71,8 +70,7 @@
                                 </select>
                             </th>
                             <th width="100">
-                                <button type="button" class="btn btn-primary" data-toggle="modal"
-                                        data-target="#addEditModal" data-action="showCreateModal" data-instance="#users">Adauga</button>
+
                             </th>
                         </tr>
                         </thead>
@@ -86,38 +84,31 @@
                             <td><%= attributes.lname %></td>
                             <td><span class="badge badge-<%= attributes.locked*1?'danger':'success' %>"><%= attributes.locked*1?'blocat':'activ' %></span> </td>
                             <td>
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal" data-action="showDeleteConfirm">Sterge</button>
+                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmDeleteModal" data-action="showDeleteConfirm">Sterge</button>
                             </td>
                         </tr>
                         </tbody>
-
-                        <tfoot>
-                        <tr>
-                            <td colspan="5" align="left">
-                                <div class="btn-group" id="usersPaging" data-pagesize="20">
-                                    <button data-type="first" class="btn btn-outline-secondary">&lt;&lt;</button>
-                                    <button data-type="prev" class="btn btn-outline-secondary">&lt;</button>
-                                    <button data-type="page" class="btn btn-outline-secondary">1</button>
-                                    <button data-type="next" class="btn btn-outline-secondary">&gt;</button>
-                                    <button data-type="last" class="btn btn-outline-secondary">&gt;&gt;</button>
-                                </div>
-                            </td>
-                        </tr>
-                        </tfoot>
                     </table>
-                    <!-- HTML TEMPLATE SECTION: STOP-->
+                </div>
+                <div class="card-footer">
+                    <td colspan="5" align="left">
+                        <div class="btn-group" id="usersPaging" data-pagesize="20">
+                            <button data-type="first" class="btn btn-outline-secondary">&lt;&lt;</button>
+                            <button data-type="prev" class="btn btn-outline-secondary">&lt;</button>
+                            <button data-type="page" class="btn btn-outline-secondary">1</button>
+                            <button data-type="next" class="btn btn-outline-secondary">&gt;</button>
+                            <button data-type="last" class="btn btn-outline-secondary">&gt;&gt;</button>
+                        </div>
                 </div>
             </div>
         </div>
     </section>
 </div>
 
+
 <script>
     function init_komponent(k,html) {
         $("#users").apiator({url:apiRoot+"/users?page[users][limit]=20"});
 
-        // k.exec = function (options) {
-        //     console.log(options);
-        // }
     }
 </script>

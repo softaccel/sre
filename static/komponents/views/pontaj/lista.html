@@ -1,3 +1,5 @@
+<style>
+</style>
 <div>
     <form id="timeTrackingEntriesFiltering"></form>
     <table class="table table-striped table-hover">
@@ -69,20 +71,41 @@
         <th class="align-top">
             Valoare
         </th>
+        <th width="150px"></th>
     </tr>
     </thead>
     <tbody id="timeTrackingEntries" data-resourcetype="collection" data-paging="#timeTrackingEntriesPaging" data-filter="#timeTrackingEntriesFiltering"
            data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset">
     <tr>
         <td class="emplCol"><%= attributes.empl_name %></td>
-        <td><%= attributes.docnum %></td>
-        <td><%= attributes.op_name %></td>
-        <td><%= attributes.start %></td>
-        <td><%= attributes.stop %></td>
-        <td><%= attributes.duration %></td>
-        <td><%= attributes.hourly_rate %> <%= attributes.currency %></td>
-        <td><% t = timeRegex.exec(attributes.duration); %> <%= t ? ((Math.ceil((t[1]*attributes.hourly_rate + t[2]/60*attributes.hourly_rate)*100)/100)+' ' +attributes.currency) : '-' %> </td>
-
+        <td>
+            <p><%= attributes.docnum %></p>
+        </td>
+        <td>
+            <p><%= attributes.op_name %></p>
+            <select></select>
+        </td>
+        <td>
+            <p><%= attributes.start %></p>
+            <input>
+        </td>
+        <td>
+            <p><%= attributes.stop %></p>
+        </td>
+        <td>
+            <p><%= attributes.duration %></p>
+        </td>
+        <td>
+            <p><%= attributes.hourly_rate %> <%= attributes.currency %></p>
+        </td>
+        <td>
+            <p><% t = timeRegex.exec(attributes.duration); %> <%= t ? ((Math.ceil((t[1]*attributes.hourly_rate + t[2]/60*attributes.hourly_rate)*100)/100)+' ' +attributes.currency) : '-' %></p>
+        </td>
+        <td>
+            <button class="btn btn-secondary btn-sm"><i class="fa fa-copy"></i> </button>
+            <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> </button>
+            <button class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> </button>
+        </td>
     </tr>
     </tbody>
     <tfoot>
