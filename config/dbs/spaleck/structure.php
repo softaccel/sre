@@ -573,6 +573,17 @@ return [
                 "iskey"=> false,
                 "required"=> true,
                 "default"=> null
+            ],
+            "checkout_qty"=> [
+                "description"=> "",
+                "name"=> "checkout_qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> "0"
             ]
         ],
         "name"=> "deliveries_contents",
@@ -1591,6 +1602,188 @@ return [
             ]
         ]
     ],
+    "inventory_extented"=> [
+        "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> "0"
+            ],
+            "order"=> [
+                "description"=> "",
+                "name"=> "order",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null,
+                "foreignKey"=> [
+                    "table"=> "orders",
+                    "field"=> "oid"
+                ]
+            ],
+            "docnum"=> [
+                "description"=> "",
+                "name"=> "docnum",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "name"=> [
+                "description"=> "",
+                "name"=> "name",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "tinytext"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "catalog_id"=> [
+                "description"=> "",
+                "name"=> "catalog_id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "um"=> [
+                "description"=> "",
+                "name"=> "um",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "qty"=> [
+                "description"=> "",
+                "name"=> "qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,3"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "unit_price"=> [
+                "description"=> "",
+                "name"=> "unit_price",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "vat_proc"=> [
+                "description"=> "",
+                "name"=> "vat_proc",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "vat_value"=> [
+                "description"=> "",
+                "name"=> "vat_value",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "total_price"=> [
+                "description"=> "",
+                "name"=> "total_price",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "currency"=> [
+                "description"=> "",
+                "name"=> "currency",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "10"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "partid"=> [
+                "description"=> "",
+                "name"=> "partid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "design"=> [
+                "description"=> "",
+                "name"=> "design",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ]
+        ],
+        "relations"=> [
+            "order_id"=> [
+                "table"=> "orders",
+                "field"=> "oid",
+                "type"=> "outbound",
+                "fkfield"=> "order_id"
+            ]
+        ],
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "view",
+        "keyFld"=> "id"
+    ],
     "inventory_meta"=> [
         "fields"=> [
             "id"=> [
@@ -2373,6 +2566,11 @@ return [
             ],
             "inventory_wmeta"=> [
                 "table"=> "inventory_wmeta",
+                "field"=> "order",
+                "type"=> "inbound"
+            ],
+            "inventory_extented"=> [
+                "table"=> "inventory_extented",
                 "field"=> "order",
                 "type"=> "inbound"
             ]

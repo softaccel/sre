@@ -6,10 +6,113 @@
     /*#deliveryContentsTable:hover tr>td:first-child,#deliveryContentsTable:hover tr>th:first-child{*/
     /*    display: table-cell;*/
     /*}*/
+    .items{
+        width: 100%;
+        background: white;
+
+    }
+    .items * {
+        font-size: 0.8rem;
+        vertical-align: top;
+    }
+    .items td{
+
+        border-bottom: dashed silver 1px;
+    }
+    .items thead{
+        background: #6f6f6f;
+        color: white;
+    }
+    .items  input{
+        border: solid silver 1px;
+    }
 </style>
 <div>
-    <button class="btn btn-primary" id="startScanBut"><i class="fa fa-barcode"></i> Scaneaza elemente</button>
+    <div class="card mb-3" style="background: #f4f4f4; display: none" id="addElsToDeliveryCard">
+        <div class="card-body">
+            <div class="form-group">
+                <label>Comanda</label>
+                <select class="custom-select" id="orderSelect" class="js-example-basic-single" style="width: 100%;">
+                </select>
+            </div>
+            <div class="">
+                <label>Elemente</label>
+                <div style="padding: 5px; border-radius: 5px 5px 5px 5px; border: solid silver 1px; background: #fff">
+                    <div style="max-height: 200px; overflow: scroll; ">
+
+                        <table class="items">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox"></th>
+                                <th>Cod <input type="text" size="10"> </th>
+                                <th>Denumire <input type="text" size="10"> </th>
+                                <th>Cantitate</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>1021545 </td>
+                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
+                                <td><input type="number" size="4" max="10"> </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>1021545 </td>
+                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
+                                <td><input type="number" size="3" max="10"> </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>1021545 </td>
+                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
+                                <td><input type="number" size="3" max="10"> </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>1021545 </td>
+                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
+                                <td><input type="number" size="3" max="10"> </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>1021545 </td>
+                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
+                                <td><input type="number" size="3" max="10"> </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>1021545 </td>
+                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
+                                <td><input type="number" size="3" max="10"> </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>1021545 </td>
+                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
+                                <td><input type="number" size="3" max="10"> </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>1021545 </td>
+                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
+                                <td><input type="number" size="3" max="10"> </td>
+                            </tr>
+
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <button id="addToDlvrBtn">Adauga elementele selecteate</button>
+            <button id="cancelAddToDlvrBtn">Anuleaza</button>
+        </div>
+    </div>
+<!--    <button class="btn btn-primary" id="startScanBut"><i class="fa fa-barcode"></i> Scaneaza elemente</button>-->
     <form id="deliveryContentsFilter"></form>
+    <button class="btn btn-primary" id="addContentBtn">Adauga continut</button>
     <table class="table table-striped table-hover" id="deliveryContentsTable">
         <thead class="thead-light" id="deliveriesListHeader">
         <tr>
@@ -35,6 +138,7 @@
             <td><button class="btn-success btn">OK</button></td>
             <td></td>
             <td><%= attributes.qty %></td>
+            <td><%= attributes.qty %></td>
             <td></td>
         </tr>
         </tbody>
@@ -57,7 +161,6 @@
                     <option>10</option>
                     <option>25</option>
                     <option>50</option>
-                    <option>75</option>
                 </select> inregistrari pe pagina
             </td>
         </tr>
@@ -71,12 +174,24 @@
         if(!k.data || !k.data.instance) {
             return;
         }
+
+        function addContent()
+        {
+            k.$el.find("#addElsToDeliveryCard").show(400);
+            k.$el.find("#orderSelect").select2wrapper({url: apiRoot+"/orders_extended",placeholder:"Alege comanda",labelfld:"docnum"});
+        }
+
+        k.$el.find("#addContentBtn").on("click",addContent);
+        // k.$el.find("#addToDlvrBtn").on("click",addContent);
+        k.$el.find("#cancelAddToDlvrBtn").on("click",()=>k.$el.find("#addElsToDeliveryCard").hide(400));
+
         let url = apiRoot + "/deliveries/"+k.data.instance.id+"/deliveries_contents?include=inventory,inventory.order";
-        console.log(url);
-        k.$el.find("#deliveryContentsList").apiator(url);
+        let contentItems = k.$el.find("#deliveryContentsList").apiator({url:url,returninstance:true});
+
         k.$el.find("#startScanBut").on("click",function () {
             komponentor.intent("/views/deliveries/scan").data({data:k.data}).send();
         });
+
     }
 
 

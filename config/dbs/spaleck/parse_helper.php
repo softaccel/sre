@@ -175,10 +175,37 @@ return [
         ],
         "keyFld"=> "id"
     ],
+    "inventory_extented"=> [
+        "fields"=> [
+            "id"=> [
+                "iskey"=> true
+            ],
+            "order"=> [
+                "foreignKey"=> [
+                    "table"=> "orders",
+                    "field"=> "oid"
+                ]
+            ]
+        ],
+        "relations"=> [
+            "order_id"=> [
+                "table"=> "orders",
+                "field"=> "oid",
+                "type"=> "outbound",
+                "fkfield"=> "order_id"
+            ]
+        ],
+        "keyFld"=> "id"
+    ],
     "orders"=> [
         "relations"=> [
             "inventory_wmeta"=> [
                 "table"=> "inventory_wmeta",
+                "field"=> "order",
+                "type"=> "inbound"
+            ],
+            "inventory_extented"=> [
+                "table"=> "inventory_extented",
                 "field"=> "order",
                 "type"=> "inbound"
             ]

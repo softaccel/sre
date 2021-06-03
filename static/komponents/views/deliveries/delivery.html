@@ -3,7 +3,7 @@
         display: none;
     }
 </style>
-<div class="modal">
+<div class="modal fade">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body bg-light">
@@ -41,7 +41,7 @@
     function init_komponent(k) {
         // console.log(data)
         let $modal =  k.$el.appendTo("body").filter(".modal").modal().on("hidden.bs.modal",function (event) {
-            $(document).scannerDetection(false);
+            // $(document).scannerDetection(false);
             k.$el.remove();
         });
         $("#deliveryContentPanel").children("[is=komponent]").komponent({data:k.data});

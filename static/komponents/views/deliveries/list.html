@@ -12,7 +12,7 @@
 </style>
 <div>
     <div class="d-inline-block" id="newOrderButtons">
-        <button type="button" aria-haspopup="true" aria-expanded="false" class="mb-2 mr-2 btn btn-primary">Livrare noua</button>
+        <button type="button" aria-haspopup="true" aria-expanded="false" class="mb-2 mr-2 btn btn-primary" id="newDlvrButt">Livrare noua</button>
     </div>
     <form id="deliveriesListFilter" class="d-none"><button type="submit" name="submit"></button></form>
     <table class="table table-striped table-hover">
@@ -81,7 +81,7 @@
             </td>
             <td style="cursor: pointer"><%= attributes.label %></td>
             <td><%= attributes.status %></td>
-            <td><%= attributes.lasupdate %></td>
+            <td><%= attributes.lastupdate %></td>
             <td><%= attributes.dlv_date%></td>
         </tr>
         </tbody>
@@ -115,8 +115,15 @@
     function openDeliveryModal(src) {
         komponentor.intent("/views/deliveries/delivery").data({instance:$(src).data("instance")}).send();
     }
+
     function init_komponent(k) {
+        function newDelivery() {
+            instance.createItem({label:"new"});
+        }
+
         let url = apiRoot+"/deliveries?sort=id";
-        k.$el.find("#deliveriesList").apiator(url);
+        let instance = k.$el.find("#deliveriesList").apiator({url:url,returninstance:true});
+
+        k.$el.find("#newDlvrButt").on("click",newDelivery);
     }
 </script>
