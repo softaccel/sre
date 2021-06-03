@@ -1220,7 +1220,7 @@
 
 			// received data is an item => add it
 			if(data.constructor===Object) {
-				let newItem = _collection.addItem(data);
+				let newItem = _collection.loadItem(data);
 
 				if(_collection.view && _collection.view.el) {
 					_collection.view.render();
@@ -1238,16 +1238,14 @@
 		 * @param data
 		 */
 		_collection.loadFromData = function (data) {
-			let obj = this;
-
 			if (data.constructor !== Array)
 				throw "Invalid data type received. Should be an array.";
 
-			if(obj.navtype==="page")
-				obj.items = [];
+			if(_collection.navtype==="page")
+				_collection.items = [];
 
 			data.forEach(function (item) {
-				obj.addItem(item);
+				_collection.loadItem(item);
 			});
 			// dispatch dataReceived event
 		};
@@ -1407,7 +1405,7 @@
 			}
 		};
 
-		_collection.addItem = function (itemData) {
+		_collection.loadItem = function (itemData) {
 			// throw new Error("asda");
 
 			let opts = {
