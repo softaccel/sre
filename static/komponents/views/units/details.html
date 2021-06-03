@@ -1,0 +1,102 @@
+<div data-resourcetype="item" data-type="item">
+    <form id="customerDataForm"></form>
+    <div class="alert alert-success d-none" role="alert" id="insertUnitSuccessAlert">
+        Datele au fost salvate cu succes!
+    </div>
+
+    <div class="alert alert-danger d-none" role="alert" id="insertUnitServerErrorAlert">
+        A aparut o eroare la salvare
+        <button type="button" class="close" aria-label="Close" onclick="$(this).parent().addClass('d-none')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <pre class="errorMsg bg-light border border-focus mt-2 p-3 rounded"></pre>
+        <button class="btn btn-primary" onclick="komponentor.intent('/common/report').send({data:$(this).prev().data('error')})">Raporteaza eroare</button>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-3">
+            <label for="unitInput">Unitatea</label>
+            <input form="customerDataForm" id="unitInput" name="unit" class="form-control form-control-sm" required autocomplete="off">
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-12">
+            <label for="typeInput">Tipul</label>
+            <input form="customerDataForm" type="text" maxlength="155" id="typeInput" name="type" class="form-control form-control-sm"  autocomplete="off">
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>
+    <button id="updateUnit" class="btn btn-primary" type="submit" form="customerDataForm">Save</button>
+</div>
+
+<script>
+    function init_komponent(k) {
+        let util = k.data.instance.getUtilities();
+        let form = $("#customerDataForm")[0];
+        form.reset();
+
+        util.captureFormSubmit(form, function (data) {
+            if (!k.data.instance.hasOwnProperty("items")) {
+                updateUnit(data);
+                // console.log("item");
+            } else {
+                createUnit(data);
+            }
+        });
+
+        if (k.data.instance.hasOwnProperty("items")) {
+            return;
+        }
+        form.unit.disabled = true;
+        util.fillForm(form, k.data.instance);
+
+        function displayServerError(errorData) {
+            $("#insertUnitServerErrorAlert").removeClass("d-none").find("pre")
+                .text(errorData.jqXHR.responseText)
+                .data("error", errorData);
+        }
+
+        function createUnit(data) {
+            k.data.instance.createItem(data).then(function () {
+                k.parent.hideModal();
+            })
+                .catch(function (errorData) {
+                    displayServerError(errorData);
+                });
+        }
+
+        function updateUnit(attrs) {
+            $(form.elements).removeClass("is-invalid");
+            k.data.instance.update(attrs)
+                .then(function (d) {
+                    // console.log("--------------",d);
+                    $("#insertUnitSuccessAlert").removeClass("d-none");
+                    setTimeout(function () {
+                        $("#insertUnitSuccessAlert").addClass("d-none");
+                    }, 1000);
+                })
+                .catch(function (errorData) {
+                    // no valid JSONAPI error is provided
+                    // => this is some server side error
+                    // => display it and prepare it for reporting
+                    if (!errorData.jqXHR.responseJSON || !errorData.jqXHR.responseJSON.errors
+                        || !errorData.jqXHR.responseJSON.errors.length || !errorData.jqXHR.responseJSON.errors[0]
+                        || !errorData.jqXHR.responseJSON.errors[0].code) {
+                        displayServerError(errorData);
+                        return;
+                    }
+
+                    switch (errorData.jqXHR.responseJSON.errors[0].code * 1) {
+                        // highlight faulty field
+                        case 1062:
+                            let res = /Duplicate entry \'(.+)\' for key \'(.+)\.(.+)\'/.exec(errorData.jqXHR.responseJSON.errors[0].title);
+                            if (res) {
+                                $(form[res[3]]).addClass("is-invalid").next().text("Date duplicate");
+                            }
+                            break;
+                    }
+                })
+        }
+    }
+</script>

@@ -1,42 +1,11 @@
-
-<div class="app-header__logo">
-    <div class="logo-src">SRE</div>
-    <div class="header__pane ml-auto">
-        <div>
-            <button type="button" class="hamburger close-sidebar-btn hamburger--elastic"
-                    onclick="toggleSideBar(this)">
-                    <span class="hamburger-box">
-                        <span class="hamburger-inner"></span>
-                    </span>
-            </button>
+<nav class="main-header navbar navbar-expand navbar-light">
+  <!-- Left navbar links -->
+    <div class="navbar-nav">
+        <div class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button" onclick="event.preventDefault(); toggleSideBar(this);"><i class="fas fa-bars"></i></a>
         </div>
     </div>
-</div>
-<div class="app-header__mobile-menu">
-    <div>
-        <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav"
-                onclick="toggleMobileMenu(this)">
-                <span class="hamburger-box">
-                    <span class="hamburger-inner"></span>
-                </span>
-        </button>
-    </div>
-</div>
-<div class="app-header__menu">
-        <span>
-            <button type="button" class="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
-                <span class="btn-icon-wrapper">
-                    <i class="fa fa-ellipsis-v fa-w-6"></i>
-                </span>
-            </button>
-        </span>
-</div>
-<div class="app-header__content">
-    <div class="app-header-left">
-<!--            <a class="btn btn-primary mr-2" href="<?=$base_path?>/new/ordering"><i class="fa fa-shopping-bag"></i> Comanda</a>-->
-<!--            <a class="btn btn-primary" href="<?=$base_path?>/new/receptions"><i class="fa fa-truck-loading"></i> Receptie</a>-->
-    </div>
-    <div class="app-header-right">
+    <div class="navbar-nav ml-auto">
         <div class="header-btn-lg pr-0">
             <div class="widget-content p-0">
                 <div class="widget-content-wrapper">
@@ -44,14 +13,14 @@
                         <div class="btn-group">
                             <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
                                 <i class="fa fa-user d-inline rounded-circle bg-secondary m-0" style="font-size: 15px; padding: 10px; color: white"></i>
-                                <span>Sergiu</span>
+                                <span id="userName"></span>
                                 <i class="fa fa-angle-down ml-2 opacity-8"></i>
                             </a>
                             <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
                                 <!--									<button type="button" tabindex="0" class="dropdown-item">User Account</button>-->
                                 <a href="" tabindex="0" class="dropdown-item">Setari</a>
                                 <a href="#" onclick="logout()" tabindex="0" class="dropdown-item">Logout</a>
-<!--                                    <a href="#" tabindex="0" class="dropdown-item" onclick="$('body').addClass('admin');return false;">AM</a>-->
+                                <!--                                    <a href="#" tabindex="0" class="dropdown-item" onclick="$('body').addClass('admin');return false;">AM</a>-->
                                 <!--									<h6 tabindex="-1" class="dropdown-header">Header</h6>-->
                                 <!--									<button type="button" tabindex="0" class="dropdown-item">Actions</button>-->
                                 <!--									<div tabindex="-1" class="dropdown-divider"></div>-->
@@ -63,42 +32,49 @@
             </div>
         </div>
     </div>
-</div>
+</nav>
+
 
 <script>
-    function toggleSideBar(btn) {
-        let $main = $('#mainc');
-        let $btn = $(btn);
-        if($main.hasClass('closed-sidebar')) {
-            $main.removeClass('closed-sidebar').addClass('fixed-sidebar');
-            $btn.addClass('is-active');
-        }
-        else {
-            $main.removeClass('fixed-sidebar').addClass('closed-sidebar');
-            $btn.removeClass('is-active');
-        }
+  function toggleSideBar(btn) {
+    let $main = $('body');
+    let $btn = $(btn);
+    if($main.hasClass('sidebar-collapse')){
+        $main.removeClass('sidebar-collapse');
+        $btn.addClass("active");
+    } else {
+        $main.addClass('sidebar-collapse');
+        $btn.removeClass("active");
     }
+  }
 
-    function toggleMobileMenu(btn) {
-        // alert("");
-        let $main = $('#mainc');
-        let $btn = $(btn);
+  function toggleMobileMenu(btn) {
+    // alert("");
+    let $main = $('#mainc');
+    let $btn = $(btn);
 
-        if($main.hasClass('sidebar-mobile-open')) {
-            $main.removeClass('sidebar-mobile-open');
-            $btn.removeClass('is-active');
-        }
-        else {
-            $main.addClass('sidebar-mobile-open');
-            $btn.addClass('is-active');
-        }
+    if($main.hasClass('sidebar-mobile-open')) {
+      $main.removeClass('sidebar-mobile-open');
+      $btn.removeClass('is-active');
     }
+    else {
+      $main.addClass('sidebar-mobile-open');
+      $btn.addClass('is-active');
+    }
+  }
 </script>
 
 
 <script>
 
-    function init_komponent(k,data) {
-    }
+  function init_komponent(k,data) {
+    // $(".modal").appendTo("body");
+    // let url = apiRoot + "/stocks"
+    // $("#gestiuniTable").apiator({url:url});
+    let jsonDec = jwt_decode(localStorage.getItem("spaleck")).unm;
+    $("#userName").text(jsonDec);
+  }
 
 </script>
+
+<script src="assets/js/PushMennu_adminlte.js"></script>

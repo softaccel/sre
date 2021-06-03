@@ -59,32 +59,28 @@
 
 
 </style>
-<div class="app-main__inner">
-    <div class="app-page-title">
-        <div class="page-title-wrapper">
-            <div class="page-title-heading">
-                <div class="page-title-icon">
-                    <i class="fa fa-shopping-basket icon-gradient bg-mean-fruit"></i>
-                </div>
-                <div>Comenzi
-                    <div class="page-title-subheading"></div>
-                </div>
-            </div>
-            <div class="page-title-actions">
-            </div>
-        </div>
-    </div>
-    <div class="">
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <div is="komponent" data-url="/views/orders/list" data-replace="true"></div>
-                    </div>
+<div class="container-fluid">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Comenzi</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6 ">
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-body">
+                    <div is="komponent" data-url="/views/orders/ordersTable" data-replace="true"></div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </div>
 <script>
     function init_komponent(k) {
