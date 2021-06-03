@@ -43,19 +43,14 @@
         }
     </style>
 </head>
-<body>
+<body class="sidebar-mini">
 
-<div class="wrapper">
-
-    <div id="page"></div>
-    <div class='pageOverlay'>
-        <div class='spinner'>
-
-        </div>
-    </div>
-
+<div class="wrapper" id="page">
 </div>
-
+<div class='pageOverlay'>
+    <div class='spinner'>
+    </div>
+</div>
 
 <script src="assets/js/jquery.js"></script>
 <script src="assets/js/jwt-decode.js"></script>
@@ -121,7 +116,7 @@
         url = "/views/login";
     }
     autoload = false;
-    $("#page").komponent({url:url}).finally(function () {
+    $("#page").komponent({url:url,replace:false}).finally(function () {
         $(".pageOverlay").remove();
 
     });

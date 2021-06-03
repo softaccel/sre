@@ -37,13 +37,13 @@
 
 <script>
   function toggleSideBar(btn) {
-    let $main = $('#mainc');
+    let $main = $('body');
     let $btn = $(btn);
-    if(!$main.hasClass('sidebar-closed sidebar-collapse')){
-        $main.removeClass('sidebar-open').addClass('sidebar-closed sidebar-collapse');
+    if($main.hasClass('sidebar-collapse')){
+        $main.removeClass('sidebar-collapse');
         $btn.addClass("active");
     } else {
-        $main.removeClass('sidebar-closed sidebar-collapse').addClass('sidebar-open');
+        $main.addClass('sidebar-collapse');
         $btn.removeClass("active");
     }
   }
