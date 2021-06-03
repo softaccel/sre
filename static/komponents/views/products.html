@@ -1,29 +1,28 @@
-<div class="app-main__inner">
-    <div class="app-page-title">
-        <div class="page-title-wrapper">
-            <div class="page-title-heading">
-                <div class="page-title-icon">
-                    <i class="metismenu-icon fa fa-book icon-gradient bg-mean-fruit"></i>
-                </div>
-                <div>Catalog
-                    <div class="page-title-subheading"></div>
-                </div>
-            </div>
-            <div class="page-title-actions">
-                <div class="d-inline-block dropdown">
-                    <button class="btn btn-primary">New order</button>
-                </div>
-            </div>
-        </div>
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Catalog</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6 ">
+                    <div class="breadcrumb float-sm-right">
+                        <button class="btn btn-primary">New order</button>
+                    </div>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
     </div>
-    <div>
-        <div class="row">
-            <div class="col">
-                <div class="card">
+
+    <div class="app-main__inner">
+        <div>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
                         <div class="card-body">
                             <form id="filterUsers"></form>
-                            <table class="table table-sm table-hover">
-                                <thead class="thead-light">
+                            <table class="table  table-hover table-striped">
+                                <thead class="thead-dark">
                                 <tr>
                                     <th>#</th>
                                     <th>Denumire</th>
@@ -33,7 +32,7 @@
                                     <th>Cod</th>
                                     <th>Documente</th>
                                     <th>Stoc</th>
-<!--                                    <th>Moneda</th>-->
+                                    <!--                                    <th>Moneda</th>-->
                                     <th>Stare</th>
                                 </tr>
                                 </thead>
@@ -47,7 +46,7 @@
                                     <td><%= attributes.code %></td>
                                     <td><%= attributes.docs===null ? "None" : attributes.docs %></td>
                                     <td><%= relationships.default_stock.type %></td>
-<!--                                    <td><%= attributes.currency %></td>-->
+                                    <!--                                    <td><%= attributes.currency %></td>-->
                                     <td><span class="badge badge-secondary"><%= attributes.active === "1" ? "Activ" : "Inactiv" %></span></td>
                                 </tr>
                                 </tbody>
@@ -68,6 +67,7 @@
                             </table>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     </div>
