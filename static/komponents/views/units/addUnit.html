@@ -1,18 +1,16 @@
 <div class="modal" id="unitModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body bg-light">
-                <div class="card">
-                    <div class="card-header-tab card-header-tab-animation card-header">
-                        <div class="card-header-title">
-                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
-                            Adaugati unitate de masura <span id="unitid"></span>
-                        </div>
-                    </div>
-                    <div class="card-body" style="min-height: 200px">
-                        <div id="newUnitModal" is="komponent" data-url="/views/units/details"></div>
-                    </div>
+            <div class="modal-header">
+                <div class="modal-title">
+                    Adaugati unitate de masura <span id="unitid"></span>
                 </div>
+            </div>
+            <div class="modal-body bg-light" style="min-height: 200px">
+                <div id="newUnitModal" is="komponent" data-url="/views/units/details"></div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
             </div>
         </div>
     </div>
