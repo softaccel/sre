@@ -113,7 +113,7 @@
 <script>
 
     function openDeliveryModal(src) {
-        komponentor.intent("/views/deliveries/delivery").data({instance:$(src).data("instance")}).send();
+        komponentor.intent("/views/deliveries/deliveryModal").data({instance:$(src).data("instance")}).send();
     }
 
     function init_komponent(k) {

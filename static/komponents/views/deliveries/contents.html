@@ -49,58 +49,13 @@
                                 <th>Cantitate</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="unassingedItems" data-resourcetype="collection" data-type="">
                             <tr>
                                 <td><input type="checkbox"></td>
-                                <td>1021545 </td>
-                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
+                                <td><%= id %></td>
+                                <td><%= attributes.name %></td>
                                 <td><input type="number" size="4" max="10"> </td>
                             </tr>
-                            <tr>
-                                <td><input type="checkbox"></td>
-                                <td>1021545 </td>
-                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
-                                <td><input type="number" size="3" max="10"> </td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox"></td>
-                                <td>1021545 </td>
-                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
-                                <td><input type="number" size="3" max="10"> </td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox"></td>
-                                <td>1021545 </td>
-                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
-                                <td><input type="number" size="3" max="10"> </td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox"></td>
-                                <td>1021545 </td>
-                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
-                                <td><input type="number" size="3" max="10"> </td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox"></td>
-                                <td>1021545 </td>
-                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
-                                <td><input type="number" size="3" max="10"> </td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox"></td>
-                                <td>1021545 </td>
-                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
-                                <td><input type="number" size="3" max="10"> </td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox"></td>
-                                <td>1021545 </td>
-                                <td>Futterblech Siebkasten / Lagergehäuse / 3D-Combi / </td>
-                                <td><input type="number" size="3" max="10"> </td>
-                            </tr>
-
-
-
                             </tbody>
                         </table>
                     </div>
@@ -178,7 +133,16 @@
         function addContent()
         {
             k.$el.find("#addElsToDeliveryCard").show(400);
-            k.$el.find("#orderSelect").select2wrapper({url: apiRoot+"/orders_extended",placeholder:"Alege comanda",labelfld:"docnum"});
+
+            let $select = k.$el.find("#orderSelect");
+            if(!$select.hasClass("select2")) {
+                $select.select2wrapper({url: apiRoot+"/orders_extended",placeholder:"Alege comanda",labelfld:"docnum"});
+                $select.on('select2:select', function (e) {
+                    var data = e.params.data;
+                    k.$el.find("#unassingedItems").apiator("")
+                });
+            }
+            $select.val(null).trigger('change');
         }
 
         k.$el.find("#addContentBtn").on("click",addContent);

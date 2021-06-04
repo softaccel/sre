@@ -50,77 +50,72 @@
 
 
 <div class="modal" id="order_details_modal">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-body bg-light">
-                <div class="card">
-                    <div class="card-header-tab card-header-tab-animation card-header">
-                        <div class="card-header-title d-sm-none d-lg-block">
-                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
-                            Fisa comanda
-                        </div>
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a data-toggle="tab" href="#sumar" class="nav-link" id="sumarTab">Sumar</a>
-                            </li>
-                            <li class="nav-item">
-                                <a data-toggle="tab" href="#reperePanel" class="nav-link" id="repereTab">Repere fizice</a>
-                            </li>
-                            <li class="nav-item">
-                                <a data-toggle="tab" href="#elemente" class="nav-link" id="orderItemsTab">Elemente comanda</a>
-                            </li>
-                            <li class="nav-item">
-                                <a data-toggle="tab" href="#resurse" class="nav-link" id="allocResTab">Resurse alocate</a>
-                            </li>
-                            <li class="nav-item">
-                                <a data-toggle="tab" href="#pontaj" class="nav-link" id="timetrackTab">Pontaj</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="card-body" style="min-height: 400px; max-height: 800px; overflow: auto">
-                        <div class="tab-content">
-                            <!--// sumar-->
-                            <div class="tab-pane fade" id="sumar" is="komponent" data-url="/views/orders/details" ></div>
+            <div class="modal-header" style="display: flex; align-items: center">
+                <div class="modal-title">
+                    Fisa comanda
+                </div>
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#sumar" class="nav-link" id="sumarTab">Sumar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#reperePanel" class="nav-link" id="repereTab">Repere fizice</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#elemente" class="nav-link" id="orderItemsTab">Elemente comanda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#resurse" class="nav-link" id="allocResTab">Resurse alocate</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#pontaj" class="nav-link" id="timetrackTab">Pontaj</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-body bg-white">
+                <div class="tab-content">
+                    <!--// sumar-->
+                    <div class="tab-pane fade" id="sumar" is="komponent" data-url="/views/orders/details" ></div>
 
-                            <!--// resurse-->
-                            <div class="tab-pane fade" id="resurse">
-                                <button class="btn btn-primary" id="allocateEmpl"><i class="fa fa-user-plus"></i> Adauga</button>
-                                <hr>
-                                <div class="row" id="allocatedEmployees">
-                                    <div class="col-3 mb-4 ">
-                                        <div class="employee shadow bg-light-me rounded p-2" >
-                                            <button class="btn employeeIcon rounded-circle bg-primary text-center float-left p-1 mr-2"
-                                                  style="width: 50px; height: 50px; color: white; font-size: 25px">
-                                                <i class="fa fa-user"></i>
-                                            </button>
-                                            <button class="employeeIconDelete btn rounded-circle bg-danger text-center float-left p-1 mr-2" onclick="remove_employee_from_order(this)"
-                                                  style="width: 50px; height: 50px; color: white; font-size: 25px">
-                                                <i class="fa fa-user-minus"></i>
-                                            </button>
-                                            <span class="employeeName" onclick="edit_employee_association(this)">
+                    <!--// resurse-->
+                    <div class="tab-pane fade" id="resurse">
+                        <button class="btn btn-primary" id="allocateEmpl"><i class="fa fa-user-plus"></i> Adauga</button>
+                        <hr>
+                        <div class="row" id="allocatedEmployees">
+                            <div class="col-3 mb-4 ">
+                                <div class="employee shadow bg-light-me rounded p-2" >
+                                    <button class="btn employeeIcon rounded-circle bg-primary text-center float-left p-1 mr-2"
+                                            style="width: 50px; height: 50px; color: white; font-size: 25px">
+                                        <i class="fa fa-user"></i>
+                                    </button>
+                                    <button class="employeeIconDelete btn rounded-circle bg-danger text-center float-left p-1 mr-2" onclick="remove_employee_from_order(this)"
+                                            style="width: 50px; height: 50px; color: white; font-size: 25px">
+                                        <i class="fa fa-user-minus"></i>
+                                    </button>
+                                    <span class="employeeName" onclick="edit_employee_association(this)">
                                                 <%= relationships.emplid.attributes.fname+" "+relationships.emplid.attributes.lname %></span><br>
-                                                <%= relationships.operation.attributes.name %>
-                                            </span>
+                                    <%= relationships.operation.attributes.name %>
+                                    </span>
 
-                                            <div style="clear: left"></div>
-                                        </div>
-                                    </div>
+                                    <div style="clear: left"></div>
                                 </div>
                             </div>
-
-                            <!--// sumar-->
-                            <div class="tab-pane fade" id="reperePanel" >
-                                <div is="komponent" data-url="/views/orders/partsGallery" id="repere"></div>
-                            </div>
-
-                            <div class="tab-pane fade" id="elemente"></div>
                         </div>
+                    </div>
 
+                    <!--// sumar-->
+                    <div class="tab-pane fade" id="reperePanel" >
+                        <div is="komponent" data-url="/views/orders/partsGallery" id="repere"></div>
                     </div>
-                    <div class="card-footer">
-                        <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
-                    </div>
+
+                    <div class="tab-pane fade" id="elemente"></div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
+
             </div>
         </div>
     </div>
