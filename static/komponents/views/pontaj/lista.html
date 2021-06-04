@@ -1,74 +1,88 @@
 <style>
+    #timeTrackingEntries tr input,
+    #timeTrackingEntries tr select{
+        display: none;
+    }
+    #timeTrackingEntries tr.edit p,
+    #timeTrackingEntries tr.edit button{
+        display: none;
+    }
+    #timeTrackingEntries tr.edit input,
+    #timeTrackingEntries tr.edit select{
+        display: unset;
+    }
 </style>
 <div>
-    <form id="timeTrackingEntriesFiltering"></form>
+    <button class="btn btn-primary" style="margin-bottom: 8px" onclick="showHideRow();">Intrare noua</button>
+    <form id="timeTrackingEntriesFiltering" class="d-none"><button type="submit" name="submit"></button></form>
     <table class="table table-striped table-hover">
     <thead class="thead-dark">
     <tr>
-        <th class="emplCol">
+        <th class="emplCol align-top">
             Angajat
-            <input type="text" name="empl_name" data-operator="~=~" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+            <select id="emplNameSel" name="empl_name" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
+<!--            <input type="text" name="empl_name" data-operator="~=~" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">-->
         </th>
-        <th>
+        <th class="emplCol align-top" style="width: 150px">
             Comanda
-            <input type="text" name="docnum" data-operator="~=~" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+            <select id="docNumFilter" name="docnum" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
         </th>
-        <th>
+        <th class="emplCol align-top">
             Operatie
             <input type="text" name="op_name" data-operator="~=~" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
         </th>
-        <th>
+        <th class="emplCol align-top" style="max-width: 200px">
             <a class="text-white" data-sortfld="start">Start
                 <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
             <div class="input-group input-group-sm ">
                 <div class="input-group-prepend">
                     <span class="input-group-text">de la</span>
                 </div>
-                <input type="start" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+                <input type="datetime-local" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
             </div>
             <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
                     <span class="input-group-text">pana</span>
                 </div>
-                <input type="start" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+                <input type="datetime-local" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
             </div>
         </th>
-        <th>
-            <a class="text-white" data-sortfld="stop">Durata
+        <th class="emplCol align-top" style="max-width: 200px">
+            <a class="text-white" data-sortfld="stop">Stop
                 <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
             <div class="input-group input-group-sm ">
                 <div class="input-group-prepend">
                     <span class="input-group-text">de la</span>
                 </div>
-                <input type="date" name="stop" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+                <input type="datetime-local" name="stop" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
             </div>
             <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
                     <span class="input-group-text">pana</span>
                 </div>
-                <input type="date" name="stop" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+                <input type="datetime-local" name="stop" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
             </div>
         </th>
-        <th>
+        <th class="emplCol align-top" style="min-width: 150px">
             <a class="text-white" data-sortfld="duration">Durata
                 <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
             <div class="input-group input-group-sm ">
                 <div class="input-group-prepend">
-                    <span class="input-group-text">de la</span>
+                    <span class="input-group-text">min</span>
                 </div>
-                <input type="date" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+                <input type="number" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
             </div>
             <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
-                    <span class="input-group-text">pana</span>
+                    <span class="input-group-text">max</span>
                 </div>
-                <input type="date" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+                <input type="number" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
             </div>
         </th>
-        <th class="align-top">
+        <th class="emplCol align-top">
             Tarif orar
         </th>
-        <th class="align-top">
+        <th class="emplCol align-top">
             Valoare
         </th>
         <th width="150px"></th>
@@ -83,20 +97,25 @@
         </td>
         <td>
             <p><%= attributes.op_name %></p>
-            <select></select>
+            <select name="op" style="width: 200px"></select>
         </td>
         <td>
             <p><%= attributes.start %></p>
-            <input>
+            <input type="datetime-local" name="start" style="width: 200px">
         </td>
         <td>
             <p><%= attributes.stop %></p>
+            <input type="datetime-local" name="stop" style="width: 200px">
         </td>
         <td>
             <p><%= attributes.duration %></p>
         </td>
         <td>
             <p><%= attributes.hourly_rate %> <%= attributes.currency %></p>
+            <input type="number" name="tarif" value="<%= attributes.hourly_rate %>" style="width: 75px">
+            <select>
+                <option><%= attributes.currency %></option>
+            </select>
         </td>
         <td>
             <p><% t = timeRegex.exec(attributes.duration); %> <%= t ? ((Math.ceil((t[1]*attributes.hourly_rate + t[2]/60*attributes.hourly_rate)*100)/100)+' ' +attributes.currency) : '-' %></p>
@@ -104,7 +123,46 @@
         <td>
             <button class="btn btn-secondary btn-sm"><i class="fa fa-copy"></i> </button>
             <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> </button>
-            <button class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> </button>
+            <button class="btn btn-warning btn-sm" onclick="edit(this)"><i class="fa fa-edit"></i> </button>
+            <input type="submit" class="btn btn-primary" name="button" value="Salveaza" onclick="save(this)">
+        </td>
+    </tr>
+<!--    <div class="d-none " id="newTT" is="komponent" data-url="/views/pontaj/newTimeTracking"></div>-->
+    <tr class="table-primary hidden_row" name="newTT" style="display:none;">
+        <form id="newTTForm"></form>
+        <td colspan="2" class="align-bottom" style="width: 200px">
+            <p>Angajat</p>
+            <input type="text" name="empl_name" data-operator="~=~" class="form-control-sm form-control" form="newTTForm" style="display: block">
+        </td>
+        <td class="align-bottom" style="width: 200px">
+            <p>Comanda si Operatie</p>
+            <select id="docNumSel" name="docnum" class="form-control-sm form-control" form="newTTForm" data-operator="=" style="display: block"><option> </option></select>
+        </td>
+        <td class="align-bottom" style="width: 200px">
+            <p>Start</p>
+            <div class="input-group input-group-sm ">
+                <input type="datetime-local" name="start" class="form-control-sm form-control" form="newTTForm" style="display: block">
+            </div>
+        </td>
+        <td class="align-bottom" style="width: 200px">
+            <p>
+                Stop
+            </p>
+            <div class="input-group input-group-sm ">
+                <input type="datetime-local" name="stop" class="form-control-sm form-control" form="newTTForm" style="display: block">
+            </div>
+
+        </td>
+        <td class="align-bottom" colspan="2" style="width: 100px">
+            <p>Tarif Orar</p>
+            <input type="number" name="hourly_rate" data-operator="~=~" class="form-control-sm form-control" form="newTTForm" style="display: block">
+        </td>
+        <td class="align-bottom" style="width: 100px">
+            <p>Moneda</p>
+            <select id="unitFilter" name="docnum" class="form-control-sm form-control" form="newTTForm" data-operator="=" style="display: block"><option> </option></select>
+        </td>
+        <td class="align-bottom" style="width: 100px">
+            <button class="btn btn-primary" style="display: block">Adauga</button>
         </td>
     </tr>
     </tbody>
@@ -135,6 +193,75 @@
 <script>
     timeRegex = /(\d+)\:(\d+)\:(\d+)/;
 
+    function save(src) {
+        let itemContainer = $(src).parents("tr");
+        let opSel = itemContainer.find("select[name=op]").val();
+
+        let startVal = itemContainer.find("input[name=start]").val();
+        let stopVal = itemContainer.find("input[name=stop]").val();
+        let instance = $(src).data("instance");
+
+            console.log("777777777777777" + opSel === null  + "888" +  startVal.length == 0 + "99" +  stopVal.length == 0)
+            if(opSel === null || startVal.length == 0 || stopVal.length == 0){
+                komponentor.intent("/common/messagemodal").data({
+                    body: "Completati campurile \"Operatie\", \"Start\" si \"Stop\" pentru a continua.",
+                    buttons: [
+                        {
+                            label: "Ok",
+                            class: "btn-secondary",
+                            attrs: {
+                                "data-dismiss":"modal"
+                            }
+                        }
+                    ]
+                }).send();
+                return;
+            }
+
+        let tmp = opSel.split("/");
+        let oid = tmp[0];
+        let opid = tmp[1];
+
+        console.log("11111111111111111", tmp, oid, opid, startVal.replace("T", " "), stopVal.replace("T", " "), instance);
+
+        let tmpInstance = $("<div>").apiator({type: "timetracking",resourcetype: "item",returninstance:true}).setUrl(apiRoot+"/timetracking/" + instance.id);
+        tmpInstance.attributes = {};
+
+        tmpInstance.id = instance.id;
+        tmpInstance.update({
+            operation: opid,
+            order: oid,
+            start: startVal.replace("T", " "),
+            stop: stopVal.replace("T", " ")
+        }).then(function () {
+            instance.loadFromRemote();
+        })
+
+        itemContainer.removeClass("edit");
+    }
+
+    function edit(src)
+    {
+        let itemContainer = $(src).parents("tr").addClass("edit");
+        let opSel = itemContainer.find("select[name=op]");
+        let instance = $(src).data("instance");
+
+        opSel.select2wrapper({
+            url: apiRoot+"/employees/"+instance.attributes.employee+"/emplToOrdAssoc?filter=status=ord",
+            labelfld: function (item) {
+                return item.attributes.docnum + " - " + item.attributes.opname;
+            },
+            idfld: function (item) {
+                return item.attributes.oid + "/" + item.attributes.opid;
+            },
+
+            placeholder: "Comanda/proiect"
+        });
+        itemContainer.find("input[name=start]").val(instance.attributes.start);
+        itemContainer.find("input[name=stop]").val(instance.attributes.stop);
+        itemContainer.find("input[name=submit]");
+    }
+
     function init_komponent(k) {
         let url = apiRoot + "/tt_expanded?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10";
 
@@ -157,6 +284,62 @@
             type: "tt_expanded",
             url: url
         });
-        // ((Math.ceil((t[1]*attributes.hourly_rate + t[2]/60*attributes.hourly_rate)*100)/100)+' ' + attributes.currency)
+
+        k.$el.find("#docNumFilter").select2({
+            allowClear: true,
+            placeholder: "Doc num",
+            ajax:{
+                url: apiRoot+"/documents",
+                minimumInputLength: 2,
+                dataType: 'json',
+                data: (params)=>{
+                    let limit = 5;
+                    let p = {
+                        "page[documents][offset]":params.page?(params.page-1)*limit:0,
+                        "page[documents][limit]":limit
+                    };
+                    if(params.term) {
+                        p.filter = "docnum~=~" + params.term;
+                    }
+                    return p;
+                },
+                processResults: function (data) {
+                    let result = {results:[]};
+                    data.data.forEach(function (item) {
+                        result.results.push({
+                            id: item.attributes.docnum,
+                            text: item.attributes.docnum,
+                            // data: item
+
+                        })
+                    });
+                    return result;
+                }
+            }
+        });
+
+        let formElements = $($("#timeTrackingEntriesFiltering")[0].elements);
+        console.log("22222222222222", formElements);
+        formElements.filter("input").on("keyup",function () {
+            formElements.filter("button[type=submit]").click();
+        })
+            .on("change",function () {
+                formElements.filter("button[type=submit]").click();
+
+            });
+        $("#docNumFilter").on("change",function () {
+            formElements.filter("button[type=submit]").click();
+        });
+
+
+        k.exec = function (b) {
+            console.log("exec order",k,b);
+        }
+    }
+
+
+    function showHideRow() {
+        $("[name=newTT]").toggle();
+
     }
 </script>

@@ -127,8 +127,11 @@ return [
         "fields"=> [
             "id"=> [
                 "iskey"=> true
-            ]
+            ],
+            "oid"=> [],
+            "emplid"=> []
         ],
+        "relations"=> [],
         "keyFld"=> "id"
     ],
     "employeesExtended"=> [
@@ -207,6 +210,20 @@ return [
             "inventory_extented"=> [
                 "table"=> "inventory_extented",
                 "field"=> "order",
+                "type"=> "inbound"
+            ],
+            "emplToOrdAssoc"=> [
+                "table"=> "emplToOrdAssoc",
+                "field"=> "oid",
+                "type"=> "inbound"
+            ]
+        ]
+    ],
+    "employees"=> [
+        "relations"=> [
+            "emplToOrdAssoc"=> [
+                "table"=> "emplToOrdAssoc",
+                "field"=> "emplid",
                 "type"=> "inbound"
             ]
         ]

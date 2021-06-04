@@ -842,6 +842,17 @@ return [
                 "required"=> false,
                 "default"=> "0"
             ],
+            "opid"=> [
+                "description"=> "",
+                "name"=> "opid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "0"
+            ],
             "opname"=> [
                 "description"=> "",
                 "name"=> "opname",
@@ -1163,6 +1174,11 @@ return [
             "timetracking"=> [
                 "table"=> "timetracking",
                 "field"=> "employee",
+                "type"=> "inbound"
+            ],
+            "emplToOrdAssoc"=> [
+                "table"=> "emplToOrdAssoc",
+                "field"=> "emplid",
                 "type"=> "inbound"
             ]
         ]
@@ -2708,6 +2724,11 @@ return [
             "inventory_extented"=> [
                 "table"=> "inventory_extented",
                 "field"=> "order",
+                "type"=> "inbound"
+            ],
+            "emplToOrdAssoc"=> [
+                "table"=> "emplToOrdAssoc",
+                "field"=> "oid",
                 "type"=> "inbound"
             ]
         ]
@@ -5239,6 +5260,26 @@ return [
                 "iskey"=> false,
                 "required"=> true,
                 "default"=> null
+            ],
+            "order_status"=> [
+                "description"=> "",
+                "name"=> "order_status",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "enum",
+                    "vals"=> [
+                        "offer",
+                        "ord",
+                        "proc",
+                        "ctc",
+                        "fix",
+                        "ready",
+                        "dlvd"
+                    ]
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "ord"
             ],
             "start"=> [
                 "description"=> "",
