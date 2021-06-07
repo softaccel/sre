@@ -6,33 +6,31 @@
 <div class="modal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    Detalii echipa <span id="teamName" class="ml-2 bg-info"><%=attributes.name%></span>
+                </div>
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#teamMembersPanel" class="nav-link active">Membrii echipei</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#tab2Content" class="nav-link">Comenzi</a>
+                    </li>
+                </ul>
+            </div>
             <div class="modal-body bg-light">
-                <div class="card">
-                    <div class="card-header-tab card-header-tab-animation card-header">
-                        <div class="card-header-title">
-                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
-                            Detalii echipa <span id="teamName" class="ml-2 bg-info"><%=attributes.name%></span>
-                        </div>
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a data-toggle="tab" href="#teamMembersPanel" class="nav-link active">Membrii echipei</a>
-                            </li>
-                            <li class="nav-item">
-                                <a data-toggle="tab" href="#tab2Content" class="nav-link">Comenzi</a>
-                            </li>
-                        </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" role="tabpanel" id="teamMembersPanel">
+                        <div is="komponent" id="teamMembersList" data-url="/views/employees/list"></div>
                     </div>
-                    <div class="card-body" style="min-height: 400px">
-                        <div class="tab-content">
-                            <div class="tab-pane active" role="tabpanel" id="teamMembersPanel">
-                                <div is="komponent" id="teamMembersList" data-url="/views/employees/list"></div>
-                            </div>
-                            <div class="tab-pane" id="tab2Content" data-resourcetype="collection" role="tabpanel">
-                                2
-                            </div>
-                        </div>
+                    <div class="tab-pane" id="tab2Content" data-resourcetype="collection" role="tabpanel">
+                        2
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
             </div>
         </div>
     </div>
@@ -43,7 +41,7 @@
         let $modal =  k.$el.appendTo("body").filter(".modal").modal().on("hidden.bs.modal",function (event) {
             k.$el.remove();
         });
-        k.data.instance.bindView($modal.find('.card-header-title')).loadFromRemote();
+        k.data.instance.bindView($modal.find('.modal-title')).loadFromRemote();
 
         $("#teamMembersList").komponent({
             data: {filter: [{fld: 'team',val:k.data.instance.id,op:"="}]}

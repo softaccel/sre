@@ -29,8 +29,9 @@
                     let result = {results:[]};
                     data.data.forEach(function (item) {
                         result.results.push({
-                            id: item.id,
-                            text: item.attributes[options.labelfld],
+                            id: typeof options.idfld==="undefined" ? item.id :
+                                (typeof options.idfld==="function" ? options.idfld(item) : item.attributes[options.idfld]),
+                            text: typeof options.labelfld==="function" ? options.labelfld(item) : item.attributes[options.labelfld],
                         })
                     });
                     return result;
