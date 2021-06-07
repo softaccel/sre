@@ -127,11 +127,8 @@ return [
         "fields"=> [
             "id"=> [
                 "iskey"=> true
-            ],
-            "oid"=> [],
-            "emplid"=> []
+            ]
         ],
-        "relations"=> [],
         "keyFld"=> "id"
     ],
     "employeesExtended"=> [
@@ -211,20 +208,81 @@ return [
                 "table"=> "inventory_extented",
                 "field"=> "order",
                 "type"=> "inbound"
-            ],
-            "emplToOrdAssoc"=> [
-                "table"=> "emplToOrdAssoc",
-                "field"=> "oid",
+            ]
+        ]
+    ],
+    "dlvrcontents_expanded"=> [
+        "fields"=> [
+            "id"=> [
+                "iskey"=> true
+            ]
+        ],
+        "keyFld"=> "id"
+    ],
+    "deliveries"=> [
+        "relations"=> [
+            "dlvrcontents_expanded"=> [
+                "table"=> "dlvrcontents_expanded",
+                "field"=> "delivery",
                 "type"=> "inbound"
             ]
         ]
     ],
-    "employees"=> [
+    "timetracking_wdiff"=> [
+        "fields"=> [
+            "id"=> [
+                "iskey"=> true
+            ],
+            "employee"=> [
+                "foreignKey"=> [
+                    "table"=> "employees",
+                    "field"=> "id"
+                ]
+            ],
+            "currency"=> [
+                "foreignKey"=> [
+                    "table"=> "currencies",
+                    "field"=> "id"
+                ]
+            ],
+            "operation"=> [
+                "foreignKey"=> [
+                    "table"=> "operations",
+                    "field"=> "id"
+                ]
+            ],
+            "order"=> [
+                "foreignKey"=> [
+                    "table"=> "orders",
+                    "field"=> "oid"
+                ]
+            ]
+        ],
+        "keyFld"=> "id",
         "relations"=> [
-            "emplToOrdAssoc"=> [
-                "table"=> "emplToOrdAssoc",
-                "field"=> "emplid",
-                "type"=> "inbound"
+            "employee"=> [
+                "table"=> "employees",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "employee"
+            ],
+            "operation"=> [
+                "table"=> "operations",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "operation"
+            ],
+            "order"=> [
+                "table"=> "orders",
+                "field"=> "oid",
+                "type"=> "outbound",
+                "fkfield"=> "order"
+            ],
+            "currency"=> [
+                "table"=> "currencies",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "currency"
             ]
         ]
     ]

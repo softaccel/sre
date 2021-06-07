@@ -13,159 +13,171 @@
     }
 </style>
 <div>
-    <button class="btn btn-primary" style="margin-bottom: 8px" onclick="showHideRow();">Intrare noua</button>
+    <button class="btn btn-primary" style="margin-bottom: 8px" onclick="loadNewTTRow();">Intrare noua</button>
     <form id="timeTrackingEntriesFiltering" class="d-none"><button type="submit" name="submit"></button></form>
     <table class="table table-striped table-hover">
-    <thead class="thead-dark">
-    <tr>
-        <th class="emplCol align-top">
-            Angajat
-            <select id="emplNameSel" name="empl_name" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
-<!--            <input type="text" name="empl_name" data-operator="~=~" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">-->
-        </th>
-        <th class="emplCol align-top" style="width: 150px">
-            Comanda
-            <select id="docNumFilter" name="docnum" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
-        </th>
-        <th class="emplCol align-top">
-            Operatie
-            <input type="text" name="op_name" data-operator="~=~" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
-        </th>
-        <th class="emplCol align-top" style="max-width: 200px">
-            <a class="text-white" data-sortfld="start">Start
-                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-            <div class="input-group input-group-sm ">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">de la</span>
+        <thead class="thead-dark">
+        <tr>
+            <th class="emplCol align-top" width="200px">
+                Angajat
+                <select id="emplNamefilter" name="employee" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
+            </th>
+            <th class="emplCol align-top" style="width: 150px">
+                Comanda
+                <select id="docNumFilter" name="docnum" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
+            </th>
+            <th class="emplCol align-top">
+                Operatie
+                <input type="text" name="op_name" data-operator="~=~" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
+            </th>
+            <th class="emplCol align-top" style="max-width: 200px">
+                <a class="text-white" data-sortfld="start">Start
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                <div class="input-group input-group-sm ">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">de la</span>
+                    </div>
+                    <input type="datetime-local" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
                 </div>
-                <input type="datetime-local" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
-            </div>
-            <div class="input-group input-group-sm">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">pana</span>
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">pana</span>
+                    </div>
+                    <input type="datetime-local" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
                 </div>
-                <input type="datetime-local" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
-            </div>
-        </th>
-        <th class="emplCol align-top" style="max-width: 200px">
-            <a class="text-white" data-sortfld="stop">Stop
-                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-            <div class="input-group input-group-sm ">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">de la</span>
+            </th>
+            <th class="emplCol align-top" style="max-width: 200px">
+                <a class="text-white" data-sortfld="stop">Stop
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                <div class="input-group input-group-sm ">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">de la</span>
+                    </div>
+                    <input type="datetime-local" name="stop" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
                 </div>
-                <input type="datetime-local" name="stop" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
-            </div>
-            <div class="input-group input-group-sm">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">pana</span>
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">pana</span>
+                    </div>
+                    <input type="datetime-local" name="stop" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
                 </div>
-                <input type="datetime-local" name="stop" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
-            </div>
-        </th>
-        <th class="emplCol align-top" style="min-width: 150px">
-            <a class="text-white" data-sortfld="duration">Durata
-                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-            <div class="input-group input-group-sm ">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">min</span>
+            </th>
+            <th class="emplCol align-top" style="min-width: 150px">
+                <a class="text-white" data-sortfld="duration">Durata
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                <div class="input-group input-group-sm ">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">min</span>
+                    </div>
+                    <input type="number" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
                 </div>
-                <input type="number" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
-            </div>
-            <div class="input-group input-group-sm">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">max</span>
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">max</span>
+                    </div>
+                    <input type="number" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
                 </div>
-                <input type="number" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
-            </div>
-        </th>
-        <th class="emplCol align-top">
-            Tarif orar
-        </th>
-        <th class="emplCol align-top">
-            Valoare
-        </th>
-        <th width="150px"></th>
-    </tr>
-    </thead>
-    <tbody id="timeTrackingEntries" data-resourcetype="collection" data-paging="#timeTrackingEntriesPaging" data-filter="#timeTrackingEntriesFiltering"
-           data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset">
-    <tr>
-        <td class="emplCol"><%= attributes.empl_name %></td>
-        <td>
-            <p><%= attributes.docnum %></p>
-        </td>
-        <td>
-            <p><%= attributes.op_name %></p>
-            <select name="op" style="width: 200px"></select>
-        </td>
-        <td>
-            <p><%= attributes.start %></p>
-            <input type="datetime-local" name="start" style="width: 200px">
-        </td>
-        <td>
-            <p><%= attributes.stop %></p>
-            <input type="datetime-local" name="stop" style="width: 200px">
-        </td>
-        <td>
-            <p><%= attributes.duration %></p>
-        </td>
-        <td>
-            <p><%= attributes.hourly_rate %> <%= attributes.currency %></p>
-            <input type="number" name="tarif" value="<%= attributes.hourly_rate %>" style="width: 75px">
-            <select>
-                <option><%= attributes.currency %></option>
-            </select>
-        </td>
-        <td>
-            <p><% t = timeRegex.exec(attributes.duration); %> <%= t ? ((Math.ceil((t[1]*attributes.hourly_rate + t[2]/60*attributes.hourly_rate)*100)/100)+' ' +attributes.currency) : '-' %></p>
-        </td>
-        <td>
-            <button class="btn btn-secondary btn-sm"><i class="fa fa-copy"></i> </button>
-            <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> </button>
-            <button class="btn btn-warning btn-sm" onclick="edit(this)"><i class="fa fa-edit"></i> </button>
-            <input type="submit" class="btn btn-primary" name="button" value="Salveaza" onclick="save(this)">
-        </td>
-    </tr>
-<!--    <div class="d-none " id="newTT" is="komponent" data-url="/views/pontaj/newTimeTracking"></div>-->
-    <tr class="table-primary hidden_row" name="newTT" style="display:none;">
-        <form id="newTTForm"></form>
-        <td colspan="2" class="align-bottom" style="width: 200px">
-            <p>Angajat</p>
-            <input type="text" name="empl_name" data-operator="~=~" class="form-control-sm form-control" form="newTTForm" style="display: block">
-        </td>
-        <td class="align-bottom" style="width: 200px">
-            <p>Comanda si Operatie</p>
-            <select id="docNumSel" name="docnum" class="form-control-sm form-control" form="newTTForm" data-operator="=" style="display: block"><option> </option></select>
-        </td>
-        <td class="align-bottom" style="width: 200px">
-            <p>Start</p>
-            <div class="input-group input-group-sm ">
-                <input type="datetime-local" name="start" class="form-control-sm form-control" form="newTTForm" style="display: block">
-            </div>
-        </td>
-        <td class="align-bottom" style="width: 200px">
-            <p>
-                Stop
-            </p>
-            <div class="input-group input-group-sm ">
-                <input type="datetime-local" name="stop" class="form-control-sm form-control" form="newTTForm" style="display: block">
-            </div>
+            </th>
+            <th class="emplCol align-top">
+                Tarif orar
+            </th>
+            <th class="emplCol align-top">
+                Valoare
+            </th>
+            <th width="150px"></th>
+        </tr>
+        </thead>
+        <tbody id="timeTrackingEntries" data-type="timetracking" data-resourcetype="collection" data-paging="#timeTrackingEntriesPaging" data-filter="#timeTrackingEntriesFiltering"
+               data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset">
+        <tr>
+            <td class="emplCol"><%= relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname %></td>
+            <td>
+                <p><%= relationships.order.relationships.doc_id.attributes.docnum %></p>
+            </td>
+            <td>
+                <p><% console.log(relationships.operation) %></p>
+                <select name="op" style="width: 200px"></select>
+            </td>
+            <td>
+                <p><%= attributes.start %></p>
+                <input type="datetime-local" name="start" style="width: 200px">
+            </td>
+            <td>
+                <p><%= attributes.stop %></p>
+                <input type="datetime-local" name="stop" style="width: 200px">
+            </td>
+            <td>
+                <p><%= attributes.duration %></p>
+            </td>
+            <td>
+                <p><%= attributes.hourly_rate %> <%= attributes.currency %></p>
+                <input type="number" name="tarif" value="<%= attributes.hourly_rate %>" style="width: 75px">
+                <select>
+                    <option><%= relationships.currency.id %></option>
+                </select>
+            </td>
+            <td>
+                <p><% t = timeRegex.exec(attributes.duration); %> <%= t ? ((Math.ceil((t[1]*attributes.hourly_rate + t[2]/60*attributes.hourly_rate)*100)/100)+' ' +relationships.currency.id) : '-' %></p>
+            </td>
+            <td>
+                <button class="btn btn-secondary btn-sm" onclick="duplicateItem(this);"><i class="fa fa-copy"></i> </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteUnit(this);"><i class="fa fa-trash"></i> </button>
+                <button class="btn btn-warning btn-sm" onclick="edit(this)"><i class="fa fa-edit"></i> </button>
+                <input type="submit" class="btn btn-primary" name="button" value="Salveaza" onclick="save(this)">
+            </td>
+        </tr>
+    <!--    <div class="d-none " id="newTT" is="komponent" data-url="/views/pontaj/newTimeTracking"></div>-->
 
-        </td>
-        <td class="align-bottom" colspan="2" style="width: 100px">
-            <p>Tarif Orar</p>
-            <input type="number" name="hourly_rate" data-operator="~=~" class="form-control-sm form-control" form="newTTForm" style="display: block">
-        </td>
-        <td class="align-bottom" style="width: 100px">
-            <p>Moneda</p>
-            <select id="unitFilter" name="docnum" class="form-control-sm form-control" form="newTTForm" data-operator="=" style="display: block"><option> </option></select>
-        </td>
-        <td class="align-bottom" style="width: 100px">
-            <button class="btn btn-primary" style="display: block">Adauga</button>
-        </td>
-    </tr>
-    </tbody>
+        </tbody>
+        <tbody>
+        <tr class="table-primary hidden_row" id="trNewTT" name="newTT" style="display:none;">
+            <form id="newTTForm"></form>
+            <td class="align-bottom" style="width: 200px">
+                <p>Angajat</p>
+                <!--            <select id="emplNameSel" name="empl_name" class="form-control-sm form-control" form="newTTForm" data-operator="=" style="display: block"></select>-->
+                <select id="emplNameSel" name="employee" class="form-control-sm form-control" form="newTTForm" style="display: block;"></select>
+
+                <!--            <input type="text" name="empl_name" data-operator="~=~" class="form-control-sm form-control" form="newTTForm" style="display: block">-->
+            </td>
+            <td class="align-bottom" colspan="2">
+                <p>Comanda si Operatie</p>
+                <select id="docNumSel" name="docnum" class="form-control-sm form-control" form="newTTForm" style="display: block;"></select>
+
+                <!--            <select id="docNumSel" name="docnum" class="form-control-sm form-control" form="newTTForm" data-operator="=" style="display: block"><option> </option></select>-->
+            </td>
+            <td class="align-bottom" style="width: 200px">
+                <p>Start</p>
+                <div class="input-group input-group-sm ">
+                    <input type="datetime-local" name="start" class="form-control-sm form-control" form="newTTForm" style="display: block">
+                </div>
+            </td>
+            <td class="align-bottom" style="width: 200px">
+                <p>
+                    Stop
+                </p>
+                <div class="input-group input-group-sm ">
+                    <input type="datetime-local" name="stop" class="form-control-sm form-control" form="newTTForm" style="display: block">
+                </div>
+
+            </td>
+            <td class="align-bottom"  style="width: 100px">
+                <p>Tarif Orar</p>
+                <input type="number" name="hourly_rate" data-operator="~=~" class="form-control-sm form-control" form="newTTForm" style="display: block">
+            </td>
+            <td class="align-bottom" style="width: 100px">
+                <p>Moneda</p>
+                <select id="unitFilter" name="currency" class="form-control-sm form-control" form="newTTForm" style="display: block; width: 100px"></select>
+
+                <!--            <select id="unitFilter" name="docnum" class="form-control-sm form-control" form="newTTForm" data-operator="=" style="display: block"><option> </option></select>-->
+            </td>
+            <td>
+
+            </td>
+            <td class="align-bottom" style="width: 100px">
+                <button class="btn btn-primary" id="addNewTTBtn" type="submit" form="newTTForm" style="display: block" onclick="">Adauga</button>
+            </td>
+        </tr>
+        </tbody>
     <tfoot>
     <tr>
         <td colspan="6">
@@ -201,7 +213,6 @@
         let stopVal = itemContainer.find("input[name=stop]").val();
         let instance = $(src).data("instance");
 
-            console.log("777777777777777" + opSel === null  + "888" +  startVal.length == 0 + "99" +  stopVal.length == 0)
             if(opSel === null || startVal.length == 0 || stopVal.length == 0){
                 komponentor.intent("/common/messagemodal").data({
                     body: "Completati campurile \"Operatie\", \"Start\" si \"Stop\" pentru a continua.",
@@ -234,20 +245,19 @@
             start: startVal.replace("T", " "),
             stop: stopVal.replace("T", " ")
         }).then(function () {
+            itemContainer.removeClass("edit");
             instance.loadFromRemote();
         })
-
-        itemContainer.removeClass("edit");
     }
 
-    function edit(src)
-    {
+    function edit(src) {
         let itemContainer = $(src).parents("tr").addClass("edit");
         let opSel = itemContainer.find("select[name=op]");
         let instance = $(src).data("instance");
 
         opSel.select2wrapper({
-            url: apiRoot+"/employees/"+instance.attributes.employee+"/emplToOrdAssoc?filter=status=ord",
+            // url: apiRoot+"/employees/"+instance.attributes.employee+"/emplToOrdAssoc?filter=status=ord",
+            url: apiRoot+"/emplToOrdAssoc?filter=status=ord",
             labelfld: function (item) {
                 return item.attributes.docnum + " - " + item.attributes.opname;
             },
@@ -262,8 +272,55 @@
         itemContainer.find("input[name=submit]");
     }
 
+    function loadNewTTRow() {
+        let newTTRow = $("[name=newTT]").toggle();
+        let emplSel = newTTRow.find("#emplNameSel");
+
+        emplSel.select2wrapper({
+            url: apiRoot+"/employees",
+            labelfld: function (item) {
+                return item.attributes.fname + " " + item.attributes.lname;
+            },
+            idfld: function (item) {
+                return item.attributes.id;
+            },
+
+            placeholder: "Nume Angajat"
+        });
+
+        let docnumSel = newTTRow.find("#docNumSel");
+
+        docnumSel.select2wrapper({
+            url: apiRoot+"/emplToOrdAssoc?filter=status=ord",
+            labelfld: function (item) {
+                return item.attributes.docnum + " - " + item.attributes.opname;
+            },
+            idfld: function (item) {
+                return item.attributes.oid + "/" + item.attributes.opid;
+            },
+
+            placeholder: "Comanda/proiect"
+        });
+
+        let units = newTTRow.find("#unitFilter");
+
+        units.select2wrapper({
+            url: apiRoot+"/units",
+            labelfld: function (item) {
+                return item.attributes.unit + " - " + item.attributes.type;
+            },
+            idfld: function (item) {
+                return item.attributes.unit;
+            },
+
+            placeholder: "Moneda"
+        });
+    }
+
+
+
     function init_komponent(k) {
-        let url = apiRoot + "/tt_expanded?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10";
+        let url = apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10&include=employee,order,order.doc_id";
 
         if (k.data) {
             let emplid;
@@ -276,14 +333,26 @@
             if(!emplid) {
                 return;
             }
-            url = apiRoot + "/tt_expanded?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=5&filter=employee="+emplid;
+            url = apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=5&filter=employee="+emplid;
         }
 
 
-        $("#timeTrackingEntries").apiator({
-            type: "tt_expanded",
-            url: url
+        let instance = $("#timeTrackingEntries").apiator({
+            url: url,
+            returninstance: true
         });
+
+        k.$el.find("#emplNamefilter").select2wrapper({
+            url: apiRoot+"/employees",
+            labelfld: function (item) {
+                return item.attributes.fname + " " + item.attributes.lname;
+            },
+            idfld: function (item) {
+                return item.attributes.id;
+            },
+
+            placeholder: "Nume Angajat"
+        })
 
         k.$el.find("#docNumFilter").select2({
             allowClear: true,
@@ -331,15 +400,137 @@
             formElements.filter("button[type=submit]").click();
         });
 
+        console.log("@@@@@@@@", k);
+
+        // let util = $("<span>").apiator({returninstance:true}).getUtilities();
+        let util = instance.getUtilities();
+        let form = $("#newTTForm")[0];
+
+        util.captureFormSubmit(form, function (data) {
+            console.log(data);
+            addNewTT(data);
+        })
+
+        function addNewTT(data){
+
+            if(data.employee === null || data.docnum === null || data.start.length === 0 || data.stop.length === 0 || data.hourly_rate.length === 0 || data.currency === null) {
+
+                komponentor.intent("/common/messagemodal").data({
+                    body: "Completati toate campurile pentru a continua.",
+                    buttons: [
+                        {
+                            label: "Ok",
+                            class: "btn-secondary",
+                            attrs: {
+                                "data-dismiss": "modal"
+                            }
+                        }
+                    ]
+                }).send();
+                return;
+            }
+            data.start = data.start.replace("T", " ")
+            data.stop = data.stop.replace("T", " ")
+
+            data.operation = data.docnum.split("/")[1];
+            data.order = data.docnum.split("/")[0];
+
+            delete data.docnum;
+            console.log(data);
+            instance.createItem(data).then(function (){
+                console.log(data);
+                $("[name=newTT]").toggle();
+                instance.loadFromRemote();
+            })
+            .catch(function () {
+                console.log("nema")});
+        }
+
+        // k.$el.find("#addNewTTBtn").on("click", addNewTT);
+
+
 
         k.exec = function (b) {
             console.log("exec order",k,b);
         }
     }
 
+    function deleteUnit(src){
+        console.log("////",$(src).data("instance").attributes)
 
-    function showHideRow() {
-        $("[name=newTT]").toggle();
-
+        komponentor.intent("/common/messagemodal").data({
+            //relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname
+            body: "Esti sigur ca vrei sa stergi pontajul lui <br><strong>"+$(src).data("instance").relationships.employee.attributes.fname + " " + $(src).data("instance").relationships.employee.attributes.lname + "</strong> de <strong>" + $(src).data("instance").attributes.duration + "ore?</strong>",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        $(src).data('instance').delete().catch(function(data){
+                            console.log(data);
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
     }
+
+    function duplicateItem(src){
+        // let util = $("<span>").apiator({resourcetype: "collection", returninstance:true});
+        // util.url = apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10&include=employee,order,order.doc_id";
+        // console.log(util, "//////////////////");
+        let itemInstance = $(src).data("instance");
+        komponentor.intent("/common/messagemodal").data({
+            body: "Esti sigur ca vrei sa creezi o dublura pontajului lui <br><strong>"+itemInstance.relationships.employee.attributes.fname + " " + $(src).data("instance").relationships.employee.attributes.lname + "</strong> de <strong>" + $(src).data("instance").attributes.duration + "ore?</strong>",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        console.log(itemInstance);
+                        // return;
+                        let data = itemInstance.attributes;
+                        data.employee = itemInstance.relationships.employee.id;
+                        data.operation = itemInstance.relationships.operation.id;
+                        data.order = itemInstance.relationships.order.id;
+                        data.currency = itemInstance.relationships.currency.id;
+                        delete data.id;
+                        itemInstance.collection.createItem(data)
+                            .catch(function(data){
+                                console.log(data);
+                                komponentor.intent("/common/errormodal")
+                                    .data({
+                                        body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                                    })
+                                    .send();
+                            });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
+    }
+
 </script>
