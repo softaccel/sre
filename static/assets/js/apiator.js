@@ -1017,7 +1017,6 @@
 				return this.el;
 			}
 
-
 			if(!_itemview.el) {
 				throw "Invalid item view elemement";
 			}

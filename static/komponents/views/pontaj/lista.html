@@ -111,8 +111,8 @@
             </td>
             <td>
                 <p><%= attributes.hourly_rate %> <%= attributes.currency %></p>
-                <input type="number" name="tarif" value="<%= attributes.hourly_rate %>" style="width: 75px">
-                <select>
+                <input type="number" name="hourly_rate" value="<%= attributes.hourly_rate %>" style="width: 75px">
+                <select name="currency">
                     <option><%= relationships.currency.id %></option>
                 </select>
             </td>
@@ -211,23 +211,25 @@
 
         let startVal = itemContainer.find("input[name=start]").val();
         let stopVal = itemContainer.find("input[name=stop]").val();
+        let hourly_rate = itemContainer.find("input[name=hourly_rate]").val();
+        let currency = itemContainer.find("input[name=currency]").val();
         let instance = $(src).data("instance");
 
-            if(opSel === null || startVal.length == 0 || stopVal.length == 0){
-                komponentor.intent("/common/messagemodal").data({
-                    body: "Completati campurile \"Operatie\", \"Start\" si \"Stop\" pentru a continua.",
-                    buttons: [
-                        {
-                            label: "Ok",
-                            class: "btn-secondary",
-                            attrs: {
-                                "data-dismiss":"modal"
-                            }
+        if(opSel === null || startVal.length == 0 || stopVal.length == 0){
+            komponentor.intent("/common/messagemodal").data({
+                body: "Completati campurile \"Operatie\", \"Start\" si \"Stop\" pentru a continua.",
+                buttons: [
+                    {
+                        label: "Ok",
+                        class: "btn-secondary",
+                        attrs: {
+                            "data-dismiss":"modal"
                         }
-                    ]
-                }).send();
-                return;
-            }
+                    }
+                ]
+            }).send();
+            return;
+        }
 
         let tmp = opSel.split("/");
         let oid = tmp[0];
@@ -235,25 +237,29 @@
 
         console.log("11111111111111111", tmp, oid, opid, startVal.replace("T", " "), stopVal.replace("T", " "), instance);
 
-        let tmpInstance = $("<div>").apiator({type: "timetracking",resourcetype: "item",returninstance:true}).setUrl(apiRoot+"/timetracking/" + instance.id);
-        tmpInstance.attributes = {};
-
-        tmpInstance.id = instance.id;
-        tmpInstance.update({
+        // tmpInstance.attributes = {};
+        //
+        // tmpInstance.id = instance.id;
+        console.log($(src).data("instance"));
+        // return;
+        $(src).data("instance").update({
             operation: opid,
             order: oid,
             start: startVal.replace("T", " "),
-            stop: stopVal.replace("T", " ")
+            stop: stopVal.replace("T", " "),
+            // currency: currency,
+            hourly_rate: hourly_rate
         }).then(function () {
             itemContainer.removeClass("edit");
-            instance.loadFromRemote();
-        })
+
+        });
     }
 
     function edit(src) {
         let itemContainer = $(src).parents("tr").addClass("edit");
         let opSel = itemContainer.find("select[name=op]");
         let instance = $(src).data("instance");
+
 
         opSel.select2wrapper({
             // url: apiRoot+"/employees/"+instance.attributes.employee+"/emplToOrdAssoc?filter=status=ord",
@@ -262,6 +268,7 @@
                 return item.attributes.docnum + " - " + item.attributes.opname;
             },
             idfld: function (item) {
+                console.log(item.attributes);
                 return item.attributes.oid + "/" + item.attributes.opid;
             },
 

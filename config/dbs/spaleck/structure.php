@@ -943,17 +943,6 @@ return [
                 "required"=> false,
                 "default"=> null
             ],
-            "opid"=> [
-                "description"=> "",
-                "name"=> "opid",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "0"
-            ],
             "hourlyrate"=> [
                 "description"=> "",
                 "name"=> "hourlyrate",
@@ -1003,6 +992,17 @@ return [
             "oid"=> [
                 "description"=> "",
                 "name"=> "oid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> "0"
+            ],
+            "opid"=> [
+                "description"=> "",
+                "name"=> "opid",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "int"
@@ -1589,8 +1589,19 @@ return [
                     "length"=> "91"
                 ],
                 "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
                 "required"=> true,
-                "default"=> ""
+                "default"=> "0"
             ]
         ],
         "relations"=> [],
@@ -5260,12 +5271,12 @@ return [
                 "required"=> false,
                 "default"=> "w"
             ],
-            "duration"=> [
+            "stop"=> [
                 "description"=> "",
-                "name"=> "duration",
+                "name"=> "stop",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "time"
+                    "proto"=> "datetime"
                 ],
                 "iskey"=> false,
                 "required"=> false,
@@ -5305,172 +5316,6 @@ return [
         ]
     ],
     "timetracking_wdiff"=> [
-        "fields"=> [
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> true,
-                "default"=> "0"
-            ],
-            "employee"=> [
-                "description"=> "",
-                "name"=> "employee",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "employees",
-                    "field"=> "id"
-                ]
-            ],
-            "start"=> [
-                "description"=> "",
-                "name"=> "start",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "datetime"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "CURRENT_TIMESTAMP"
-            ],
-            "stop"=> [
-                "description"=> "",
-                "name"=> "stop",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "datetime"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "operation"=> [
-                "description"=> "",
-                "name"=> "operation",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "operations",
-                    "field"=> "id"
-                ]
-            ],
-            "order"=> [
-                "description"=> "",
-                "name"=> "order",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "orders",
-                    "field"=> "oid"
-                ]
-            ],
-            "hourly_rate"=> [
-                "description"=> "",
-                "name"=> "hourly_rate",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "float",
-                    "length"=> "10,2"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ],
-            "currency"=> [
-                "description"=> "",
-                "name"=> "currency",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "varchar",
-                    "length"=> "10"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null,
-                "foreignKey"=> [
-                    "table"=> "currencies",
-                    "field"=> "id"
-                ]
-            ],
-            "status"=> [
-                "description"=> "",
-                "name"=> "status",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "enum",
-                    "vals"=> [
-                        "w",
-                        "f"
-                    ]
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "w"
-            ],
-            "diff"=> [
-                "description"=> "",
-                "name"=> "diff",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "time"
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> null
-            ]
-        ],
-        "relations"=> [
-            "employee"=> [
-                "table"=> "employees",
-                "field"=> "id",
-                "type"=> "outbound",
-                "fkfield"=> "employee"
-            ],
-            "operation"=> [
-                "table"=> "operations",
-                "field"=> "id",
-                "type"=> "outbound",
-                "fkfield"=> "operation"
-            ],
-            "order"=> [
-                "table"=> "orders",
-                "field"=> "oid",
-                "type"=> "outbound",
-                "fkfield"=> "order"
-            ],
-            "currency"=> [
-                "table"=> "currencies",
-                "field"=> "id",
-                "type"=> "outbound",
-                "fkfield"=> "currency"
-            ]
-        ],
-        "description"=> "",
-        "comment"=> "",
-        "type"=> "view",
-        "keyFld"=> "id"
-    ],
-    "tt_expanded"=> [
         "fields"=> [
             "currency"=> [
                 "description"=> "",
@@ -5789,26 +5634,6 @@ return [
                 "iskey"=> false,
                 "required"=> false,
                 "default"=> null
-            ],
-            "order_status"=> [
-                "description"=> "",
-                "name"=> "order_status",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "enum",
-                    "vals"=> [
-                        "offer",
-                        "ord",
-                        "proc",
-                        "ctc",
-                        "fix",
-                        "ready",
-                        "dlvd"
-                    ]
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "ord"
             ]
         ],
         "relations"=> [],
@@ -6133,13 +5958,5 @@ return [
                 "fkfield"=> "userid"
             ]
         ]
-    ],
-    "dlvrcontents_expanded"=> [
-        "fields"=> [
-            "id"=> [
-                "iskey"=> true
-            ]
-        ],
-        "keyFld"=> "id"
     ]
 ];
