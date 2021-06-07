@@ -3,36 +3,33 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Parteneri</h1>
+                    <h1 class="m-0">Posturi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6 ">
                     <div class="breadcrumb float-sm-right">
-                        <button class="btn btn-primary" id="newUnitModalButton"><i class="fa fa-plus"></i> Partener nou</button>
+                        <button class="btn btn-primary" id="newJobModalButton"><i class="fa fa-plus"></i> Post nou</button>
                     </div>
-                </div>
-            </div>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </section>
     <section class="content">
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
-
-                    <table class="table table-hover table-striped">
+                    <table class="table table-striped table-hover">
                         <thead class="thead-dark">
                         <tr>
                             <th>#</th>
                             <th>Nume</th>
-                            <th>Adresa</th>
-                            <th style="text-align:center">Actiuni</th>
+                            <th>Actiuni</th>
                         </tr>
                         </thead>
-                        <tbody id="partnersList" data-resourcetype="collection" data-type="partners">
-                        <tr onclick="openPartnerModal(this)" style="cursor:pointer;">
+                        <tbody id="jobsList" data-resourcetype="collection" data-type="jobs">
+                        <tr class="tr-job" onclick="openJobModal(this)" style="cursor:pointer;">
                             <td><%= id %></td>
                             <td><%= attributes.name %></td>
-                            <td><%= attributes.address1 %></td>
-                            <td align="center"><button class="btn-primary btn btn-sm" onclick="deletePartner(this,event)"><i class="fa fa-trash-alt"></i> Sterge</button></td>
+                            <td><button class="btn-primary btn btn-sm" onclick="deleteUnit(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
                         </tr>
                         </tbody>
                     </table>
@@ -43,25 +40,26 @@
 </div>
 
 <script>
-    function openPartnerModal(src) {
-        $(src).data("locked",true);
+    function openJobModal(src){
+        $(src).data("locked", true);
+        // console.log(src);
         komponentor
-            .intent('/views/partners/addPartner')
+            .intent('/views/jobs/addJob')
             .data({instance:$(src).data('instance')})
             .send()
             .then(function (k) {
-                //console.log("**************",k);
+                // console.log("**************",k);
             })
             .finally(function () {
                 $(src).removeData("locked");
             })
     }
 
-    function deletePartner(src, e){
-        //console.log("////",$(src).data("instance").attributes.name)
+    function deleteUnit(src, e){
+        console.log("////",$(src).data("instance").attributes.unit)
 
         komponentor.intent("/common/messagemodal").data({
-            body: "Esti sigur ca vrei sa stergi unitatea <br><strong>"+$(src).data("instance").attributes.name+ "</strong>",
+            body: "Esti sigur ca vrei sa stergi postul <br><strong>"+$(src).data("instance").attributes.name + "</strong> cu codul <strong>" + $(src).data("instance").id + "?</strong>",
             buttons: [
                 {
                     label: "Da",
@@ -90,14 +88,12 @@
         e.stopPropagation();
     }
 
+
     function init_komponent(k,c) {
-        let instance = $("#partnersList").apiator(apiRoot+"/partners").data("instance");
+        let instance = $("#jobsList").apiator(apiRoot+"/jobs").data("instance");
 
-
-        $("#newUnitModalButton").on("click", function () {
-            //prepare the modal behindthe curtain
-            komponentor.intent("/views/partners/addPartner")
-                //Take the data from the form and send them to beckend
+        $("#newJobModalButton").on("click", function () {
+            komponentor.intent("/views/jobs/addJob")
                 .data({instance: instance})
                 .send();
         })

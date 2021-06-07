@@ -175,12 +175,114 @@ return [
         ],
         "keyFld"=> "id"
     ],
+    "inventory_extented"=> [
+        "fields"=> [
+            "id"=> [
+                "iskey"=> true
+            ],
+            "order"=> [
+                "foreignKey"=> [
+                    "table"=> "orders",
+                    "field"=> "oid"
+                ]
+            ]
+        ],
+        "relations"=> [
+            "order_id"=> [
+                "table"=> "orders",
+                "field"=> "oid",
+                "type"=> "outbound",
+                "fkfield"=> "order_id"
+            ]
+        ],
+        "keyFld"=> "id"
+    ],
     "orders"=> [
         "relations"=> [
             "inventory_wmeta"=> [
                 "table"=> "inventory_wmeta",
                 "field"=> "order",
                 "type"=> "inbound"
+            ],
+            "inventory_extented"=> [
+                "table"=> "inventory_extented",
+                "field"=> "order",
+                "type"=> "inbound"
+            ]
+        ]
+    ],
+    "dlvrcontents_expanded"=> [
+        "fields"=> [
+            "id"=> [
+                "iskey"=> true
+            ]
+        ],
+        "keyFld"=> "id"
+    ],
+    "deliveries"=> [
+        "relations"=> [
+            "dlvrcontents_expanded"=> [
+                "table"=> "dlvrcontents_expanded",
+                "field"=> "delivery",
+                "type"=> "inbound"
+            ]
+        ]
+    ],
+    "timetracking_wdiff"=> [
+        "fields"=> [
+            "id"=> [
+                "iskey"=> true
+            ],
+            "employee"=> [
+                "foreignKey"=> [
+                    "table"=> "employees",
+                    "field"=> "id"
+                ]
+            ],
+            "currency"=> [
+                "foreignKey"=> [
+                    "table"=> "currencies",
+                    "field"=> "id"
+                ]
+            ],
+            "operation"=> [
+                "foreignKey"=> [
+                    "table"=> "operations",
+                    "field"=> "id"
+                ]
+            ],
+            "order"=> [
+                "foreignKey"=> [
+                    "table"=> "orders",
+                    "field"=> "oid"
+                ]
+            ]
+        ],
+        "keyFld"=> "id",
+        "relations"=> [
+            "employee"=> [
+                "table"=> "employees",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "employee"
+            ],
+            "operation"=> [
+                "table"=> "operations",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "operation"
+            ],
+            "order"=> [
+                "table"=> "orders",
+                "field"=> "oid",
+                "type"=> "outbound",
+                "fkfield"=> "order"
+            ],
+            "currency"=> [
+                "table"=> "currencies",
+                "field"=> "id",
+                "type"=> "outbound",
+                "fkfield"=> "currency"
             ]
         ]
     ]

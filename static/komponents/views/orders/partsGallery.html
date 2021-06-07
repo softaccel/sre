@@ -64,13 +64,13 @@
         <button class="btn btn-sm btn-secondary" id="printButton">Tiparire etichete</button>
     </div>
     <div class="orderPartsListHeader mt-3">
-        <input type="checkbox" onclick="toggleAll(this)" id="toggleAllCheckbox"/>
+        <input type="checkbox" onclick="toggleAll(this)" id="toggleAllCheckbox" data-connected="#orderPartsList"/>
         <!--<button  class="btn btn-success"><i class="fa fa-print"></i> </button>-->
     </div>
     <ul id="orderPartsList">
-        <li onclick="toggleSelect(this)">
+        <li onclick="toggleSelect(this)" data-connected="#toggleAllCheckbox">
             <span class="checkbox">
-                <input type="checkbox" onclick="event.stopPropagation();toggleSelect(this.parentNode)">
+                <input type="checkbox" onclick="event.stopPropagation();toggleSelect($(this).parents('li'))">
             </span>
             <span class="partid"><%= attributes.partid %></span>
             <span class="name"><%= attributes.name %></span>
@@ -120,26 +120,6 @@
         });
     }
 
-    function toggleAll(src) {
-        let checked = $(src).prop("checked");
-        $("#orderPartsList").children().each(function (i) {
-            toggleSelect(this,checked);
-        });
-    }
-
-    function toggleSelect(src,state) {
-        state = state!==undefined?state:!$(src).hasClass('selected');
-        $(src).find("input[type=checkbox]").prop("checked",state);
-        if(state) {
-            $(src).addClass('selected').find("input[type=checkbox]").prop("checked",true);
-        }
-        else {
-            $(src).removeClass('selected');
-        }
-        let tmp = $("#orderPartsList").children();
-        $("#toggleAllCheckbox").prop("checked",(tmp.length===tmp.filter(".selected").length));
-    }
-
 
 
     function init_komponent(k) {
@@ -147,7 +127,7 @@
             type: "inventory",
             resourcetype: "collection"
         }).data("instance").setUrl(apiRoot+"/orders/"+k.data.instance.id+"/inventory_wmeta?page[inventory_wmeta][limit]=1000").loadFromRemote().then(function () {
-            JsBarcode(".barcode").init();
+            // JsBarcode(".barcode").init();
         });
 
         function printLabels() {

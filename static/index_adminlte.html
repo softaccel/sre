@@ -9,14 +9,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>SRE</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
-    <!--    <base href="/" />-->
-    <!--    <meta name="description" content="This is an example dashboard created using build-in elements and components.">-->
+<!--    <base href="/" />-->
+<!--    <meta name="description" content="This is an example dashboard created using build-in elements and components.">-->
     <meta name="msapplication-tap-highlight" content="no">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <!--    <link href="main.css" rel="stylesheet">-->
-    <!--    <link href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link href="main.css" rel="stylesheet">-->
+<!--    <link href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">-->
 
     <link rel="stylesheet" href="assets/fontawesome/css/all.min_adminlte.css">
 
@@ -25,7 +25,6 @@
     <link href="https://adminlte.io/themes/v3/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
     <link href="adminlte.min.css" rel="stylesheet">
 
@@ -33,47 +32,28 @@
     <link href="assets/css/jquery-ui.css" rel="stylesheet">
     <!--    <link href="assets/css/selectize.bootstrap3.css" rel="stylesheet">-->
     <link href="assets/css/select2.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+
 
 
 
     <!--    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>-->
     <style>
-        body {
-            font-size: 0.9rem;
-            font-family: 'Poppins', sans-serif;        }
-        .card-header{
-            display: flex;
-            align-items: center;
-        }
-        .card-header>*{
-            display: flex;
-
-        }
-        .card-header .nav {
-            display: flex;
-            width: auto;
-            margin-left: auto;
-        }
-
-        .modal-header{
-            display: flex;
-            align-items: center;
-        }
-        .modal-header>*{
-            display: flex;
-        }
-        .modal-title{
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
+    body{
+        font-size: 0.9rem;
+    }
     </style>
 </head>
-<body  class="sidebar-mini layout-fixed" data-panel-auto-height-mode="height" style="height: auto;">
+<body>
 
-<div class="wrapper" id="page">
+<div class="wrapper">
+
+    <div id="page"></div>
+    <div class='pageOverlay'>
+        <div class='spinner'>
+
+        </div>
+    </div>
+
 </div>
 
 
@@ -96,12 +76,11 @@
     const _kPath = "komponents";
     const _kExt = ".html";
     const vPath = _kPath+"views/";
-    const backendUrl = '/spaleck/be';
+    const backendUrl = '/sre/be';
     const apiRoot = backendUrl + '/dbapi/v2/spaleck';
     const authUrl = backendUrl + '/main/auth/login';
-    const posPrintUrl = backendUrl + '/main/POS/print';
 
-    let defaultView = "/views/dashboard";
+    let defaultKomponent = "/views/dashboard_adminlte";
 
 </script>
 <script>
@@ -137,40 +116,35 @@
     let [localData,userData] = checkAuth();
 
 
-    let url = "/views/app";
+    let url = "/views/app_adminlte";
     if(!userData) {
         url = "/views/login";
     }
     autoload = false;
-    $("#page").komponent({url:url,replace:false}).finally(function () {
+    $("#page").komponent({url:url}).finally(function () {
         $(".pageOverlay").remove();
+
     });
 
 
-</script>
-<script>
+    /**
+     *
+     * @param  items Array
+     * @param target
+     */
+    // function render_recusive(items,target) {
+    //     items.forEach(function (item) {
+    //         let li = $("<li>").text(item.name).data("path",item.path).appendTo(target);
+    //         if(item.hasOwnProperty("files")) {
+    //             render_recusive(item.files,$("<ul>").appe0006075014
+    //             ndTo(li));
+    //         }
+    //     })
+    // }
 
-    function toggleAll(src) {
-        let checked = $(src).prop("checked");
-        $($(src).data("connected")).children().each(function (i) {
-            toggleSelect(this,checked);
-        });
-    }
-
-    function toggleSelect(src,state) {
-        state = state!==undefined?state:!$(src).hasClass('selected');
-        $(src).find("input[type=checkbox]").prop("checked",state);
-        if(state) {
-            $(src).addClass('selected').find("input[type=checkbox]").prop("checked",true);
-        }
-        else {
-            $(src).removeClass('selected');
-        }
-        let tmp = $("#orderPartsList").children();
-        $($(src).data("connected")).prop("checked",(tmp.length===tmp.filter(".selected").length));
-    }
 
 </script>
+
 
 
 

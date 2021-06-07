@@ -1,4 +1,4 @@
-<div class="modal" id="employeeModal">
+<div class="modal" id="unitModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body bg-light">
@@ -6,11 +6,11 @@
                     <div class="card-header-tab card-header-tab-animation card-header">
                         <div class="card-header-title">
                             <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
-                            Introducere angajat nou <span id="comandaid"></span>
+                            Adaugati unitate de masura <span id="unitid"></span>
                         </div>
                     </div>
-                    <div class="card-body" style="">
-                        <div id="newEmplForm" is="komponent" data-url="/views/employees/details"></div>
+                    <div class="card-body" style="min-height: 200px">
+                        <div id="newUnitModal" is="komponent" data-url="/views/units/details"></div>
                     </div>
                 </div>
             </div>
@@ -18,8 +18,7 @@
     </div>
 </div>
 <script>
-    function init_komponent(k) {
-
+    function init_komponent(k){
         k.hideModal = function() {
             $modal.modal("hide");
         };
@@ -30,7 +29,7 @@
                 k.$el.remove();
             });
 
-        k.$el.find("#newEmplForm")
+        k.$el.find("#newUnitModal")
             .komponent({
                 data: {
                     instance: k.data.instance,
@@ -39,10 +38,12 @@
             })
             .then(function (d) {
                 $modal.modal();
-                console.log("*///////////////",d);
-                editMode(d.data.instance);
+                // console.log("*///////////////",d);
+                // editMode(d.data.instance);
             });
-
+        $("#closeModal").on("click", function () {
+            k.hideModal();
+        });
 
     }
 </script>

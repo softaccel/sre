@@ -1,129 +1,153 @@
-
+<!--<div class="mainc">-->
 <style>
-    .app-sidebar {
-        overflow-y: auto;
+    .nav-sidebar{
+        /*font-size: 1rem;*/
+        line-height: 1.5
     }
-    .logo{
-        height:23px;width:97px;
-        color: red;
+    .nav-sidebar .nav-header{
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        border-bottom: grey solid 1px;
+        margin-top: 0.2rem;
     }
 </style>
 
-
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
     <div class="app-header__logo">
-        <div class="logo-src">SRE</div>
-        <div class="header__pane ml-auto">
-            <div>
-                <button type="button" class="hamburger close-sidebar-btn hamburger--elastic"
-                        onclick="!$(body).hasClass('closed-sidebar')?$(body).removeClass('fixed-sidebar').addClass('closed-sidebar'):$(body).removeClass('closed-sidebar').addClass('fixed-sidebar')">
-                    <span class="hamburger-box">
-                        <span class="hamburger-inner"></span>
-                    </span>
-                </button>
-            </div>
-        </div>
+        <a href="index.html" class="brand-link">
+            <img class="logo-src" src="assets/images/spaleck.png" class="brand-image img-circle elevation-3" style="width: 50px; border-radius: 50%">
+            <span class="brand-text font-weight-light">Spaleck</span>
+        </a>
+
+        <!--        <div class="header__pane ml-auto">-->
+        <!--            <div>-->
+        <!--                <button type="button" class="hamburger close-sidebar-btn hamburger&#45;&#45;elastic"                        onclick="!$(body).hasClass('closed-sidebar')?$(body).removeClass('fixed-sidebar').addClass('closed-sidebar'):$(body).removeClass('closed-sidebar').addClass('fixed-sidebar')">-->
+        <!--                        <span class="hamburger-box">-->
+        <!--                            <span class="hamburger-inner"></span>-->
+        <!--                        </span>-->
+        <!--                </button>-->
+        <!--            </div>-->
+        <!--        </div>-->
     </div>
     <div class="app-header__mobile-menu">
         <div>
-            <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
-            <span class="hamburger-box">
-                <span class="hamburger-inner"></span>
-            </span>
-            </button>
+            <!--            <button type="button" class="hamburger hamburger&#45;&#45;elastic mobile-toggle-nav">-->
+            <!--            <span class="hamburger-box">-->
+            <!--                <span class="hamburger-inner"></span>-->
+            <!--            </span>-->
+            <!--            </button>-->
         </div>
     </div>
-    <div class="app-header__menu">
-        <span>
-            <button type="button" class="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
-                <span class="btn-icon-wrapper">
-                    <i class="fa fa-ellipsis-v fa-w-6"></i>
-                </span>
-            </button>
-        </span>
-    </div>
-    <div class="scrollbar-sidebar">
-        <div class="app-sidebar__inner">
-            <ul class="vertical-nav-menu metismenu" id="sideMenu">
-                <li>
-                    <a href="" title="">
-                        <i class="metismenu-icon fa fa-home"></i> Home
-                    </a>
-                </li>
-                <li class="app-sidebar__heading">Operational</li>
-                <li>
-                    <a href="#/views/dashboard">
-                        <i class="metismenu-icon fa fa-tachometer-alt"></i> Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a href="#/views/orders" title="">
-                        <i class="metismenu-icon fa fa-shopping-basket"></i> Comenzi
-                    </a>
-                </li>
-                <li>
-                    <a href="#/views/deliveries" title="">
-                        <i class="metismenu-icon fa fa-truck"></i> Livrari
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">\
+
+                <li class="nav-item">
+                    <a href="#" title="" class="nav-link">
+                        <i class="metismenu-icon fa fa-home"></i>
+                        <p>Home</p>
                     </a>
                 </li>
 
-                <li>
-                    <a href="#/views/pontaj" title="">
-                        <i class="metismenu-icon fa fa-clock"></i> Pontaj
+                <li class="nav-header">Operational</li>
+                <li class="nav-item">
+                    <a href="#/views/dashboard" class="nav-link">
+                        <i class="metismenu-icon fa fa-tachometer-alt"></i>
+                        <p> Dashboard</p>
                     </a>
                 </li>
-<!--                <li>-->
-<!--                    <a href="#/views/receptii" title="">-->
-<!--                        <i class="metismenu-icon fa fa-truck"></i> Receptii-->
-<!--                    </a>-->
-<!--                </li>-->
-                <li class="app-sidebar__heading">Administrativ</li>
-                <li>
-                    <a href="#/views/partners" title="">
-                        <i class="metismenu-icon fa fa-handshake"></i> Parteneri
+                <li class="nav-item">
+                    <a href="#/views/orders" class="nav-link">
+                        <i class="metismenu-icon fa fa-funnel-dollar"></i> <p>Comenzi</p>
                     </a>
                 </li>
-                <li>
-                    <a href="#/views/employees" title="">
-                        <i class="metismenu-icon fa fa-user-friends"></i> Angajati
+                <!--                <li class="nav-item">-->
+                <!--                    <a href="#/views/pontaj" class="nav-link">-->
+                <!--                        <i class="metismenu-icon fa fa-clock"></i>-->
+                <!--                        <p>-->
+                <!--                            Pontaj-->
+                <!--&lt;!&ndash;                            <span class="right badge badge-danger">New</span>&ndash;&gt;-->
+                <!--                        </p>-->
+                <!--                    </a>-->
+                <!--                </li>-->
+                <li class="nav-item">
+                    <a href="#/views/deliveries" class="nav-link">
+                        <i class="metismenu-icon fa fa-truck"></i> <p>Livrari</p>
                     </a>
                 </li>
-                <li>
-                    <a href="#/views/teams" title="">
-                        <i class="metismenu-icon fa fa-sitemap"></i> Echipe
+                <li class="nav-item">
+                    <a href="#/views/pontaj" class="nav-link">
+                        <i class="metismenu-icon fa fa-clock"></i> <p>Pontaj</p>
                     </a>
                 </li>
-<!--                <li>-->
-<!--                    <a href="#/views/teams" title="">-->
-<!--                        <i class="metismenu-icon fa fa-sitemap"></i> Echipe-->
-<!--                    </a>-->
-<!--                </li>-->
+                <!--                <li>-->
+                <!--                    <a href="#/views/receptii" title="">-->
+                <!--                        <i class="metismenu-icon fa fa-truck"></i> Receptii-->
+                <!--                    </a>-->
+                <!--                </li>-->
+                <li class="nav-header">Administrativ</li>
+                <li class="nav-item">
+                    <a href="#/views/partners" class="nav-link">
+                        <i class="metismenu-icon fa fa-handshake"></i> <p>Parteneri</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#/views/employees" class="nav-link">
+                        <i class="metismenu-icon fa fa-user-friends"></i> <p>Angajati</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#/views/teams" class="nav-link">
+                        <i class="metismenu-icon fa fa-sitemap"></i> <p>Echipe</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#/views/units" class="nav-link">
+                        <i class="metismenu-icon fa fa-balance-scale"></i> <p>Unitati de masura</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#/views/jobs" class="nav-link">
+                        <i class="metismenu-icon fa fa-address-card"></i> <p>Posturi</p>
+                    </a>
+                </li>
+                <!--                <li>-->
+                <!--                    <a href="#/views/teams" title="">-->
+                <!--                        <i class="metismenu-icon fa fa-sitemap"></i> Echipe-->
+                <!--                    </a>-->
+                <!--                </li>-->
 
-<!--                <li>-->
-<!--                    <a href="#/views/stocks" title="">-->
-<!--                        <i class="metismenu-icon fa fa-cubes"></i> Stocuri-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <a href="#/views/catalog" title="">-->
-<!--                        <i class="metismenu-icon fa fa-book"></i> Catalog-->
-<!--                    </a>-->
-<!--                </li>-->
-                <li class="app-sidebar__heading">Aplicatie</li>
-                <li>
-                    <a href="#/views/users" title="">
-                        <i class="metismenu-icon fa fa-users"></i> Utilizatori
+                <!--                <li>-->
+                <!--                    <a href="#/views/stocks" title="">-->
+                <!--                        <i class="metismenu-icon fa fa-cubes"></i> Stocuri-->
+                <!--                    </a>-->
+                <!--                </li>-->
+                <li class="nav-item">
+                    <a href="#/views/products" class="nav-link">
+                        <i class="metismenu-icon fa fa-book"></i> <p>Catalog</p>
                     </a>
                 </li>
-                <li>
-                    <a href="#/views/users" title="">
-                        <i class="metismenu-icon fa fa-sliders-h"></i> Setari
+                <li class="nav-header">Aplicatie</li>
+                <li class="nav-item">
+                    <a href="#/views/users" class="nav-link">
+                        <i class="metismenu-icon fa fa-users"></i> <p>Utilizatori</p>
                     </a>
                 </li>
-
+                <li class="nav-item">
+                    <a href="#/views/users" class="nav-link">
+                        <i class="metismenu-icon fa fa-sliders-h"></i> <p>Setari</p>
+                    </a>
+                </li>
             </ul>
-        </div>
+        </nav>
+        <!-- /.sidebar-menu -->
     </div>
-
+    <!-- /.sidebar -->
+</aside>
+<!--</div>-->
 <script>
     function init_komponent(k) {
 

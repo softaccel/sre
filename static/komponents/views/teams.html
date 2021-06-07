@@ -1,9 +1,22 @@
-<style>
-
-</style>
-<div class="app-main__inner">
-    <div class="row mb-3">
-        <div class="col">
+<div class="container-fluid">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Echipe</h1>
+                </div>
+                <div class="col-sm-6 ">
+                    <div class="breadcrumb float-sm-right">
+                        <button onclick="" type="button" data-toggle="tooltip" title="Adauga angajat" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary">
+                            Echipa noua
+                        </button>
+                    </div>
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
                     <div class="row" data-resourcetype="collection" id="teamsList" data-type="teams" data-paging="#teamsListPaging">
@@ -11,9 +24,9 @@
                             <div class="card" >
                                 <div class="card-body text-center">
                                     <div class="d-inline-block" style="width: 60px">
-                                        <span class="rounded-circle warning-feedback bg-secondary" style="color: white; font-size: 40px;padding: 5px">
-                                            <i class="fa fa-users"></i>
-                                        </span>
+                                    <span class="rounded-circle warning-feedback bg-secondary" style="color: white; font-size: 40px;padding: 5px">
+                                        <i class="fa fa-users"></i>
+                                    </span>
                                     </div>
                                     <div class="d-block">
                                         <%=attributes.name%>
@@ -35,8 +48,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </div>
+
+
 
 <script>
 
