@@ -147,9 +147,30 @@
     });
 
 
+</script>
+<script>
+
+    function toggleAll(src) {
+        let checked = $(src).prop("checked");
+        $($(src).data("connected")).children().each(function (i) {
+            toggleSelect(this,checked);
+        });
+    }
+
+    function toggleSelect(src,state) {
+        state = state!==undefined?state:!$(src).hasClass('selected');
+        $(src).find("input[type=checkbox]").prop("checked",state);
+        if(state) {
+            $(src).addClass('selected').find("input[type=checkbox]").prop("checked",true);
+        }
+        else {
+            $(src).removeClass('selected');
+        }
+        let tmp = $("#orderPartsList").children();
+        $($(src).data("connected")).prop("checked",(tmp.length===tmp.filter(".selected").length));
+    }
 
 </script>
-
 
 
 

@@ -487,12 +487,15 @@
 			}
 		}
 
+		_item.loadFromRemote = function() {
+			return _item.load_from_data_source();
+		};
 
 		/**
-		 * load item data from remote storage.
+		 * load item data from data source storage.
 		 * @returns {Promise<unknown>}
 		 */
-		_item.loadFromRemote = function () {
+		_item.load_from_data_source = function () {
 			return new Promise(function (resolve,reject) {
 				if(!_item.url) {
 					throw("No valid URL provided");
@@ -791,9 +794,10 @@
 			if(!_item.collection) {
 				return;
 			}
-			for(i=0;i<_item.collection.children.length;i++) {
-				if(_item.collection.children[i].id===_item.id) {
-					_item.collection.children.splice(i,1);
+			console.log(_item,_item.collection,_item.collection.children);
+			for(i=0;i<_item.collection.items.length;i++) {
+				if(_item.collection.items[i].id===_item.id) {
+					_item.collection.items.splice(i,1);
 					break;
 				}
 			}
@@ -1209,29 +1213,26 @@
 
 			// received data is a collection
 			if(data.constructor===Array) {
-				_collection.loadFromData(data);
+				data.forEach(function (item) {
+					appendItemToCollection(_collection,_collection.loadItem(item));
+				});
 
-				if(_collection.view && _collection.view.el) {
-					_collection.view.render();
-				}
-
-				return _collection;
+				return _collection.render();
 			}
 
 			// received data is an item => add it
 			if(data.constructor===Object) {
-				let newItem = _collection.loadItem(data);
-
-				if(_collection.view && _collection.view.el) {
-					_collection.view.render();
-				}
-
-				// _collection.dispatch("load",{source:_collection,type:"load",data:data});
-
-				return newItem;
+				return  appendItemToCollection(_collection,_collection.loadItem(data),true);
 			}
 
 		};
+
+		function appendItemToCollection(collection,item,render) {
+			if(render) {
+				_collection.render();
+			}
+			return item;
+		}
 
 		/**
 		 *
@@ -1250,10 +1251,37 @@
 			// dispatch dataReceived event
 		};
 
+		_collection.clear = function() {
+			_collection.items = [];
+			_collection.render();
+		};
+
 		/**
 		 *
+		 * @returns {{template: null, insertUrl: null, offset: number, pageSize: number, paging: null, type: null, url: null, view: null, total: null, navtype: string, updateUrl: null, deleteUrl: null, items: [], emptyview: null}}
 		 */
-		_collection.loadFromRemote = function () {
+		_collection.render = function() {
+			if(_collection.view && _collection.view.el) {
+				_collection.view.render();
+			}
+			return _collection;
+		};
+
+		/**
+		 *
+		 * @returns {Promise<unknown>}
+		 */
+		_collection.loadFromRemote = function() {
+			return _collection.load_from_data_source();
+		};
+
+		/**
+		 * sync with datasource
+		 * @returns {Promise<unknown>}
+		 */
+		_collection.load_from_data_source = function () {
+
+
 			return  new Promise(function (resolve,reject) {
 				if(!_collection.url) {
 					throw("No valid URL provided");
@@ -1262,6 +1290,7 @@
 				storage.read(_collection,_collection.url,{})
 					.then(function(res)
 					{
+						_collection.clear();
 						_collection.receiveRemoteData(res.data);
 						resolve.call(_collection);
 					})
@@ -1367,6 +1396,10 @@
 		 * @param itemData
 		 */
 		_collection.createItem = function(itemData) {
+			return _collection.append(itemData);
+		};
+
+		_collection.append = function(itemData) {
 			let jsonApiDoc = {data: parseData4InsertUpdate(itemData)};
 			let _self = this;
 
@@ -1375,7 +1408,6 @@
 					_self.insertUrl = _self.url;
 				}
 				// console.log(JSON.stringify(jsonApiDoc));
-				console.log("createItem");
 
 				storage
 					.create(_self,_self.insertUrl,{contentType:"application/vnd.api+json"},JSON.stringify(jsonApiDoc))
@@ -1975,8 +2007,14 @@
 			el: $(pagingEl),
 		};
 		_paging.collection.paging = this;
-		let defaultPageSize = _paging.el.data("pagesize");
-		defaultPageSize = defaultPageSize ? defaultPageSize : 20;
+		let defaultPageSize;
+		if( _paging.collection.url && _paging.collection.url.parameters && _paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"]) {
+			defaultPageSize = _paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"];
+		}
+		else {
+			defaultPageSize = defaultPageSize ? defaultPageSize : 20;
+		}
+		console.log(defaultPageSize);
 
 		let offsetInp = $(_paging.collection.offsetinp).off("keyup").on("keyup",function (e) {
 			if(e.originalEvent.keyCode!==13)
@@ -1987,7 +2025,8 @@
 
 		let pageSizeInp = $(_paging.collection.pagesizeinp).off("change").on("change",function () {
 			_paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"] = pageSizeInp.val();
-			_paging.collection.loadFromRemote();		});
+			_paging.collection.loadFromRemote();
+		});
 
 		let buttons = {
 			page: _paging.el.find("[name=page]").clone(true),
