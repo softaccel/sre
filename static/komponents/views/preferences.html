@@ -1,5 +1,31 @@
 <script>
     function init_komponent(k) {
-        komponentor.intent("/views/formmodal").data({fields:{},title:"Preferinte"}).send();
+        let data = {
+            fields:[
+                {
+                    label: "Locatie imprimanta",
+                    type: "text",
+                    name: "pos",
+                    default: localStorage.getItem(localStorageLabel+".pos")
+                }
+                // ,
+                // {
+                //     label: "Altceva",
+                //     type: "textarea",
+                //     name: "pos2",
+                //     default: localStorage.getItem(localStorageLabel+".pos2")
+                // },
+
+            ],
+            title:"Preferinte",
+            callback:function (data) {
+                console.log(data);
+                for(let i in data) {
+                    localStorage.setItem(localStorageLabel+"."+i,data[i]);
+                }
+            }
+        };
+        console.log(data);
+        komponentor.intent("/common/formmodal").data(data).send();
     }
 </script>
