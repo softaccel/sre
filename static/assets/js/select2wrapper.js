@@ -7,6 +7,8 @@
         if(this.hasClass("select2")) {
             this.select2('destroy');
         }
+        console.log("#####################",options)
+
         this.select2({
             placeholder: options.placeholder?options.placeholder:"",
             allowClear: options.allowClear?options.allowClear:true,

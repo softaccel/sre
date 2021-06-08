@@ -54,8 +54,13 @@
 <script>
 
     function newEmplForm() {
-        komponentor.intent("/common/formmodal").data({callback:function (data){
-                console.log(data)},title:"Ttitle",fields:[{type:"text",name: "test",default: "test", placeholder: "placeholder", label: "Label",options:[]}]}).send();
+        komponentor.intent("/common/formmodal").data({
+            callback:function (data){
+                $("#teamsList").data("instance").createItem(data);
+            },
+            title:"Adauga Echipa Noua",
+            fields:[{type:"text",name: "name",default: "test", placeholder: "Numele Echipei", label: "Nume",options:[]}]
+        }).send();
     }
     function teamModal(src) {
         komponentor.intent('/views/teams/team').data({instance: $(src).data('instance')}).send();

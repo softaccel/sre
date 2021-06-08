@@ -11,11 +11,15 @@
                     <span id="teamName" class="ml-2"><%=attributes.name%></span>
                 </div>
                 <ul class="nav nav-pills">
+
                     <li class="nav-item">
                         <a data-toggle="tab" href="#teamMembersPanel" class="nav-link active">Membrii echipei</a>
                     </li>
                     <li class="nav-item">
                         <a data-toggle="tab" href="#tab2Content" class="nav-link">Comenzi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#teamEditPanel" class="nav-link">Editare</a>
                     </li>
                 </ul>
             </div>
@@ -26,6 +30,9 @@
                     </div>
                     <div class="tab-pane" id="tab2Content" data-resourcetype="collection" role="tabpanel">
                         2
+                    </div>
+                    <div class="tab-pane" role="tabpanel", id="teamEditPanel">
+                        <div is="komponent" id="editTeam" data-url="/views/teams/details"></div>
                     </div>
                 </div>
             </div>
@@ -45,7 +52,9 @@
 
         $("#teamMembersList").komponent({
             data: {filter: [{fld: 'team',val:k.data.instance.id,op:"="}]}
-        })
+        });
+        console.log(k);
+        $("#editTeam").komponent({data: k.data});
         // console.log($modal);
         // k.exec = function (data) {
         //     $("#employeeModal .modal-title").html(data.instance.attributes.fname+' '+ data.instance.attributes.lname);
