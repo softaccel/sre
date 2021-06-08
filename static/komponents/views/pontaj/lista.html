@@ -25,15 +25,15 @@
                 Angajat
                 <select id="emplNamefilter" name="employee" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
             </th>
-            <th class="emplCol align-top" style="width: 150px">
+            <th class="align-top" style="width: 150px">
                 Comanda
                 <select id="docNumFilter" name="docnum" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
             </th>
-            <th class="emplCol align-top">
+            <th class="align-top">
                 Operatie
                 <input type="text" name="op_name" data-operator="~=~" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
             </th>
-            <th class="emplCol align-top" style="max-width: 200px">
+            <th class="align-top" style="max-width: 200px">
                 <a class="text-white" data-sortfld="start">Start
                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 <div class="input-group input-group-sm ">
@@ -49,7 +49,7 @@
                     <input type="datetime-local" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
                 </div>
             </th>
-            <th class="emplCol align-top" style="max-width: 200px">
+            <th class="align-top" style="max-width: 200px">
                 <a class="text-white" data-sortfld="stop">Stop
                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 <div class="input-group input-group-sm ">
@@ -65,7 +65,7 @@
                     <input type="datetime-local" name="stop" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
                 </div>
             </th>
-            <th class="emplCol align-top" style="min-width: 150px">
+            <th class="align-top" style="min-width: 150px">
                 <a class="text-white" data-sortfld="duration">Durata
                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 <div class="input-group input-group-sm ">
@@ -81,11 +81,8 @@
                     <input type="number" name="duration" class="form-control-sm form-control" form="timeTrackingEntriesFiltering">
                 </div>
             </th>
-            <th class="emplCol align-top">
+            <th class="align-top">
                 Tarif orar
-            </th>
-            <th class="emplCol align-top">
-                Valoare
             </th>
             <th width="150px"></th>
         </tr>
@@ -121,9 +118,6 @@
                 <select name="currency">
                     <option><%= relationships.currency.id %></option>
                 </select>
-            </td>
-            <td>
-                <p><% t = timeRegex.exec(attributes.duration); %> <%= t ? ((Math.ceil((t[1]*attributes.hourly_rate + t[2]/60*attributes.hourly_rate)*100)/100)+' ' +relationships.currency.id) : '-' %></p>
             </td>
             <td>
                 <button class="btn btn-secondary btn-sm" onclick="duplicateItem(this);"><i class="fa fa-copy"></i> </button>
