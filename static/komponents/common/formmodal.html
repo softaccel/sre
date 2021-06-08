@@ -1,0 +1,141 @@
+<div class="modal" id="order_file_modal">
+    <div class="modal-dialog">
+        <form>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group text">
+                    <label></label>
+                    <input type="text" class="form-control-sm form-control">
+                </div>
+                <div class="form-group number">
+                    <label></label>
+                    <input type="number" class="form-control-sm form-control">
+                </div>
+                <div class="form-group date">
+                    <label></label>
+                    <input type="date" class="form-control-sm form-control">
+                </div>
+                <div class="form-group checkbox">
+                    <input type="checkbox" class="form-check-input">
+                    <label></label>
+                </div>
+                <div class="form-group datetime">
+                    <label></label>
+                    <input type="datetime-local" class="form-control-sm form-control">
+                </div>
+                <div class="form-group select">
+                    <label></label>
+                    <select class="custom-select custom-select-sm"></select>
+                </div>
+                <div class="form-group textarea">
+                    <label></label>
+                    <textarea class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" >Salveaza</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal">Renunta</button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function init_komponent(k) {
+        let modalData = {
+            title: null,
+            size: null,
+            callback: new Function()
+        };
+
+        Object.assign(modalData,k.data);
+
+        if(!modalData.fields) {
+            console.log("No fields provided");
+            return;
+        }
+
+        let modal = k.$el.appendTo("body")
+            .filter(".modal")
+            .on("hidden.bs.modal",function () {
+                k.$el.remove();
+            });
+
+        if(modalData.size) {
+            modal.find(".modal-dialog").addClass("modal-"+modalData.size);
+        }
+
+        if(modalData.title===null) {
+            modal.find(".modal-header").remove();
+        }
+        else {
+            modal.find(".modal-title").html(modalData.title);
+        }
+
+        let body = k.$el.find(".modal-body");
+
+        let template = body.children().remove();
+
+        console.log(k.$el.find("form"));
+        k.$el.find("form").on("submit",function (e) {
+            e.preventDefault();
+            let data = {};
+
+            for(let i=0;i<e.target.elements.length;i++) {
+                let $el = $(e.target.elements[i]);
+                if($el.attr("name")) {
+                    data[$el.attr("name")] = $el.val();
+                }
+            }
+            modalData.callback(data);
+        });
+
+
+        let tags = {
+            date:"input",
+            datetime:"input",
+            number:"input",
+            text:"input",
+            checkbox:"input",
+            select:"select",
+            textarea:"textarea",
+        };
+
+        modalData.fields.forEach(function (fld) {
+            if(!fld.type) {
+                return;
+            }
+
+            let tpl = $(template.filter("."+fld.type));
+            if(!tpl.length) {
+                return;
+            }
+
+            if(fld.label) {
+                tpl.find("label").html(fld.label);
+            }
+            else {
+                tpl.find("label").remove();
+            }
+
+            let inp = tpl.find(tags[fld.type]);
+            if(fld.name) {
+                inp.attr("name",fld.name);
+            }
+            if(fld.placeholder) {
+                inp.attr("placeholder",fld.placeholder);
+            }
+
+            tpl.appendTo(body);
+        });
+
+        modal.modal();
+    }
+</script>
