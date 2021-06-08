@@ -1011,25 +1011,27 @@
 		 */
 		_itemview.render = function (returnView) {
 
-			console.log("rendering");
+			let renderedEl = createElementFromTemplate();
+			console.log("///////////",renderedEl);
+
 			if(returnView) {
-				this.el = createElementFromTemplate();
+				this.el = renderedEl;
 				return this.el;
 			}
 
 			if(!_itemview.el) {
-				throw "Invalid item view elemement";
+				delete renderedEl;
+				console.log("Invalid item view element");
+				return null;
 			}
 
-			let renderedEl = createElementFromTemplate();
-
-			if(renderedEl.css("display")==="none") {
-				renderedEl.css("display", "");
-			}
 
 			// renderedEl.insertBefore(_itemview.el[0]);
 			//
 			// _itemview.el.remove();
+			for (let i=_itemview.el.length-1;i>0;i--) {
+				$(_itemview.el[i]).remove();
+			}
 			_itemview.el.replaceWith(renderedEl);
 			_itemview.el = renderedEl;
 

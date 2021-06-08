@@ -1,5 +1,6 @@
 <style>
     #timeTrackingEntries tr input,
+    #timeTrackingEntries tr button.edit,
     #timeTrackingEntries tr select{
         display: none;
     }
@@ -8,6 +9,7 @@
         display: none;
     }
     #timeTrackingEntries tr.edit input,
+    #timeTrackingEntries tr.edit button.edit,
     #timeTrackingEntries tr.edit select{
         display: unset;
     }
@@ -16,6 +18,7 @@
     <button class="btn btn-primary" style="margin-bottom: 8px" onclick="loadNewTTRow();">Intrare noua</button>
     <form id="timeTrackingEntriesFiltering" class="d-none"><button type="submit" name="submit"></button></form>
     <table class="table table-striped table-hover">
+<!--        HEADER-->
         <thead class="thead-dark">
         <tr>
             <th class="emplCol align-top" width="200px">
@@ -87,6 +90,9 @@
             <th width="150px"></th>
         </tr>
         </thead>
+<!--        HEADER STOP-->
+
+<!--        CONTENTS-->
         <tbody id="timeTrackingEntries" data-type="timetracking" data-resourcetype="collection" data-paging="#timeTrackingEntriesPaging" data-filter="#timeTrackingEntriesFiltering"
                data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset">
         <tr>
@@ -95,7 +101,7 @@
                 <p><%= relationships.order.relationships.doc_id.attributes.docnum %></p>
             </td>
             <td>
-                <p><% console.log(relationships.operation) %></p>
+                <p><%= relationships.operation.attributes.name %></p>
                 <select name="op" style="width: 200px"></select>
             </td>
             <td>
@@ -123,10 +129,11 @@
                 <button class="btn btn-secondary btn-sm" onclick="duplicateItem(this);"><i class="fa fa-copy"></i> </button>
                 <button class="btn btn-danger btn-sm" onclick="deleteUnit(this);"><i class="fa fa-trash"></i> </button>
                 <button class="btn btn-warning btn-sm" onclick="edit(this)"><i class="fa fa-edit"></i> </button>
-                <input type="submit" class="btn btn-primary" name="button" value="Salveaza" onclick="save(this)">
+                <button class="btn btn-primary btn-sm edit" onclick="save(this)"><i class="fa fa-save"></i> </button>
+                <button class="btn btn-secondary btn-sm edit" onclick="cancelEdit(this)"><i class="fa fa-arrow-left"></i> </button>
             </td>
         </tr>
-    <!--    <div class="d-none " id="newTT" is="komponent" data-url="/views/pontaj/newTimeTracking"></div>-->
+    <!--    -->
 
         </tbody>
         <tbody>
@@ -205,6 +212,12 @@
 <script>
     timeRegex = /(\d+)\:(\d+)\:(\d+)/;
 
+    function cancelEdit(src) {
+        $(src).parents('tr').removeClass('edit')
+            .find("select[name=op]").select2("destroy");
+
+    }
+
     function save(src) {
         let itemContainer = $(src).parents("tr");
         let opSel = itemContainer.find("select[name=op]").val();
@@ -212,7 +225,8 @@
         let startVal = itemContainer.find("input[name=start]").val();
         let stopVal = itemContainer.find("input[name=stop]").val();
         let hourly_rate = itemContainer.find("input[name=hourly_rate]").val();
-        let currency = itemContainer.find("input[name=currency]").val();
+        let currency = itemContainer.find("select[name=currency]").val();
+
         let instance = $(src).data("instance");
 
         if(opSel === null || startVal.length == 0 || stopVal.length == 0){
@@ -231,27 +245,20 @@
             return;
         }
 
-        let tmp = opSel.split("/");
-        let oid = tmp[0];
-        let opid = tmp[1];
+        let [oid,opid] = opSel.split("/");
 
-        console.log("11111111111111111", tmp, oid, opid, startVal.replace("T", " "), stopVal.replace("T", " "), instance);
-
-        // tmpInstance.attributes = {};
-        //
-        // tmpInstance.id = instance.id;
-        console.log($(src).data("instance"));
+        console.log(instance);
         // return;
-        $(src).data("instance").update({
+        instance.update({
             operation: opid,
             order: oid,
             start: startVal.replace("T", " "),
             stop: stopVal.replace("T", " "),
-            // currency: currency,
+            currency: currency,
             hourly_rate: hourly_rate
-        }).then(function () {
-            itemContainer.removeClass("edit");
-
+        }).catch(function (e) {
+            console.log(e);
+            komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + e.jqXHR.responseText + "</pre>"}).send();
         });
     }
 
@@ -259,6 +266,12 @@
         let itemContainer = $(src).parents("tr").addClass("edit");
         let opSel = itemContainer.find("select[name=op]");
         let instance = $(src).data("instance");
+        console.log(instance);
+
+        if(opSel.hasClass("select2")) opSel.select2("destroy");
+        opSel.empty().append("<option value='"+instance.relationships.order.id + "/" + instance.relationships.operation.id + "'>"
+            +instance.relationships.order.relationships.doc_id.attributes.docnum + " / "
+            +instance.relationships.operation.attributes.name+"</option>");
 
 
         opSel.select2wrapper({
@@ -274,6 +287,7 @@
 
             placeholder: "Comanda/proiect"
         });
+
         itemContainer.find("input[name=start]").val(instance.attributes.start);
         itemContainer.find("input[name=stop]").val(instance.attributes.stop);
         itemContainer.find("input[name=submit]");
@@ -327,7 +341,7 @@
 
 
     function init_komponent(k) {
-        let url = apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10&include=employee,order,order.doc_id";
+        let url = apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10&include=employee,order,order.doc_id,operation";
 
         if (k.data) {
             let emplid;
