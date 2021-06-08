@@ -7,7 +7,7 @@
                 </div>
                 <div class="col-sm-6 ">
                     <div class="breadcrumb float-sm-right">
-                        <button onclick="" type="button" data-toggle="tooltip" title="Adauga angajat" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary">
+                        <button onclick="newEmplForm()" type="button" data-toggle="tooltip" title="Adauga angajat" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary">
                             Echipa noua
                         </button>
                     </div>
@@ -20,15 +20,13 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row" data-resourcetype="collection" id="teamsList" data-type="teams" data-paging="#teamsListPaging">
-                        <div class="col-2" onclick="teamModal(this)">
+                        <div class="col-lg-2 col-md-3 col-sm-4" onclick="teamModal(this)">
                             <div class="card" style="cursor: pointer">
                                 <div class="card-body text-center">
-                                    <div class="d-inline-block" style="width: 60px">
-                                    <span class="rounded-circle warning-feedback bg-secondary" style="color: white; font-size: 40px;padding: 5px">
-                                        <i class="fa fa-users"></i>
-                                    </span>
-                                    </div>
-                                    <div class="d-block">
+                                        <span class="rounded-circle bg-secondary " style=" font-size: 40px;padding: 5px">
+                                            <i class="fa fa-users"></i>
+                                        </span>
+                                    <div class="d-block mt-2">
                                         <%=attributes.name%>
                                     </div>
                                 </div>
@@ -55,6 +53,10 @@
 
 <script>
 
+    function newEmplForm() {
+        komponentor.intent("/common/formmodal").data({callback:function (data){
+                console.log(data)},title:"Ttitle",fields:[{type:"text",name: "test",default: "test", placeholder: "placeholder", label: "Label",options:[]}]}).send();
+    }
     function teamModal(src) {
         komponentor.intent('/views/teams/team').data({instance: $(src).data('instance')}).send();
     }
