@@ -94,7 +94,9 @@
                     data[$el.attr("name")] = $el.val();
                 }
             }
+
             modalData.callback(data);
+            modal.modal("hide");
         });
 
 
@@ -109,6 +111,7 @@
         };
 
         modalData.fields.forEach(function (fld) {
+            console.log(fld);
             if(!fld.type) {
                 return;
             }
@@ -117,6 +120,7 @@
             if(!tpl.length) {
                 return;
             }
+            tpl.appendTo(body);
 
             if(fld.label) {
                 tpl.find("label").html(fld.label);
@@ -126,14 +130,23 @@
             }
 
             let inp = tpl.find(tags[fld.type]);
+
+            if(fld.default && fld.type!=="select") {
+                inp.val(fld.default);
+            }
+
             if(fld.name) {
                 inp.attr("name",fld.name);
             }
-            if(fld.placeholder) {
+            if(fld.placeholder && fld.type!=="select") {
                 inp.attr("placeholder",fld.placeholder);
             }
 
-            tpl.appendTo(body);
+            if(fld.type==="select") {
+                // to do
+            }
+
+
         });
 
         modal.modal();

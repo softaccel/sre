@@ -18,7 +18,7 @@
                             </a>
                             <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
                                 <!--									<button type="button" tabindex="0" class="dropdown-item">User Account</button>-->
-                                <a href="" tabindex="0" class="dropdown-item">Setari</a>
+                                <a href="#" tabindex="0" class="dropdown-item" onclick="event.preventDefault();preferences()">Preferinte</a>
                                 <a href="#" onclick="logout()" tabindex="0" class="dropdown-item">Logout</a>
                                 <!--                                    <a href="#" tabindex="0" class="dropdown-item" onclick="$('body').addClass('admin');return false;">AM</a>-->
                                 <!--									<h6 tabindex="-1" class="dropdown-header">Header</h6>-->
@@ -36,6 +36,10 @@
 
 
 <script>
+    function preferences() {
+        komponentor.intent("/views/preferences").send();
+    }
+    
   function toggleSideBar(btn) {
     let $main = $('body');
     let $btn = $(btn);
