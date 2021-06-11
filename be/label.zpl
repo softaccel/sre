@@ -20,3 +20,5 @@
 ^XZ
 
 ^FX http://labelary.com/viewer.html
+
+^FX command: cat label.zpl > /dev/usb/lp0
