@@ -113,7 +113,7 @@
                 <p><%= attributes.duration %></p>
             </td>
             <td>
-                <p><%= attributes.hourly_rate %> <%= attributes.currency %></p>
+                <p><%= attributes.hourly_rate %> <%= relationships.currency.id %></p>
                 <input type="number" name="hourly_rate" value="<%= attributes.hourly_rate %>" style="width: 75px">
                 <select name="currency">
                     <option><%= relationships.currency.id %></option>
@@ -141,6 +141,7 @@
                 <!--            <input type="text" name="empl_name" data-operator="~=~" class="form-control-sm form-control" form="newTTForm" style="display: block">-->
             </td>
             <td class="align-bottom" colspan="2">
+
                 <p>Comanda si Operatie</p>
                 <select id="docNumSel" name="docnum" class="form-control-sm form-control" form="newTTForm" style="display: block;"></select>
 
@@ -162,8 +163,20 @@
 
             </td>
             <td class="align-bottom"  style="width: 100px">
-                <p>Tarif Orar</p>
-                <input type="number" name="hourly_rate" data-operator="~=~" class="form-control-sm form-control" form="newTTForm" style="display: block">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <input class="form-control form-control-sm">
+                    </div>
+                    <select class="custom-select custom-select-sm" id="inputGroupSelect03" aria-label="Example select with button addon">
+                        <option selected>Choose...</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </div>
+
+<!--                <p>Tarif Orar</p>-->
+<!--                <input type="number" name="hourly_rate" data-operator="~=~" class="form-control-sm form-control" form="newTTForm" style="display: block">-->
             </td>
             <td class="align-bottom" style="width: 100px">
                 <p>Moneda</p>
@@ -213,6 +226,7 @@
     }
 
     function save(src) {
+        console.log(src);
         let itemContainer = $(src).parents("tr");
         let opSel = itemContainer.find("select[name=op]").val();
 
@@ -251,7 +265,6 @@
             currency: currency,
             hourly_rate: hourly_rate
         }).catch(function (e) {
-            console.log(e);
             komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + e.jqXHR.responseText + "</pre>"}).send();
         });
     }
@@ -269,7 +282,7 @@
 
         opSel.select2wrapper({
             // url: apiRoot+"/employees/"+instance.attributes.employee+"/emplToOrdAssoc?filter=status=ord",
-            url: apiRoot+"/emplToOrdAssoc?filter=status=ord",
+            url: apiRoot+"/employees/"+instance.relationships.employee.id+"/emplToOrdAssoc?filter=status!><offer,ready,dlvd",
             labelfld: function (item) {
                 return item.attributes.docnum + " - " + item.attributes.opname;
             },

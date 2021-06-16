@@ -699,7 +699,7 @@
 		 *
 		 */
 		_item.update = function (itemData) {
-			console.log(itemData);
+
 			let toUpdate = {
 				id: this.id,
 				type: this.type,
@@ -732,6 +732,9 @@
 					if (!itemData.hasOwnProperty(relName))
 						return;
 
+					if(toUpdate.attributes.hasOwnProperty(relName))
+						return;
+
 					if (this.relationships[relName] == null || this.relationships[relName].id !== itemData[relName]) {
 
 						if (this.relationships[relName] === null || this.relationships[relName].id === null)
@@ -758,7 +761,6 @@
 			return new Promise(function (resolve,reject) {
 				if(!Object.getOwnPropertyNames(toUpdate.attributes).length
 					&& !Object.getOwnPropertyNames(toUpdate.relationships).length) {
-					console.log("Nothing to update");
 					resolve(_item);
 				}
 
@@ -1012,10 +1014,10 @@
 		_itemview.render = function (returnView) {
 
 			let renderedEl = createElementFromTemplate();
-			console.log("///////////",renderedEl);
 
 			if(returnView) {
 				this.el = renderedEl;
+				console.log("...............",renderedEl);
 				return this.el;
 			}
 
@@ -1025,17 +1027,11 @@
 				return null;
 			}
 
+			renderedEl.insertAfter(_itemview.el[0]);
+			_itemview.el.remove();
 
-			// renderedEl.insertBefore(_itemview.el[0]);
-			//
-			// _itemview.el.remove();
-			for (let i=_itemview.el.length-1;i>0;i--) {
-				$(_itemview.el[i]).remove();
-			}
-			_itemview.el.replaceWith(renderedEl);
 			_itemview.el = renderedEl;
 
-			// _itemview.dispatch('render',{src:_itemview,item:_itemview.item});
 			return _itemview.el;
 		};
 
@@ -2015,7 +2011,6 @@
 		else {
 			defaultPageSize = defaultPageSize ? defaultPageSize : 20;
 		}
-		console.log(defaultPageSize);
 
 		let offsetInp = $(_paging.collection.offsetinp).off("keyup").on("keyup",function (e) {
 			if(e.originalEvent.keyCode!==13)

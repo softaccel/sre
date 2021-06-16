@@ -91,6 +91,19 @@
     }
 
     function editMode(instance) {
+
+        $("#selectLead").select2wrapper({
+            url: apiRoot+"/teams/" + instance.id+"/employees",
+            labelfld: function (item) {
+                return item.attributes.fname + " " + item.attributes.lname;
+            },
+            idfld: function (item) {
+                console.log(item.attributes);
+                return item.attributes.id;
+            },
+            placeholder: "Team Leader"
+        });
+
         $("#teamEditDiv").addClass("editMode");
         let form = $("#teamEditForm")[0];
         let util = instance.getUtilities();
@@ -106,7 +119,7 @@
                         body: "Eroare la transferul de date catre Server."
                 }).send();
                 })
-        })
+        });
     }
 
     function init_komponent(k){
@@ -114,21 +127,7 @@
         // let url = apiRoot + "/teams/" + k.data.filter[0].val+"?include=teamlead";
         console.log(k.data.instance)
         k.data.instance.url.parameters.include = "teamlead";
-        k.data.instance.bindView("#teamEditDiv").loadFromRemote().then(function (){
-            $("#selectLead").select2wrapper({
-                url: apiRoot+"/employees?filter=team=" + k.data.instance.id,
-                labelfld: function (item) {
-                    console.log("234234234234234", item.attributes);
-                    return item.attributes.fname + " " + item.attributes.lname;
-                },
-                idfld: function (item) {
-                    console.log(item.attributes);
-                    return item.attributes.id;
-                },
-
-                placeholder: "Team Leader"
-            });
-        });
+        k.data.instance.bindView("#teamEditDiv").loadFromRemote();
 
     }
 </script>

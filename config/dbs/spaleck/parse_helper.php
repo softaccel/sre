@@ -131,6 +131,15 @@ return [
         ],
         "keyFld"=> "id"
     ],
+    "employees"=> [
+        "relations"=> [
+            "emplToOrdAssoc"=> [
+                "table"=> "emplToOrdAssoc",
+                "field"=> "emplid",
+                "type"=> "inbound"
+            ]
+        ]
+    ],
     "employeesExtended"=> [
         "fields"=> [
             "id"=> [

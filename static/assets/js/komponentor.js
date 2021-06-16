@@ -43,7 +43,6 @@
         if(typeof options==="undefined") {
             options = {};
         }
-        console.log(this,options,opts);
         Object.assign(options,opts);
         options.$el = this;
 
@@ -144,8 +143,6 @@
             else {
                 k.$el.append($renderedKomponent);
             }
-            console.log("????????????????????",k.$el);
-
         }
 
         if(!k.$el) {

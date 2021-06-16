@@ -538,9 +538,9 @@ return [
     ],
     "deliveries_contents"=> [
         "fields"=> [
-            "checkout_qty"=> [
+            "checkout"=> [
                 "description"=> "",
-                "name"=> "checkout_qty",
+                "name"=> "checkout",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "int"
@@ -556,7 +556,7 @@ return [
                 "type"=> [
                     "proto"=> "int"
                 ],
-                "iskey"=> true,
+                "iskey"=> false,
                 "required"=> true,
                 "default"=> null,
                 "foreignKey"=> [
@@ -564,9 +564,20 @@ return [
                     "field"=> "id"
                 ]
             ],
-            "inventory"=> [
+            "id"=> [
                 "description"=> "",
-                "name"=> "inventory",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
+            "item"=> [
+                "description"=> "",
+                "name"=> "item",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "int"
@@ -578,6 +589,17 @@ return [
                     "table"=> "inventory",
                     "field"=> "id"
                 ]
+            ],
+            "labels"=> [
+                "description"=> "",
+                "name"=> "labels",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> "0"
             ],
             "qty"=> [
                 "description"=> "",
@@ -595,7 +617,7 @@ return [
         "description"=> "",
         "comment"=> "",
         "type"=> "table",
-        "keyFld"=> "delivery",
+        "keyFld"=> "id",
         "relations"=> [
             "delivery"=> [
                 "table"=> "deliveries",
@@ -603,13 +625,144 @@ return [
                 "type"=> "outbound",
                 "fkfield"=> "delivery"
             ],
-            "inventory"=> [
+            "item"=> [
                 "table"=> "inventory",
                 "field"=> "id",
                 "type"=> "outbound",
-                "fkfield"=> "inventory"
+                "fkfield"=> "item"
             ]
         ]
+    ],
+    "dlvrcontents_expanded"=> [
+        "fields"=> [
+            "checkout"=> [
+                "description"=> "",
+                "name"=> "checkout",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> "0"
+            ],
+            "delivery"=> [
+                "description"=> "",
+                "name"=> "delivery",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "design"=> [
+                "description"=> "",
+                "name"=> "design",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "docnum"=> [
+                "description"=> "",
+                "name"=> "docnum",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "varchar",
+                    "length"=> "45"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "id"=> [
+                "description"=> "",
+                "name"=> "id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> true,
+                "required"=> true,
+                "default"=> "0"
+            ],
+            "item"=> [
+                "description"=> "",
+                "name"=> "item",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "labels"=> [
+                "description"=> "",
+                "name"=> "labels",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> "0"
+            ],
+            "name"=> [
+                "description"=> "",
+                "name"=> "name",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "tinytext"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "order"=> [
+                "description"=> "",
+                "name"=> "order",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "partid"=> [
+                "description"=> "",
+                "name"=> "partid",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "text"
+                ],
+                "iskey"=> false,
+                "required"=> false,
+                "default"=> null
+            ],
+            "qty"=> [
+                "description"=> "",
+                "name"=> "qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ]
+        ],
+        "relations"=> [],
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "view",
+        "keyFld"=> "id"
     ],
     "documents"=> [
         "fields"=> [
@@ -1180,6 +1333,11 @@ return [
                 "table"=> "timetracking",
                 "field"=> "employee",
                 "type"=> "inbound"
+            ],
+            "emplToOrdAssoc"=> [
+                "table"=> "emplToOrdAssoc",
+                "field"=> "emplid",
+                "type"=> "inbound"
             ]
         ]
     ],
@@ -1436,8 +1594,8 @@ return [
                     "length"=> "91"
                 ],
                 "iskey"=> false,
-                "required"=> true,
-                "default"=> ""
+                "required"=> false,
+                "default"=> null
             ],
             "id"=> [
                 "description"=> "",
@@ -1608,7 +1766,7 @@ return [
                 "referencedBy"=> [
                     [
                         "table"=> "deliveries_contents",
-                        "field"=> "inventory"
+                        "field"=> "item"
                     ],
                     [
                         "table"=> "inventory_meta",
@@ -1646,13 +1804,25 @@ return [
                     "field"=> "oid"
                 ]
             ],
+            "order_qty"=> [
+                "description"=> "",
+                "name"=> "order_qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
             "qty"=> [
                 "description"=> "",
                 "name"=> "qty",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "float",
-                    "length"=> "10,3"
+                    "length"=> "10,2"
                 ],
                 "iskey"=> false,
                 "required"=> false,
@@ -1739,7 +1909,7 @@ return [
             ],
             "deliveries_contents"=> [
                 "table"=> "deliveries_contents",
-                "field"=> "inventory",
+                "field"=> "item",
                 "type"=> "inbound"
             ],
             "inventory_meta"=> [
@@ -1856,7 +2026,7 @@ return [
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "float",
-                    "length"=> "10,3"
+                    "length"=> "10,2"
                 ],
                 "iskey"=> false,
                 "required"=> false,
@@ -2092,7 +2262,7 @@ return [
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "float",
-                    "length"=> "10,3"
+                    "length"=> "10,2"
                 ],
                 "iskey"=> false,
                 "required"=> false,
@@ -5433,26 +5603,6 @@ return [
                 "required"=> true,
                 "default"=> null
             ],
-            "order_status"=> [
-                "description"=> "",
-                "name"=> "order_status",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "enum",
-                    "vals"=> [
-                        "offer",
-                        "ord",
-                        "proc",
-                        "ctc",
-                        "fix",
-                        "ready",
-                        "dlvd"
-                    ]
-                ],
-                "iskey"=> false,
-                "required"=> false,
-                "default"=> "ord"
-            ],
             "start"=> [
                 "description"=> "",
                 "name"=> "start",
@@ -5813,13 +5963,5 @@ return [
                 "fkfield"=> "userid"
             ]
         ]
-    ],
-    "dlvrcontents_expanded"=> [
-        "fields"=> [
-            "id"=> [
-                "iskey"=> true
-            ]
-        ],
-        "keyFld"=> "id"
     ]
 ];
