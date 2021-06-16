@@ -10,7 +10,8 @@
         display: none;
     }
     .editMode span.edit{
-        display: unset;
+        display: inline-block;
+        min-width: 150px;
     }
     .editMode button.edit{
         display: none;
@@ -20,7 +21,7 @@
     }
 
 </style>
-<div class="row" >
+<div class="row" id="orderDetails">
     <div class="col-6">
         <table class="order-summary-table">
             <tr>
@@ -47,7 +48,7 @@
                             <%= attributes.state %>
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Da in lucru</a>
+                            <a class="dropdown-item" id="changeToState" style="cursor:pointer;" onclick="changeState(this)">yo</a>
                         </div>
                     </div>
                 </td>
@@ -119,10 +120,49 @@
 
     function saveTeamAssoc(src) {
         $(src).parent().removeClass('editMode');
-        $(src).data("instance").update({team:$("#teamAllocation").val()});
+        console.log($(src),$(src).data("instance"),$("#teamAllocation").val());
+        $(src).data("instance").update({team:$("#teamAllocation").val()}).then(function (a){
+            console.log(a)});
+    }
+
+    function changeState(src){
+        let instance = $(src).data().instance;
+        console.log($(src).data());
+        let $changeTo = $("#changeToState");
+        console.log($changeTo.attr("val"));
+        let data = $(src).data().instance.attributes
+        console.log(data);
+        console.log("-----------------------------------------\n\n\n\n\n\n\t\t\t\t", data);
+        instance.update({
+            oid: data.oid,
+            state: $changeTo.attr("val")
+        }).then(() => {
+            instance.loadFromRemote();
+            prepare_a($changeTo.attr("val"));
+        })
+    }
+
+    function prepare_a(state){
+        let $changeTo = $("#changeToState");
+        let states = ["offer", "ord", "proc", "ctc", "fix", "ready", "dlvd"];
+        let currentState = states.findIndex((el) => el === state);
+        let nextState = states[currentState + 1];
+        $changeTo.text("Change to \"" + nextState + "\"");
+        $changeTo.attr("val", nextState);
+
+        // $changeTo.on("click", changeState);
+
+        console.log("-----------------------------------------------------\n\n\n", currentState, "\n\n\n----------------------------------");
+        console.log("-----------------------------------------------------\n\n\n", "Change to " + nextState, "\n\n\n----------------------------------");
+        console.log("-----------------------------------------------------\n\n\n", $changeTo, "\n\n\n----------------------------------");
     }
 
     function init_komponent(k) {
-        k.data.instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100").bindView(k.$el).loadFromRemote().then(function (d) {});
+
+        prepare_a(k.data.instance.attributes.state);
+        console.log(k);
+        k.data.instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
+            .bindView(k.$el.children()).loadFromRemote().then(function (d) {
+            console.log(d)});
     }
 </script>

@@ -340,7 +340,7 @@
 						db[resName][keyId].relationships[relName] = null;
 						return;
 					}
-					
+
 
 					let relTmp = db[resName][keyId].relationships[relName].data;
 
@@ -510,8 +510,8 @@
 						_item
 							.loadFromJSONAPIDoc(data, textStatus, jqXHR, ctx)
 							.views.forEach(function (view){
-								view.render();
-							});
+							view.render();
+						});
 
 						resolve(_item);
 					})
@@ -709,12 +709,16 @@
 
 			// check attributes
 			Object.getOwnPropertyNames(itemData).forEach(function (attrName) {
-				if(!itemData.hasOwnProperty(attrName) && !this.strict ) {
+				if(itemData[attrName] && typeof itemData[attrName]==="object") {
+					return ;
+				}
+
+				if(!this.attributes.hasOwnProperty(attrName) && !this.strict ) {
 					// console.log("Attr '"+attrName+"'not present in parent object and strict mode off => add attr to update");
 					return toUpdate.attributes[attrName] = itemData[attrName];
 				}
 
-				if(!itemData.hasOwnProperty(attrName) && this.strict ) {
+				if(!this.attributes.hasOwnProperty(attrName) && this.strict ) {
 					// console.log("Attr '"+attrName+"'not present in parent object and strict mode ON => skip");
 					return;
 				}
@@ -729,8 +733,14 @@
 			// update relationships
 			if(this.relationships) {
 				Object.getOwnPropertyNames(this.relationships).forEach(function (relName) {
-					if (!itemData.hasOwnProperty(relName))
+					if (!itemData.hasOwnProperty(relName)) {
 						return;
+					}
+
+
+					if(itemData[relName]===null || typeof itemData[relName] !== "object") {
+						return;
+					}
 
 					if(toUpdate.attributes.hasOwnProperty(relName))
 						return;
@@ -1665,9 +1675,9 @@
 				.catch(function(jqxhr){
 					console.log("error",jqxhr)
 				})
-				// .finally(()=>{
-				// 	// console.log(instance,"instance loaded from server")
-				// });
+			// .finally(()=>{
+			// 	// console.log(instance,"instance loaded from server")
+			// });
 		}
 
 		console.log(instance);
@@ -2117,135 +2127,135 @@
 	 * @param options
 	 * @constructor
 	 */
-function Storage(options)
-{
+	function Storage(options)
+	{
 
-	let defaultOptions = {
-		url: null,
-		method: "GET"
-	};
-
-	options = parseOptions(options);
-
-	Object.assign(defaultOptions, options);
-
-	let _storage = {};
-
-	/**
-	 *
-	 * @param options
-	 * @returns {Promise<unknown>}
-	 */
-	_storage.sync = function (options) {
-		options = Object.assign(
-			Object.assign({},defaultOptions),
-			parseOptions(options)
-		);
-
-		if (!options.hasOwnProperty("url")) {
-			throw "No URL provided";
-		}
-
-		return new Promise(function (resolve,reject) {
-			$.ajax(options)
-				.done(function (data, textStatus, jqXHR) {
-					// console.log(data, textStatus, jqXHR,"111111111111");
-					resolve( {
-						data: data,
-						textStatus: textStatus,
-						jqXHR: jqXHR
-					});
-				})
-				.fail(function (jqXHR, textStatus, errorThrown) {
-					reject( {
-						options: options,
-						jqXHR: jqXHR,
-						textStatus: textStatus,
-						errorThrown: errorThrown
-					});
-				});
-		});
-	};
-
-	/**
-	 *
-	 * @param ctx
-	 * @param url
-	 * @param opts
-	 * @param data
-	 * @returns {Promise<unknown>}
-	 */
-	_storage.create = function (ctx, url, opts, data) {
-		let options = {
-			context: ctx,
-			url: url,
-			method: "POST",
-			data: data
-		};
-		Object.assign(options, opts);
-		return _storage.sync(options);
-	};
-
-	/**
-	 *
-	 * @param ctx
-	 * @param url
-	 * @param opts
-	 * @returns {Promise<unknown>}
-	 */
-	_storage.read = function (ctx, url, opts) {
-		let options = {
-			context: ctx,
-			url: url,
+		let defaultOptions = {
+			url: null,
 			method: "GET"
 		};
-		Object.assign(options, opts);
 
-		return _storage.sync(options);
-	};
+		options = parseOptions(options);
 
-	/**
-	 *
-	 * @param ctx
-	 * @param url
-	 * @param opts
-	 * @returns {Promise<unknown>}
-	 */
-	_storage.delete = function (ctx, url, opts) {
-		let options = {
-			context: ctx,
-			url: url,
-			method: "DELETE"
+		Object.assign(defaultOptions, options);
+
+		let _storage = {};
+
+		/**
+		 *
+		 * @param options
+		 * @returns {Promise<unknown>}
+		 */
+		_storage.sync = function (options) {
+			options = Object.assign(
+				Object.assign({},defaultOptions),
+				parseOptions(options)
+			);
+
+			if (!options.hasOwnProperty("url")) {
+				throw "No URL provided";
+			}
+
+			return new Promise(function (resolve,reject) {
+				$.ajax(options)
+					.done(function (data, textStatus, jqXHR) {
+						// console.log(data, textStatus, jqXHR,"111111111111");
+						resolve( {
+							data: data,
+							textStatus: textStatus,
+							jqXHR: jqXHR
+						});
+					})
+					.fail(function (jqXHR, textStatus, errorThrown) {
+						reject( {
+							options: options,
+							jqXHR: jqXHR,
+							textStatus: textStatus,
+							errorThrown: errorThrown
+						});
+					});
+			});
 		};
-		Object.assign(options, opts);
 
-		return _storage.sync(options);
-	};
-
-	/**
-	 *
-	 * @param ctx
-	 * @param url
-	 * @param opts
-	 * @param data
-	 * @returns {Promise<unknown>}
-	 */
-	_storage.update = function (ctx, url, opts, data) {
-		let options = {
-			context: ctx,
-			url: url,
-			method: "PATCH",
-			contentType: "application/vnd.api+json",
-			data: data
+		/**
+		 *
+		 * @param ctx
+		 * @param url
+		 * @param opts
+		 * @param data
+		 * @returns {Promise<unknown>}
+		 */
+		_storage.create = function (ctx, url, opts, data) {
+			let options = {
+				context: ctx,
+				url: url,
+				method: "POST",
+				data: data
+			};
+			Object.assign(options, opts);
+			return _storage.sync(options);
 		};
-		Object.assign(options, opts);
 
-		return _storage.sync(options);
+		/**
+		 *
+		 * @param ctx
+		 * @param url
+		 * @param opts
+		 * @returns {Promise<unknown>}
+		 */
+		_storage.read = function (ctx, url, opts) {
+			let options = {
+				context: ctx,
+				url: url,
+				method: "GET"
+			};
+			Object.assign(options, opts);
 
-	};
+			return _storage.sync(options);
+		};
 
-	return _storage;
-}
+		/**
+		 *
+		 * @param ctx
+		 * @param url
+		 * @param opts
+		 * @returns {Promise<unknown>}
+		 */
+		_storage.delete = function (ctx, url, opts) {
+			let options = {
+				context: ctx,
+				url: url,
+				method: "DELETE"
+			};
+			Object.assign(options, opts);
+
+			return _storage.sync(options);
+		};
+
+		/**
+		 *
+		 * @param ctx
+		 * @param url
+		 * @param opts
+		 * @param data
+		 * @returns {Promise<unknown>}
+		 */
+		_storage.update = function (ctx, url, opts, data) {
+			let options = {
+				context: ctx,
+				url: url,
+				method: "PATCH",
+				contentType: "application/vnd.api+json",
+				data: data
+			};
+			Object.assign(options, opts);
+
+			return _storage.sync(options);
+
+		};
+
+		return _storage;
+	}
 
 	function uid () {
 		// Math.random should be unique because of its seeding algorithm.
@@ -2264,4 +2274,3 @@ $(document).ready(function () {
 			$(this).apiator();
 	});
 });
-
