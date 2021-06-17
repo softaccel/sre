@@ -124,38 +124,36 @@
         $(src).data("instance").update({team:$("#teamAllocation").val()}).then(function (a){
             console.log(a)});
     }
-
-    function changeState(src){
-        let instance = $(src).data().instance;
-        console.log($(src).data());
-        let $changeTo = $("#changeToState");
-        console.log($changeTo.attr("val"));
-        let data = $(src).data().instance.attributes
-        console.log(data);
-        console.log("-----------------------------------------\n\n\n\n\n\n\t\t\t\t", data);
-        instance.update({
-            oid: data.oid,
-            state: $changeTo.attr("val")
-        }).then(() => {
-            instance.loadFromRemote();
-            prepare_a($changeTo.attr("val"));
-        })
-    }
-
     function prepare_a(state){
         let $changeTo = $("#changeToState");
         let states = ["offer", "ord", "proc", "ctc", "fix", "ready", "dlvd"];
         let currentState = states.findIndex((el) => el === state);
         let nextState = states[currentState + 1];
-        $changeTo.text("Change to \"" + nextState + "\"");
+        $changeTo.html("Change to \"" + nextState + "\"");
+        console.log(nextState);
         $changeTo.attr("val", nextState);
-
-        // $changeTo.on("click", changeState);
 
         console.log("-----------------------------------------------------\n\n\n", currentState, "\n\n\n----------------------------------");
         console.log("-----------------------------------------------------\n\n\n", "Change to " + nextState, "\n\n\n----------------------------------");
         console.log("-----------------------------------------------------\n\n\n", $changeTo, "\n\n\n----------------------------------");
     }
+    function changeState(src){
+        let instance = $(src).data().instance;
+
+        let $changeTo = $("#changeToState");
+        let new_state = $changeTo.attr("val");
+        let data = $(src).data().instance.attributes
+
+        instance.update({
+            oid: data.oid,
+            state: new_state
+        }).then(() => {
+            prepare_a(new_state);
+            instance.loadFromRemote();
+        })
+    }
+
+
 
     function init_komponent(k) {
 
