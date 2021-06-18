@@ -1,0 +1,86 @@
+<style>
+    .modal-body.bg-light.row{
+        border-bottom: silver solid 1px;
+    }
+    .row>div:nth-child(1) {
+        padding: 10px;
+        font-weight: bold;
+    }
+    .row>div:nth-child(2){
+        padding: 10px;
+    }
+    .row>div{
+        padding: 5px;
+    }
+    .btn.btn-warning.btn-save{
+        margin-top: 10px;
+    }
+</style>
+<div class="modal" id="addDelModal">
+    <form id="addDeliveryForm">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        Adaugati o Livrare <span id="deliveryid"></span>
+                    </div>
+                </div>
+                <div class="modal-body bg-light" style="min-height: 200px">
+                    <div class="row">
+                        <div class="col-3">Denumire</div>
+                        <div class="col-9"><input name="label" class="form-control form-control-sm" type="text" autocomplete="off" value=""></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">Status</div>
+                        <div class="col-9">
+                            <select name="status" class="custom-select custom-select-sm" id="typeInput" required="">
+                                <option value="created">Creat</option>
+                                <option value="loading">Incarcare</option>
+                                <option value="ready">Pregatit</option>
+                                <option value="delivered">Trimis</option>
+                                <option value="received">Primit</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">Data Livrarii</div>
+                        <div class="col-9"><input name="dlv_date" class="form-control form-control-sm" type="date" autocomplete="off" value=""></div>
+                    </div>
+                    <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
+
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function init_komponent(k){
+        k.hideModal = function() {
+            $modal.modal("hide");
+        };
+
+        let $modal =  k.$el.appendTo("body").filter(".modal").modal().on("hidden.bs.modal",function (event) {
+            k.$el.remove();
+        });
+
+        let form = $("#addDeliveryForm")[0];
+        let instance = k.data.instance;
+        let util = instance.getUtilities();
+
+        util.captureFormSubmit(form, function (data) {
+            console.log(data);
+            if(data.label === "" || data.dlv_date === ""){
+                komponentor.intent("/common/errormodal").data({
+                    body: "Completati toate campurile."
+                }).send();
+            } else {
+                instance.createItem(data).then($modal.modal("hide"));
+            }
+        });
+
+    }
+</script>

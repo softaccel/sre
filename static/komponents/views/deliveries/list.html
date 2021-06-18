@@ -81,8 +81,8 @@
             </td>
             <td style="cursor: pointer"><%= attributes.label %></td>
             <td><%= attributes.status %></td>
-            <td><%= attributes.lastupdate %></td>
             <td><%= attributes.dlv_date%></td>
+            <td><%= attributes.lastupdate %></td>
         </tr>
         </tbody>
         <tfoot>
@@ -117,13 +117,14 @@
     }
 
     function init_komponent(k) {
-        function newDelivery() {
-            instance.createItem({label:"new"});
-        }
 
         let url = apiRoot+"/deliveries?sort=id";
         let instance = k.$el.find("#deliveriesList").apiator({url:url,returninstance:true});
 
-        k.$el.find("#newDlvrButt").on("click",newDelivery);
+        k.$el.find("#newDlvrButt").on("click",function () {
+            komponentor.intent("/views/deliveries/addDelivery")
+                .data({instance:instance})
+                .send();
+        });
     }
 </script>
