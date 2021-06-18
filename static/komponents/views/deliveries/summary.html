@@ -78,8 +78,6 @@
             <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
             <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
             <button class="btn btn-danger" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
-
-            <!--            <button class="btn btn-danger" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>-->
         </div>
     </div>
 </form>
@@ -101,7 +99,6 @@
                     },
                     callback: function () {
                         instance.delete().catch(function(data){
-                            console.log(data);
                             komponentor.intent("/common/errormodal").data({
                                 body: "A aparut o eroare: <pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
                             }).send();
@@ -128,8 +125,6 @@
 
 
         util.captureFormSubmit(form, function (data) {
-            console.log(instance);
-            console.log(data);
             if(data.dlv_date === "N/A"){
                 data.dlv_date = null;
             }
@@ -150,11 +145,6 @@
 
 
     function init_komponent(k){
-        console.log("----------[[[[[[[]]]]]]]]]]]]\n\n\n", k);
-        $("#deliveryForm").apiator({
-            url: apiRoot + "/deliveries/" + k.data.instance.attributes.id,
-            resourcetype: "item",
-            type: "deliveries"
-        });
+        k.data.instance.bindView($("#deliveryForm")).loadFromRemote();
     }
 </script>
