@@ -77,7 +77,9 @@
             <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
             <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
             <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
-<!--            <button class="btn btn-danger" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>-->
+            <button class="btn btn-danger" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
+
+            <!--            <button class="btn btn-danger" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>-->
         </div>
     </div>
 </form>
@@ -85,6 +87,36 @@
 <script>
     function exitEditMode(){
         $("#deliverySummary").removeClass("editMode");
+    }
+
+    function deleteEntry(instance) {
+        komponentor.intent("/common/messagemodal").data({
+            body: "Esti sigur ca vrei sa stergi livrarea <br><strong>" + instance.attributes.label + "</strong>?",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        instance.delete().catch(function(data){
+                            console.log(data);
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare: <pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
     }
 
 
@@ -101,6 +133,7 @@
             if(data.dlv_date === "N/A"){
                 data.dlv_date = null;
             }
+            delete data.lastupdate;
             data.id = instance.attributes.id;
             instance.update(data)
                 .then( function () {
