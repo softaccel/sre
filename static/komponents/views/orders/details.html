@@ -2,7 +2,7 @@
     .order-summary-table button.save{
         display: none;
     }
-    .order-summary-table span.display{}
+    /*.order-summary-table span.display{}*/
     .editMode span.display{
         display: none;
     }
@@ -47,7 +47,7 @@
                         <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <%= attributes.state %>
                         </button>
-                        <div class="dropdown-menu">
+                        <div class="dropdown-menu" id="statesDropdown">
                             <a class="dropdown-item" id="changeToState" style="cursor:pointer;" onclick="changeState(this)">yo</a>
                         </div>
                     </div>
@@ -127,40 +127,39 @@
     function prepare_a(state){
         let $changeTo = $("#changeToState");
         let states = ["offer", "ord", "proc", "ctc", "fix", "ready", "dlvd"];
-        let currentState = states.findIndex((el) => el === state);
-        let nextState = states[currentState + 1];
-        $changeTo.html("Change to \"" + nextState + "\"");
-        console.log(nextState);
-        $changeTo.attr("val", nextState);
+        let normalized_states = ["Oferta", "Comandat", "In Lucru", "Control", "Corectii", "Gata de Livrare", "Livrat"];
+        let currentState = states.indexOf(state);
 
-        console.log("-----------------------------------------------------\n\n\n", currentState, "\n\n\n----------------------------------");
-        console.log("-----------------------------------------------------\n\n\n", "Change to " + nextState, "\n\n\n----------------------------------");
-        console.log("-----------------------------------------------------\n\n\n", $changeTo, "\n\n\n----------------------------------");
+        let nextState = states[currentState + 1];
+        let normalizedNext = normalized_states[currentState + 1];
+        $($changeTo).html("Schimbati statusul comenzii in \"" + normalizedNext + "\"");
+
+        $($changeTo).attr("val", nextState === undefined ? "dlvd" : nextState);
     }
+
     function changeState(src){
         let instance = $(src).data().instance;
-
         let $changeTo = $("#changeToState");
+
         let new_state = $changeTo.attr("val");
         let data = $(src).data().instance.attributes
+
 
         instance.update({
             oid: data.oid,
             state: new_state
-        }).then(() => {
+        }).then((a) => {
+            console.log(a);
             prepare_a(new_state);
-            instance.loadFromRemote();
-        })
+        });
     }
 
 
 
     function init_komponent(k) {
-
-        prepare_a(k.data.instance.attributes.state);
-        console.log(k);
         k.data.instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
             .bindView(k.$el.children()).loadFromRemote().then(function (d) {
+            prepare_a(k.data.instance.attributes.state);
             console.log(d)});
     }
 </script>

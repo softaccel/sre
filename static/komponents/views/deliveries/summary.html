@@ -50,7 +50,16 @@
         </div>
         <div class="row">
             <div class="col-3">Status</div>
-            <div class="col-9"><%= attributes.status %></div>
+<!--            <div class="col-9">-->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <%= attributes.status %>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" id="changeToState" style="cursor:pointer;" onclick="changeState(this)">Change to <%= attributes.status %></a>
+                    </div>
+                </div>
+<!--            </div>-->
             <div class="col-9">
                 <select name="status" class="custom-select custom-select-sm" id="typeInput" required="">
                     <option value="<%= attributes.status %>" id="origValStatus"><%= attributes.status %></option>
@@ -144,7 +153,52 @@
     }
 
 
+    // function prepare_status(status){
+    //     let $changeTo = $("#changeToState");
+    //     let states = ["created", "loading", "ready", "delivered", "received"];
+    //     let currentState = states.findIndex((el) => el === status);
+    //     let nextState = states[currentState + 1];
+    //     $changeTo.html("Change to \"" + nextState + "\"");
+    //     console.log(nextState);
+    //     $changeTo.attr("val", nextState);
+    // }
+
+    function prepare_a(state){
+        let $changeTo = $("#changeToState");
+        let states = ["created", "loading", "ready", "delivered", "received"];
+        let normalized_states = ["Creat", "Incarcare", "Gata de Livrare", "Livrat", "Primit"];
+        let currentState = states.indexOf(state);
+
+        let nextState = states[currentState + 1];
+        let normalizedNext = normalized_states[currentState + 1];
+        $($changeTo).html("Schimbati statusul livrarii in \"" + normalizedNext + "\"");
+
+        $($changeTo).attr("val", nextState === undefined ? "received" : nextState);
+    }
+
+    function changeState(src){
+        let instance = $(src).data().instance;
+        let $changeTo = $("#changeToState");
+
+        let new_state = $changeTo.attr("val");
+        let data = $(src).data().instance.attributes
+
+
+        instance.update({
+            oid: data.oid,
+            status: new_state
+        }).then((a) => {
+            console.log(a);
+            prepare_a(new_state);
+        });
+    }
+
     function init_komponent(k){
-        k.data.instance.bindView($("#deliveryForm")).loadFromRemote();
+        console.log(k);
+
+        k.data.instance.bindView($("#deliveryForm")).loadFromRemote().then(function (d) {
+                prepare_a(k.data.instance.attributes.status);
+            }
+        );
     }
 </script>
