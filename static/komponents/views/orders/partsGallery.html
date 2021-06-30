@@ -47,31 +47,33 @@
     }
 </style>
 <div class="orderPartsMe">
-    <div class="alert alert-primary " role="alert">
-        <i class="fa fa-filter"></i> Filtrare
-        <button class="btn btn-sm btn-secondary" onclick="showSelected()">Selectate</button>
-        <button class="btn btn-sm btn-secondary" onclick="showZero()">Zero bucati</button>
-        <button class="btn btn-sm btn-secondary" onclick="showNonZero()">Diferit de zero</button>
-        <button class="btn btn-sm btn-secondary" onclick="showAll()">Toate</button>
-    </div>
-    <div class="alert alert-info " role="alert">
-        <i class="fa fa-sort"></i>  Ordonare
-        <button class="btn btn-sm btn-secondary">Denumire</button>
-        <button class="btn btn-sm btn-secondary">Bucati</button>
-    </div>
-    <div class="alert alert-success " role="alert">
-        <i class="fa fa-traffic-light"></i> Actiuni
-        <button class="btn btn-sm btn-secondary" id="printButton">Tiparire etichete</button>
-    </div>
-    <div class="orderPartsListHeader mt-3">
-        <input type="checkbox" onclick="toggleAll(this)" id="toggleAllCheckbox" data-connected="#orderPartsList"/>
-        <!--<button  class="btn btn-success"><i class="fa fa-print"></i> </button>-->
-    </div>
+<!--    <div class="alert alert-primary " role="alert">-->
+<!--        <i class="fa fa-filter"></i> Filtrare-->
+<!--        <button class="btn btn-sm btn-secondary" onclick="showSelected()">Selectate</button>-->
+<!--        <button class="btn btn-sm btn-secondary" onclick="showZero()">Zero bucati</button>-->
+<!--        <button class="btn btn-sm btn-secondary" onclick="showNonZero()">Diferit de zero</button>-->
+<!--        <button class="btn btn-sm btn-secondary" onclick="showAll()">Toate</button>-->
+<!--    </div>-->
+<!--    <div class="alert alert-info " role="alert">-->
+<!--        <i class="fa fa-sort"></i>  Ordonare-->
+<!--        <button class="btn btn-sm btn-secondary">Denumire</button>-->
+<!--        <button class="btn btn-sm btn-secondary">Bucati</button>-->
+<!--    </div>-->
+<!--    <div class="alert alert-success " role="alert">-->
+<!--        <i class="fa fa-traffic-light"></i> Actiuni-->
+<!--        <button class="btn btn-sm btn-secondary" id="printButton">Tiparire etichete</button>-->
+<!--    </div>-->
+
+
+<!--    <div class="orderPartsListHeader mt-3">-->
+<!--        <input type="checkbox" onclick="toggleAll(this)" id="toggleAllCheckbox" data-connected="#orderPartsList"/>-->
+<!--        &lt;!&ndash;<button  class="btn btn-success"><i class="fa fa-print"></i> </button>&ndash;&gt;-->
+<!--    </div>-->
     <ul id="orderPartsList">
         <li onclick="toggleSelect(this)" data-connected="#toggleAllCheckbox">
-            <span class="checkbox">
-                <input type="checkbox" onclick="event.stopPropagation();toggleSelect($(this).parents('li'))">
-            </span>
+<!--            <span class="checkbox">-->
+<!--                <input type="checkbox" onclick="event.stopPropagation();toggleSelect($(this).parents('li'))">-->
+<!--            </span>-->
             <span class="partid"><%= attributes.partid %></span>
             <span class="name"><%= attributes.name %></span>
             <span class="count"><input class="countNo" type="number" value="<%= Math.round(attributes.qty) %>" size="3" onclick="event.stopPropagation()"> bucati</span>
