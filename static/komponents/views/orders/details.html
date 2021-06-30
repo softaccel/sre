@@ -44,8 +44,8 @@
                 <td>Stadiu</td>
                 <td>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <%= attributes.state %>
+                        <button type="button" id="orderState" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
                         </button>
                         <div class="dropdown-menu" id="statesDropdown">
                             <a class="dropdown-item" id="changeToState" style="cursor:pointer;" onclick="changeState(this)">yo</a>
@@ -124,34 +124,47 @@
         $(src).data("instance").update({team:$("#teamAllocation").val()}).then(function (a){
             console.log(a)});
     }
+
     function prepare_a(state){
         let $changeTo = $("#changeToState");
+        let $origState = $("#orderState");
         let states = ["offer", "ord", "proc", "ctc", "fix", "ready", "dlvd"];
         let normalized_states = ["Oferta", "Comandat", "In Lucru", "Control", "Corectii", "Gata de Livrare", "Livrat"];
         let currentState = states.indexOf(state);
 
-        let nextState = states[currentState + 1];
-        let normalizedNext = normalized_states[currentState + 1];
-        $($changeTo).html("Schimbati statusul comenzii in \"" + normalizedNext + "\"");
+        let nextState;
+        let normalizedNext;
 
-        $($changeTo).attr("val", nextState === undefined ? "dlvd" : nextState);
+        if(currentState === states.length - 1){
+            $changeTo.html("Starea este finala.");
+            $changeTo.attr("val", "dlvd");
+        } else {
+            nextState = states[currentState + 1];
+            normalizedNext = normalized_states[currentState + 1];
+            $changeTo.html("Schimbati statusul comenzii in \"" + normalizedNext + "\"");
+            $changeTo.attr("val", nextState);
+        }
+        $origState.html(normalized_states[currentState]);
     }
 
     function changeState(src){
         let instance = $(src).data().instance;
         let $changeTo = $("#changeToState");
+        let oldState = $("#orderState").html();
 
         let new_state = $changeTo.attr("val");
         let data = $(src).data().instance.attributes
 
 
-        instance.update({
-            oid: data.oid,
-            state: new_state
-        }).then((a) => {
-            console.log(a);
-            prepare_a(new_state);
-        });
+        if(oldState !== "Livrat"){
+            instance.update({
+                oid: data.oid,
+                state: new_state
+            }).then((a) => {
+                console.log(a);
+                prepare_a(new_state);
+            });
+        }
     }
 
 
