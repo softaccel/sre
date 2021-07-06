@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$config['base_url'] = 'http://localhost/sre/be/dbapi';
+$config['base_url'] = 'http://localhost/spaleck/be/dbapi';
 
 $config['index_page'] = 'index.php';
 

@@ -633,7 +633,7 @@ return [
             ]
         ]
     ],
-    "dlvrcontents_expanded"=> [
+    "deliveries_labels"=> [
         "fields"=> [
             "id"=> [
                 "description"=> "",
@@ -643,6 +643,83 @@ return [
                     "proto"=> "int"
                 ],
                 "iskey"=> true,
+                "required"=> false,
+                "default"=> null
+            ],
+            "content_id"=> [
+                "description"=> "",
+                "name"=> "content_id",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "content"=> [
+                "description"=> "",
+                "name"=> "content",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "seq"=> [
+                "description"=> "",
+                "name"=> "seq",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> null
+            ],
+            "checked_out"=> [
+                "description"=> "",
+                "name"=> "checked_out",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "tinyint",
+                    "length"=> "1"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> "0"
+            ],
+            "printed"=> [
+                "description"=> "",
+                "name"=> "printed",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "tinyint",
+                    "length"=> "1"
+                ],
+                "iskey"=> false,
+                "required"=> true,
+                "default"=> "0"
+            ]
+        ],
+        "name"=> "deliveries_labels",
+        "description"=> "",
+        "comment"=> "",
+        "type"=> "table",
+        "keyFld"=> "id"
+    ],
+    "dlvrcontents_expanded"=> [
+        "fields"=> [
+            "id"=> [
+                "description"=> "",
+                "name"=> "labels",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "int"
+                ],
+                "iskey"=> false,
                 "required"=> true,
                 "default"=> "0"
             ],
@@ -659,14 +736,14 @@ return [
             ],
             "item"=> [
                 "description"=> "",
-                "name"=> "item",
+                "name"=> "checkout",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "int"
                 ],
                 "iskey"=> false,
                 "required"=> true,
-                "default"=> null
+                "default"=> "0"
             ],
             "qty"=> [
                 "description"=> "",
@@ -681,14 +758,14 @@ return [
             ],
             "labels"=> [
                 "description"=> "",
-                "name"=> "labels",
+                "name"=> "order",
                 "comment"=> "",
                 "type"=> [
                     "proto"=> "int"
                 ],
                 "iskey"=> false,
-                "required"=> true,
-                "default"=> "0"
+                "required"=> false,
+                "default"=> null
             ],
             "checkout"=> [
                 "description"=> "",
@@ -701,12 +778,12 @@ return [
                 "required"=> true,
                 "default"=> "0"
             ],
-            "order"=> [
+            "name"=> [
                 "description"=> "",
-                "name"=> "order",
+                "name"=> "name",
                 "comment"=> "",
                 "type"=> [
-                    "proto"=> "int"
+                    "proto"=> "tinytext"
                 ],
                 "iskey"=> false,
                 "required"=> false,
@@ -1605,8 +1682,8 @@ return [
                     "length"=> "91"
                 ],
                 "iskey"=> false,
-                "required"=> false,
-                "default"=> null
+                "required"=> true,
+                "default"=> ""
             ]
         ],
         "relations"=> [],

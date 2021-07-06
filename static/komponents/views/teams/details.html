@@ -23,7 +23,7 @@
         display: none;
     }
     .editMode .btn-warning,.editMode .btn-secondary, .btn-success, .btn-danger{
-        display: block;
+        display: inline-block;
     }
 </style>
 <div>
@@ -46,7 +46,7 @@
                 </select>
             </div>
         </div>
-        <div class="input-group mt-5">
+        <div class="mt-5" >
             <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
             <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
             <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
@@ -62,7 +62,7 @@
 
     function deleteEntry(instance) {
         komponentor.intent("/common/messagemodal").data({
-            body: "Esti sigur ca vrei sa stergi echipa <br><strong>" + instance.attributes.name + "</strong>",
+            body: "Esti sigur ca vrei sa stergi echipa <br><strong>" + instance.attributes.name + "</strong>?",
             buttons: [
                 {
                     label: "Da",

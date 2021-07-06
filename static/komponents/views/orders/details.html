@@ -2,7 +2,7 @@
     .order-summary-table button.save{
         display: none;
     }
-    .order-summary-table span.display{}
+    /*.order-summary-table span.display{}*/
     .editMode span.display{
         display: none;
     }
@@ -10,7 +10,8 @@
         display: none;
     }
     .editMode span.edit{
-        display: unset;
+        display: inline-block;
+        min-width: 150px;
     }
     .editMode button.edit{
         display: none;
@@ -20,7 +21,7 @@
     }
 
 </style>
-<div class="row" >
+<div class="row" id="orderDetails">
     <div class="col-6">
         <table class="order-summary-table">
             <tr>
@@ -43,11 +44,11 @@
                 <td>Stadiu</td>
                 <td>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <%= attributes.state %>
+                        <button type="button" id="orderState" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
                         </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Da in lucru</a>
+                        <div class="dropdown-menu" id="statesDropdown">
+                            <a class="dropdown-item" id="changeToState" style="cursor:pointer;" onclick="changeState(this)">yo</a>
                         </div>
                     </div>
                 </td>
@@ -119,10 +120,59 @@
 
     function saveTeamAssoc(src) {
         $(src).parent().removeClass('editMode');
-        $(src).data("instance").update({team:$("#teamAllocation").val()});
+        console.log($(src),$(src).data("instance"),$("#teamAllocation").val());
+        $(src).data("instance").update({team:$("#teamAllocation").val()}).then(function (a){
+            console.log(a)});
     }
 
+    function prepare_a(state){
+        let $changeTo = $("#changeToState");
+        let $origState = $("#orderState");
+        let states = ["offer", "ord", "proc", "ctc", "fix", "ready", "dlvd"];
+        let normalized_states = ["Oferta", "Comandat", "In Lucru", "Control", "Corectii", "Gata de Livrare", "Livrat"];
+        let currentState = states.indexOf(state);
+
+        let nextState;
+        let normalizedNext;
+
+        if(currentState === states.length - 1){
+            $changeTo.html("Starea este finala.");
+            $changeTo.attr("val", "dlvd");
+        } else {
+            nextState = states[currentState + 1];
+            normalizedNext = normalized_states[currentState + 1];
+            $changeTo.html("Schimbati statusul comenzii in \"" + normalizedNext + "\"");
+            $changeTo.attr("val", nextState);
+        }
+        $origState.html(normalized_states[currentState]);
+    }
+
+    function changeState(src){
+        let instance = $(src).data().instance;
+        let $changeTo = $("#changeToState");
+        let oldState = $("#orderState").html();
+
+        let new_state = $changeTo.attr("val");
+        let data = $(src).data().instance.attributes
+
+
+        if(oldState !== "Livrat"){
+            instance.update({
+                oid: data.oid,
+                state: new_state
+            }).then((a) => {
+                console.log(a);
+                prepare_a(new_state);
+            });
+        }
+    }
+
+
+
     function init_komponent(k) {
-        k.data.instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100").bindView(k.$el).loadFromRemote().then(function (d) {});
+        k.data.instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
+            .bindView(k.$el.children()).loadFromRemote().then(function (d) {
+            prepare_a(k.data.instance.attributes.state);
+            console.log(d)});
     }
 </script>

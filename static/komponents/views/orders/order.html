@@ -95,10 +95,9 @@
                                         <i class="fa fa-user-minus"></i>
                                     </button>
                                     <span class="employeeName" onclick="edit_employee_association(this)">
-                                                <%= relationships.emplid.attributes.fname+" "+relationships.emplid.attributes.lname %></span><br>
+                                        <%= relationships.emplid.attributes.fname+" "+relationships.emplid.attributes.lname %>
+                                    </span><br>
                                     <%= relationships.operation.attributes.name %>
-                                    </span>
-
                                     <div style="clear: left"></div>
                                 </div>
                             </div>
@@ -186,7 +185,7 @@
 
 
 
-        $("#repereTab").tab("show");
+        $("#sumarTab").tab("show");
         // console.log($("#comandaid").text(k.data.instance.id).text());
     }
 </script>
