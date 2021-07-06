@@ -1027,7 +1027,7 @@
 
 			if(returnView) {
 				this.el = renderedEl;
-				console.log("...............",renderedEl);
+				// console.log("...............",renderedEl);
 				return this.el;
 			}
 
@@ -1330,7 +1330,7 @@
 			if(url.hasOwnProperty("deleteUrl"))
 				this.deleteUrl = URL(url.deleteUrl);
 			if(url.hasOwnProperty("insertUrl"))
-				this.deleteUrl = URL(url.insertUrl);
+				this.insertUrl = URL(url.insertUrl);
 
 			return this;
 		};
@@ -1414,7 +1414,7 @@
 				if(!_self.insertUrl) {
 					_self.insertUrl = _self.url;
 				}
-				// console.log(JSON.stringify(jsonApiDoc));
+				console.log(JSON.stringify(jsonApiDoc));
 
 				storage
 					.create(_self,_self.insertUrl,{contentType:"application/vnd.api+json"},JSON.stringify(jsonApiDoc))

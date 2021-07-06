@@ -64,7 +64,7 @@
                                 <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="event.stopPropagation();toggleSelect($(this).parents('tr'))" data-connected="#checkAllUnassingedItems"></td>
                                 <td><%= attributes.partid %></td>
                                 <td><%=  attributes.name %></td>
-                                <td><input type="number" name="qtys[]" size="4" max="<%=attributes.qty%>" value="<%=attributes.qty%>" disabled> </td>
+                                <td><input type="number" name="qtys[]" size="4" max="<%=attributes.qty%>" value="<%=attributes.qty%>"> </td>
                             </tr>
                             </tbody>
                         </table>
@@ -186,11 +186,14 @@
             ]
         }).send();
     }
+
     function init_komponent(k) {
+
         if(!k.data || !k.data.instance) {
             return;
         }
-
+        let unassignedItemsInstance = k.$el.find("#unassingedItems")
+            .apiator({returninstance: true})
         function selectContent()
         {
             let $unassignedItems = k.$el.find("#unassingedItems");
@@ -206,14 +209,12 @@
                 $select
                     .on('select2:select', function (e) {
                         $unassignedItemsContainer.show(400);
-                        var data = e.params.data;
+                        let data = e.params.data;
                         console.log(data);
-                        let invmeta = k.$el.find("#unassingedItems").apiator({returninstance: true})
-                            .setUrl(apiRoot+"/orders/"+data.id+"/inventory_wmeta?filter=qty>0");
+                            unassignedItemsInstance
+                            .setUrl(apiRoot+"/orders/"+data.id+"/inventory_wmeta?filter=qty>0")
+                            .loadFromRemote();
 
-                        invmeta.loadFromRemote();
-
-                        k.$el.find("#addToDlvrBtn").on("click",addToDelivery(invmeta));
 
                     }).on("select2:clear",function () {
                         $unassignedItemsContainer.hide(200);
@@ -224,64 +225,65 @@
             $select.val(null).trigger('change');
         }
 
-        function addToDelivery(instance)
+        function addToDelivery()
         {
-            return function() {
-                let cbs = $('#unassingedItems').find("input[type=checkbox]");
-                let qtys = $('#unassingedItems').find("input[type=number]");
-                let toAdd = [];
-                for(let i=0;i<cbs.length;i++) {
-                    if(!cbs[i].checked)
-                        continue;
-                    toAdd.push([cbs[i].value,qtys[i].value,k.data.instance.id]);
-                }
-                console.log(toAdd);
-                let item;
-                let qty;
-                let delivery;
-                let data;
+            let instance = contentItems;
+            let cbs = $('#unassingedItems').find("input[type=checkbox]");
+            let qtys = $('#unassingedItems').find("input[type=number]");
+            let toAdd = [];
+            for(let i=0;i<cbs.length;i++) {
+                if(!cbs[i].checked)
+                    continue;
+                toAdd.push([cbs[i].value,qtys[i].value,k.data.instance.id]);
+            }
+            console.log("@@@@@@@@@@@@@@@@@@",toAdd);
+            // return;
 
-                toAdd.forEach(function (el) {
-                    console.log("\\\\\\\\\\\\\\\\\\\\\\", el);
-                    item = el[0];
-                    qty = el[1];
-                    delivery = el[2];
-                    data = {
-                        "item": item,
-                        "qty": qty,
-                        "delivery": delivery
-                    };
-                    instance.setUrl(apiRoot + "/deliveries_contents")
-                    instance.createItem({
-                        item: item,
-                        qty: qty,
-                        delivery: delivery
-                    });
-                })
-                // $.post({
-                //     url: apiRoot+"/__call__/addToDelivery",
-                //     contentType:"application/vnd.api+json",
-                //     data: JSON.stringify({
-                //         data:toAdd,
-                //         meta:{
-                //             type: "bulk",
-                //             transaction: "request"
-                //         }
-                //     })
-                // })
-                //     .done(function () {
-                //         instance.loadFromRemote();
-                //         contentItems.loadFromRemote();
-                //     })
-                //     .fail();
-            };
+            let promises = [];
+            let errors =[];
+            toAdd.forEach(function (el) {
+               let [item,qty,delivery] = el;
+                // qty = el[1];
+                // delivery = el[2];
+                let data = {
+                    item: item,
+                    qty: qty,
+                    delivery: delivery
+                };
+                console.log(data);
+
+
+                promises.push(
+                    instance.setUrl({insertUrl:apiRoot + "/deliveries_contents"})
+                    .createItem(data)
+                    .catch((resp)=>errors.push(resp.jqXHR.responseJSON)));
+            });
+            console.log("------------////////////////----",promises.length)
+
+            Promise.all(promises)
+                .then(() => instance.loadFromRemote())
+                .finally(()=>{
+                    // k.$el.find("#addElsToDeliveryCard").hide(400);
+                    // k.$el.find("#addContentBtn").show();
+                    unassignedItemsInstance.loadFromRemote();
+                    instance.loadFromRemote()
+                    if(errors.length) {
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare:<pre>"+JSON.stringify(errors,null, "\t")+"</pre>"
+                        }).send();
+                    }
+                });
+
         }
 
         k.$el.find("#addContentBtn").on("click",function (e) {
             selectContent();
             $(e.target).hide();
-
         });
+
+        k.$el.find("#addToDlvrBtn").on("click",addToDelivery);
+
+
         k.$el.find("#cancelAddToDlvrBtn").on("click",()=>{k.$el.find("#addElsToDeliveryCard").hide(400);k.$el.find("#addContentBtn").show();});
 
         let url = apiRoot + "/deliveries/"+k.data.instance.id+"/dlvrcontents_expanded?sort=-id&page[dlvrcontents_expanded][limit]=50";
