@@ -130,7 +130,7 @@
 
     const localStorageLabel = "spaleck";
     let env = localStorage.getItem(localStorageLabel+".env");
-    if(!env)
+    if(!env || !env_config[env])
         env = "staging";
     console.log(env_config[env]);
 
