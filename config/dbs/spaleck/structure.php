@@ -633,83 +633,6 @@ return [
             ]
         ]
     ],
-    "deliveries_labels"=> [
-        "fields"=> [
-            "id"=> [
-                "description"=> "",
-                "name"=> "id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> true,
-                "required"=> false,
-                "default"=> null
-            ],
-            "content_id"=> [
-                "description"=> "",
-                "name"=> "content_id",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "content"=> [
-                "description"=> "",
-                "name"=> "content",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "text"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "seq"=> [
-                "description"=> "",
-                "name"=> "seq",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "int"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> null
-            ],
-            "checked_out"=> [
-                "description"=> "",
-                "name"=> "checked_out",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "tinyint",
-                    "length"=> "1"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> "0"
-            ],
-            "printed"=> [
-                "description"=> "",
-                "name"=> "printed",
-                "comment"=> "",
-                "type"=> [
-                    "proto"=> "tinyint",
-                    "length"=> "1"
-                ],
-                "iskey"=> false,
-                "required"=> true,
-                "default"=> "0"
-            ]
-        ],
-        "name"=> "deliveries_labels",
-        "description"=> "",
-        "comment"=> "",
-        "type"=> "table",
-        "keyFld"=> "id"
-    ],
     "dlvrcontents_expanded"=> [
         "fields"=> [
             "id"=> [
@@ -2321,6 +2244,18 @@ return [
                 ],
                 "iskey"=> false,
                 "required"=> false,
+                "default"=> null
+            ],
+            "order_qty"=> [
+                "description"=> "",
+                "name"=> "order_qty",
+                "comment"=> "",
+                "type"=> [
+                    "proto"=> "float",
+                    "length"=> "10,2"
+                ],
+                "iskey"=> false,
+                "required"=> true,
                 "default"=> null
             ],
             "unit_price"=> [

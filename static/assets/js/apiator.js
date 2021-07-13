@@ -1027,7 +1027,7 @@
 
 			if(returnView) {
 				this.el = renderedEl;
-				console.log("...............",renderedEl);
+				// console.log("...............",renderedEl);
 				return this.el;
 			}
 

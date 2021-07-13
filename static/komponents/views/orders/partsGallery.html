@@ -11,40 +11,84 @@
         font-size: 0.9em;
     }
 
-    #orderPartsList>li{
+    #orderPartsListFilter{
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
+        background: #212529;
+        margin-bottom: 5px;
+        padding: 5px;
+    }
+    #orderPartsListFilter>div{
+        flex: 0 0 auto;
+        padding: .75rem;
+    }
+    #orderPartsList:nth-child(1){
+        flex: 1 0 60%;
+    }
+
+    #orderPartsList>li{
         box-shadow: silver 2px 2px 2px;
         background: #f5f5f5;
         margin-bottom: 5px;
         padding: 5px;
+        cursor: pointer;
     }
-    #orderPartsList>li>span{
-        flex-grow: 3;
-        flex-basis: 25%;
+    #orderPartsList:not(.grid_3)>li{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+    }
+    #orderPartsList>li:hover{
+        color: #212529;
+        background-color: rgba(0,0,0,.075);
+    }
+    #orderPartsList:not(.grid_3)>li>span{
+        flex-grow: 1;
+        flex-basis: 15%;
+        padding-left: .75rem;
         /*margin: 10px;*/
-
     }
-    #orderPartsList>li>span.checkbox{
+    #orderPartsList:not(.grid_3)>li>div>img {
+        visibility: hidden;
+        position: absolute;
+    }
+    /*#orderPartsList>li>span.checkbox{
         flex-shrink: 0;
         flex-grow: 0;
         flex-basis: 5%;
-    }
-    #orderPartsList>li>span.partid{
-        flex-shrink: 0;
-        flex-grow: 1;
-        flex-basis: 15%;
+    }*/
+    /*#orderPartsList>li>span.partid{
+        flex: 1 0 15%;
+    }*/
+    #orderPartsList>li>span.name{
+        flex: 1 0 60%;
     }
 
     #orderPartsList>li>span:last-child{
         text-align: right;
     }
-    #orderPartsList>li.selected{
+    /*#orderPartsList>li.selected{
         background: #555555;
         color: white;
+    }*/
 
+    .grid_3 {
+        display: grid;
+        grid-auto-rows: 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-gap: .5rem;
+        align-content: space-evenly;
+        justify-content: space-between;
+        text-align: center;
     }
+    .grid_3>li>span.count {
+        display: none;
+    }
+
+    .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 1rem; }
+    .toggle.ios .toggle-handle { border-radius: 1rem; }
+
 </style>
 <div class="orderPartsMe">
 <!--    <div class="alert alert-primary " role="alert">-->
@@ -69,14 +113,44 @@
 <!--        <input type="checkbox" onclick="toggleAll(this)" id="toggleAllCheckbox" data-connected="#orderPartsList"/>-->
 <!--        &lt;!&ndash;<button  class="btn btn-success"><i class="fa fa-print"></i> </button>&ndash;&gt;-->
 <!--    </div>-->
-    <ul id="orderPartsList">
-        <li onclick="toggleSelect(this)" data-connected="#toggleAllCheckbox">
+    <div id="orderPartsListFilter">
+        <div class="partid">
+            <div class="text-white">Part id</div>
+            <input class="form-control-sm form-control searchValue" style="width: 100px" type="text">
+        </div>
+        <div class="name">
+            <div class="text-white">Denumire</div>
+            <input class="form-control-sm form-control searchValue" type="text">
+        </div>
+        <div>
+
+        </div>
+        <div>
+            <input type="checkbox" id="viewToggle" checked data-toggle="toggle" data-style="ios" data-size="sm">
+        </div>
+        <div>
+            <div class="float-sm-right">
+                <button onclick="newOrderPart()" type="button" data-toggle="tooltip" title="Adauga reper" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary">
+                    Adauga reper
+                </button>
+            </div>
+        </div>
+    </div>
+    <ul class="grid_3" id="orderPartsList">
+        <!--<li onclick="toggleSelect(this)" data-connected="#toggleAllCheckbox">-->
+
+        <li onclick="editOrderPartModal(this)">
 <!--            <span class="checkbox">-->
 <!--                <input type="checkbox" onclick="event.stopPropagation();toggleSelect($(this).parents('li'))">-->
 <!--            </span>-->
+            <div class="">
+                <img src="assets/images/spaleck.png" class="img-thumbnail img-fluid rounded mx-auto d-block" style="max-width: 100%; height: 200px">
+            </div>
             <span class="partid"><%= attributes.partid %></span>
+            <br>
             <span class="name"><%= attributes.name %></span>
-            <span class="count"><input class="countNo" type="number" value="<%= Math.round(attributes.qty) %>" size="3" onclick="event.stopPropagation()"> bucati</span>
+            <span class="count"><%= attributes.qty %> / <%= attributes.order_qty %> bucati</span>
+
         </li>
     </ul>
 </div>
@@ -100,6 +174,7 @@
         showAll();
         $("#orderPartsList").children().not(".selected").addClass("d-none")
     }
+
     function showAll() {
         $("#orderPartsList").children().removeClass("d-none");
     }
@@ -116,13 +191,68 @@
     function showZero() {
         showAll();
         $("#orderPartsList").children().each(function () {
-            if($(this).find(".countNo").val()*1!==0) {
+            if ($(this).find(".countNo").val() * 1 !== 0) {
                 $(this).addClass("d-none");
             }
         });
     }
 
+    function filterList(s) {
+        let value = $(s).val().toLowerCase();
+        $("#myTable tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    }
 
+    //
+    function newOrderPart() {
+        let insertCopy = {...$("#orderPartsList").data("instance").insertUrl};
+        insertCopy.path = insertCopy.path.replace("inventory_wmeta", "inventory");
+        $("#orderPartsList").data("instance").insertUrl = insertCopy;
+        console.log("ababaababbbaba" ,$("#orderPartsList").data("instance"));
+
+        komponentor.intent("/common/formmodal").data({
+            callback:function (data) {
+                console.log(data);
+                data.um = "Stk";
+                $("#orderPartsList").data("instance").createItem(data).then().catch(function (data) {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare: <pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
+                    }).send();
+                });
+            },
+            title:"Adauga Reper Nou",
+            fields:[
+                {type:"text", name: "name", default: "", placeholder: "", label: "Denumire", options:[]},
+                // {type:"text", name: "partid", default: "", placeholder: "", label: "Part Id", options:[]},
+                {type:"number", name: "qty", default: "0", placeholder: "", label: "Cantitate in stoc", options:[]},
+                {type:"number", name: "order_qty", default: "0", placeholder: "", label: "Cantitate comandata", options:[]},
+                {type:"number", name: "unit_price", default: "0", placeholder: "", label: "Pret unitar", options:[]},
+                {type:"select", name: "currency", label: "Moneda", url: "/currencies", labelList: ["id"], idList: ["id"]}
+            ]
+        }).send();
+    }
+
+    function editOrderPartModal(src) {
+        if($(src).data("locked")) {
+            return;
+        }
+        $(src).data("locked",true);
+        komponentor.intent('/views/orders/orderPart')
+            .send({instance:$(src).data('instance')})
+            .then((k)=>{console.log('#######',k)})
+            .finally(()=>$(src).data("locked",null));
+    }
+
+    //
+    function toggleSwitch() {
+        let $toggle = $("#orderPartsList");
+        if($toggle.hasClass("grid_3")) {
+            $toggle.removeClass("grid_3");
+        } else {
+            $toggle.addClass("grid_3");
+        }
+    }
 
     function init_komponent(k) {
         $("#orderPartsList").apiator({
@@ -132,75 +262,110 @@
             // JsBarcode(".barcode").init();
         });
 
-        function printLabels() {
-            let els = $("#orderPartsList").children(".selected").clone(true);
-            if(!els.length) {
-                return;
-            }
+        $("#orderPartsListFilter").find("#viewToggle").bootstrapToggle().change(toggleSwitch);
 
-            console.log( k.data.instance);
-            // return;;
-            let ronum = k.data.instance.relationships.doc_id.attributes.docnum;
-            let belegnum;
-            for(let i=0;i<k.data.instance.relationships.orders_meta.length;i++) {
-                if(k.data.instance.relationships.orders_meta[i].attributes.meta_key==="K.F.E_BelegKopf.BelegNummer") {
-                    belegnum = k.data.instance.relationships.orders_meta[i].attributes.meta_val;
-                    break;
-                }
-            }
-            let printJob = {
-                name: "container",
-                children:[]
-            };
-            els.each(function () {
-                for(i=0;i<$(this).find(".countNo").val();i++) {
-                    let elInstance = $(this).data("instance");
-                    printJob.children.push(
-                        {
-                            name: "container",
-                            attributes:{
-                                justification: "center"
-                            },
-                            children: [
-                                {
-                                    name: "text",
-                                    val: elInstance.attributes.name.substr(0,60).padEnd(60," ")
-                                },
-                                {
-                                    name: "barcode",
-                                    val: elInstance.id
-                                },
-                                {
-                                    name: "text",
-                                    val: elInstance.attributes.partid
-                                },
-                                {
-                                    name: "text",
-                                    val: "Bestellnum: " + belegnum
-                                },
-                                {
-                                    name: "text",
-                                    val: "Auftragnum: " + ronum
-                                },
-                                {
-                                    name: "feed",
-                                    attributes:{
-                                        lines: 3
-                                    }
-                                }
-                            ]
-                        }
-                    );
-                }
+        $("#orderPartsListFilter").each(function () {
+            let $parent = $(this);
+            $parent.find(".searchValue").each(function () {
+                $(this).off().on("input", function () {
+                    let filters = [];
+                    $parent.find(".searchValue").each(function () {
+                        filters.push($(this).val().toLowerCase());
+                    });
+
+                    console.log(filters);
+
+                    if (!filters[0] && !filters[1]) {
+                        showAll();
+                    } else {
+                        $("#orderPartsList").children().each(function () {
+                            let data = $(this).data("instance").attributes;
+                            let show = false;
+                            if (data.partid.indexOf(filters[0]) != -1 &&
+                                data.name.toLowerCase().indexOf(filters[1]) != -1) {
+                                show = true;
+                            }
+
+                            if (!show){
+                                $(this).addClass("d-none");
+                            } else {
+                                $(this).removeClass("d-none");
+                            }
+                        });
+                    }
+                });
             });
+        });
 
-            // return console.log(printJob);
-            komponentor.intent("/common/posprint").data(printJob).send();
-        }
-
-
-        k.$el.find("#printButton").on("click",printLabels)
+        // function printLabels() {
+        //     let els = $("#orderPartsList").children(".selected").clone(true);
+        //     if(!els.length) {
+        //         return;
+        //     }
+        //
+        //     console.log( k.data.instance);
+        //     // return;;
+        //     let ronum = k.data.instance.relationships.doc_id.attributes.docnum;
+        //     let belegnum;
+        //     for(let i=0;i<k.data.instance.relationships.orders_meta.length;i++) {
+        //         if(k.data.instance.relationships.orders_meta[i].attributes.meta_key==="K.F.E_BelegKopf.BelegNummer") {
+        //             belegnum = k.data.instance.relationships.orders_meta[i].attributes.meta_val;
+        //             break;
+        //         }
+        //     }
+        //     let printJob = {
+        //         name: "container",
+        //         children:[]
+        //     };
+        //     els.each(function () {
+        //         for(i=0;i<$(this).find(".countNo").val();i++) {
+        //             let elInstance = $(this).data("instance");
+        //             printJob.children.push(
+        //                 {
+        //                     name: "container",
+        //                     attributes:{
+        //                         justification: "center"
+        //                     },
+        //                     children: [
+        //                         {
+        //                             name: "text",
+        //                             val: elInstance.attributes.name.substr(0,60).padEnd(60," ")
+        //                         },
+        //                         {
+        //                             name: "barcode",
+        //                             val: elInstance.id
+        //                         },
+        //                         {
+        //                             name: "text",
+        //                             val: elInstance.attributes.partid
+        //                         },
+        //                         {
+        //                             name: "text",
+        //                             val: "Bestellnum: " + belegnum
+        //                         },
+        //                         {
+        //                             name: "text",
+        //                             val: "Auftragnum: " + ronum
+        //                         },
+        //                         {
+        //                             name: "feed",
+        //                             attributes:{
+        //                                 lines: 3
+        //                             }
+        //                         }
+        //                     ]
+        //                 }
+        //             );
+        //         }
+        //     });
+        //
+        //     // return console.log(printJob);
+        //     komponentor.intent("/common/posprint").data(printJob).send();
+        // }
+        //
+        // k.$el.find("#printButton").on("click",printLabels)
 
     }
+
 </script>
 

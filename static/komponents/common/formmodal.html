@@ -31,7 +31,7 @@
                 </div>
                 <div class="form-group select">
                     <label></label>
-                    <select class="custom-select custom-select-sm"></select>
+                    <select class="custom-select custom-select-sm" style="width: 100%"></select>
                 </div>
                 <div class="form-group textarea">
                     <label></label>
@@ -111,41 +111,122 @@
         };
 
         modalData.fields.forEach(function (fld) {
-            console.log(fld);
-            if(!fld.type) {
+            if (!fld.type) {
                 return;
             }
 
-            let tpl = $(template.filter("."+fld.type));
-            if(!tpl.length) {
+            let tpl = $(template.filter("."+fld.type).clone());
+            if (!tpl.length) {
                 return;
             }
+
             tpl.appendTo(body);
 
-            if(fld.label) {
+            if (fld.label) {
                 tpl.find("label").html(fld.label);
-            }
-            else {
+            } else {
                 tpl.find("label").remove();
             }
 
             let inp = tpl.find(tags[fld.type]);
 
-            if(fld.default && fld.type!=="select") {
+            if (fld.default && fld.type!=="select") {
                 inp.val(fld.default);
             }
 
-            if(fld.name) {
+            if (fld.name) {
                 inp.attr("name",fld.name);
             }
-            if(fld.placeholder && fld.type!=="select") {
+            if (fld.placeholder && fld.type!=="select") {
                 inp.attr("placeholder",fld.placeholder);
             }
 
-            if(fld.type==="select") {
-                // to do
-            }
+            /*
+                select type
 
+                mandatory: {type: "select", name: "", label: ""} +
+                    manual options -> {options: [{id: "", description: ""}]}
+                    select2wrapper -> {url: "/", labelList: [""], idList: [""]}
+
+                optional: {placeholder: "", default: {id: "", description: ""}, dependent: "~name attr of another select~"}
+
+                use case: adaugare reper fizic in comanda
+
+            */
+            if (fld.type==="select") {
+
+                let hasDefault = fld.default && fld.default.id && fld.default.description;
+                if (hasDefault) {
+                    let option = document.createElement("option");
+                    option.value = fld.default.id;
+                    option.text = fld.default.description;
+                    inp.append(option);
+                }
+
+                if (!fld.options || fld.options.length <= 0) {
+                    if (!fld.url || !fld.labelList.length || !fld.idList.length)
+                        return;
+
+                    inp.select2wrapper({
+                        url: apiRoot + fld.url,
+                        labelfld: function (item) {
+                            let returnString = "";
+
+                            for (let i = 0; i <= fld.labelList.length; ++i) {
+                                if (item.attributes[fld.labelList[i]])
+                                    returnString += item.attributes[fld.labelList[i]] + " ";
+                            }
+                            return returnString;
+                        },
+                        idfld: function (item) {
+                            let returnString = "";
+
+                            for (let i = 0; i <= fld.idList.length; ++i) {
+                                if (item.attributes[fld.idList[i]])
+                                    returnString += item.attributes[fld.idList[i]] + " ";
+                            }
+                            return returnString;
+                        },
+
+                        placeholder: fld.placeholder ? fld.placeholder : ""
+                    });
+
+                } else {
+
+                    fld.options.forEach(function (option) {
+                        if (!hasDefault || (hasDefault && option.id !== fld.default.id && option.description !== fld.default.description) ) {
+                            let optionElement = document.createElement("option");
+                            optionElement.value = option.id;
+                            optionElement.text = option.description;
+                            inp.append(optionElement);
+                        }
+                    })
+
+                    inp.select2();
+                    if (!hasDefault) {
+                        inp.val('').change();
+                    }
+                }
+
+                if (fld.dependent) {
+
+                    let inpGroup = inp.parent();
+                    let parent = $("#order_file_modal").find("select[name=" + fld.dependent + "]");
+                    let parentData = parent.select2('data');
+
+                    if (!parentData || !parentData.length) {
+                        inpGroup.hide();
+                    }
+
+                    parent.on("select2:select", function () {
+                        inpGroup.show();
+                    });
+
+                    parent.on("select2:clear", function () {
+                        inpGroup.hide();
+                    });
+                }
+            }
 
         });
 
