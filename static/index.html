@@ -20,14 +20,14 @@
 
     <link rel="stylesheet" href="assets/fontawesome/css/all.min_adminlte.css">
 
-    <link href="https://adminlte.io/themes/v3/dist/css/adminlte.min.css" rel="stylesheet">
+    <link href="https://adminlte.io/themes/v3/dist/css/adminlte.css" rel="stylesheet">
     <link href="https://adminlte.io/themes/v3/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet">
     <link href="https://adminlte.io/themes/v3/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
-    <link href="adminlte.min.css" rel="stylesheet">
+<!--    <link href="adminlte.min.css" rel="stylesheet">-->
 
     <link href="assets/css/spinner.css" rel="stylesheet">
     <link href="assets/css/jquery-ui.css" rel="stylesheet">
@@ -35,6 +35,7 @@
     <link href="assets/css/select2.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.css" rel="stylesheet">
 
 
 
@@ -91,6 +92,7 @@
 <script src="assets/js/jquery.scannerdetection.js"></script>
 <script src="assets/js/select2.min.js"></script>
 <script src="assets/js/select2wrapper.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.js"></script>
 
 
 
@@ -100,7 +102,7 @@
     const _kExt = ".html";
     const vPath = _kPath+"views/";
     const backendUrl = '/spaleck/be';
-    const apiRoot = '/dbapi/v2/spaleck';
+    const apiRoot = 'http://172.16.20.15/dbapi/v2/spaleck';
     const authUrl = backendUrl + '/main/auth/login';
     const posPrintUrl = backendUrl + '/main/POS/print';
 
