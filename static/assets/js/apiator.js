@@ -1680,7 +1680,7 @@
 			// });
 		}
 
-		console.log(instance);
+		// console.log(instance);
 		return (options.hasOwnProperty("returninstance") && opts.returninstance)?instance:this;
 	};
 

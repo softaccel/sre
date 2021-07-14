@@ -48,18 +48,16 @@
             <div class="col-9"><%= attributes.label %></div>
             <div class="col-9"><input name="label" class="form-control form-control-sm" type="text" autocomplete="off" value="<%= attributes.label %>"></div>
         </div>
-        <div class="row">
+        <div class="row hide-on-edit">
             <div class="col-3">Status</div>
-<!--            <div class="col-9">-->
+            <div class="col-9">
                 <div class="btn-group">
-                    <button type="button" id="origDeliv" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-                    </button>
-                    <div class="dropdown-menu">
+                    <button type="button" id="origDeliv" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                    <div class="dropdown-menu" id="menuStatus">
                         <a class="dropdown-item" id="changeToState" style="cursor:pointer;" onclick="changeState(this)">Change to <%= attributes.status %></a>
                     </div>
                 </div>
-<!--            </div>-->
+            </div>
             <div class="col-9">
                 <select name="status" class="custom-select custom-select-sm" id="typeInput" required="">
                     <option value="<%= attributes.status %>" id="origValStatus"><%= attributes.status %></option>
@@ -85,7 +83,7 @@
         <div class="input-group mt-5">
             <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
             <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
-            <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+            <button id="editButton" class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
             <button class="btn btn-danger" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
         </div>
     </div>
@@ -140,8 +138,9 @@
             delete data.lastupdate;
             data.id = instance.attributes.id;
             instance.update(data)
-                .then( function () {
+                .then( function (a) {
                     $("#deliverySummary").removeClass("editMode");
+                    prepare_a(a.attributes.status);
                 })
                 .catch(function (jqxhr){
                     komponentor.intent("/common/errormodal").data({
@@ -155,42 +154,84 @@
     function prepare_a(state){
         let $changeTo = $("#changeToState");
         let $origDelivery = $("#origDeliv");
-        let states = ["created", "loading", "ready", "delivered", "received"];
-        let normalized_states = ["Creat", "Incarcare", "Gata de Livrare", "Livrat", "Primit"];
+        let $editBtn = $("#editButton");
+        let states = ["created", "loading", "ready", "delivered", "received", "canceled"];
+        let normalized_states = ["Creat", "Incarcare", "Gata de Livrare", "Livrat", "Primit", "Anulat"];
+        let colors = ["orange", "red", "blue", "green", "black", "grey"];
+        $origDelivery.css("color", "white");
         let currentState = states.indexOf(state);
 
         let nextState;
         let normalizedNext;
 
-        if(currentState === states.length - 1){
-            $changeTo.html("Statusul este final.");
-            $changeTo.attr("val", "received");
+        if(currentState === 0){
+            console.log("ceva fain");
+            let cpy = $changeTo.clone(true).attr("id", "cancelBtn");
+            cpy.attr("val", "canceled");
+            cpy.html("Anulati livrarea?");
+            cpy.appendTo($("#menuStatus"));
+            console.log(cpy);
+        }
+
+        if(currentState >= states.length - 2){
+            $origDelivery.attr("disabled", true);
+            $changeTo.attr("val", states[currentState]);
+            $editBtn.attr("disabled", true);
         } else {
             nextState = states[currentState + 1];
             normalizedNext = normalized_states[currentState + 1];
             $changeTo.html("Schimbati statusul livrarii in \"" + normalizedNext + "\"");
             $changeTo.attr("val", nextState);
+            console.log($changeTo);
         }
+
+        console.log($("#menuStatus"));
+        $origDelivery.css("background-color", colors[currentState]);
         $origDelivery.html(normalized_states[currentState]);
     }
 
     function changeState(src){
+        console.log(src)
         let instance = $(src).data().instance;
-        let $changeTo = $("#changeToState");
-        let oldState = $("#origDeliv").html();
+        let $changeTo = $(src);
 
         let new_state = $changeTo.attr("val");
-        let data = $(src).data().instance.attributes
+        let data = $(src).data().instance.attributes;
 
-        if(oldState !== "Primit"){
-            instance.update({
-                id: data.id,
-                status: new_state
-            }).then((a) => {
-                console.log(a);
-                prepare_a(new_state);
-            });
-        }
+        let states = ["created", "loading", "ready", "delivered", "received", "canceled"];
+        let normalized_states = ["Creat", "Incarcare", "Gata de Livrare", "Livrat", "Primit", "Anulat"];
+
+        komponentor.intent("/common/messagemodal").data({
+            body:"Sigur vrei sa modifici starea in <b>" + normalized_states[states.indexOf(new_state)] + "</b>?",
+            buttons:[
+                {
+                    label: "Da",
+                    attrs: {
+                        "data-dismiss": "modal",
+                    },
+                    class: "btn btn-danger",
+                    callback: function () {
+                        instance.update({
+                            id: data.id,
+                            status: new_state
+                        }).then((a) => {
+                            console.log(a);
+                            prepare_a(new_state);
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    attrs: {
+                        "data-dismiss": "modal"
+                    },
+                    class: "btn btn-secondary"
+                }
+            ]
+        }).send();
+
+
+
     }
 
     function init_komponent(k){

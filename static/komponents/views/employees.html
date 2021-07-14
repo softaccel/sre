@@ -26,7 +26,12 @@
     </section>
     <section class="content">
         <div class="container-fluid">
-            <div class="card" id="employeesList" data-url="/views/employees/list" data-replace="false"></div>
+            <div class="card">
+                <div class="card-header" style="border: none;">
+                    <button class="btn btn-primary" style="margin-bottom: 8px" onclick="addNewEmployee()">Angajat Nou</button>
+                </div>
+                <div id="employeesList" data-url="/views/employees/list" data-replace="false"></div>
+            </div>
         </div>
     </section>
 </div>
