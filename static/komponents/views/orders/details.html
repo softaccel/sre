@@ -91,7 +91,7 @@
                 <td>Data livrare</td>
                 <td><%= attributes.closed_on?attributes.closed_on:"-" %></td>
             </tr>
-           <tr><!-- s-->
+           <tr>
                 <td>Pret comanda</td>
                 <td><%= attributes.order_value ?  attributes.order_value + " " + (relationships.currency?relationships.currency.id:"-") : "-" %> </td>
 
