@@ -1,0 +1,102 @@
+<div id="addUserModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <h5>Adaugati un utilizator nou</h5>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-3">
+                        Prenume
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control form-control-sm" name="fname" type="text">
+                    </div>
+                    <div class="col-3">
+                        Nume
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control form-control-sm" name="lname" type="text">
+                    </div>
+                    <div class="col-3">
+                        E-Mail
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control form-control-sm" name="email" type="text">
+                    </div>
+                    <div class="col-3">
+                        Parola
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control form-control-sm" name="password" type="text">
+                    </div>
+                    <div class="col-3">
+                        Tip
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control form-control-sm" name="type" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+  function init_komponent(k){
+      // let $modal = k.$el.appendTo("body")
+      //     .filter(".modal")
+      //     .on("hidden.bs.modal",function () {
+      //         k.$el.remove();
+      //     });
+      //
+      // $modal.modal("show");
+
+      let instance = $("<span></span>").apiator({returninstance: true, resourcetype: "collection"});
+      instance.setUrl(apiRoot + "/users");
+
+      komponentor.intent("/common/formmodal").data({
+          callback:function (data) {
+              console.log(data);
+              // data["type"] = "empl";
+              console.log("yoyoyoyoyoyoooooooooooooooo", data.userid === "" || data.fname === "" || data.lname === "" || data.email === "" || data.password === "")
+              if(data.userid === "" || data.fname === "" || data.lname === "" || data.email === "" || data.password === ""){
+                  komponentor.intent("/common/messagemodal").data({
+                      body:"Toate campurile trebuie completate.",
+                      buttons:[
+                          {
+                              label: "Ok",
+                              attrs: {
+                                  "data-dismiss": "modal",
+                              },
+                              class: "btn btn-danger",
+                          }
+                      ]
+                  }).send();
+              } else {
+                  instance.createItem(data).then(function () {
+                      console.log("yup");
+                  }).catch(function (data) {
+                      komponentor.intent("/common/errormodal").data({
+                          body: "A aparut o eroare: <pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
+                      }).send();
+                  });
+              }
+
+          },
+          title:"Adauga angajat nou",
+          fields:[
+              {type:"text", name: "userid", default: "", placeholder: "", label: "Username", options:[]},
+              {type:"text", name: "fname", default: "", placeholder: "", label: "Prenume", options:[]},
+              {type:"text", name: "lname", default: "", placeholder: "", label: "Nume", options:[]},
+              {type:"text", name: "email", default: "", placeholder: "", label: "E-Mail", options:[]},
+              {type:"text", name: "password", default: "", placeholder: "", label: "Parola", options:[]},
+              // {type:"select", name: "type", label: "Moneda", url: "/currencies", labelList: ["id"], idList: ["id"]}
+          ]
+      }).send();
+  }
+</script>
