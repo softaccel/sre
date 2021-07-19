@@ -53,14 +53,7 @@
         visibility: hidden;
         position: absolute;
     }
-    /*#orderPartsList>li>span.checkbox{
-        flex-shrink: 0;
-        flex-grow: 0;
-        flex-basis: 5%;
-    }*/
-    /*#orderPartsList>li>span.partid{
-        flex: 1 0 15%;
-    }*/
+
     #orderPartsList>li>span.name{
         flex: 1 0 60%;
     }
@@ -68,10 +61,6 @@
     #orderPartsList>li>span:last-child{
         text-align: right;
     }
-    /*#orderPartsList>li.selected{
-        background: #555555;
-        color: white;
-    }*/
 
     .grid_3 {
         display: grid;
@@ -91,41 +80,16 @@
 
 </style>
 <form id="orderPartsMe">
-<!--    <div class="alert alert-primary " role="alert">-->
-<!--        <i class="fa fa-filter"></i> Filtrare-->
-<!--        <button class="btn btn-sm btn-secondary" onclick="showSelected()">Selectate</button>-->
-<!--        <button class="btn btn-sm btn-secondary" onclick="showZero()">Zero bucati</button>-->
-<!--        <button class="btn btn-sm btn-secondary" onclick="showNonZero()">Diferit de zero</button>-->
-<!--        <button class="btn btn-sm btn-secondary" onclick="showAll()">Toate</button>-->
-<!--    </div>-->
-<!--    <div class="alert alert-info " role="alert">-->
-<!--        <i class="fa fa-sort"></i>  Ordonare-->
-<!--        <button class="btn btn-sm btn-secondary">Denumire</button>-->
-<!--        <button class="btn btn-sm btn-secondary">Bucati</button>-->
-<!--    </div>-->
-<!--    <div class="alert alert-success " role="alert">-->
-<!--        <i class="fa fa-traffic-light"></i> Actiuni-->
-<!--        <button class="btn btn-sm btn-secondary" id="printButton">Tiparire etichete</button>-->
-<!--    </div>-->
-
-
-<!--    <div class="orderPartsListHeader mt-3">-->
-<!--        <input type="checkbox" onclick="toggleAll(this)" id="toggleAllCheckbox" data-connected="#orderPartsList"/>-->
-<!--        &lt;!&ndash;<button  class="btn btn-success"><i class="fa fa-print"></i> </button>&ndash;&gt;-->
-<!--    </div>-->
     <div id="orderPartsListFilter">
         <div class="align-top" style="width: 100px">
             <a class="text-white" data-sortfld="partid">Part id
                 <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-            <input type="text" name="partid" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
+            <input type="text" name="partid" id="partidFilter" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
         </div>
-<!--        <div class="partid">-->
-<!--            <div class="text-white">Part id</div>-->
-<!--            <input class="form-control-sm form-control searchValue" style="width: 100px" type="text">-->
-<!--        </div>-->
-        <div class="name">
-            <div class="text-white">Denumire</div>
-            <input class="form-control-sm form-control searchValue" type="text">
+        <div class="align-top">
+            <a class="text-white" data-sortfld="name">Denumire
+                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+            <input type="text" name="name" id="nameFilter" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
         </div>
         <div>
 
@@ -144,12 +108,8 @@
     <ul class="grid_3" id="orderPartsList"
         data-filter="#orderPartsMe"
         data-sort="#orderPartsListFilter">
-        <!--<li onclick="toggleSelect(this)" data-connected="#toggleAllCheckbox">-->
 
         <li onclick="orderPartModal(this)">
-<!--            <span class="checkbox">-->
-<!--                <input type="checkbox" onclick="event.stopPropagation();toggleSelect($(this).parents('li'))">-->
-<!--            </span>-->
             <div class="">
                 <img src="assets/images/spaleck.png" class="img-thumbnail img-fluid rounded mx-auto d-block" style="max-width: 100%; height: 200px">
             </div>
@@ -160,58 +120,12 @@
 
         </li>
     </ul>
-</form>
-<!--<div class="row printable">-->
-<!--    <div class="card mb-2 col-sm-6 col-md-4 col-lg-3" >-->
-<!--        <div class="card-body text-center">-->
-<!--            <div class="count"><%= Math.round(attributes.qty*100)/100 %> bucati</div>-->
-<!--            <svg class="barcode" jsbarcode-height="50" jsbarcode-width="1"-->
-<!--                 jsbarcode-value="<%= attributes.partid %>"-->
-<!--                 jsbarcode-textmargin="0"-->
-<!--                 jsbarcode-fontoptions="bold">-->
-<!--            </svg><br>-->
-<!--            <div class="name"><%= attributes.name %></div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 
+    <button type="submit" class="d-none" id="filterSubmitBtn"></button>
+</form>
 
 <script>
-    function showSelected() {
-        showAll();
-        $("#orderPartsList").children().not(".selected").addClass("d-none")
-    }
 
-    function showAll() {
-        $("#orderPartsList").children().removeClass("d-none");
-    }
-    
-    function showNonZero() {
-        showAll();
-        $("#orderPartsList").children().each(function () {
-            if($(this).find(".countNo").val()*1===0) {
-                $(this).addClass("d-none");
-            }
-        });
-    }
-
-    function showZero() {
-        showAll();
-        $("#orderPartsList").children().each(function () {
-            if ($(this).find(".countNo").val() * 1 !== 0) {
-                $(this).addClass("d-none");
-            }
-        });
-    }
-
-    function filterList(s) {
-        let value = $(s).val().toLowerCase();
-        $("#myTable tr").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-    }
-
-    //
     function newOrderPart() {
         let insertCopy = {...$("#orderPartsList").data("instance").insertUrl};
         insertCopy.path = insertCopy.path.replace("inventory_wmeta", "inventory");
@@ -253,7 +167,6 @@
             .finally(()=>$(src).data("locked",null));
     }
 
-    //
     function toggleSwitch() {
         let $toggle = $("#orderPartsList");
         if($toggle.hasClass("grid_3")) {
@@ -267,124 +180,15 @@
         $("#orderPartsList").apiator({
             type: "inventory",
             resourcetype: "collection"
-        }).data("instance").setUrl(apiRoot+"/orders/"+k.data.instance.id+"/inventory_wmeta?page[inventory_wmeta][limit]=1000").loadFromRemote().then(function () {
-            // JsBarcode(".barcode").init();
-        });
+        }).data("instance").setUrl(apiRoot+"/orders/"+k.data.instance.id+"/inventory_wmeta?page[inventory_wmeta][limit]=1000").loadFromRemote();
 
         $("#orderPartsListFilter").find("#viewToggle").bootstrapToggle().change(toggleSwitch);
 
-        let form = $($("#orderPartsMe")[0]);
-        console.log(form);
-        form.filter("input").on("keyup",function () {
-            form.filter("button[type=submit]").click();
-        }).on("change",function () {
-            form.filter("button[type=submit]").click();
+        let form = $("#orderPartsMe");
+        let partidFilter = $("#partidFilter");
+        form.find("input").on("input",function () {
+            $("#filterSubmitBtn").click();
         });
-
-        form.filter("select").on("change",function () {
-            form.filter("button[type=submit]").click();
-        });
-
-        // $("#orderPartsListFilter").each(function () {
-        //     let $parent = $(this);
-        //     $parent.find(".searchValue").each(function () {
-        //         $(this).off().on("input", function () {
-        //             let filters = [];
-        //             $parent.find(".searchValue").each(function () {
-        //                 filters.push($(this).val().toLowerCase());
-        //             });
-        //
-        //             console.log(filters);
-        //
-        //             if (!filters[0] && !filters[1]) {
-        //                 showAll();
-        //             } else {
-        //                 $("#orderPartsList").children().each(function () {
-        //                     let data = $(this).data("instance").attributes;
-        //                     let show = false;
-        //                     if (data.partid.indexOf(filters[0]) != -1 &&
-        //                         data.name.toLowerCase().indexOf(filters[1]) != -1) {
-        //                         show = true;
-        //                     }
-        //
-        //                     if (!show){
-        //                         $(this).addClass("d-none");
-        //                     } else {
-        //                         $(this).removeClass("d-none");
-        //                     }
-        //                 });
-        //             }
-        //         });
-        //     });
-        // });
-
-        // function printLabels() {
-        //     let els = $("#orderPartsList").children(".selected").clone(true);
-        //     if(!els.length) {
-        //         return;
-        //     }
-        //
-        //     console.log( k.data.instance);
-        //     // return;;
-        //     let ronum = k.data.instance.relationships.doc_id.attributes.docnum;
-        //     let belegnum;
-        //     for(let i=0;i<k.data.instance.relationships.orders_meta.length;i++) {
-        //         if(k.data.instance.relationships.orders_meta[i].attributes.meta_key==="K.F.E_BelegKopf.BelegNummer") {
-        //             belegnum = k.data.instance.relationships.orders_meta[i].attributes.meta_val;
-        //             break;
-        //         }
-        //     }
-        //     let printJob = {
-        //         name: "container",
-        //         children:[]
-        //     };
-        //     els.each(function () {
-        //         for(i=0;i<$(this).find(".countNo").val();i++) {
-        //             let elInstance = $(this).data("instance");
-        //             printJob.children.push(
-        //                 {
-        //                     name: "container",
-        //                     attributes:{
-        //                         justification: "center"
-        //                     },
-        //                     children: [
-        //                         {
-        //                             name: "text",
-        //                             val: elInstance.attributes.name.substr(0,60).padEnd(60," ")
-        //                         },
-        //                         {
-        //                             name: "barcode",
-        //                             val: elInstance.id
-        //                         },
-        //                         {
-        //                             name: "text",
-        //                             val: elInstance.attributes.partid
-        //                         },
-        //                         {
-        //                             name: "text",
-        //                             val: "Bestellnum: " + belegnum
-        //                         },
-        //                         {
-        //                             name: "text",
-        //                             val: "Auftragnum: " + ronum
-        //                         },
-        //                         {
-        //                             name: "feed",
-        //                             attributes:{
-        //                                 lines: 3
-        //                             }
-        //                         }
-        //                     ]
-        //                 }
-        //             );
-        //         }
-        //     });
-        //
-        //     // return console.log(printJob);
-        //     komponentor.intent("/common/posprint").data(printJob).send();
-        // }
-        //
-        // k.$el.find("#printButton").on("click",printLabels)
 
     }
 

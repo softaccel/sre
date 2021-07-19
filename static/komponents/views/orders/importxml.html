@@ -43,8 +43,8 @@
                                 <th><input type="checkbox" checked name="toggleall" data-toggle="cod" onclick="toggleCheck(this)"></th>
                                 <th>Cod</th>
                                 <th>Descriere</th>
-                                <th>Client</th>
-                                <th>asdas</th>
+                                <th>Cantitate</th>
+                                <th>Pret unitar</th>
                                 <th>Total</th>
                                 <th>Altele</th>
                             </tr>
@@ -283,6 +283,9 @@
                 }
             };
 
+            let currMap = {
+                E: "EUR"
+            }
 
             let total = 0;
             $(form).find("input[name=cod]").filter(":checked").each(function () {
@@ -295,7 +298,7 @@
                             name: instance.desc,
                             qty: instance.qty,
                             unit_price: instance.pu,
-                            currency: instance.curr,
+                            currency: currMap[instance.curr],
                             inventory_meta: []
                         },
                 };
