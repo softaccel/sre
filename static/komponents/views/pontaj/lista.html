@@ -15,7 +15,7 @@
     }
 </style>
 <div>
-    <button class="btn btn-primary" style="margin-bottom: 8px" onclick="loadNewTTRow();">Intrare noua</button>
+    <button class="btn btn-primary" style="margin-bottom: 8px" id="newTTBtn">Intrare noua</button>
     <form id="timeTrackingEntriesFiltering" class="d-none"><button type="submit" name="submit"></button></form>
     <table class="table table-striped table-hover">
 <!--        HEADER-->
@@ -127,70 +127,6 @@
                 <button class="btn btn-secondary btn-sm edit" onclick="cancelEdit(this)"><i class="fa fa-arrow-left"></i> </button>
             </td>
         </tr>
-    <!--    -->
-
-        </tbody>
-        <tbody>
-        <tr class="table-primary hidden_row" id="trNewTT" name="newTT" style="display:none;">
-            <form id="newTTForm"></form>
-            <td class="align-bottom" style="width: 200px">
-                <p>Angajat</p>
-                <!--            <select id="emplNameSel" name="empl_name" class="form-control-sm form-control" form="newTTForm" data-operator="=" style="display: block"></select>-->
-                <select id="emplNameSel" name="employee" class="form-control-sm form-control" form="newTTForm" style="display: block;"></select>
-
-                <!--            <input type="text" name="empl_name" data-operator="~=~" class="form-control-sm form-control" form="newTTForm" style="display: block">-->
-            </td>
-            <td class="align-bottom" colspan="2">
-
-                <p>Comanda si Operatie</p>
-                <select id="docNumSel" name="docnum" class="form-control-sm form-control" form="newTTForm" style="display: block;"></select>
-
-                <!--            <select id="docNumSel" name="docnum" class="form-control-sm form-control" form="newTTForm" data-operator="=" style="display: block"><option> </option></select>-->
-            </td>
-            <td class="align-bottom" style="width: 200px">
-                <p>Start</p>
-                <div class="input-group input-group-sm ">
-                    <input type="datetime-local" name="start" class="form-control-sm form-control" form="newTTForm" style="display: block">
-                </div>
-            </td>
-            <td class="align-bottom" style="width: 200px">
-                <p>
-                    Stop
-                </p>
-                <div class="input-group input-group-sm ">
-                    <input type="datetime-local" name="stop" class="form-control-sm form-control" form="newTTForm" style="display: block">
-                </div>
-
-            </td>
-            <td class="align-bottom"  style="width: 100px">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <input class="form-control form-control-sm">
-                    </div>
-                    <select class="custom-select custom-select-sm" id="inputGroupSelect03" aria-label="Example select with button addon">
-                        <option selected>Choose...</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                </div>
-
-<!--                <p>Tarif Orar</p>-->
-<!--                <input type="number" name="hourly_rate" data-operator="~=~" class="form-control-sm form-control" form="newTTForm" style="display: block">-->
-            </td>
-            <td class="align-bottom" style="width: 100px">
-                <p>Moneda</p>
-                <select id="unitFilter" name="currency" class="form-control-sm form-control" form="newTTForm" style="display: block; width: 100px"></select>
-
-                <!--            <select id="unitFilter" name="docnum" class="form-control-sm form-control" form="newTTForm" data-operator="=" style="display: block"><option> </option></select>-->
-            </td>
-            <td>
-
-            </td>
-            <td class="align-bottom" style="width: 100px">
-                <button class="btn btn-primary" id="addNewTTBtn" type="submit" form="newTTForm" style="display: block" onclick="">Adauga</button>
-            </td>
-        </tr>
         </tbody>
     <tfoot>
     <tr>
@@ -299,52 +235,50 @@
         itemContainer.find("input[name=submit]");
     }
 
-    function loadNewTTRow() {
-        let newTTRow = $("[name=newTT]").toggle();
-        let emplSel = newTTRow.find("#emplNameSel");
-
-        emplSel.select2wrapper({
-            url: apiRoot+"/employees",
-            labelfld: function (item) {
-                return item.attributes.fname + " " + item.attributes.lname;
-            },
-            idfld: function (item) {
-                return item.attributes.id;
-            },
-
-            placeholder: "Nume Angajat"
-        });
-
-        let docnumSel = newTTRow.find("#docNumSel");
-
-        docnumSel.select2wrapper({
-            url: apiRoot+"/emplToOrdAssoc?filter=status=ord",
-            labelfld: function (item) {
-                return item.attributes.docnum + " - " + item.attributes.opname;
-            },
-            idfld: function (item) {
-                return item.attributes.oid + "/" + item.attributes.opid;
-            },
-
-            placeholder: "Comanda/proiect"
-        });
-
-        let units = newTTRow.find("#unitFilter");
-
-        units.select2wrapper({
-            url: apiRoot+"/units",
-            labelfld: function (item) {
-                return item.attributes.unit + " - " + item.attributes.type;
-            },
-            idfld: function (item) {
-                return item.attributes.unit;
-            },
-
-            placeholder: "Moneda"
-        });
-    }
-
-
+    // function loadNewTTRow() {
+    //     let newTTRow = $("[name=newTT]").toggle();
+    //     let emplSel = newTTRow.find("#emplNameSel");
+    //
+    //     emplSel.select2wrapper({
+    //         url: apiRoot+"/employees",
+    //         labelfld: function (item) {
+    //             return item.attributes.fname + " " + item.attributes.lname;
+    //         },
+    //         idfld: function (item) {
+    //             return item.attributes.id;
+    //         },
+    //
+    //         placeholder: "Nume Angajat"
+    //     });
+    //
+    //     let docnumSel = newTTRow.find("#docNumSel");
+    //
+    //     docnumSel.select2wrapper({
+    //         url: apiRoot+"/emplToOrdAssoc?filter=status=ord",
+    //         labelfld: function (item) {
+    //             return item.attributes.docnum + " - " + item.attributes.opname;
+    //         },
+    //         idfld: function (item) {
+    //             return item.attributes.oid + "/" + item.attributes.opid;
+    //         },
+    //
+    //         placeholder: "Comanda/proiect"
+    //     });
+    //
+    //     let units = newTTRow.find("#unitFilter");
+    //
+    //     units.select2wrapper({
+    //         url: apiRoot+"/units",
+    //         labelfld: function (item) {
+    //             return item.attributes.unit + " - " + item.attributes.type;
+    //         },
+    //         idfld: function (item) {
+    //             return item.attributes.unit;
+    //         },
+    //
+    //         placeholder: "Moneda"
+    //     });
+    // }
 
     function init_komponent(k) {
         let url = apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10&include=employee,order,order.doc_id,operation";
@@ -367,6 +301,12 @@
         let instance = $("#timeTrackingEntries").apiator({
             url: url,
             returninstance: true
+        });
+
+        k.$el.find("#newTTBtn").on("click", function () {
+            komponentor.intent("/views/pontaj/newTTModal")
+                .data({instance: instance})
+                .send();
         });
 
         k.$el.find("#emplNamefilter").select2wrapper({

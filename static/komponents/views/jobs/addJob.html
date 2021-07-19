@@ -1,20 +1,17 @@
 <div class="modal" id="jobModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body bg-light">
-                <div class="card">
-                    <div class="card-header-tab card-header-tab-animation card-header">
-                        <div class="card-header-title">
-                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
-                             <span id="jobid">Adaugati un Post</span>
-                            <span style="position: absolute; right: 50px; cursor: pointer" id="closeModal">X</span>
+            <div class="modal-header">
+                    <div class="modal-title">
+                         <span id="jobid">Adaugati un Post</span>
+                    </div>
+            </div>
 
-                        </div>
-                    </div>
-                    <div class="card-body" style="min-height: 200px">
-                        <div id="newJobModal" is="komponent" data-url="/views/jobs/details"></div>
-                    </div>
-                </div>
+            <div class="modal-body bg-light" style="min-height: 200px">
+                <div id="newJobModal" is="komponent" data-url="/views/jobs/details"></div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
             </div>
         </div>
     </div>
@@ -47,9 +44,6 @@
                 // console.log("*///////////////",d);
                 // editMode(d.data.instance);
             });
-        $("#closeModal").on("click", function () {
-            k.hideModal();
-        });
 
     }
 </script>

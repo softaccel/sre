@@ -1414,7 +1414,7 @@
 				if(!_self.insertUrl) {
 					_self.insertUrl = _self.url;
 				}
-				// console.log(JSON.stringify(jsonApiDoc));
+				console.log(JSON.stringify(jsonApiDoc));
 
 				storage
 					.create(_self,_self.insertUrl,{contentType:"application/vnd.api+json"},JSON.stringify(jsonApiDoc))
@@ -1680,7 +1680,7 @@
 			// });
 		}
 
-		console.log(instance);
+		// console.log(instance);
 		return (options.hasOwnProperty("returninstance") && opts.returninstance)?instance:this;
 	};
 

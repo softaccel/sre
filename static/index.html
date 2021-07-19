@@ -97,17 +97,59 @@
 
 
 <script>
+    /**
+     * setarea environment-ului se face in Consola cu
+     * localStorage.setItem("spaleck.env","denumire_environment")
+     *
+     * Evident "denumire_environment" trebuie sa se regaseasca in env_config de mai jos
+     */
+    let env_config = {
+        "staging": {
+            name: 'staging',
+            backendUrl: '/spaleck/be',
+            apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
+            authUrl: '/spaleck/be/main/auth/login',
+            posPrintUrl: '/spaleck/be/main/POS/print',
+        },
+        "devel": {
+            name: 'devel',
+            backendUrl: '/spaleck/be',
+            apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
+            authUrl: '/spaleck/be/main/auth/login',
+            posPrintUrl: '/spaleck/be/main/POS/print',
+        },
+        "production": {
+            name: 'production',
+            backendUrl: '/spaleck/be',
+            apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
+            authUrl: '/spaleck/be/main/auth/login',
+            posPrintUrl: '/spaleck/be/main/POS/print',
+        },
+        "sergiu_devel": {
+            name: 'sergiu_devel',
+            backendUrl: '/spaleck/be',
+            apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
+            authUrl: '/spaleck/be/main/auth/login',
+            posPrintUrl: '/spaleck/be/main/POS/print',
+        },
+    };
+
+
+
     const localStorageLabel = "spaleck";
+    let env = localStorage.getItem(localStorageLabel+".env");
+    if(!env || !env_config[env])
+        env = "staging";
+    console.log(env_config[env]);
+
     const _kPath = "komponents";
     const _kExt = ".html";
     const vPath = _kPath+"views/";
-    const backendUrl = '/spaleck/be';
-    const apiRoot = 'http://172.16.20.15/dbapi/v2/spaleck';
-    const authUrl = backendUrl + '/main/auth/login';
-    const posPrintUrl = backendUrl + '/main/POS/print';
-
+    const backendUrl = env_config[env].backendUrl;
+    const apiRoot = env_config[env].apiRoot;
+    const authUrl = env_config[env].authUrl;
+    const posPrintUrl = env_config[env].posPrintUrl;
     let defaultView = "/views/dashboard";
-
 </script>
 <script>
     function logout() {
