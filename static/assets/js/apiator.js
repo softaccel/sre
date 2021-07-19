@@ -1330,7 +1330,7 @@
 			if(url.hasOwnProperty("deleteUrl"))
 				this.deleteUrl = URL(url.deleteUrl);
 			if(url.hasOwnProperty("insertUrl"))
-				this.deleteUrl = URL(url.insertUrl);
+				this.insertUrl = URL(url.insertUrl);
 
 			return this;
 		};

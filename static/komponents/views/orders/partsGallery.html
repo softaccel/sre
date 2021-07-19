@@ -90,7 +90,7 @@
     .toggle.ios .toggle-handle { border-radius: 1rem; }
 
 </style>
-<div class="orderPartsMe">
+<form id="orderPartsMe">
 <!--    <div class="alert alert-primary " role="alert">-->
 <!--        <i class="fa fa-filter"></i> Filtrare-->
 <!--        <button class="btn btn-sm btn-secondary" onclick="showSelected()">Selectate</button>-->
@@ -114,10 +114,15 @@
 <!--        &lt;!&ndash;<button  class="btn btn-success"><i class="fa fa-print"></i> </button>&ndash;&gt;-->
 <!--    </div>-->
     <div id="orderPartsListFilter">
-        <div class="partid">
-            <div class="text-white">Part id</div>
-            <input class="form-control-sm form-control searchValue" style="width: 100px" type="text">
+        <div class="align-top" style="width: 100px">
+            <a class="text-white" data-sortfld="partid">Part id
+                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+            <input type="text" name="partid" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
         </div>
+<!--        <div class="partid">-->
+<!--            <div class="text-white">Part id</div>-->
+<!--            <input class="form-control-sm form-control searchValue" style="width: 100px" type="text">-->
+<!--        </div>-->
         <div class="name">
             <div class="text-white">Denumire</div>
             <input class="form-control-sm form-control searchValue" type="text">
@@ -136,10 +141,12 @@
             </div>
         </div>
     </div>
-    <ul class="grid_3" id="orderPartsList">
+    <ul class="grid_3" id="orderPartsList"
+        data-filter="#orderPartsMe"
+        data-sort="#orderPartsListFilter">
         <!--<li onclick="toggleSelect(this)" data-connected="#toggleAllCheckbox">-->
 
-        <li onclick="editOrderPartModal(this)">
+        <li onclick="orderPartModal(this)">
 <!--            <span class="checkbox">-->
 <!--                <input type="checkbox" onclick="event.stopPropagation();toggleSelect($(this).parents('li'))">-->
 <!--            </span>-->
@@ -153,7 +160,7 @@
 
         </li>
     </ul>
-</div>
+</form>
 <!--<div class="row printable">-->
 <!--    <div class="card mb-2 col-sm-6 col-md-4 col-lg-3" >-->
 <!--        <div class="card-body text-center">-->
@@ -233,14 +240,16 @@
         }).send();
     }
 
-    function editOrderPartModal(src) {
+    function orderPartModal(src) {
+        console.log("open part modal")
         if($(src).data("locked")) {
             return;
         }
         $(src).data("locked",true);
         komponentor.intent('/views/orders/orderPart')
-            .send({instance:$(src).data('instance')})
-            .then((k)=>{console.log('#######',k)})
+            .data({instance:$(src).data('instance')})
+            .send()
+            // .then((k)=>{console.log('#######',k)})
             .finally(()=>$(src).data("locked",null));
     }
 
@@ -264,38 +273,50 @@
 
         $("#orderPartsListFilter").find("#viewToggle").bootstrapToggle().change(toggleSwitch);
 
-        $("#orderPartsListFilter").each(function () {
-            let $parent = $(this);
-            $parent.find(".searchValue").each(function () {
-                $(this).off().on("input", function () {
-                    let filters = [];
-                    $parent.find(".searchValue").each(function () {
-                        filters.push($(this).val().toLowerCase());
-                    });
-
-                    console.log(filters);
-
-                    if (!filters[0] && !filters[1]) {
-                        showAll();
-                    } else {
-                        $("#orderPartsList").children().each(function () {
-                            let data = $(this).data("instance").attributes;
-                            let show = false;
-                            if (data.partid.indexOf(filters[0]) != -1 &&
-                                data.name.toLowerCase().indexOf(filters[1]) != -1) {
-                                show = true;
-                            }
-
-                            if (!show){
-                                $(this).addClass("d-none");
-                            } else {
-                                $(this).removeClass("d-none");
-                            }
-                        });
-                    }
-                });
-            });
+        let form = $($("#orderPartsMe")[0]);
+        console.log(form);
+        form.filter("input").on("keyup",function () {
+            form.filter("button[type=submit]").click();
+        }).on("change",function () {
+            form.filter("button[type=submit]").click();
         });
+
+        form.filter("select").on("change",function () {
+            form.filter("button[type=submit]").click();
+        });
+
+        // $("#orderPartsListFilter").each(function () {
+        //     let $parent = $(this);
+        //     $parent.find(".searchValue").each(function () {
+        //         $(this).off().on("input", function () {
+        //             let filters = [];
+        //             $parent.find(".searchValue").each(function () {
+        //                 filters.push($(this).val().toLowerCase());
+        //             });
+        //
+        //             console.log(filters);
+        //
+        //             if (!filters[0] && !filters[1]) {
+        //                 showAll();
+        //             } else {
+        //                 $("#orderPartsList").children().each(function () {
+        //                     let data = $(this).data("instance").attributes;
+        //                     let show = false;
+        //                     if (data.partid.indexOf(filters[0]) != -1 &&
+        //                         data.name.toLowerCase().indexOf(filters[1]) != -1) {
+        //                         show = true;
+        //                     }
+        //
+        //                     if (!show){
+        //                         $(this).addClass("d-none");
+        //                     } else {
+        //                         $(this).removeClass("d-none");
+        //                     }
+        //                 });
+        //             }
+        //         });
+        //     });
+        // });
 
         // function printLabels() {
         //     let els = $("#orderPartsList").children(".selected").clone(true);

@@ -176,7 +176,7 @@
                                 if (item.attributes[fld.labelList[i]])
                                     returnString += item.attributes[fld.labelList[i]] + " ";
                             }
-                            return returnString;
+                            return returnString.slice(0, -1);
                         },
                         idfld: function (item) {
                             let returnString = "";
@@ -185,7 +185,7 @@
                                 if (item.attributes[fld.idList[i]])
                                     returnString += item.attributes[fld.idList[i]] + " ";
                             }
-                            return returnString;
+                            return returnString.slice(0, -1);
                         },
 
                         placeholder: fld.placeholder ? fld.placeholder : ""
