@@ -52,48 +52,80 @@
                 <div class="modal-title">
                     Parte comanda
                 </div>
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#sumarRepere" class="nav-link" id="sumarReperePanel">Sumar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#galleryPanel" class="nav-link" id="galleryTab">Galerie</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#detaliiPanel" class="nav-link" id="detaliiPanelTab">Detalii</a>
+                    </li>
+                </ul>
             </div>
             <div class="modal-body bg-light">
-                <form id="orderPartForm">
-                    <div id="orderPart">
-                        <div class="row hide-on-edit">
-                            <div class="col-3">Id</div>
-                            <div class="col-9"><%= attributes.id %></div>
-                            <div class="col-9"><input name="id" class="form-control form-control-sm" type="text"></div>
-                        </div>
-                        <div class="row hide-on-edit">
-                            <div class="col-3">Part Id</div>
-                            <div class="col-9"><%= attributes.partid %></div>
-                            <div class="col-9"><input name="partid" class="form-control form-control-sm" type="text"></div>
-                        </div>
-                        <div class="row hide-on-edit">
-                            <div class="col-3">Denumire</div>
-                            <div class="col-9"><%= attributes.name %></div>
-                            <div class="col-9"><input name="name" class="form-control form-control-sm" type="text"></div>
-                        </div>
-                        <div class="row hide-on-edit">
-                            <div class="col-3">Cantitate (in stoc / comanda)</div>
-                            <div class="col-9"><%= attributes.qty %> / <%= attributes.order_qty %> bucati</div>
-                            <div class="col-9"><input name="qty" class="form-control form-control-sm" type="text"></div>
-                        </div>
-                        <div class="row hide-on-view">
-                            <div class="col-3">Cantitate comanda</div>
-                            <div class="col-1"><%= attributes.order_qty %></div>
-                            <div class="col-9"><input name="order_qty" class="form-control form-control-sm" type="text"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3">Pret unitar</div>
-                            <div class="col-1"><%= attributes.unit_price %><%= attributes.currency %></div>
-                            <div class="col-9"><input name="unit_price" class="form-control form-control-sm" type="text"></div>
-                        </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade" id="sumarRepere">
+                        <form id="orderPartForm">
+                            <div id="orderPart">
+                                <div class="row hide-on-edit">
+                                    <div class="col-3">Id</div>
+                                    <div class="col-9"><%= attributes.id %></div>
+                                    <div class="col-9"><input name="id" class="form-control form-control-sm" type="text"></div>
+                                </div>
+                                <div class="row hide-on-edit">
+                                    <div class="col-3">Part Id</div>
+                                    <div class="col-9"><%= attributes.partid %></div>
+                                    <div class="col-9"><input name="partid" class="form-control form-control-sm" type="text"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Denumire</div>
+                                    <div class="col-9"><%= attributes.name %></div>
+                                    <div class="col-9"><input name="name" class="form-control form-control-sm" type="text"></div>
+                                </div>
+                                <div class="row hide-on-edit">
+                                    <div class="col-3">Cantitate (in stoc / comanda)</div>
+                                    <div class="col-9"><%= attributes.qty %> / <%= attributes.order_qty %> bucati</div>
+                                    <div class="col-9"><input name="qty" class="form-control form-control-sm" type="text"></div>
+                                </div>
+                                <div class="row hide-on-view">
+                                    <div class="col-3">Cantitate comanda</div>
+                                    <div class="col-1"><%= attributes.order_qty %></div>
+                                    <div class="col-9"><input name="order_qty" class="form-control form-control-sm" type="text"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Pret unitar</div>
+                                    <div class="col-1"><%= attributes.unit_price %><%= attributes.currency %></div>
+                                    <div class="col-9"><input name="unit_price" class="form-control form-control-sm" type="text"></div>
+                                </div>
+                                <div class="row hide-on-view">
+                                    <div class="col-3">Moneda</div>
+                                    <div class="col-1"><%= attributes.currency %></div>
+                                    <div class="col-9">
+                                        <label></label>
+                                        <select id="currencySelect" class="form-control form-control-sm custom-select custom-select-sm" name="currency" style="width: 100%"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-5">
+                                <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
+                                <button class="btn btn-secondary btn-save" type="button" id="cancelButton">Renunta</button>
+                                <button class="btn btn-success btn-edit" type="button">Editeaza</button>
+                                <button class="btn btn-danger btn-delete" data-dismiss="modal" type="button">Sterge</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="mt-5">
-                        <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
-                        <button class="btn btn-secondary btn-save" type="button" id="closeButton">Renunta</button>
-                        <button class="btn btn-success btn-edit" type="button">Editeaza</button>
-                        <button class="btn btn-danger btn-delete" data-dismiss="modal" type="button">Sterge</button>
+
+                    <div class="tab-pane fade" id="galleryPanel">
+                        <div is="komponent" data-url="/views/orders/imageGallery" id="imageGallery"></div>
                     </div>
-                </form>
+
+                    <div class="tab-pane fade" id="detaliiPanel">
+                        <div is="komponent" data-url="/views/orders/partDetails" id="partDetails"></div>
+                    </div>
+
+                </div>
             </div>
             <div class="modal-footer">
                 <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
@@ -139,12 +171,28 @@
                 // instance is item
                 else {
                     instance.createItem(data).then(function () {
-                        $("#closeButton").click();
+                        $("#cancelButton").click();
                     });
                 }
             });
 
-            util.fillForm(form,instance);
+            util.fillForm(form, instance);
+
+            console.log(instance.attributes.currency);
+
+            let option = document.createElement("option");
+            option.value = instance.attributes.currency;
+            option.text = instance.attributes.currency;
+
+            $("#orderPartModal").find("#currencySelect").append(option).select2wrapper({
+                url: apiRoot + "/currencies",
+                labelfld: function (item) {
+                    return item.attributes.id;
+                },
+                idfld: function (item) {
+                    return item.attributes.id;
+                },
+            });
 
         }
 
@@ -192,33 +240,34 @@
         if(!k.data || !k.data.instance) {
             return;
         }
+        //
         let instance = k.data.instance;
+                console.log("8888888888888888888",instance)
         let $modal = k.$el.appendTo("body")
             .filter(".modal")
             .on("hidden.bs.modal", function () {
                 k.$el.remove();
-            });
-
-
-
+            })
+            .modal("show");
+        //
         $modal.find(".btn-edit").off().on("click", editMode);
         $modal.find(".btn-delete").off().on("click", deleteOrderPart);
-        instance.bindView("#orderPart").loadFromRemote();
-
-        $modal.modal("show");
-
-        // cancel button event
-        $modal.find("#closeButton").off().on("click", function (e) {
+        $modal.find("#cancelButton").off().on("click", function (e) {
             if (e.target.form.id.value !== "") {
                 $('#orderPartForm').removeClass('editMode');
                 return;
             }
-
-            $modal.modal("hide");
-
+        });
+        instance.bindView("#orderPart").loadFromRemote().then(function (){
+            $("#sumarReperePanel").tab("show");
         });
 
+        $("#imageGallery").komponent({data:k.data});
+        $("#partDetails").komponent({data:k.data});
+
+
     }
+    // function init_komponent(){}
 
 </script>
 

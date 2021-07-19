@@ -1,0 +1,32 @@
+<style>
+
+</style>
+
+<div id="imageGalleryForm">
+
+    <div class="d-flex flex-row justify-content-start align-items-start">
+        <img id="thumb" src="" class="img-thumbnail">
+    </div>
+</div>
+
+<script>
+
+    function init_komponent(k) {
+
+        instance = $("#imageGalleryForm").apiator({
+            resourcetype: "collection",
+            returninstance: true
+        })
+        instance.setUrl(apiRoot + "/media/").loadFromRemote().then(function (a) {
+            console.log("pppppppppppppppppppppppppppppppppppppppppppppp")
+            console.log(instance)
+
+            $("#thumb").attr("src", instance.items[0].attributes.thumbnail_path);
+            console.log(instance.items[0].attributes.thumbnail_path)
+
+
+        });
+
+    }
+
+</script>

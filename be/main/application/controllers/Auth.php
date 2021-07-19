@@ -34,18 +34,18 @@ class Auth extends CI_Controller
 	function login($internalCall=false,$loginData=null)
 	{
 		if(!$internalCall && $_SERVER["REQUEST_METHOD"]!=="POST")
-			HttpResp::quick(405,null,"Method not allowed") && die();
+			HttpResp::quick(405,null,"Method not allowed");
 
 		if(!$internalCall) {
 			$loginData = $this->input->post();
 		}
 
 		if(empty($loginData["login"]))
-			HttpResp::quick(400,null,"Please provide a valid login") && die();
+			HttpResp::quick(400,null,"Please provide a valid login");
 		$login = $loginData["login"];
 
 		if(empty($loginData["password"]))
-			HttpResp::quick(400,null,"Empty passwords not allowed. Please provide a password") && die();
+			HttpResp::quick(400,null,"Empty passwords not allowed. Please provide a password");
 
 		/**
 		 * @var CI_DB_driver

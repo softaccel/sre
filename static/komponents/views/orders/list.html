@@ -87,8 +87,11 @@
             </th>
         </tr>
         </thead>
-        <tbody id="ordersList" data-paging="#ordersListPaging"
-               data-offsetinp="#ordersOffsetInp" data-pagesizeinp="#ordersPageSizeInp">
+        <tbody id="ordersList"
+               data-offsetinp="#ordersOffsetInp" data-pagesizeinp="#ordersPageSizeInp"
+               data-paging="#ordersListPaging"
+               data-filter="#ordersListFilter"
+               data-sort="#ordersListHeader">
         <tr class="order <%= attributes.state %>">
             <td>
                 <span class="actions"><button class="btn btn-danger btn-sm" onclick="deleteOrder(this)"><i class="fa fa-trash-alt"></i></button></span>
@@ -193,9 +196,7 @@
             url: url,
             type: "orders",
             resourcetype: "collection",
-            filter: "#ordersListFilter",
-            paging: "#ordersListPaging",
-            sort: "#ordersListHeader",
+
             // insertUrl: insertUrl
         });
 
