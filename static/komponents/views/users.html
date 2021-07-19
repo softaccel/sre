@@ -7,7 +7,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6 ">
                     <div class="breadcrumb float-sm-right">
-                        <button class="btn btn-primary" id="newJobModalButton" onclick="openNewUserModal(this);"><i class="fa fa-user-plus"></i> Adauga</button>
+                        <button class="btn btn-primary" id="newJobModalButton" ><i class="fa fa-user-plus"></i> Adauga</button>
                     </div>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -107,11 +107,12 @@
 
 
 <script>
-    function openNewUserModal(src){
-        komponentor.intent("/views/users/addUser").data({instance:$(src).data("instance")}).send();
-    }
+
 
     function init_komponent(k,html) {
-        $("#users").apiator({url:apiRoot+"/users?page[users][limit]=20"});
+        let instance = $("#users").apiator({url:apiRoot+"/users?page[users][limit]=20",returninstance: true});
+        k.$el.find("#newJobModalButton").off("click").on("click", function (src){
+            komponentor.intent("/views/users/addUser").data({instance:instance}).send();
+        });
     }
 </script>

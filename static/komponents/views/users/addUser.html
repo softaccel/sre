@@ -48,22 +48,13 @@
 </div>
 <script>
   function init_komponent(k){
-      // let $modal = k.$el.appendTo("body")
-      //     .filter(".modal")
-      //     .on("hidden.bs.modal",function () {
-      //         k.$el.remove();
-      //     });
-      //
-      // $modal.modal("show");
-
-      let instance = $("<span></span>").apiator({returninstance: true, resourcetype: "collection"});
-      instance.setUrl(apiRoot + "/users");
-
+      console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[", k)
+      // let instance = $("<span></span>").apiator({returninstance: true, resourcetype: "collection"});
+      let instance = k.data.instance;
+      // instance.setUrl(apiRoot + "/users");
       komponentor.intent("/common/formmodal").data({
           callback:function (data) {
               console.log(data);
-              // data["type"] = "empl";
-              console.log("yoyoyoyoyoyoooooooooooooooo", data.userid === "" || data.fname === "" || data.lname === "" || data.email === "" || data.password === "")
               if(data.userid === "" || data.fname === "" || data.lname === "" || data.email === "" || data.password === ""){
                   komponentor.intent("/common/messagemodal").data({
                       body:"Toate campurile trebuie completate.",
@@ -77,10 +68,9 @@
                           }
                       ]
                   }).send();
+                  return 1;
               } else {
-                  instance.createItem(data).then(function () {
-                      console.log("yup");
-                  }).catch(function (data) {
+                  instance.createItem(data).catch(function (data) {
                       komponentor.intent("/common/errormodal").data({
                           body: "A aparut o eroare: <pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
                       }).send();
@@ -93,9 +83,8 @@
               {type:"text", name: "userid", default: "", placeholder: "", label: "Username", options:[]},
               {type:"text", name: "fname", default: "", placeholder: "", label: "Prenume", options:[]},
               {type:"text", name: "lname", default: "", placeholder: "", label: "Nume", options:[]},
-              {type:"text", name: "email", default: "", placeholder: "", label: "E-Mail", options:[]},
+              {type:"text", name: "email", default: "", placeholder: "", label: "E-Mail", options:[], pattern: `[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$`},
               {type:"text", name: "password", default: "", placeholder: "", label: "Parola", options:[]},
-              // {type:"select", name: "type", label: "Moneda", url: "/currencies", labelList: ["id"], idList: ["id"]}
           ]
       }).send();
   }
