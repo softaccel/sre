@@ -23,19 +23,19 @@
 <!--        HEADER-->
         <thead class="thead-dark">
         <tr>
-            <th class="emplCol align-top" width="200px">
+            <th class="emplCol align-top" style="min-width: 250px">
                 Angajat
                 <select id="emplNamefilter" name="employee" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
             </th>
-            <th class="align-top" style="width: 150px">
+            <th class="align-top" style="min-width: 150px">
                 Comanda
                 <select id="docNumFilter" name="order" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
             </th>
-            <th class="align-top" width="200px">
+            <th class="align-top" style="min-width: 250px">
                 Operatie
                 <select id="operationFilter" name="operation" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
             </th>
-            <th class="align-top" style="max-width: 200px">
+            <th class="align-top" style="min-width: 300px">
                 <a class="text-white" data-sortfld="start">Start
                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
                 </a>
@@ -52,7 +52,7 @@
                     <input type="datetime-local" name="start" class="form-control-sm form-control" data-operator="<=" form="timeTrackingEntriesFiltering">
                 </div>
             </th>
-            <th class="align-top" style="max-width: 200px">
+            <th class="align-top" style="min-width: 300px">
                 <a class="text-white" data-sortfld="stop">Stop
                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
                 </a>
@@ -86,7 +86,7 @@
                     <input type="text" pattern="[0-9]{2,}:[0-5][0-9]:[0-5][0-9]" name="duration" class="form-control-sm form-control" data-operator="<=" form="timeTrackingEntriesFiltering">
                 </div>
             </th>
-            <th class="align-top">
+            <th class="align-top" style="max-width: 60">
                 Tarif orar
             </th>
             <th width="150px"></th>
@@ -104,22 +104,22 @@
             </td>
             <td class="">
                 <p><%= relationships.operation.attributes.name %></p>
-                <select name="op" style="width: 200px"></select>
+                <select name="op" style="min-width: 200px"></select>
             </td>
             <td>
                 <p><%= attributes.start %></p>
-                <input type="datetime-local" name="start" style="width: 200px">
+                <input type="datetime-local" name="start" style="min-width: 200px">
             </td>
             <td>
                 <p><%= attributes.stop %></p>
-                <input type="datetime-local" name="stop" style="width: 200px">
+                <input type="datetime-local" name="stop" style="min-width: 200px">
             </td>
             <td>
                 <p><%= attributes.duration %></p>
             </td>
             <td>
                 <p><%= attributes.hourly_rate %> <%= relationships.currency.id %></p>
-                <input type="number" name="hourly_rate" value="<%= attributes.hourly_rate %>" style="width: 75px">
+                <input type="number" name="hourly_rate" value="<%= attributes.hourly_rate %>" style="max-width: 60px">
                 <select name="currency">
                     <option><%= relationships.currency.id %></option>
                 </select>
