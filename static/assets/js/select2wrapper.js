@@ -7,7 +7,7 @@
         if(this.hasClass("select2")) {
             this.select2('destroy');
         }
-        console.log("#####################",options)
+        let searchFld = options.searchFld ? options.searchFld : options.labelfld;
 
         this.select2({
             placeholder: options.placeholder?options.placeholder:"",
@@ -22,9 +22,16 @@
                         "page[partners][offset]":params.page?(params.page-1)*limit:0,
                         "page[partners][limit]":limit
                     };
+
                     if(params.term) {
-                        p.filter = options.labelfld+"~=~" + params.term;
+                        if(typeof searchFld === "function") {
+                            p.filter = searchFld(params);
+                        }
+                        else {
+                            p.filter = searchFld + "~=~" + params.term;
+                        }
                     }
+
                     return p;
                 },
                 processResults: function (data) {
