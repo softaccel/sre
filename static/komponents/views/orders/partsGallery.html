@@ -151,7 +151,7 @@
                 {type:"number", name: "qty", default: "0", placeholder: "", label: "Cantitate in stoc", options:[]},
                 {type:"number", name: "order_qty", default: "0", placeholder: "", label: "Cantitate comandata", options:[]},
                 {type:"number", name: "unit_price", default: "0", placeholder: "", label: "Pret unitar", options:[]},
-                {type:"select", name: "currency", label: "Moneda", url: "/currencies", labelList: ["id"], idList: ["id"]}
+                {type:"select", name: "currency", label: "Moneda", url: "/currencies", labelfnc: "id", idfnc: "id"}
             ]
         }).send();
     }

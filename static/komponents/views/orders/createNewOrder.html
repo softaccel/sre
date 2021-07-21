@@ -23,7 +23,7 @@
             size: "lg",
             fields:[
                 // {type:"text",name: "name",default: "test", placeholder: "Numele Echipei", label: "Nume",options:[]},
-                {type: "select", name: "partner_id", label: "Client", url: "/partners", labelList: ["name", "city"], idList: ["id"]},
+                {type: "select", name: "partner_id", label: "Client", url: "/partners", labelfnc: "name", idfnc: "id"},
                 {type: "text", name: "meta_val", label: "Referinta Interna Client"},
                 {type: "text", name: "model", label: "Descriere"},
                 {type: "date", name: "orderdate", label: "Data comenzii"},

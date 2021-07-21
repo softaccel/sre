@@ -7,7 +7,11 @@
         if(this.hasClass("select2")) {
             this.select2('destroy');
         }
-        let searchFld = options.searchFld ? options.searchFld : options.labelfld;
+
+        if (!options.searchfld && options.labelfld === "function")
+            throw new Exception("Select2Wrapper - invalid searchfld");
+
+        let searchfld = options.searchfld ? options.searchfld : options.labelfld;
 
         this.select2({
             placeholder: options.placeholder?options.placeholder:"",
@@ -24,11 +28,11 @@
                     };
 
                     if(params.term) {
-                        if(typeof searchFld === "function") {
-                            p.filter = searchFld(params);
+                        if(typeof searchfld === "function") {
+                            p.filter = searchfld(params);
                         }
                         else {
-                            p.filter = searchFld + "~=~" + params.term;
+                            p.filter = searchfld + "~=~" + params.term;
                         }
                     }
 

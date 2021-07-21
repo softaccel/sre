@@ -152,12 +152,19 @@
                 mandatory: {type: "select", name: "", label: ""} +
                     manual options -> {options: [{id: "", description: ""}]}
                     or
-                    select2wrapper -> {url: "/", labelList: [""], idList: [""]}
+                    select2wrapper -> {url: "/", labelfnc: function or string, idfnc: function or string}
+
+                    example:
+                        labelfnc/idfnc: function (item) {
+                            return item.attributes.name + " - " + item.attributes.city;
+                        }
+
+                        searchfnc: function (params) {
+                            return "name" + "~=~" + params.term;
+                        }
+
 
                 optional: {placeholder: "", default: {id: "", description: ""}, dependent: "~name attr of another select~"}
-
-                use case: adaugare reper fizic in comanda
-
             */
             if (fld.type==="select") {
 
@@ -170,29 +177,14 @@
                 }
 
                 if (!fld.options || fld.options.length <= 0) {
-                    if (!fld.url || !fld.labelList.length || !fld.idList.length)
-                        return;
+                    if (!fld.url || !fld.labelfnc || !fld.idfnc)
+                        throw new Exception("FormModal - invalid use of the select type.");
 
                     inp.select2wrapper({
                         url: apiRoot + fld.url,
-                        labelfld: function (item) {
-                            let returnString = "";
-
-                            for (let i = 0; i <= fld.labelList.length; ++i) {
-                                if (item.attributes[fld.labelList[i]])
-                                    returnString += item.attributes[fld.labelList[i]] + " ";
-                            }
-                            return returnString.slice(0, -1);
-                        },
-                        idfld: function (item) {
-                            let returnString = "";
-
-                            for (let i = 0; i <= fld.idList.length; ++i) {
-                                if (item.attributes[fld.idList[i]])
-                                    returnString += item.attributes[fld.idList[i]] + " ";
-                            }
-                            return returnString.slice(0, -1);
-                        },
+                        labelfld: fld.labelfnc,
+                        searchfld: fld.searchfnc ? fld.searchfnc : "",
+                        idfld: fld.idfnc,
 
                         placeholder: fld.placeholder ? fld.placeholder : ""
                     });
