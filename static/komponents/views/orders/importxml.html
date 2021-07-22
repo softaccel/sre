@@ -93,8 +93,7 @@
         // $(src.)
     }
 
-    function toggleCheck(src)
-    {
+    function toggleCheck(src) {
         let checked = src.checked;
 
         // toggleAll checkbox was pressed
@@ -244,7 +243,7 @@
             return new Promise(function (resolve, reject) {
 
                 $.ajax({
-                        url: backendUrl+"/main/upload",
+                        url: backendUrl+"/main/XMLtoJSON",
                         data: fd,
                         type: "post",
                         contentType: false,
