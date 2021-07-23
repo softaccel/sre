@@ -30,7 +30,7 @@
 
     function init_komponent(k) {
         console.log("@@@@@@@@@@@@@",k)
-        k.$el.find("#gallery").apiator(apiRoot + "/inventory/"+ k.data.instance.id +"/inventory_meta?filter=meta_key=gallery");
+        k.$el.find("#gallery").apiator(apiRoot + "/orders_items/"+ k.data.instance.id +"/catalog_meta?filter=meta_key=gallery");
 
         // k.$el.find("#addImageInput").on("change", function () {
         //     let name = $(this).val();

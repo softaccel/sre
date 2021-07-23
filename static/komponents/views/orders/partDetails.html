@@ -92,7 +92,7 @@
         $("#orderPartDetailsList").apiator({
             type: "inventory_meta",
             resourcetype: "collection"
-        }).data("instance").setUrl(apiRoot + "/inventory/" + k.data.instance.id + "/inventory_meta").loadFromRemote();
+        }).data("instance").setUrl(apiRoot + "/orders_items/" + k.data.instance.id + "/catalog_meta").loadFromRemote();
 
         let submitButton = $("#orderPartDetailsFilter").find("#submitButton");
         $("#orderPartDetailsHeader").find("input").on("input", function () {
