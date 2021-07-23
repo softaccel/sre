@@ -1,2 +1,2 @@
 <?php
-$config["upload_path"] = "/tmp";
+$config["upload_path"] = "/var/www/html/uploads";
