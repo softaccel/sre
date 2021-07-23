@@ -1,7 +1,7 @@
 <?php
 
 
-class Upload extends CI_Controller
+class XMLtoJSON extends CI_Controller
 {
     function __construct()
     {

@@ -1,33 +1,37 @@
 <script>
     function init_komponent(k){
         console.log(k)
+        let jsonDec = jwt_decode(localStorage.getItem("spaleck")).sub;
+        console.log(jsonDec)
         komponentor.intent("/common/formmodal").data({
             callback:function (data){
-                if(data.partner_id === null || data.meta_val === "" || data.model === "" || data.orderdate === "" || data.deliverydate === ""){
+                if(data.partner_id === null || data.model === "" || data.orderdate === "" || data.deliverydate === ""){
                     komponentor.intent("/common/errormodal").data({
                         body: "Toate datele trebuie completate."
                     }).send();
                     return 1;
                 }
                 console.log("yoho1");
-                // k.data.instance.createItem(data)
-                //     .then(function () {
-                //         console.log("a mers");
-                //     }).catch(function () {
-                //         console.log("a mers nu");
-                //     });
+                data["created_by"] = jsonDec;
+                k.data.instance.createItem(data)
+                    .then(function () {
+                        console.log("a mers");
+                        console.log(k.data.instance.view.el.children().last())
+                        // k.data.instance.views[0].hide().fadeIn(500)[0].scrollIntoView()
+                    }).catch(function () {
+                        console.log("a mers nu");
+                    });
                 console.log("yoho2");
-                komponentor.intent("/views/orders/addOrderContents").data({data: {k: k, data: data}}).send();
+                k.data.instance.view.el.children().last().fadeIn(500)[0].scrollIntoView();
+                // komponentor.intent("/views/orders/addOrderContents").data({data: {k: k, data: data}}).send();
             },
             title:"Adauga Comanda Noua",
             size: "lg",
             fields:[
                 // {type:"text",name: "name",default: "test", placeholder: "Numele Echipei", label: "Nume",options:[]},
                 {type: "select", name: "partner_id", label: "Client", url: "/partners", labelfnc: "name", idfnc: "id"},
-                {type: "text", name: "meta_val", label: "Referinta Interna Client"},
-                {type: "text", name: "model", label: "Descriere"},
-                {type: "date", name: "orderdate", label: "Data comenzii"},
-                {type: "date", name: "deliverydate", label: "Data estimata a livrarii"}
+                {type: "text", name: "label", label: "Descriere"},
+                {type: "select", name: "state", label: "Starea Comenzii", options: [{id: "offer", description: "Oferta"}, {id: "ord", description: "Comanda"}]}
             ],
         }).send();
     }
