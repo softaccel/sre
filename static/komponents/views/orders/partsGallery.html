@@ -83,13 +83,15 @@
     <div id="orderPartsListFilter">
         <div class="align-top" style="width: 100px">
             <a class="text-white" data-sortfld="partid">Part id
-                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-            <input type="text" name="partid" id="partidFilter" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
+                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+            </a>
+            <input type="text" name="partid" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
         </div>
         <div class="align-top">
             <a class="text-white" data-sortfld="name">Denumire
-                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-            <input type="text" name="name" id="nameFilter" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
+                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+            </a>
+            <input type="text" name="name" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
         </div>
         <div>
 
@@ -149,7 +151,7 @@
                 {type:"number", name: "qty", default: "0", placeholder: "", label: "Cantitate in stoc", options:[]},
                 {type:"number", name: "order_qty", default: "0", placeholder: "", label: "Cantitate comandata", options:[]},
                 {type:"number", name: "unit_price", default: "0", placeholder: "", label: "Pret unitar", options:[]},
-                {type:"select", name: "currency", label: "Moneda", url: "/currencies", labelList: ["id"], idList: ["id"]}
+                {type:"select", name: "currency", label: "Moneda", url: "/currencies", labelfnc: "id", idfnc: "id"}
             ]
         }).send();
     }
@@ -185,7 +187,6 @@
         $("#orderPartsListFilter").find("#viewToggle").bootstrapToggle().change(toggleSwitch);
 
         let form = $("#orderPartsMe");
-        let partidFilter = $("#partidFilter");
         form.find("input").on("input",function () {
             $("#filterSubmitBtn").click();
         });

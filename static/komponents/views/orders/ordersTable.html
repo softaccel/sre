@@ -163,7 +163,7 @@
     }
 
     function newOrder() {
-        newOrderFromXML();
+        komponentor.intent("/views/orders/createNewOrder").data({instance:$("#ordersList").data("instance")}).send();
     }
 
     function init_komponent(k) {
