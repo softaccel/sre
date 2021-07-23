@@ -52,3 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+$route["files$"]["post"] = "FileApi/upload";
+$route["files\/(.*)$"]["get"] = "FileApi/get/$1";
+$route["files\/(.*)$"]["delete"] = "FileApi/remove/$1";

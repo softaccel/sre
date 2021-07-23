@@ -1,7 +1,5 @@
 <?php
-//phpinfo();
 
-print_r($_SERVER);
-print_r($_REQUEST);
-//print_r($_GET);
-//print_r($_POST);
+$json = file_get_contents("php://input");
+$data = json_decode($json);
+print_r($data);

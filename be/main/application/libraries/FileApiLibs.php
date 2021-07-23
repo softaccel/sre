@@ -4,7 +4,12 @@ class FileApiLibs
 {
 
 	// random uid generator
-	public function uniqidReal($lenght = 13) {
+	/**
+	 * @param int $lenght
+	 * @return false|string
+	 * @throws Exception
+	 */
+	public function uniqidReal(int $lenght = 13) {
 		// uniqid gives 13 chars, but you could adjust it to your needs.
 		if (function_exists("random_bytes")) {
 			$bytes = random_bytes(ceil($lenght / 2));
@@ -17,7 +22,7 @@ class FileApiLibs
 	}
 
 	// thumbnail creator
-	public function resizeImage($context, $file_path, $file_name): string {
+	public function resizeImage($image_lib, $file_path, $file_name): string {
 
 		// check extension
 		if (!extension_loaded('gd')) {
@@ -37,13 +42,13 @@ class FileApiLibs
 			'maintain_ratio' => TRUE,
 			'create_thumb' => TRUE,
 			'thumb_marker' => '',
-			'width' => 150,
-			'height' => 150
+			'width' => 200,
+			'height' => 200
 		);
 
-		$context->image_lib->initialize($config_manip);
-		if (!$context->image_lib->resize()) {
-			throw new Exception($context->image_lib->display_errors());
+		$image_lib->initialize($config_manip);
+		if (!$image_lib->resize()) {
+			throw new Exception($image_lib->display_errors());
 		}
 
 		return $target_path;
