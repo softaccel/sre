@@ -211,7 +211,7 @@
                         let data = e.params.data;
                         console.log(data);
                             unassignedItemsInstance
-                            .setUrl(apiRoot+"/orders/"+data.id+"/inventory_wmeta?filter=qty>0")
+                            .setUrl(apiRoot+"/orders/"+data.id+"/order_items_wmeta?filter=qty>0")
                             .loadFromRemote();
 
 

@@ -182,7 +182,7 @@
         $("#orderPartsList").apiator({
             type: "inventory",
             resourcetype: "collection"
-        }).data("instance").setUrl(apiRoot+"/orders/"+k.data.instance.id+"/inventory_wmeta?page[inventory_wmeta][limit]=1000").loadFromRemote();
+        }).data("instance").setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_items_wmeta?page[orders_items_wmeta][limit]=1000").loadFromRemote();
 
         $("#orderPartsListFilter").find("#viewToggle").bootstrapToggle().change(toggleSwitch);
 
