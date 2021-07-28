@@ -1,18 +1,23 @@
+<style>
+    #newEmplForm #cancelButton {
+        display: none;
+    }
+
+</style>
+
 <div class="modal" id="employeeModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body bg-light">
-                <div class="card">
-                    <div class="card-header-tab card-header-tab-animation card-header">
-                        <div class="card-header-title">
-                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
-                            Introducere angajat nou <span id="comandaid"></span>
-                        </div>
-                    </div>
-                    <div class="card-body" style="">
-                        <div id="newEmplForm" is="komponent" data-url="/views/employees/details"></div>
-                    </div>
+            <div class="modal-header">
+                <div class="modal-title">
+                    Adaugare angajat
                 </div>
+            </div>
+            <div class="modal-body bg-light">
+                <div id="newEmplForm" is="komponent" data-url="/views/employees/details"></div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
             </div>
         </div>
     </div>
