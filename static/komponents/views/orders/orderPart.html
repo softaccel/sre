@@ -56,9 +56,9 @@
                     <li class="nav-item">
                         <a data-toggle="tab" href="#sumarRepere" class="nav-link" id="sumarReperePanel">Sumar</a>
                     </li>
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#galleryPanel" class="nav-link" id="galleryTab">Galerie</a>
-                    </li>
+<!--                    <li class="nav-item">-->
+<!--                        <a data-toggle="tab" href="#galleryPanel" class="nav-link" id="galleryTab">Galerie</a>-->
+<!--                    </li>-->
                     <li class="nav-item">
                         <a data-toggle="tab" href="#detaliiPanel" class="nav-link" id="detaliiPanelTab">Detalii</a>
                     </li>
@@ -74,24 +74,19 @@
                                     <div class="col-9"><%= attributes.id %></div>
                                     <div class="col-9"><input name="id" class="form-control form-control-sm" type="text"></div>
                                 </div>
-                                <div class="row">
+                                <div class="row hide-on-edit">
                                     <div class="col-3">Denumire</div>
                                     <div class="col-9"><%= attributes.name %></div>
                                     <div class="col-9"><input name="name" class="form-control form-control-sm" type="text"></div>
                                 </div>
-                                <div class="row hide-on-edit">
-                                    <div class="col-3">Cantitate (in stoc / comanda)</div>
-                                    <div class="col-9"><%= attributes.qty %> / <%= attributes.order_qty %> bucati</div>
-                                    <div class="col-9"><input name="qty" class="form-control form-control-sm" type="text"></div>
-                                </div>
-                                <div class="row hide-on-view">
+                                <div class="row">
                                     <div class="col-3">Cantitate comanda</div>
-                                    <div class="col-1"><%= attributes.order_qty %></div>
-                                    <div class="col-9"><input name="order_qty" class="form-control form-control-sm" type="text"></div>
+                                    <div class="col-9"><%= attributes.qty %> bucati</div>
+                                    <div class="col-9"><input name="qty" class="form-control form-control-sm" type="text"></div>
                                 </div>
                                 <div class="row">
                                     <div class="col-3">Pret unitar</div>
-                                    <div class="col-1"><%= attributes.unit_price %><%= attributes.currency %></div>
+                                    <div class="col-1"><%= attributes.unit_price %> <%= attributes.currency %></div>
                                     <div class="col-9"><input name="unit_price" class="form-control form-control-sm" type="text"></div>
                                 </div>
                                 <div class="row hide-on-view">
@@ -143,15 +138,16 @@
             form.reset();
 
             util.captureFormSubmit(form, function (data) {
-                if(data.id!=="") {
+                if (data.id !== "") {
                     let updateCopy = {...instance.updateUrl};
-                    updateCopy.path = updateCopy.path.replace("inventory_wmeta", "inventory");
+                    updateCopy.path = updateCopy.path.replace("orders_items_wmeta", "orders_items");
                     instance.setUrl({updateUrl: updateCopy});
-                    instance.type = "inventory";
+                    instance.type = "orders_items";
+                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1",data)
                     instance.update(data)
                         .then(function () {
                             $('#orderPartForm').removeClass('editMode');
-                            instance.type = "inventory_wmeta";
+                            instance.type = "orders_items_wmeta";
                             instance.loadFromRemote();
                         })
                         .catch(function (jqxhr) {
@@ -172,8 +168,6 @@
             });
 
             util.fillForm(form, instance);
-
-            console.log(instance.attributes.currency);
 
             let option = document.createElement("option");
             option.value = instance.attributes.currency;
@@ -208,11 +202,10 @@
                         },
                         callback: function () {
                             let deleteCopy = {...instance.deleteUrl};
-                            deleteCopy.path = deleteCopy.path.replace("inventory_wmeta", "inventory");
+                            deleteCopy.path = deleteCopy.path.replace("orders_items_wmeta", "orders_items");
                             instance.setUrl({deleteUrl: deleteCopy});
-                            instance.delete().then(() => { console.log("ok",arguments) })
+                            instance.delete().then(() => { console.log("ok", arguments) })
                             .catch( function(data) {
-                                console.log(data);
                                 komponentor.intent("/common/errormodal").data({
                                     body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
                                 }).send();
@@ -237,7 +230,6 @@
         }
         //
         let instance = k.data.instance;
-                console.log("8888888888888888888",instance)
         let $modal = k.$el.appendTo("body")
             .filter(".modal")
             .on("hidden.bs.modal", function () {
@@ -253,11 +245,12 @@
                 return;
             }
         });
-        instance.bindView("#orderPart").loadFromRemote().then(function (){
+
+        instance.bindView("#orderPart").loadFromRemote().then(function () {
             $("#sumarReperePanel").tab("show");
         });
 
-        $("#imageGallery").komponent({data:k.data});
+        // $("#imageGallery").komponent({data:k.data});
         $("#partDetails").komponent({data:k.data});
 
 

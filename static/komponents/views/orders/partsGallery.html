@@ -118,7 +118,7 @@
             <span class="partid"><%= attributes.partid %></span>
             <br>
             <span class="name"><%= attributes.name %></span>
-            <span class="count"><%= attributes.qty %> / <%= attributes.order_qty %> bucati</span>
+            <span class="count"><%= attributes.qty %> bucati</span>
 
         </li>
     </ul>
@@ -129,53 +129,53 @@
 <script>
 
     function newOrderPart() {
+
         let insertCopy = {...$("#orderPartsList").data("instance").insertUrl};
-        insertCopy.path = insertCopy.path.replace("inventory_wmeta", "inventory");
+        insertCopy.path = insertCopy.path.replace("orders_items_wmeta", "orders_items");
         $("#orderPartsList").data("instance").insertUrl = insertCopy;
-        console.log("ababaababbbaba" ,$("#orderPartsList").data("instance"));
 
         komponentor.intent("/common/formmodal").data({
             callback:function (data) {
-                console.log(data);
-                data.um = "Stk";
                 $("#orderPartsList").data("instance").createItem(data).then().catch(function (data) {
-                    komponentor.intent("/common/errormodal").data({
-                        body: "A aparut o eroare: <pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
-                    }).send();
-                });
-            },
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare: <pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
+                        }).send();
+                    });
+                },
             title:"Adauga Reper Nou",
             fields:[
                 {type:"text", name: "name", default: "", placeholder: "", label: "Denumire", options:[]},
-                // {type:"text", name: "partid", default: "", placeholder: "", label: "Part Id", options:[]},
-                {type:"number", name: "qty", default: "0", placeholder: "", label: "Cantitate in stoc", options:[]},
-                {type:"number", name: "order_qty", default: "0", placeholder: "", label: "Cantitate comandata", options:[]},
+                {type:"number", name: "qty", default: "0", placeholder: "", label: "Cantitate comanda", options:[]},
                 {type:"number", name: "unit_price", default: "0", placeholder: "", label: "Pret unitar", options:[]},
-                {type:"select", name: "currency", label: "Moneda", url: "/currencies", labelfnc: "id", idfnc: "id"}
+                {type:"select", name: "currency", label: "Moneda", url: "/currencies", labelfnc: "id", idfnc: "id"},
+                {type:"select", name: "unit", label: "Unitate de masura", url: "/units", labelfnc: "unit", idfnc: "unit"}
             ]
         }).send();
     }
 
     function orderPartModal(src) {
-        console.log("open part modal")
+
         if($(src).data("locked")) {
             return;
         }
+
         $(src).data("locked",true);
+
         komponentor.intent('/views/orders/orderPart')
             .data({instance:$(src).data('instance')})
-            .send()
-            // .then((k)=>{console.log('#######',k)})
-            .finally(()=>$(src).data("locked",null));
+            .send().finally(()=>$(src).data("locked",null));
+
     }
 
     function toggleSwitch() {
+
         let $toggle = $("#orderPartsList");
-        if($toggle.hasClass("grid_3")) {
+        if ($toggle.hasClass("grid_3")) {
             $toggle.removeClass("grid_3");
         } else {
             $toggle.addClass("grid_3");
         }
+
     }
 
     function init_komponent(k) {
