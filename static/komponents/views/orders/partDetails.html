@@ -30,10 +30,7 @@
     <table class="table table-striped table-hover" style="table-layout: fixed">
         <thead class="thead-dark" id="orderPartDetailsHeader">
         <tr>
-            <th class="align-top" style="width: 150px">
-                <a class="text-white" data-sortfld="docnum">Nr. crt.</a>
-            </th>
-            <th class="align-top" style="width: 350px">
+            <th class="align-top" style="width: 400px">
                 <a class="text-white" data-sortfld="label">Denumire</a>
                 <input type="text" name="meta_key" class="form-control-sm form-control" form="orderPartDetailsFilter" data-operator="~=~">
             </th>
@@ -47,7 +44,6 @@
                data-filter="#orderPartDetailsFilter"
                data-sort="#orderPartDetailsHeader">
             <tr class="order <%= attributes.state %>">
-                <td><%= attributes.id %></td>
                 <td><%= attributes.meta_key %></td>
                 <td>
                     <p class="elli"> <%= attributes.meta_val %> </p>
@@ -92,7 +88,7 @@
         $("#orderPartDetailsList").apiator({
             type: "inventory_meta",
             resourcetype: "collection"
-        }).data("instance").setUrl(apiRoot + "/orders_items/" + k.data.instance.id + "/catalog_meta").loadFromRemote();
+        }).data("instance").setUrl(apiRoot + "/orders_items/" + k.data.instance.id + "/orders_items_meta/").loadFromRemote();
 
         let submitButton = $("#orderPartDetailsFilter").find("#submitButton");
         $("#orderPartDetailsHeader").find("input").on("input", function () {
