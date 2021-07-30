@@ -1,3 +1,0 @@
-[submodule "be/dbapi"]
-	path = be/dbapi
-	url = git@github.com:vsergione/dbapi.git

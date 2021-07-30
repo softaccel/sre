@@ -1,0 +1,47 @@
+<div class="modal" id="partnerModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    Adaugati partener
+                </div>
+            </div>
+            <div class="modal-body bg-light">
+                <div id="newPartnerModal" is="komponent" data-url="/views/partners/details"></div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function init_komponent(k){
+        k.hideModal = function() {
+            $modal.modal("hide");
+        };
+
+        let $modal = k.$el.appendTo("body")
+            .filter(".modal")
+            .on("hidden.bs.modal",function (event) {
+                k.$el.remove();
+            });
+
+        k.$el.find("#newPartnerModal")
+            .komponent({
+                data: {
+                    instance: k.data.instance,
+                },
+                parent: k
+            })
+            .then(function (d) {
+                $modal.modal();
+                // console.log("*///////////////",d);
+                // editMode(d.data.instance);
+            });
+        $("#closeModal").on("click", function () {
+            k.hideModal();
+        });
+
+    }
+</script>

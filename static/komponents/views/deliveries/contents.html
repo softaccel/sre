@@ -6,77 +6,292 @@
     /*#deliveryContentsTable:hover tr>td:first-child,#deliveryContentsTable:hover tr>th:first-child{*/
     /*    display: table-cell;*/
     /*}*/
+    .items{
+        width: 100%;
+        background: white;
+
+    }
+    .items * {
+        font-size: 0.8rem;
+        vertical-align: top;
+    }
+    .items td{
+
+        border-bottom: dashed silver 1px;
+    }
+    .items thead{
+        background: #6f6f6f;
+        color: white;
+    }
+    .items thead a{
+        color: white;
+
+    }
+    .items  input{
+        border: solid silver 1px;
+    }
+    #unassingedItems tr.selected{
+        background: #aeaeae;
+    }
+    table.table {
+        font-size: 0.8rem;
+    }
 </style>
 <div>
-    <button class="btn btn-primary" id="startScanBut"><i class="fa fa-barcode"></i> Scaneaza elemente</button>
-    <form id="deliveryContentsFilter"></form>
-    <table class="table table-striped table-hover" id="deliveryContentsTable">
-        <thead class="thead-light" id="deliveriesListHeader">
-        <tr>
-            <th></th>
-            <th class="align-top">
-                <a class="text-secondary" data-sortfld="label">Denumire
-                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                <input type="text" name="label" class="form-control-sm form-control" form="deliveryContentsFilter" data-operator="~=~">
-            </th>
-            <th class="align-top" style="width: 100px">
-                <a class="text-secondary" data-sortfld="label">Bucati
-                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-            </th>
-            <th class="align-top" style="min-width: 250px">
-                <a class="text-secondary" data-sortfld="docnum">Comanda
-                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-            </th>
-        </tr>
-        </thead>
-        <tbody id="deliveryContentsList" data-paging="#deliveryContentsListPaging" data-type="deliveries" data-resourcetype="collection"
-               data-offsetinp="#deliveryContentsOffsetInp" data-pagesizeinp="#deliveryContentsPageSizeInp">
-        <tr class="">
-            <td><button class="btn-success btn">OK</button></td>
-            <td></td>
-            <td><%= attributes.qty %></td>
-            <td></td>
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-            <td></td>
-            <td colspan="6">
-
-                <div class="btn-group"  id="deliveryContentsListPaging" data-pagesize="10">
-                    <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
-                    <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
-                    <button name="page" class="btn btn-outline-secondary" title="0">1</button>
-                    <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
-                    <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+    <div class="card mb-3" style="background: #f4f4f4; display: none" id="addElsToDeliveryCard">
+        <div class="card-body">
+            <div class="form-group">
+                <label>Comanda</label>
+                <select class="custom-select" id="orderSelect" class="js-example-basic-single" style="width: 100%;">
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Elemente</label>
+                <div style="padding: 5px; border-radius: 5px 5px 5px 5px; border: solid silver 1px; background: #fff" class="mb-3">
+                    <div style="max-height: 200px; overflow: scroll; ">
+                        <form>
+                        <table class="items">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox" id="checkAllUnassingedItems" data-connected="#unassingedItems" onclick="toggleAll(this)"></th>
+                                <th>Cod <input type="text" size="10"> </th>
+                                <th>Denumire <input type="text" size="10"> </th>
+                                <th>Cantitate</th>
+                            </tr>
+                            </thead>
+                            <tbody id="unassingedItems" data-resourcetype="collection" data-type="">
+                            <tr onclick="toggleSelect(this)">
+                                <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="event.stopPropagation();toggleSelect($(this).parents('tr'))" data-connected="#checkAllUnassingedItems"></td>
+                                <td><%= attributes.partid %></td>
+                                <td><%=  attributes.name %></td>
+                                <td><input type="number" name="qtys[]" size="4" max="<%=attributes.qty%>" value="<%=attributes.qty%>"> </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        </form>
+                    </div>
                 </div>
-                Pagina <input type="number" name="offset" size="3" value="0" id="deliveryContentsOffsetInp">
-                <select id="deliveryContentsPageSizeInp">
-                    <option></option>
-                    <option>5</option>
-                    <option>10</option>
-                    <option>25</option>
-                    <option>50</option>
-                    <option>75</option>
-                </select> inregistrari pe pagina
-            </td>
-        </tr>
-        </tfoot>
-    </table>
+                <button id="addToDlvrBtn" >Adauga elementele selectate</button>
+            </div>
+            <button id="cancelAddToDlvrBtn">Anuleaza</button>
+        </div>
+    </div>
+<!--    <button class="btn btn-primary" id="startScanBut"><i class="fa fa-barcode"></i> Scaneaza elemente</button>-->
+    <form id="deliveryContentsFilter"></form>
+    <button class="btn btn-secondary mb-3" id="addContentBtn"><i class="fa fa-truck-loading"></i> Adauga elemente la livrare</button>
+    <div style="max-height: 400px; overflow: scroll">
+        <table class="items table table-sm" id="deliveryContentsTable">
+            <thead id="deliveriesListHeader">
+            <tr>
+                <th></th>
+                <th><input type="checkbox" id="checkAllAssignedItems" data-connected="#deliveryContentsList" onclick="toggleAll(this)"></th>
+                <th class="align-top">
+                    <a data-sortfld="label">Cod piesa
+                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                    <input type="text" name="label" class="form-control-sm form-control" form="deliveryContentsFilter" data-operator="~=~">
+                </th>
+                <th class="align-top">
+                    <a data-sortfld="label">Denumire
+                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                    <input type="text" name="label" class="form-control-sm form-control" form="deliveryContentsFilter" data-operator="~=~">
+                </th>
+                <th class="align-top" style="min-width: 250px">
+                    <a data-sortfld="docnum">Comanda
+                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                    <input type="text" name="label" class="form-control-sm form-control" form="deliveryContentsFilter" data-operator="~=~" size="5">
+
+                </th>
+                <th class="align-top" style="width: 100px">
+                    <a data-sortfld="label">Bucati Total
+                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                </th>
+                <th class="align-top" style="width: 100px">
+                    <a data-sortfld="label">Tiparite
+                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                </th>
+                <th class="align-top" style="width: 100px">
+                    <a data-sortfld="label">Incarcate
+                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                </th>
+                <th width="70"></th>
+            </tr>
+            </thead>
+            <tbody id="deliveryContentsList" data-paging="#deliveryContentsListPaging" data-type="deliveries" data-resourcetype="collection"
+                   data-offsetinp="#deliveryContentsOffsetInp" data-pagesize="50" data-pagesizeinp="#deliveryContentsPageSizeInp">
+            <tr class="">
+                <td><button class="btn-success btn">OK</button></td>
+                <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="event.stopPropagation();toggleSelect($(this).parents('tr'))" data-connected="#checkAllAssignedItems"></td>
+                <!--            <td><%= id %></td>-->
+
+                <td><%= attributes.item %></td> <!-- id din orders_items -->
+                <td><%= attributes.name %></td> <!-- name din idem si la fel -->
+                <td><%= attributes.docnum %></td> <!-- docnum din documents, relationship prin doc_id din orders -->
+                <td><%= attributes.qty %></td> <!-- qty din orders_items -->
+<!--                <td><%= attributes.labels %></td>-->
+<!--                <td><%= attributes.checkout %></td>-->
+                <td>
+                    <button class="btn-danger" onclick="removeFromDelivery(this)"><i class="fa fa-trash"></i></button>
+                    <button class="btn-primary"><i class="fa fa-print"></i></button>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td colspan="6">
+
+                    <div class="btn-group"  id="deliveryContentsListPaging" data-pagesize="50">
+                        <button name="first" class="btn btn-sm btn-outline-secondary" title="0">&lt;&lt;</button>
+                        <button name="prev" class="btn btn-sm btn-outline-secondary" title="-20">&lt;</button>
+                        <button name="page" class="btn btn-sm btn-outline-secondary" title="0">1</button>
+                        <button name="next" class="btn btn-sm btn-outline-secondary" title="20">&gt;</button>
+                        <button name="last" class="btn btn-sm btn-outline-secondary" title="140">&gt;&gt;</button>
+                    </div>
+                    <select id="deliveryContentsPageSizeInp">
+                        <option></option>
+                        <option>5</option>
+                        <option>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                    </select> inregistrari pe pagina
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
 
 <script>
 
+    function removeFromDelivery(src) {
+        let instance = $(src).data("instance");
+        komponentor.intent("/common/messagemodal").data({
+            body:"Sigur vrei sa elimini elementul <strong>"+instance.attributes.name+"</strong>?",
+            buttons:[
+                {
+                    label: "Da",
+                    attrs: {
+                        "data-dismiss": "modal",
+                    },
+                    class: "btn btn-danger",
+                    callback: function () {
+                        // instance.remove();
+                        instance.setUrl(apiRoot+"/deliveries_contents/"+instance.id);
+                        instance.delete();
+
+                    }
+                }
+            ]
+        }).send();
+    }
+
     function init_komponent(k) {
+
         if(!k.data || !k.data.instance) {
             return;
         }
-        let url = apiRoot + "/deliveries/"+k.data.instance.id+"/deliveries_contents?include=inventory,inventory.order";
-        console.log(url);
-        k.$el.find("#deliveryContentsList").apiator(url);
+
+        let unassignedItemsInstance = k.$el.find("#unassingedItems").apiator({returninstance: true});
+
+        function selectContent() {
+            let $unassignedItems = k.$el.find("#unassingedItems");
+            let $unassignedItemsContainer = $unassignedItems.parents(".form-group").hide();
+
+            k.$el.find("#addElsToDeliveryCard").show(400);
+
+            let $select = k.$el.find("#orderSelect");
+
+
+            if(!$select.hasClass("select2")) {
+                $select.select2wrapper({url: apiRoot+"/orders_extended",placeholder:"Alege comanda",labelfld:"docnum"});
+                $select
+                    .on('select2:select', function (e) {
+                        $unassignedItemsContainer.show(400);
+                        let data = e.params.data;
+                        console.log(data);
+                            unassignedItemsInstance
+                            .setUrl(apiRoot+"/orders/"+data.id+"/orders_items_wmeta?filter=qty>0")
+                            .loadFromRemote();
+
+
+                    }).on("select2:clear",function () {
+                        $unassignedItemsContainer.hide(200);
+                    });
+
+            }
+
+            $select.val(null).trigger('change');
+        }
+
+        function addToDelivery() {
+            let instance = contentItems;
+            let cbs = $('#unassingedItems').find("input[type=checkbox]");
+            let qtys = $('#unassingedItems').find("input[type=number]");
+            let toAdd = [];
+            for(let i=0;i<cbs.length;i++) {
+                if(!cbs[i].checked)
+                    continue;
+                toAdd.push([cbs[i].value,qtys[i].value,k.data.instance.id]);
+            }
+            // console.log("@@@@@@@@@@@@@@@@@@",toAdd);
+            // return;
+
+            let promises = [];
+            let errors =[];
+            toAdd.forEach(function (el) {
+                console.log("++++++++++++++++++++++++++++++++++++++", el);
+                let [item,qty,delivery] = el;
+                // for(let i = 0; i < qty; i++){
+                    let data = {
+                        item: item,
+                        delivery: delivery
+                    };
+
+
+                    promises.push(
+                        instance.setUrl({insertUrl:apiRoot + "/deliveries_contents"})
+                            .createItem(data)
+                            .catch((resp)=>errors.push(resp.jqXHR.responseJSON)));
+                // }
+            });
+            // console.log("------------////////////////----",promises.length)
+
+            Promise.all(promises)
+                .then(() => instance.loadFromRemote())
+                .finally(()=>{
+                    // k.$el.find("#addElsToDeliveryCard").hide(400);
+                    // k.$el.find("#addContentBtn").show();
+                    unassignedItemsInstance.loadFromRemote();
+                    instance.loadFromRemote()
+                    if(errors.length) {
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare:<pre>"+JSON.stringify(errors,null, "\t")+"</pre>"
+                        }).send();
+                    }
+                });
+
+        }
+
+        k.$el.find("#addContentBtn").on("click",function (e) {
+            selectContent();
+            $(e.target).hide();
+        });
+
+        k.$el.find("#addToDlvrBtn").on("click",addToDelivery);
+
+        k.$el.find("#cancelAddToDlvrBtn").on("click",()=>{k.$el.find("#addElsToDeliveryCard").hide(400);k.$el.find("#addContentBtn").show();});
+
+        let url = apiRoot + "/deliveries/"+k.data.instance.id+"/dlvrcontents_expanded/?";
+        // let url = apiRoot + "/deliveries/"+k.data.instance.id+"/deliveries_contents?include=inventory,inventory.order";
+        let contentItems = k.$el.find("#deliveryContentsList").apiator({url:url,returninstance:true});
+        console.log("asdasdasdasdasdasd",contentItems);
+        console.log("mnbmnbmnbmnbmbmnbm",k.data.instance.id);
+
         k.$el.find("#startScanBut").on("click",function () {
             komponentor.intent("/views/deliveries/scan").data({data:k.data}).send();
         });
+
     }
 
 

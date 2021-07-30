@@ -34,35 +34,58 @@ class Auth extends CI_Controller
 	function login($internalCall=false,$loginData=null)
 	{
 		if(!$internalCall && $_SERVER["REQUEST_METHOD"]!=="POST")
-			HttpResp::quick(405,null,"Method not allowed") && die();
+			HttpResp::quick(405,null,"Method not allowed");
 
 		if(!$internalCall) {
 			$loginData = $this->input->post();
 		}
 
 		if(empty($loginData["login"]))
-			HttpResp::quick(400,null,"Please provide a valid login") && die();
+			HttpResp::quick(400,null,"Please provide a valid login");
 		$login = $loginData["login"];
 
 		if(empty($loginData["password"]))
-			HttpResp::quick(400,null,"Empty passwords not allowed. Please provide a password") && die();
+			HttpResp::quick(400,null,"Empty passwords not allowed. Please provide a password");
 
 		/**
 		 * @var CI_DB_driver
 		 */
-		$url = $this->config->item("api_root_full")."/users/$login?filter=active=1&include=groups";
+		$url = $this->config->item("api_root_full")."/__call__/login";
+//		$url = "http://localhost/dbapi/v2/spaleck/__call__/login";
 
-		$data = json_decode(file_get_contents($url));
-//		print_r($data);
+		$ch = curl_init();
 
-		if(!$data->data) {
-			HttpResp::not_found();
+		curl_setopt($ch, CURLOPT_URL,$url);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode([
+			[
+				"name"=>"uid",
+				"dir"=>"in",
+				"value"=>$login
+			],
+			[
+				"name"=>"pass",
+				"dir"=>"in",
+				"value"=>$loginData["password"]
+			],
+			[
+				"name"=>"cnt",
+				"dir"=>"out"
+			]
+		]));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$server_output = curl_exec($ch);
+		curl_close ($ch);
+		$res = json_decode($server_output);
+		if($res->cnt!=="1") {
+			HttpResp::not_authorized();
 		}
+
+		$data = json_decode(file_get_contents($this->config->item("api_root_full")."/users/$login?include=groups"));
 
 		$record = $data->data;
-		if(!password_verify($loginData["password"],$record->attributes->password)) {
-			HttpResp::not_found("Username or password do no match");
-		}
+
 		$grps = [];
 		foreach ($record->relationships->groups->data as $grp) {
 			$grps[] = $grp->id;

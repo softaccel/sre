@@ -340,7 +340,7 @@
 						db[resName][keyId].relationships[relName] = null;
 						return;
 					}
-					
+
 
 					let relTmp = db[resName][keyId].relationships[relName].data;
 
@@ -487,12 +487,15 @@
 			}
 		}
 
+		_item.loadFromRemote = function() {
+			return _item.load_from_data_source();
+		};
 
 		/**
-		 * load item data from remote storage.
+		 * load item data from data source storage.
 		 * @returns {Promise<unknown>}
 		 */
-		_item.loadFromRemote = function () {
+		_item.load_from_data_source = function () {
 			return new Promise(function (resolve,reject) {
 				if(!_item.url) {
 					throw("No valid URL provided");
@@ -507,8 +510,8 @@
 						_item
 							.loadFromJSONAPIDoc(data, textStatus, jqXHR, ctx)
 							.views.forEach(function (view){
-								view.render();
-							});
+							view.render();
+						});
 
 						resolve(_item);
 					})
@@ -696,7 +699,7 @@
 		 *
 		 */
 		_item.update = function (itemData) {
-			console.log(itemData);
+
 			let toUpdate = {
 				id: this.id,
 				type: this.type,
@@ -706,12 +709,16 @@
 
 			// check attributes
 			Object.getOwnPropertyNames(itemData).forEach(function (attrName) {
-				if(!itemData.hasOwnProperty(attrName) && !this.strict ) {
+				if(itemData[attrName] && typeof itemData[attrName]==="object") {
+					return ;
+				}
+
+				if(!this.attributes.hasOwnProperty(attrName) && !this.strict ) {
 					// console.log("Attr '"+attrName+"'not present in parent object and strict mode off => add attr to update");
 					return toUpdate.attributes[attrName] = itemData[attrName];
 				}
 
-				if(!itemData.hasOwnProperty(attrName) && this.strict ) {
+				if(!this.attributes.hasOwnProperty(attrName) && this.strict ) {
 					// console.log("Attr '"+attrName+"'not present in parent object and strict mode ON => skip");
 					return;
 				}
@@ -726,7 +733,16 @@
 			// update relationships
 			if(this.relationships) {
 				Object.getOwnPropertyNames(this.relationships).forEach(function (relName) {
-					if (!itemData.hasOwnProperty(relName))
+					if (!itemData.hasOwnProperty(relName)) {
+						return;
+					}
+
+
+					if(itemData[relName]===null || typeof itemData[relName] !== "object") {
+						return;
+					}
+
+					if(toUpdate.attributes.hasOwnProperty(relName))
 						return;
 
 					if (this.relationships[relName] == null || this.relationships[relName].id !== itemData[relName]) {
@@ -755,7 +771,6 @@
 			return new Promise(function (resolve,reject) {
 				if(!Object.getOwnPropertyNames(toUpdate.attributes).length
 					&& !Object.getOwnPropertyNames(toUpdate.relationships).length) {
-					console.log("Nothing to update");
 					resolve(_item);
 				}
 
@@ -791,9 +806,10 @@
 			if(!_item.collection) {
 				return;
 			}
-			for(i=0;i<_item.collection.children.length;i++) {
-				if(_item.collection.children[i].id===_item.id) {
-					_item.collection.children.splice(i,1);
+			console.log(_item,_item.collection,_item.collection.children);
+			for(i=0;i<_item.collection.items.length;i++) {
+				if(_item.collection.items[i].id===_item.id) {
+					_item.collection.items.splice(i,1);
 					break;
 				}
 			}
@@ -1007,30 +1023,25 @@
 		 */
 		_itemview.render = function (returnView) {
 
-			console.log("rendering");
+			let renderedEl = createElementFromTemplate();
+
 			if(returnView) {
-				this.el = createElementFromTemplate();
+				this.el = renderedEl;
+				// console.log("...............",renderedEl);
 				return this.el;
 			}
 
-
 			if(!_itemview.el) {
-				throw "Invalid item view elemement";
+				delete renderedEl;
+				console.log("Invalid item view element");
+				return null;
 			}
 
-			let renderedEl = createElementFromTemplate();
+			renderedEl.insertAfter(_itemview.el[0]);
+			_itemview.el.remove();
 
-			if(renderedEl.css("display")==="none") {
-				renderedEl.css("display", "");
-			}
-
-			// renderedEl.insertBefore(_itemview.el[0]);
-			//
-			// _itemview.el.remove();
-			_itemview.el.replaceWith(renderedEl);
 			_itemview.el = renderedEl;
 
-			// _itemview.dispatch('render',{src:_itemview,item:_itemview.item});
 			return _itemview.el;
 		};
 
@@ -1209,53 +1220,75 @@
 
 			// received data is a collection
 			if(data.constructor===Array) {
-				_collection.loadFromData(data);
+				data.forEach(function (item) {
+					appendItemToCollection(_collection,_collection.loadItem(item));
+				});
 
-				if(_collection.view && _collection.view.el) {
-					_collection.view.render();
-				}
-
-				return _collection;
+				return _collection.render();
 			}
 
 			// received data is an item => add it
 			if(data.constructor===Object) {
-				let newItem = _collection.addItem(data);
-
-				if(_collection.view && _collection.view.el) {
-					_collection.view.render();
-				}
-
-				// _collection.dispatch("load",{source:_collection,type:"load",data:data});
-
-				return newItem;
+				return  appendItemToCollection(_collection,_collection.loadItem(data),true);
 			}
 
 		};
+
+		function appendItemToCollection(collection,item,render) {
+			if(render) {
+				_collection.render();
+			}
+			return item;
+		}
 
 		/**
 		 *
 		 * @param data
 		 */
 		_collection.loadFromData = function (data) {
-			let obj = this;
-
 			if (data.constructor !== Array)
 				throw "Invalid data type received. Should be an array.";
 
-			if(obj.navtype==="page")
-				obj.items = [];
+			if(_collection.navtype==="page")
+				_collection.items = [];
 
 			data.forEach(function (item) {
-				obj.addItem(item);
+				_collection.loadItem(item);
 			});
 			// dispatch dataReceived event
 		};
 
+		_collection.clear = function() {
+			_collection.items = [];
+			_collection.render();
+		};
+
 		/**
 		 *
+		 * @returns {{template: null, insertUrl: null, offset: number, pageSize: number, paging: null, type: null, url: null, view: null, total: null, navtype: string, updateUrl: null, deleteUrl: null, items: [], emptyview: null}}
 		 */
-		_collection.loadFromRemote = function () {
+		_collection.render = function() {
+			if(_collection.view && _collection.view.el) {
+				_collection.view.render();
+			}
+			return _collection;
+		};
+
+		/**
+		 *
+		 * @returns {Promise<unknown>}
+		 */
+		_collection.loadFromRemote = function() {
+			return _collection.load_from_data_source();
+		};
+
+		/**
+		 * sync with datasource
+		 * @returns {Promise<unknown>}
+		 */
+		_collection.load_from_data_source = function () {
+
+
 			return  new Promise(function (resolve,reject) {
 				if(!_collection.url) {
 					throw("No valid URL provided");
@@ -1264,6 +1297,7 @@
 				storage.read(_collection,_collection.url,{})
 					.then(function(res)
 					{
+						_collection.clear();
 						_collection.receiveRemoteData(res.data);
 						resolve.call(_collection);
 					})
@@ -1296,7 +1330,7 @@
 			if(url.hasOwnProperty("deleteUrl"))
 				this.deleteUrl = URL(url.deleteUrl);
 			if(url.hasOwnProperty("insertUrl"))
-				this.deleteUrl = URL(url.insertUrl);
+				this.insertUrl = URL(url.insertUrl);
 
 			return this;
 		};
@@ -1369,6 +1403,10 @@
 		 * @param itemData
 		 */
 		_collection.createItem = function(itemData) {
+			return _collection.append(itemData);
+		};
+
+		_collection.append = function(itemData) {
 			let jsonApiDoc = {data: parseData4InsertUpdate(itemData)};
 			let _self = this;
 
@@ -1376,8 +1414,7 @@
 				if(!_self.insertUrl) {
 					_self.insertUrl = _self.url;
 				}
-				// console.log(JSON.stringify(jsonApiDoc));
-				console.log("createItem");
+				console.log(JSON.stringify(jsonApiDoc));
 
 				storage
 					.create(_self,_self.insertUrl,{contentType:"application/vnd.api+json"},JSON.stringify(jsonApiDoc))
@@ -1407,7 +1444,7 @@
 			}
 		};
 
-		_collection.addItem = function (itemData) {
+		_collection.loadItem = function (itemData) {
 			// throw new Error("asda");
 
 			let opts = {
@@ -1638,12 +1675,12 @@
 				.catch(function(jqxhr){
 					console.log("error",jqxhr)
 				})
-				// .finally(()=>{
-				// 	// console.log(instance,"instance loaded from server")
-				// });
+			// .finally(()=>{
+			// 	// console.log(instance,"instance loaded from server")
+			// });
 		}
 
-		console.log(instance);
+		// console.log(instance);
 		return (options.hasOwnProperty("returninstance") && opts.returninstance)?instance:this;
 	};
 
@@ -1977,8 +2014,13 @@
 			el: $(pagingEl),
 		};
 		_paging.collection.paging = this;
-		let defaultPageSize = _paging.el.data("pagesize");
-		defaultPageSize = defaultPageSize ? defaultPageSize : 20;
+		let defaultPageSize;
+		if( _paging.collection.url && _paging.collection.url.parameters && _paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"]) {
+			defaultPageSize = _paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"];
+		}
+		else {
+			defaultPageSize = defaultPageSize ? defaultPageSize : 20;
+		}
 
 		let offsetInp = $(_paging.collection.offsetinp).off("keyup").on("keyup",function (e) {
 			if(e.originalEvent.keyCode!==13)
@@ -1989,7 +2031,8 @@
 
 		let pageSizeInp = $(_paging.collection.pagesizeinp).off("change").on("change",function () {
 			_paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"] = pageSizeInp.val();
-			_paging.collection.loadFromRemote();		});
+			_paging.collection.loadFromRemote();
+		});
 
 		let buttons = {
 			page: _paging.el.find("[name=page]").clone(true),
@@ -2084,135 +2127,135 @@
 	 * @param options
 	 * @constructor
 	 */
-function Storage(options)
-{
+	function Storage(options)
+	{
 
-	let defaultOptions = {
-		url: null,
-		method: "GET"
-	};
-
-	options = parseOptions(options);
-
-	Object.assign(defaultOptions, options);
-
-	let _storage = {};
-
-	/**
-	 *
-	 * @param options
-	 * @returns {Promise<unknown>}
-	 */
-	_storage.sync = function (options) {
-		options = Object.assign(
-			Object.assign({},defaultOptions),
-			parseOptions(options)
-		);
-
-		if (!options.hasOwnProperty("url")) {
-			throw "No URL provided";
-		}
-
-		return new Promise(function (resolve,reject) {
-			$.ajax(options)
-				.done(function (data, textStatus, jqXHR) {
-					// console.log(data, textStatus, jqXHR,"111111111111");
-					resolve( {
-						data: data,
-						textStatus: textStatus,
-						jqXHR: jqXHR
-					});
-				})
-				.fail(function (jqXHR, textStatus, errorThrown) {
-					reject( {
-						options: options,
-						jqXHR: jqXHR,
-						textStatus: textStatus,
-						errorThrown: errorThrown
-					});
-				});
-		});
-	};
-
-	/**
-	 *
-	 * @param ctx
-	 * @param url
-	 * @param opts
-	 * @param data
-	 * @returns {Promise<unknown>}
-	 */
-	_storage.create = function (ctx, url, opts, data) {
-		let options = {
-			context: ctx,
-			url: url,
-			method: "POST",
-			data: data
-		};
-		Object.assign(options, opts);
-		return _storage.sync(options);
-	};
-
-	/**
-	 *
-	 * @param ctx
-	 * @param url
-	 * @param opts
-	 * @returns {Promise<unknown>}
-	 */
-	_storage.read = function (ctx, url, opts) {
-		let options = {
-			context: ctx,
-			url: url,
+		let defaultOptions = {
+			url: null,
 			method: "GET"
 		};
-		Object.assign(options, opts);
 
-		return _storage.sync(options);
-	};
+		options = parseOptions(options);
 
-	/**
-	 *
-	 * @param ctx
-	 * @param url
-	 * @param opts
-	 * @returns {Promise<unknown>}
-	 */
-	_storage.delete = function (ctx, url, opts) {
-		let options = {
-			context: ctx,
-			url: url,
-			method: "DELETE"
+		Object.assign(defaultOptions, options);
+
+		let _storage = {};
+
+		/**
+		 *
+		 * @param options
+		 * @returns {Promise<unknown>}
+		 */
+		_storage.sync = function (options) {
+			options = Object.assign(
+				Object.assign({},defaultOptions),
+				parseOptions(options)
+			);
+
+			if (!options.hasOwnProperty("url")) {
+				throw "No URL provided";
+			}
+
+			return new Promise(function (resolve,reject) {
+				$.ajax(options)
+					.done(function (data, textStatus, jqXHR) {
+						// console.log(data, textStatus, jqXHR,"111111111111");
+						resolve( {
+							data: data,
+							textStatus: textStatus,
+							jqXHR: jqXHR
+						});
+					})
+					.fail(function (jqXHR, textStatus, errorThrown) {
+						reject( {
+							options: options,
+							jqXHR: jqXHR,
+							textStatus: textStatus,
+							errorThrown: errorThrown
+						});
+					});
+			});
 		};
-		Object.assign(options, opts);
 
-		return _storage.sync(options);
-	};
-
-	/**
-	 *
-	 * @param ctx
-	 * @param url
-	 * @param opts
-	 * @param data
-	 * @returns {Promise<unknown>}
-	 */
-	_storage.update = function (ctx, url, opts, data) {
-		let options = {
-			context: ctx,
-			url: url,
-			method: "PATCH",
-			contentType: "application/vnd.api+json",
-			data: data
+		/**
+		 *
+		 * @param ctx
+		 * @param url
+		 * @param opts
+		 * @param data
+		 * @returns {Promise<unknown>}
+		 */
+		_storage.create = function (ctx, url, opts, data) {
+			let options = {
+				context: ctx,
+				url: url,
+				method: "POST",
+				data: data
+			};
+			Object.assign(options, opts);
+			return _storage.sync(options);
 		};
-		Object.assign(options, opts);
 
-		return _storage.sync(options);
+		/**
+		 *
+		 * @param ctx
+		 * @param url
+		 * @param opts
+		 * @returns {Promise<unknown>}
+		 */
+		_storage.read = function (ctx, url, opts) {
+			let options = {
+				context: ctx,
+				url: url,
+				method: "GET"
+			};
+			Object.assign(options, opts);
 
-	};
+			return _storage.sync(options);
+		};
 
-	return _storage;
-}
+		/**
+		 *
+		 * @param ctx
+		 * @param url
+		 * @param opts
+		 * @returns {Promise<unknown>}
+		 */
+		_storage.delete = function (ctx, url, opts) {
+			let options = {
+				context: ctx,
+				url: url,
+				method: "DELETE"
+			};
+			Object.assign(options, opts);
+
+			return _storage.sync(options);
+		};
+
+		/**
+		 *
+		 * @param ctx
+		 * @param url
+		 * @param opts
+		 * @param data
+		 * @returns {Promise<unknown>}
+		 */
+		_storage.update = function (ctx, url, opts, data) {
+			let options = {
+				context: ctx,
+				url: url,
+				method: "PATCH",
+				contentType: "application/vnd.api+json",
+				data: data
+			};
+			Object.assign(options, opts);
+
+			return _storage.sync(options);
+
+		};
+
+		return _storage;
+	}
 
 	function uid () {
 		// Math.random should be unique because of its seeding algorithm.
@@ -2231,4 +2274,3 @@ $(document).ready(function () {
 			$(this).apiator();
 	});
 });
-

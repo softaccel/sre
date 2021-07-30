@@ -43,7 +43,6 @@
         if(typeof options==="undefined") {
             options = {};
         }
-        console.log(this,options,opts);
         Object.assign(options,opts);
         options.$el = this;
 

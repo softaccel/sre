@@ -57,7 +57,7 @@
                 .addClass("d-none");
             let cinstance = $litpl.apiator({resourcetype: "item",returninstance:true});
 
-            cinstance.setUrl(apiRoot+"/inventory/"+code+"?include=order")
+            cinstance.setUrl(apiRoot+"/orders_items/"+code+"?include=order")
                 .loadFromRemote()
                 .then(function (a) {
                     let els = container.children();

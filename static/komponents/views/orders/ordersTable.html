@@ -1,0 +1,275 @@
+<style>
+    .badge.ord{
+        background: red;
+    }
+    .badge.ord:after{
+        content:"Comanda";
+        color: white;
+    }
+    #ordersListHeader a{
+        cursor: pointer;
+    }
+</style>
+<div class="card-body">
+
+    <div class="dropdown d-inline-block" id="newOrderButtons">
+        <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="mb-2 mr-2 dropdown-toggle btn btn-primary">Comanda noua</button>
+        <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu">
+            <button type="button" tabindex="0" class="dropdown-item" onclick="newOrder()">Introducere manuala</button>
+            <button type="button" tabindex="0" class="dropdown-item" onclick="newOrderFromXML()">Import XML (Spaleck DE)</button>
+        </div>
+    </div>
+    <form id="ordersListFilter" class="d-none"><button type="submit" name="submit"></button></form>
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark" id="ordersListHeader">
+        <tr>
+            <th class="align-top" style="width: 100px">
+                <a class="text-white" data-sortfld="docnum">Nr. crt.
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                <select id="docNumFilter" name="doc_id" class="form-control-sm form-control" form="ordersListFilter" data-operator="="><option> </option></select>
+            </th>
+            <th class="align-top">
+                <a class="text-white" data-sortfld="label">Denumire
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                <input type="text" name="label" class="form-control-sm form-control" form="ordersListFilter" data-operator="~=~">
+            </th>
+            <th class="customerColumn align-top" style="min-width: 150px">
+                <a class="text-white" data-sortfld="pname">Client
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                <br>
+                <select id="partnerNameFilter" name="partner_id" class="form-control-sm form-control" form="ordersListFilter" data-operator="="><option> </option></select>
+            </th>
+            <th class="align-top">
+                <a class="text-white" data-sortfld="state">Status
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                <select name="state" class="custom-select custom-select-sm" form="ordersListFilter" data-operator="=">
+                    <option></option>
+                    <option value="offer">Oferta</option>
+                    <option value="ord">Comandat</option>
+                    <option value="proc">In lucru</option>
+                    <option value="ctc">Verificare</option>
+                    <option value="fix">Fix</option>
+                    <option value="ready">Gata de livrare</option>
+                    <option value="dlvd">Livrat</option>
+                </select>
+            </th>
+            <th>
+                <a class="text-white" data-sortfld="created_on">Data intrare
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                <div class="input-group input-group-sm ">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">de la</span>
+                    </div>
+                    <input type="date" name="created_on" class="form-control-sm form-control" form="ordersListFilter" data-operator=">">
+                </div>
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">pana</span>
+                    </div>
+                    <input type="date" name="created_on" class="form-control-sm form-control" form="ordersListFilter" data-operator="<">
+                </div>
+            </th>
+            <th>
+                <a class="text-white" data-sortfld="closed_on">Data iesire
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                <div class="input-group input-group-sm ">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">de la</span>
+                    </div>
+                    <input type="date" name="closed_on" class="form-control-sm form-control" form="ordersListFilter">
+                </div>
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">pana</span>
+                    </div>
+                    <input type="date" name="closed_on" class="form-control-sm form-control" form="ordersListFilter">
+                </div>
+            </th>
+        </tr>
+        </thead>
+        <tbody id="ordersList" data-paging="#ordersListPaging"
+               data-offsetinp="#ordersOffsetInp" data-pagesizeinp="#ordersPageSizeInp">
+        <tr class="order <%= attributes.state %>">
+            <td>
+                <span class="actions"><button class="btn btn-danger btn-sm" onclick="deleteOrder(this)"><i class="fa fa-trash-alt"></i></button></span>
+                <span class="auftragNumLbl bnt btn-sm btn-secondary"><%= relationships.doc_id.attributes.docnum %></span>
+            </td>
+            <td onclick="orderDetailsModal(this)" style="cursor: pointer"><%= attributes.label %></td>
+            <td class="customerColumn"><%= relationships.partner_id.attributes.name %></td>
+            <td class="state"><span class="badge badge-pill <%= attributes.state %>"> </span></td>
+            <td><%= attributes.created_on.substr(0,10) %></td>
+            <td><%= attributes.closed_on?attributes.closed_on.substr(0,10):"-" %></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="card-footer">
+    <div class="btn-group"  id="ordersListPaging" data-pagesize="10">
+        <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+        <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+        <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+        <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+        <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+    </div>
+    Pagina <input type="number" name="offset" size="3" value="0" id="ordersOffsetInp">
+    <select id="ordersPageSizeInp">
+        <option></option>
+        <option>5</option>
+        <option>10</option>
+        <option>25</option>
+        <option>50</option>
+        <option>75</option>
+    </select> inregistrari pe pagina
+</div>
+<script>
+    function orderDetailsModal(src) {
+        komponentor.intent('/views/orders/order').send({instance:$(src).data('instance')}).then((k)=>{console.log('#######',k)})
+    }
+
+    function deleteOrder(src){
+        console.log("////",$(src).data("instance"))
+
+        komponentor.intent("/common/messagemodal").data({
+            body: "Esti sigur ca vrei sa stergi comanda<br><strong>"+$(src).data("instance").attributes.label + "</strong>",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        $(src).data('instance').delete().then(()=>{console.log("ok",arguments)}).catch(function(data){
+                            console.log(data);
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
+    }
+
+    function newOrderFromXML() {
+        komponentor.intent("/views/orders/importxml").data({instance:$("#ordersList").data("instance")}).send();
+    }
+
+    function newOrder() {
+        komponentor.intent("/views/orders/createNewOrder").data({instance:$("#ordersList").data("instance")}).send();
+    }
+
+    function init_komponent(k) {
+        let url = apiRoot+"/orders?page[orders_extended][offset]=0&page[orders_extended][limit]=10&include=doc_id,partner_id";
+        // let insertUrl = apiRoot+"/orders?page[orders_extended][offset]=0&page[orders_extended][limit]=10";
+
+        if(k.data && k.data.instance && k.data.instance.type==="partners") {
+            k.$el.find(".customerColumn").remove();
+            $("#newOrderButtons").remove();
+            url = apiRoot+"/orders?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10&include=doc_id,partner_id";
+            // insertUrl = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
+        }
+
+        $("#ordersList").apiator({
+            url: url,
+            type: "orders",
+            resourcetype: "collection",
+            filter: "#ordersListFilter",
+            paging: "#ordersListPaging",
+            sort: "#ordersListHeader",
+            // insertUrl: insertUrl
+        });
+
+        k.$el.find("#partnerNameFilter").select2({
+            placeholder: 'Client',
+            allowClear: true,
+            ajax:{
+                url: apiRoot+"/partners",
+
+                minimumInputLength: 2,
+                dataType: 'json',
+                data: (params)=>{
+                    let limit = 5;
+                    let p = {
+                        "page[partners][offset]":params.page?(params.page-1)*limit:0,
+                        "page[partners][limit]":limit
+                    };
+                    if(params.term) {
+                        p.filter = "name~=~" + params.term;
+                    }
+                    return p;
+                },
+                processResults: function (data) {
+                    let result = {results:[]};
+                    data.data.forEach(function (item) {
+                        result.results.push({
+                            id: item.id,
+                            text: item.attributes.name,
+                            // data: item
+
+                        })
+                    });
+                    return result;
+                }
+            }
+        });
+
+        k.$el.find("#docNumFilter").select2({
+            allowClear: true,
+            placeholder: "",
+            ajax:{
+                url: apiRoot+"/documents",
+                minimumInputLength: 2,
+                dataType: 'json',
+                data: (params)=>{
+                    let limit = 5;
+                    let p = {
+                        "page[documents][offset]":params.page?(params.page-1)*limit:0,
+                        "page[documents][limit]":limit
+                    };
+                    if(params.term) {
+                        p.filter = "docnum~=~" + params.term;
+                    }
+                    return p;
+                },
+                processResults: function (data) {
+                    let result = {results:[]};
+                    data.data.forEach(function (item) {
+                        result.results.push({
+                            id: item.id,
+                            text: item.attributes.docnum,
+                            // data: item
+
+                        })
+                    });
+                    return result;
+                }
+            }
+        });
+
+        let formElements = $($("#ordersListFilter")[0].elements);
+        formElements.filter("input").on("keyup",function () {
+            formElements.filter("button[type=submit]").click();
+        })
+            .on("change",function () {
+                formElements.filter("button[type=submit]").click();
+
+            });
+        formElements.filter("select").on("change",function () {
+                formElements.filter("button[type=submit]").click();
+
+        });
+
+
+        k.exec = function (b) {
+            console.log("exec order",k,b);
+        }
+    }
+</script>

@@ -1,0 +1,43 @@
+<script>
+  function init_komponent(k){
+      console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[", k)
+      // let instance = $("<span></span>").apiator({returninstance: true, resourcetype: "collection"});
+      let instance = k.data.instance;
+      // instance.setUrl(apiRoot + "/users");
+      komponentor.intent("/common/formmodal").data({
+          callback:function (data) {
+              console.log(data);
+              if(data.userid === "" || data.fname === "" || data.lname === "" || data.email === "" || data.password === ""){
+                  komponentor.intent("/common/messagemodal").data({
+                      body:"Toate campurile trebuie completate.",
+                      buttons:[
+                          {
+                              label: "Ok",
+                              attrs: {
+                                  "data-dismiss": "modal",
+                              },
+                              class: "btn btn-danger",
+                          }
+                      ]
+                  }).send();
+                  return 1;
+              } else {
+                  instance.createItem(data).catch(function (data) {
+                      komponentor.intent("/common/errormodal").data({
+                          body: "A aparut o eroare: <pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
+                      }).send();
+                  });
+              }
+
+          },
+          title:"Adauga angajat nou",
+          fields:[
+              {type:"text", name: "userid", default: "", placeholder: "", label: "Username", options:[]},
+              {type:"text", name: "fname", default: "", placeholder: "", label: "Prenume", options:[]},
+              {type:"text", name: "lname", default: "", placeholder: "", label: "Nume", options:[]},
+              {type:"text", name: "email", default: "", placeholder: "", label: "E-Mail", options:[], pattern: `[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$`},
+              {type:"text", name: "password", default: "", placeholder: "", label: "Parola", options:[]},
+          ]
+      }).send();
+  }
+</script>
