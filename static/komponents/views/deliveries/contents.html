@@ -80,7 +80,7 @@
     <form id="deliveryContentsFilter"></form>
     <button class="btn btn-secondary mb-3" id="addContentBtn"><i class="fa fa-truck-loading"></i> Adauga elemente la livrare</button>
     <div style="max-height: 400px; overflow: scroll">
-        <table class="items" id="deliveryContentsTable">
+        <table class="items table table-sm" id="deliveryContentsTable">
             <thead id="deliveriesListHeader">
             <tr>
                 <th></th>
@@ -123,12 +123,12 @@
                 <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="event.stopPropagation();toggleSelect($(this).parents('tr'))" data-connected="#checkAllAssignedItems"></td>
                 <!--            <td><%= id %></td>-->
 
-                <td><%= attributes.partid %></td>
-                <td><%= attributes.name %></td>
-                <td><%= attributes.docnum %></td>
-                <td><%= attributes.qty %></td>
-                <td><%= attributes.labels %></td>
-                <td><%= attributes.checkout %></td>
+                <td><%= attributes.item %></td> <!-- id din orders_items -->
+                <td><%= attributes.name %></td> <!-- name din idem si la fel -->
+                <td><%= attributes.docnum %></td> <!-- docnum din documents, relationship prin doc_id din orders -->
+                <td><%= attributes.qty %></td> <!-- qty din orders_items -->
+<!--                <td><%= attributes.labels %></td>-->
+<!--                <td><%= attributes.checkout %></td>-->
                 <td>
                     <button class="btn-danger" onclick="removeFromDelivery(this)"><i class="fa fa-trash"></i></button>
                     <button class="btn-primary"><i class="fa fa-print"></i></button>
@@ -191,10 +191,10 @@
         if(!k.data || !k.data.instance) {
             return;
         }
-        let unassignedItemsInstance = k.$el.find("#unassingedItems")
-            .apiator({returninstance: true})
-        function selectContent()
-        {
+
+        let unassignedItemsInstance = k.$el.find("#unassingedItems").apiator({returninstance: true});
+
+        function selectContent() {
             let $unassignedItems = k.$el.find("#unassingedItems");
             let $unassignedItemsContainer = $unassignedItems.parents(".form-group").hide();
 
@@ -211,7 +211,7 @@
                         let data = e.params.data;
                         console.log(data);
                             unassignedItemsInstance
-                            .setUrl(apiRoot+"/orders/"+data.id+"/order_items_wmeta?filter=qty>0")
+                            .setUrl(apiRoot+"/orders/"+data.id+"/orders_items_wmeta?filter=qty>0")
                             .loadFromRemote();
 
 
@@ -224,8 +224,7 @@
             $select.val(null).trigger('change');
         }
 
-        function addToDelivery()
-        {
+        function addToDelivery() {
             let instance = contentItems;
             let cbs = $('#unassingedItems').find("input[type=checkbox]");
             let qtys = $('#unassingedItems').find("input[type=number]");
@@ -235,29 +234,28 @@
                     continue;
                 toAdd.push([cbs[i].value,qtys[i].value,k.data.instance.id]);
             }
-            console.log("@@@@@@@@@@@@@@@@@@",toAdd);
+            // console.log("@@@@@@@@@@@@@@@@@@",toAdd);
             // return;
 
             let promises = [];
             let errors =[];
             toAdd.forEach(function (el) {
-               let [item,qty,delivery] = el;
-                // qty = el[1];
-                // delivery = el[2];
-                let data = {
-                    item: item,
-                    qty: qty,
-                    delivery: delivery
-                };
-                console.log(data);
+                console.log("++++++++++++++++++++++++++++++++++++++", el);
+                let [item,qty,delivery] = el;
+                // for(let i = 0; i < qty; i++){
+                    let data = {
+                        item: item,
+                        delivery: delivery
+                    };
 
 
-                promises.push(
-                    instance.setUrl({insertUrl:apiRoot + "/deliveries_contents"})
-                    .createItem(data)
-                    .catch((resp)=>errors.push(resp.jqXHR.responseJSON)));
+                    promises.push(
+                        instance.setUrl({insertUrl:apiRoot + "/deliveries_contents"})
+                            .createItem(data)
+                            .catch((resp)=>errors.push(resp.jqXHR.responseJSON)));
+                // }
             });
-            console.log("------------////////////////----",promises.length)
+            // console.log("------------////////////////----",promises.length)
 
             Promise.all(promises)
                 .then(() => instance.loadFromRemote())
@@ -282,12 +280,13 @@
 
         k.$el.find("#addToDlvrBtn").on("click",addToDelivery);
 
-
         k.$el.find("#cancelAddToDlvrBtn").on("click",()=>{k.$el.find("#addElsToDeliveryCard").hide(400);k.$el.find("#addContentBtn").show();});
 
-        let url = apiRoot + "/deliveries/"+k.data.instance.id+"/dlvrcontents_expanded?sort=-id&page[dlvrcontents_expanded][limit]=50";
+        let url = apiRoot + "/deliveries/"+k.data.instance.id+"/dlvrcontents_expanded/?";
         // let url = apiRoot + "/deliveries/"+k.data.instance.id+"/deliveries_contents?include=inventory,inventory.order";
         let contentItems = k.$el.find("#deliveryContentsList").apiator({url:url,returninstance:true});
+        console.log("asdasdasdasdasdasd",contentItems);
+        console.log("mnbmnbmnbmnbmbmnbm",k.data.instance.id);
 
         k.$el.find("#startScanBut").on("click",function () {
             komponentor.intent("/views/deliveries/scan").data({data:k.data}).send();
