@@ -9,76 +9,30 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>SRE</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
-    <!--    <base href="/" />-->
-    <!--    <meta name="description" content="This is an example dashboard created using build-in elements and components.">-->
+<!--    <base href="/" />-->
+<!--    <meta name="description" content="This is an example dashboard created using build-in elements and components.">-->
     <meta name="msapplication-tap-highlight" content="no">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <!--    <link href="main.css" rel="stylesheet">-->
-    <!--    <link href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">-->
-
-    <link rel="stylesheet" href="assets/fontawesome/css/all.min_adminlte.css">
-
-    <link href="https://adminlte.io/themes/v3/dist/css/adminlte.css" rel="stylesheet">
-    <link href="https://adminlte.io/themes/v3/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet">
-    <link href="https://adminlte.io/themes/v3/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
-<!--    <link href="adminlte.min.css" rel="stylesheet">-->
-
+    <link href="main.css" rel="stylesheet">
+<!--    <link href="assets/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link href="https://adminlte.io/themes/AdminLTE/dist/css/AdminLTE.min.css" rel="stylesheet">-->
+<!--    <link href="https://adminlte.io/themes/AdminLTE/dist/css/skins/_all-skins.min.css" rel="stylesheet">-->
     <link href="assets/css/spinner.css" rel="stylesheet">
     <link href="assets/css/jquery-ui.css" rel="stylesheet">
-    <!--    <link href="assets/css/selectize.bootstrap3.css" rel="stylesheet">-->
+<!--    <link href="assets/css/selectize.bootstrap3.css" rel="stylesheet">-->
     <link href="assets/css/select2.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.css" rel="stylesheet">
-
-
-
-    <!--    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>-->
     <style>
-        body {
-            font-size: 0.9rem;
-            font-family: 'Poppins', sans-serif;        }
-        .card-header{
-            display: flex;
-            align-items: center;
-        }
-        .card-header>*{
-            display: flex;
-
-        }
-        .card-header .nav {
-            display: flex;
-            width: auto;
-            margin-left: auto;
-        }
-
-        .modal-header{
-            display: flex;
-            align-items: center;
-        }
-        .modal-header>*{
-            display: flex;
-        }
-        .modal-title{
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        .nav-pills{
-            font-weight: bold;
-        }
 
     </style>
 </head>
-<body  class="sidebar-mini layout-fixed" data-panel-auto-height-mode="height" style="height: auto;">
+<body>
 
-<div class="wrapper" id="page">
-</div>
+<div id="page"></div>
+<div class='pageOverlay'><div class='spinner'></div></div>
+
+
 
 
 <script src="assets/js/jquery.js"></script>
@@ -92,65 +46,20 @@
 <script src="assets/js/jquery.scannerdetection.js"></script>
 <script src="assets/js/select2.min.js"></script>
 <script src="assets/js/select2wrapper.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.js"></script>
-<script src="assets/js/label_printer.js"></script>
-
-
-
+<script src="assets/js/JsBarcode.all.min.js"></script>
+<!--<script src="assets/js/obj2xml.js"></script>-->
 <script>
-    /**
-     * setarea environment-ului se face in Consola cu
-     * localStorage.setItem("spaleck.env","denumire_environment")
-     *
-     * Evident "denumire_environment" trebuie sa se regaseasca in env_config de mai jos
-     */
-    let env_config = {
-        "staging": {
-            name: 'staging',
-            backendUrl: '/spaleck/be',
-            apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
-            authUrl: '/spaleck/be/main/auth/login',
-            posPrintUrl: '/spaleck/be/main/POS/print',
-        },
-        "devel": {
-            name: 'devel',
-            backendUrl: '/spaleck/be',
-            apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
-            authUrl: '/spaleck/be/main/auth/login',
-            posPrintUrl: '/spaleck/be/main/POS/print',
-        },
-        "production": {
-            name: 'production',
-            backendUrl: '/spaleck/be',
-            apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
-            authUrl: '/spaleck/be/main/auth/login',
-            posPrintUrl: '/spaleck/be/main/POS/print',
-        },
-        "sergiu_devel": {
-            name: 'sergiu_devel',
-            backendUrl: '/spaleck/be',
-            apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
-            authUrl: '/spaleck/be/main/auth/login',
-            posPrintUrl: '/spaleck/be/main/POS/print',
-        },
-    };
-
-
-
     const localStorageLabel = "spaleck";
-    let env = localStorage.getItem(localStorageLabel+".env");
-    if(!env || !env_config[env])
-        env = "staging";
-    console.log(env_config[env]);
-
     const _kPath = "komponents";
     const _kExt = ".html";
     const vPath = _kPath+"views/";
-    const backendUrl = env_config[env].backendUrl;
-    const apiRoot = env_config[env].apiRoot;
-    const authUrl = env_config[env].authUrl;
-    const posPrintUrl = env_config[env].posPrintUrl;
+    const backendUrl = '/spaleck/be';
+    const apiRoot = backendUrl + '/dbapi/v2/spaleck';
+    const authUrl = backendUrl + '/main/auth/login';
+    const posPrintUrl = backendUrl + '/main/POS/print';
+
     let defaultView = "/views/dashboard";
+
 </script>
 <script>
     function logout() {
@@ -190,35 +99,14 @@
         url = "/views/login";
     }
     autoload = false;
-    $("#page").komponent({url:url,replace:false}).finally(function () {
+    $("#page").komponent({url:url}).finally(function () {
         $(".pageOverlay").remove();
     });
 
 
-</script>
-<script>
-
-    function toggleAll(src) {
-        let checked = $(src).prop("checked");
-        $($(src).data("connected")).children().each(function (i) {
-            toggleSelect(this,checked);
-        });
-    }
-
-    function toggleSelect(src,state) {
-        state = state!==undefined?state:!$(src).hasClass('selected');
-        $(src).find("input[type=checkbox]").prop("checked",state);
-        if(state) {
-            $(src).addClass('selected').find("input[type=checkbox]").prop("checked",true);
-        }
-        else {
-            $(src).removeClass('selected');
-        }
-        let tmp = $("#orderPartsList").children();
-        $($(src).data("connected")).prop("checked",(tmp.length===tmp.filter(".selected").length));
-    }
 
 </script>
+
 
 
 

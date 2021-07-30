@@ -24,6 +24,10 @@
             $modal.modal("hide");
         };
 
+        // let $modal = k.$el.filter(".modal").appendTo("body")
+        //     .on("hidden.bs.modal",function () {
+        //         k.$el.remove();
+        //     });
         let $modal = k.$el.appendTo("body")
             .filter(".modal")
             .on("hidden.bs.modal",function (event) {

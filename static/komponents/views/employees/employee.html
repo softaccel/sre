@@ -34,46 +34,43 @@
     .emplCol{
         display: none;
     }
-    /*.nav-me{*/
-    /*    display: flex;*/
-    /*    width: auto;*/
-    /*    margin-left: auto;*/
-    /*}*/
 </style>
 <div class="modal" id="employeeModal">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">
-                    Fisa Angajat
-                </div>
-                <ul class="nav nav-pills">
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#detaliiPanel" class="nav-link active">Sumar</a>
-                    </li>
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#pontajPanel" class="nav-link">Pontaj</a>
-                    </li>
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#allocatedProjectsPanel" class="nav-link">Proiecte alocate</a>
-                    </li>
-                </ul>
-            </div>
             <div class="modal-body bg-light">
-                <div class="tab-content">
-                    <div class="tab-pane active" role="tabpanel" id="detaliiPanel">
-                        <div id="employeeDetails" is="komponent" data-url="/views/employees/details"></div>
+                <div class="card">
+                    <div class="card-header-tab card-header-tab-animation card-header">
+                        <div class="card-header-title">
+                            <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"></i>
+                            Fisa angajat <span id="comandaid"></span>
+                        </div>
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#detaliiPanel" class="nav-link active">Sumar</a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#pontajPanel" class="nav-link">Pontaj</a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#allocatedProjectsPanel" class="nav-link">Proiecte alocate</a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="tab-pane" role="tabpanel" id="allocatedProjectsPanel">
-                        <div id="allocatedProjects" is="komponent" data-url="/views/employees/allocatedProjects"></div>
-                    </div>
-                    <div class="tab-pane" role="tabpanel" id="pontajPanel" >
-                        <div id="employeeTimetracking" is="komponent" data-url="/views/pontaj/lista"></div>
+                    <div class="card-body" style="min-height: 400px">
+                        <div class="tab-content">
+                            <div class="tab-pane active" role="tabpanel" id="detaliiPanel">
+                                <div id="employeeDetails" is="komponent" data-url="/views/employees/details"></div>
+                            </div>
+                            <div class="tab-pane" role="tabpanel" id="allocatedProjectsPanel">
+                                <div id="allocatedProjects" is="komponent" data-url="/views/employees/allocatedProjects"></div>
+                            </div>
+                            <div class="tab-pane" role="tabpanel" id="pontajPanel" >
+                                <div id="employeeTimetracking" is="komponent" data-url="/views/pontaj/lista"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
             </div>
         </div>
     </div>

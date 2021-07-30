@@ -8,7 +8,7 @@
 class HttpResp{
 	private static $self=null;
 
-	private array $header = [
+	private $header = [
 		"Content-Type"=>"text/html",
 		"Access-Control-Allow-Credentials"=>"true",
 		"Pragma"=>"no-cache"

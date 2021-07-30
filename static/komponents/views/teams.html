@@ -1,32 +1,21 @@
-<div class="container-fluid">
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Echipe</h1>
-                </div>
-                <div class="col-sm-6 ">
-                    <div class="breadcrumb float-sm-right">
-                        <button onclick="newEmplForm()" type="button" data-toggle="tooltip" title="Adauga angajat" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary">
-                            Echipa noua
-                        </button>
-                    </div>
-                </div>
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </section>
-    <section class="content">
-        <div class="container-fluid">
+<style>
+
+</style>
+<div class="app-main__inner">
+    <div class="row mb-3">
+        <div class="col">
             <div class="card">
                 <div class="card-body">
                     <div class="row" data-resourcetype="collection" id="teamsList" data-type="teams" data-paging="#teamsListPaging">
-                        <div class="col-lg-2 col-md-3 col-sm-4" onclick="teamModal(this)">
-                            <div class="card" style="cursor: pointer">
+                        <div class="col-2" onclick="teamModal(this)">
+                            <div class="card" >
                                 <div class="card-body text-center">
-                                        <span class="rounded-circle bg-secondary " style=" font-size: 40px;padding: 5px">
+                                    <div class="d-inline-block" style="width: 60px">
+                                        <span class="rounded-circle warning-feedback bg-secondary" style="color: white; font-size: 40px;padding: 5px">
                                             <i class="fa fa-users"></i>
                                         </span>
-                                    <div class="d-block mt-2">
+                                    </div>
+                                    <div class="d-block">
                                         <%=attributes.name%>
                                     </div>
                                 </div>
@@ -46,22 +35,11 @@
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 </div>
-
-
 
 <script>
 
-    function newEmplForm() {
-        komponentor.intent("/common/formmodal").data({
-            callback:function (data){
-                $("#teamsList").data("instance").createItem(data);
-            },
-            title:"Adauga Echipa Noua",
-            fields:[{type:"text",name: "name",default: "test", placeholder: "Numele Echipei", label: "Nume",options:[]}]
-        }).send();
-    }
     function teamModal(src) {
         komponentor.intent('/views/teams/team').data({instance: $(src).data('instance')}).send();
     }

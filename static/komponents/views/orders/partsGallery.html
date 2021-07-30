@@ -11,187 +11,214 @@
         font-size: 0.9em;
     }
 
-    #orderPartsListFilter{
+    #orderPartsList>li{
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
-        background: #212529;
-        margin-bottom: 5px;
-        padding: 5px;
-    }
-    #orderPartsListFilter>div{
-        flex: 0 0 auto;
-        padding: .75rem;
-    }
-    #orderPartsList:nth-child(1){
-        flex: 1 0 60%;
-    }
-
-    #orderPartsList>li{
         box-shadow: silver 2px 2px 2px;
         background: #f5f5f5;
         margin-bottom: 5px;
         padding: 5px;
-        cursor: pointer;
     }
-    #orderPartsList:not(.grid_3)>li{
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
+    #orderPartsList>li>span{
+        flex-grow: 3;
+        flex-basis: 25%;
+        /*margin: 10px;*/
+
     }
-    #orderPartsList>li:hover{
-        color: #212529;
-        background-color: rgba(0,0,0,.075);
+    #orderPartsList>li>span.checkbox{
+        flex-shrink: 0;
+        flex-grow: 0;
+        flex-basis: 5%;
     }
-    #orderPartsList:not(.grid_3)>li>span{
+    #orderPartsList>li>span.partid{
+        flex-shrink: 0;
         flex-grow: 1;
         flex-basis: 15%;
-        padding-left: .75rem;
-        /*margin: 10px;*/
-    }
-    #orderPartsList:not(.grid_3)>li>div>img {
-        visibility: hidden;
-        position: absolute;
-    }
-
-    #orderPartsList>li>span.name{
-        flex: 1 0 60%;
     }
 
     #orderPartsList>li>span:last-child{
         text-align: right;
     }
+    #orderPartsList>li.selected{
+        background: #555555;
+        color: white;
 
-    .grid_3 {
-        display: grid;
-        grid-auto-rows: 1fr;
-        grid-template-columns: 1fr 1fr 1fr;
-        grid-gap: .5rem;
-        align-content: space-evenly;
-        justify-content: space-between;
-        text-align: center;
     }
-    .grid_3>li>span.count {
-        display: none;
-    }
-
-    .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 1rem; }
-    .toggle.ios .toggle-handle { border-radius: 1rem; }
-
 </style>
-<form id="orderPartsMe">
-    <div id="orderPartsListFilter">
-        <div class="align-top" style="width: 100px">
-            <a class="text-white" data-sortfld="partid">Part id
-                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
-            </a>
-            <input type="text" name="partid" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
-        </div>
-        <div class="align-top">
-            <a class="text-white" data-sortfld="name">Denumire
-                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
-            </a>
-            <input type="text" name="name" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
-        </div>
-        <div>
-
-        </div>
-        <div>
-            <input type="checkbox" id="viewToggle" checked data-toggle="toggle" data-style="ios" data-size="sm">
-        </div>
-        <div>
-            <div class="float-sm-right">
-                <button onclick="newOrderPart()" type="button" data-toggle="tooltip" title="Adauga reper" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary">
-                    Adauga reper
-                </button>
-            </div>
-        </div>
+<div class="orderPartsMe">
+    <div class="alert alert-primary " role="alert">
+        <i class="fa fa-filter"></i> Filtrare
+        <button class="btn btn-sm btn-secondary" onclick="showSelected()">Selectate</button>
+        <button class="btn btn-sm btn-secondary" onclick="showZero()">Zero bucati</button>
+        <button class="btn btn-sm btn-secondary" onclick="showNonZero()">Diferit de zero</button>
+        <button class="btn btn-sm btn-secondary" onclick="showAll()">Toate</button>
     </div>
-    <ul class="grid_3" id="orderPartsList"
-        data-filter="#orderPartsMe"
-        data-sort="#orderPartsListFilter">
-
-        <li onclick="orderPartModal(this)">
-            <div class="">
-                <img src="assets/images/spaleck.png" class="img-thumbnail img-fluid rounded mx-auto d-block" style="max-width: 100%; height: 200px">
-            </div>
+    <div class="alert alert-info " role="alert">
+        <i class="fa fa-sort"></i>  Ordonare
+        <button class="btn btn-sm btn-secondary">Denumire</button>
+        <button class="btn btn-sm btn-secondary">Bucati</button>
+    </div>
+    <div class="alert alert-success " role="alert">
+        <i class="fa fa-traffic-light"></i> Actiuni
+        <button class="btn btn-sm btn-secondary" id="printButton">Tiparire etichete</button>
+    </div>
+    <div class="orderPartsListHeader mt-3">
+        <input type="checkbox" onclick="toggleAll(this)" id="toggleAllCheckbox"/>
+        <!--<button  class="btn btn-success"><i class="fa fa-print"></i> </button>-->
+    </div>
+    <ul id="orderPartsList">
+        <li onclick="toggleSelect(this)">
+            <span class="checkbox">
+                <input type="checkbox" onclick="event.stopPropagation();toggleSelect(this.parentNode)">
+            </span>
             <span class="partid"><%= attributes.partid %></span>
-            <br>
             <span class="name"><%= attributes.name %></span>
-            <span class="count"><%= attributes.qty %> / <%= attributes.order_qty %> bucati</span>
-
+            <span class="count"><input class="countNo" type="number" value="<%= Math.round(attributes.qty) %>" size="3" onclick="event.stopPropagation()"> bucati</span>
         </li>
     </ul>
+</div>
+<!--<div class="row printable">-->
+<!--    <div class="card mb-2 col-sm-6 col-md-4 col-lg-3" >-->
+<!--        <div class="card-body text-center">-->
+<!--            <div class="count"><%= Math.round(attributes.qty*100)/100 %> bucati</div>-->
+<!--            <svg class="barcode" jsbarcode-height="50" jsbarcode-width="1"-->
+<!--                 jsbarcode-value="<%= attributes.partid %>"-->
+<!--                 jsbarcode-textmargin="0"-->
+<!--                 jsbarcode-fontoptions="bold">-->
+<!--            </svg><br>-->
+<!--            <div class="name"><%= attributes.name %></div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 
-    <button type="submit" class="d-none" id="filterSubmitBtn"></button>
-</form>
 
 <script>
-
-    function newOrderPart() {
-        let insertCopy = {...$("#orderPartsList").data("instance").insertUrl};
-        insertCopy.path = insertCopy.path.replace("inventory_wmeta", "inventory");
-        $("#orderPartsList").data("instance").insertUrl = insertCopy;
-        console.log("ababaababbbaba" ,$("#orderPartsList").data("instance"));
-
-        komponentor.intent("/common/formmodal").data({
-            callback:function (data) {
-                console.log(data);
-                data.um = "Stk";
-                $("#orderPartsList").data("instance").createItem(data).then().catch(function (data) {
-                    komponentor.intent("/common/errormodal").data({
-                        body: "A aparut o eroare: <pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
-                    }).send();
-                });
-            },
-            title:"Adauga Reper Nou",
-            fields:[
-                {type:"text", name: "name", default: "", placeholder: "", label: "Denumire", options:[]},
-                // {type:"text", name: "partid", default: "", placeholder: "", label: "Part Id", options:[]},
-                {type:"number", name: "qty", default: "0", placeholder: "", label: "Cantitate in stoc", options:[]},
-                {type:"number", name: "order_qty", default: "0", placeholder: "", label: "Cantitate comandata", options:[]},
-                {type:"number", name: "unit_price", default: "0", placeholder: "", label: "Pret unitar", options:[]},
-                {type:"select", name: "currency", label: "Moneda", url: "/currencies", labelfnc: "id", idfnc: "id"}
-            ]
-        }).send();
+    function showSelected() {
+        showAll();
+        $("#orderPartsList").children().not(".selected").addClass("d-none")
+    }
+    function showAll() {
+        $("#orderPartsList").children().removeClass("d-none");
+    }
+    
+    function showNonZero() {
+        showAll();
+        $("#orderPartsList").children().each(function () {
+            if($(this).find(".countNo").val()*1===0) {
+                $(this).addClass("d-none");
+            }
+        });
     }
 
-    function orderPartModal(src) {
-        console.log("open part modal")
-        if($(src).data("locked")) {
-            return;
+    function showZero() {
+        showAll();
+        $("#orderPartsList").children().each(function () {
+            if($(this).find(".countNo").val()*1!==0) {
+                $(this).addClass("d-none");
+            }
+        });
+    }
+
+    function toggleAll(src) {
+        let checked = $(src).prop("checked");
+        $("#orderPartsList").children().each(function (i) {
+            toggleSelect(this,checked);
+        });
+    }
+
+    function toggleSelect(src,state) {
+        state = state!==undefined?state:!$(src).hasClass('selected');
+        $(src).find("input[type=checkbox]").prop("checked",state);
+        if(state) {
+            $(src).addClass('selected').find("input[type=checkbox]").prop("checked",true);
         }
-        $(src).data("locked",true);
-        komponentor.intent('/views/orders/orderPart')
-            .data({instance:$(src).data('instance')})
-            .send()
-            // .then((k)=>{console.log('#######',k)})
-            .finally(()=>$(src).data("locked",null));
+        else {
+            $(src).removeClass('selected');
+        }
+        let tmp = $("#orderPartsList").children();
+        $("#toggleAllCheckbox").prop("checked",(tmp.length===tmp.filter(".selected").length));
     }
 
-    function toggleSwitch() {
-        let $toggle = $("#orderPartsList");
-        if($toggle.hasClass("grid_3")) {
-            $toggle.removeClass("grid_3");
-        } else {
-            $toggle.addClass("grid_3");
-        }
-    }
+
 
     function init_komponent(k) {
         $("#orderPartsList").apiator({
             type: "inventory",
             resourcetype: "collection"
-        }).data("instance").setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_items_wmeta?page[orders_items_wmeta][limit]=1000").loadFromRemote();
-
-        $("#orderPartsListFilter").find("#viewToggle").bootstrapToggle().change(toggleSwitch);
-
-        let form = $("#orderPartsMe");
-        form.find("input").on("input",function () {
-            $("#filterSubmitBtn").click();
+        }).data("instance").setUrl(apiRoot+"/orders/"+k.data.instance.id+"/inventory_wmeta?page[inventory_wmeta][limit]=1000").loadFromRemote().then(function () {
+            JsBarcode(".barcode").init();
         });
 
-    }
+        function printLabels() {
+            let els = $("#orderPartsList").children(".selected").clone(true);
+            if(!els.length) {
+                return;
+            }
 
+            console.log( k.data.instance);
+            // return;;
+            let ronum = k.data.instance.relationships.doc_id.attributes.docnum;
+            let belegnum;
+            for(let i=0;i<k.data.instance.relationships.orders_meta.length;i++) {
+                if(k.data.instance.relationships.orders_meta[i].attributes.meta_key==="K.F.E_BelegKopf.BelegNummer") {
+                    belegnum = k.data.instance.relationships.orders_meta[i].attributes.meta_val;
+                    break;
+                }
+            }
+            let printJob = {
+                name: "container",
+                children:[]
+            };
+            els.each(function () {
+                for(i=0;i<$(this).find(".countNo").val();i++) {
+                    let elInstance = $(this).data("instance");
+                    printJob.children.push(
+                        {
+                            name: "container",
+                            attributes:{
+                                justification: "center"
+                            },
+                            children: [
+                                {
+                                    name: "text",
+                                    val: elInstance.attributes.name.substr(0,60).padEnd(60," ")
+                                },
+                                {
+                                    name: "barcode",
+                                    val: elInstance.id
+                                },
+                                {
+                                    name: "text",
+                                    val: elInstance.attributes.partid
+                                },
+                                {
+                                    name: "text",
+                                    val: "Bestellnum: " + belegnum
+                                },
+                                {
+                                    name: "text",
+                                    val: "Auftragnum: " + ronum
+                                },
+                                {
+                                    name: "feed",
+                                    attributes:{
+                                        lines: 3
+                                    }
+                                }
+                            ]
+                        }
+                    );
+                }
+            });
+
+            // return console.log(printJob);
+            komponentor.intent("/common/posprint").data(printJob).send();
+        }
+
+
+        k.$el.find("#printButton").on("click",printLabels)
+
+    }
 </script>
 
