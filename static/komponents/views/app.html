@@ -1,10 +1,10 @@
-
-<!--<div class="app-container app-theme-white body-tabs-shadow fixed-header" id="mainc">-->
-<!--<div class="app-container app-theme-white body-tabs-shadow fixed-header sidebar-mini layout-fixed" >-->
-    <div is='komponent' data-url="/common/header" id="mainc" data-replace="true"></div>
-    <div is='komponent' data-url="/common/sidebar" id="sidebar" data-replace="true"></div>
-    <div class="content-wrapper" id="pageContent"></div>
-<!--</div>-->
+<div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar" id="mainc">
+    <div class="app-header header-shadow" is='komponent' data-url="/common/header"></div>
+    <div class="app-main">
+        <div class="app-sidebar sidebar-shadow" is='komponent' data-url="/common/sidebar" id="sidebar"></div>
+        <div class="app-main__outer" id="pageContent"></div>
+    </div>
+</div>
 <script>
 
     function init_komponent(k) {
@@ -30,8 +30,7 @@
         $(pageContentContainer).komponent({
             url: url,
             paras: paras
-        }).catch(function (e) {
-            console.log(e);
+        }).catch(function () {
             $('#pageContent').html("<h3>Page not found</h3>");
         });
     }

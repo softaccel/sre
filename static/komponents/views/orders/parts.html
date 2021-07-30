@@ -64,7 +64,7 @@
         $("#orderPartsList").apiator({
             type: "inventory",
             resourcetype: "collection"
-        }).data("instance").setUrl(apiRoot+"/orders/"+k.data.orderId+"/orders_items_wmeta").loadFromRemote().then(function () {
+        }).data("instance").setUrl(apiRoot+"/orders/"+k.data.orderId+"/inventory_wmeta").loadFromRemote().then(function () {
             JsBarcode(".barcode").init();
         });
 

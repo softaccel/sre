@@ -146,7 +146,11 @@
     }
     
     function create(data,instance) {
-
+        delete data.id;
+        console.log(instance);
+        instance.createItem(data).then(function () {
+            $("#cancelButton").click();
+        });
     }
 
     function editMode(instance) {
@@ -176,7 +180,6 @@
                         console.log(jqxhr);
                     });
             }
-            // instance is item
             else {
                 instance.createItem(data).then(function () {
                     $("#cancelButton").click();

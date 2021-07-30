@@ -11,29 +11,36 @@
     }
 </style>
 
-<div class="container-fluid">
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Angajati</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6 ">
-
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </section>
-    <section class="content">
-        <div class="container-fluid">
-            <div class="card">
-                <div class="card-header" style="border: none;">
-                    <button class="btn btn-primary" style="margin-bottom: 8px" onclick="addNewEmployee()">Angajat Nou</button>
+<div class="app-main__inner">
+    <div class="app-page-title">
+        <div class="page-title-wrapper">
+            <div class="page-title-heading">
+                <div class="page-title-icon">
+                    <i class="fa fa-users"></i>
                 </div>
-                <div id="employeesList" data-url="/views/employees/list" data-replace="false"></div>
+                <div>Angajati
+                    <div class="page-title-subheading"></div>
+                </div>
+            </div>
+            <div class="page-title-actions">
+                <button onclick="addNewEmployee()" type="button" data-toggle="tooltip" title="Adauga angajat" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary">
+                    <i class="fa fa-user-plus"></i> Angajat nou
+                </button>
+
             </div>
         </div>
-    </section>
+    </div>
+    <div class="content">
+        <div class="row mb-3">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div is="komponent" data-url="/views/employees/list" id="employeesList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -45,7 +52,9 @@
         komponentor
             .intent('/views/employees/newemployee')
             .data({
-                instance:$("#employees").data('instance')
+                instance: $("#employeesList").data('komponent').getListInstance(),
+                action:'new',
+                loadrecursive:'inhibit'
             })
             .send();
     }
@@ -56,7 +65,12 @@
      * @param html
      */
     function init_komponent(k,html) {
-       $("#employeesList").komponent();
 
+        komponentor.loadKomponents(k.$el);
+        $("#employeesList").komponent();
+
+        k.exec = function (options) {
+            console.log(options);
+        }
     }
 </script>

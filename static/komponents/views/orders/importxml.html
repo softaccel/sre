@@ -20,7 +20,7 @@
 <!--                        <input type="text" class="form-control">-->
                     </div>
                     <div class="position-relative form-group">
-                        <label for="belegnummer" class="">Referinta Interna Client</label>
+                        <label for="belegnummer" class="">Belegnummer</label>
                         <input name="belegnummer" id="belegnummer"  type="text" class="form-control">
                     </div>
                     <div class="position-relative form-group">
@@ -43,8 +43,8 @@
                                 <th><input type="checkbox" checked name="toggleall" data-toggle="cod" onclick="toggleCheck(this)"></th>
                                 <th>Cod</th>
                                 <th>Descriere</th>
-                                <th>Cantitate</th>
-                                <th>Pret unitar</th>
+                                <th>Client</th>
+                                <th>asdas</th>
                                 <th>Total</th>
                                 <th>Altele</th>
                             </tr>
@@ -54,8 +54,8 @@
                                 <td><input type="checkbox" name="cod" data-toggleall="toggleall" value="<%= cod %>" checked onclick="toggleCheck(this)"></td>
                                 <td><%= cod %></td>
                                 <td><%= desc %></td>
-                                <td><%= qty %> <%= unit %></td>
-                                <td><%= unit_price %><%= curr %></td>
+                                <td><%= qty %> <%= um %></td>
+                                <td><%= pu %><%= curr %></td>
                                 <td><%= total %><%= curr %></td>
                                 <td onmouseover="show(this)">
                                     <div class="d-none">
@@ -93,7 +93,8 @@
         // $(src.)
     }
 
-    function toggleCheck(src) {
+    function toggleCheck(src)
+    {
         let checked = src.checked;
 
         // toggleAll checkbox was pressed
@@ -149,12 +150,6 @@
         let $uploadButton = k.$el.find("[data-name=uploadButton]");
 
         let orders = k.data.instance;
-
-
-        let valuesMap = {
-            E: "EUR",
-            Stk: "buc"
-        };
 
         function publishHeader(response)
         {
@@ -215,10 +210,10 @@
                         cod: entry.fields["P.A.E_BelegPos.Artikel"].data,
                         desc: entry.fields["P.A.S_ArtikelSpr.Bezeichnung[1]"].data+" / " +entry.fields["P.A.S_ArtikelSpr.Bezeichnung[2]"].data+" / "
                             +entry.fields["P.A.S_ArtikelSpr.Bezeichnung[3]"].data+" / " +entry.fields["P.A.S_ArtikelSpr.Bezeichnung[4]"].data,
-                        unit_price: entry.fields["P.A.E_BelegPos.Einzelpreis"].data.replaceAll(".","").replaceAll(",",".")*1,
+                        pu: entry.fields["P.A.E_BelegPos.Einzelpreis"].data.replaceAll(".","").replaceAll(",",".")*1,
                         qty: entry.fields["P.A.E_BelegPos.Menge"].data.replaceAll(".","").replaceAll(",",".")*1,
                         curr: entry.fields["P.A.S_PreisEinheitSpr.KurzBez"].data,
-                        unit: entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data,
+                        um: entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data,
                         total: entry.fields["P.A.E_BelegPos.Warenwert"].data.replaceAll(".","").replaceAll(",",".")*1,
                         others: entry
                     };
@@ -249,7 +244,7 @@
             return new Promise(function (resolve, reject) {
 
                 $.ajax({
-                        url: backendUrl+"/main/XMLtoJSON",
+                        url: backendUrl+"/main/upload",
                         data: fd,
                         type: "post",
                         contentType: false,
@@ -281,9 +276,9 @@
                     label: $(form.model).val(),
                     partner_id: $(form.partner_id).val(),
                     // meta: meta ? JSON.stringify(meta) : null,
-                    user_id: userData.sub,
+                    created_by: userData.sub,
                     calculated_value: $(form.calculated_value).val(),
-                    orders_items: [],
+                    inventory: [],
                     orders_meta: orderMeta
                 }
             };
@@ -293,22 +288,22 @@
             $(form).find("input[name=cod]").filter(":checked").each(function () {
                 let instance = $(this).data("instance");
                 let order_part = {
-                    type: "orders_items",
+                    type: "inventory",
                     attributes:
                         {
-                            unit: valuesMap[instance.unit],
+                            um: instance.um,
                             name: instance.desc,
                             qty: instance.qty,
-                            unit_price: instance.unit_price,
-                            currency: valuesMap[instance.curr],
-                            orders_items_meta: []
+                            unit_price: instance.pu,
+                            currency: instance.curr,
+                            inventory_meta: []
                         },
                 };
                 for(let key in instance.others.fields) {
 
                     if(instance.others.fields[key].data!=="") {
-                        order_part.attributes.orders_items_meta.push({
-                            type: "orders_items_meta",
+                        order_part.attributes.inventory_meta.push({
+                            type: "inventory_meta",
                             attributes: {
                                 meta_key: key,
                                 meta_val: instance.others.fields[key].data
@@ -317,13 +312,13 @@
                     }
                 }
 
-                order.attributes.orders_items.push(order_part);
-                total += instance.qty*instance.unit_price;
+                order.attributes.inventory.push(order_part);
+                total += instance.qty*instance.pu;
             });
 
             // return ;
             order.attributes.order_value = total;
-            console.log(order);
+            // console.log(order);
             // return ;
             return orders.createItem(order);
         }
@@ -336,9 +331,8 @@
                     console.log(a);
                     modal.modal("hide");
                 })
-                .catch(function (resp) {
-                    console.log(resp);
-                    komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + resp.jqXHR.responseText + "</pre>"}).send();
+                .catch(function (a) {
+                    console.log(a);
                 })
         });
 
