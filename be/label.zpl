@@ -1,1 +1,20 @@
-^XA ^FX Second section with recipient address and permit information. ^CFA,25 ^FO75,25,0^FDFutterblech Siebkasten / Lagergehäuse^FS ^FO75,50,0^FD / 3D-Combi / ^FS ^FO75,75,0^FD^FS ^FO75,100,0^FD^FS ^CFA,30 ^FO75,150,0^FDBN: 273403^FS ^FO75,175,0^FDNC: A204^FS ^FO75,200,0^FDZN: 1335620^FS ^FO75,225,0^FDTN: 3812930^FS ^BY2,3.0,150 ^FO750,150,1^BCN,100,Y,N,N^FD41cf2575b663-1^FS ^XZ
+^XA
+^FX Second section with recipient address and permit information.
+^CFA,25
+^FO75,25,0^FDHause / 3D-Combi /^FS
+^FO75,50,0^FD^FS
+^FO75,75,0^FD^FS
+^FO75,100,0^FD^FS
+
+^CFA,30
+
+^FO75,150,0^FDBN: 273403^FS
+^FO75,175,0^FDNC: A204^FS
+^FO75,200,0^FDZN: 1335620^FS
+^FO75,225,0^FDTN: 3812930^FS
+^FO75,250,0^FDSEQ: 5 / 5^FS
+
+
+^BY2,3.0,150
+^FO750,145,1^BCN,90,Y,N,N^FD000026-00002-005^FS
+^XZ
