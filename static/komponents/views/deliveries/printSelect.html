@@ -67,9 +67,9 @@
                     returninstance: true
                 });
                 instance_dc.loadFromRemote().then(function (res_2) {
-                    console.log("dig", instance_dig)
-                    console.log("dc", instance_dc)
-                    console.log("oil", instance_oil)
+                    // console.log("dig", instance_dig)
+                    // console.log("dc", instance_dc)
+                    // console.log("oil", instance_oil)
                     let seqs_str = data.seqList;
 
                     let seqs_arr = seqs_str.split(",");
@@ -103,11 +103,10 @@
                         }
                     });
 
-
                     let label_data = {
                         title: instance_oil.items[0].attributes.title,
                         belegNum: instance_oil.items[0].attributes.belegNum,
-                        docNum: instance_oil.items[0].attributes.docNum,
+                        docNum: instance_oil.items[0].attributes.docnum,
                         designId: instance_oil.items[0].attributes.designId,
                         partId: instance_oil.items[0].attributes.partId,
                         itemTotal: instance_dig.items[0].attributes.totalcnt,
@@ -116,12 +115,28 @@
 
                     let labels = {labels: [label_data]};
 
-                    console.log(JSON.stringify(labels));
+                    labels = JSON.stringify(labels);
+
+                    $.ajax({
+                        url: "http://localhost/spaleck/be/main/print_label",
+                        data: labels,
+                        type: "POST",
+                        contentType: 'application/json',
+                        dataType: "json"
+                    })
+                        .done(function(response){
+                            console.log(response);
+                            resolve();
+                        })
+                        .fail(function (reject) {
+                            console.log(reject);
+                        })
                 });
-
-
             });
-        });
 
+
+        });
     }
+
+
 </script>

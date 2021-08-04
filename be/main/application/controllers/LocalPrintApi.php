@@ -51,7 +51,9 @@ class LocalPrintApi extends CI_Controller
 
 		}
 
-		$json = $_POST['json'];
+		$testien = file_get_contents('php://input');
+		var_dump($testien);
+		$json = $testien;
 		$data = "";
 		try {
 			$data = json_decode($json);
@@ -68,7 +70,7 @@ class LocalPrintApi extends CI_Controller
 					$label->docNum,
 					$label->designId,
 					$label->partId,
-					$seq->seqNo . " / " . $label->itemTotal,
+					$seq->seq . " / " . $label->itemTotal,
 					$seq->barcode
 				);
 
