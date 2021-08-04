@@ -118,7 +118,7 @@
                     labels = JSON.stringify(labels);
 
                     $.ajax({
-                        url: "http://localhost/spaleck/be/main/print_label",
+                        url: localStorage.getItem(localStorageLabel+".lblPrintApi"),
                         data: labels,
                         type: "POST",
                         contentType: 'application/json',
