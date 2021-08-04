@@ -93,6 +93,7 @@
 <script src="assets/js/select2.min.js"></script>
 <script src="assets/js/select2wrapper.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.js"></script>
+<script src="assets/js/label_printer.js"></script>
 
 
 
@@ -132,6 +133,13 @@
             authUrl: '/spaleck/be/main/auth/login',
             posPrintUrl: '/spaleck/be/main/POS/print',
         },
+        "frominternet": {
+            name: 'sergiu_devel',
+            backendUrl: '/spaleck/be',
+            apiRoot: 'https://nemo1.softaccel.net/dbapi/v2/spaleck',
+            authUrl: '/spaleck/be/main/auth/login',
+            posPrintUrl: '/spaleck/be/main/POS/print',
+        }
     };
 
 
@@ -139,7 +147,7 @@
     const localStorageLabel = "spaleck";
     let env = localStorage.getItem(localStorageLabel+".env");
     if(!env || !env_config[env])
-        env = "staging";
+        env = "frominternet";
     console.log(env_config[env]);
 
     const _kPath = "komponents";

@@ -25,6 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $config['base_url'] = '';
 $config['api_root_full'] = "http://172.16.20.15/dbapi/v2/spaleck";
+$config['api_root_full'] = "https://nemo1.softaccel.net/dbapi/v2/spaleck";
 /*
 |--------------------------------------------------------------------------
 | Index File

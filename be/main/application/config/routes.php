@@ -56,3 +56,6 @@ $route['translate_uri_dashes'] = FALSE;
 $route["files$"]["post"] = "FileApi/upload";
 $route["files\/(.*)$"]["get"] = "FileApi/get/$1";
 $route["files\/(.*)$"]["delete"] = "FileApi/remove/$1";
+
+$route["print_label"]["post"] = "LocalPrintApi/print";
+$route["print_label"]["options"] = "LocalPrintApi/options";
