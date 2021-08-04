@@ -16,6 +16,11 @@ class LocalPrintApi extends CI_Controller
 		$this->load->library('FileApiLibs');
 	}
 
+	function options() {
+		header("Access-Control-Allow-Headers: *");
+		header("Access-Control-Allow-Origin: *");
+
+	}
 	public function print() {
 
 		function create_label($title, $bn, $nc, $zn, $tn, $seqNo, $barcode): string
@@ -51,6 +56,7 @@ class LocalPrintApi extends CI_Controller
 
 		}
 
+		$this->options();
 		$testien = file_get_contents('php://input');
 		var_dump($testien);
 		$json = $testien;
