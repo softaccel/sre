@@ -53,88 +53,86 @@
 
         util.captureFormSubmit($form,function (data) {
             console.log(data);
-            let instance_oil;
-            let instance_dc;
-            instance_oil = $("<span></span>").apiator({
-                url: apiRoot + "/orders_items_labels?filter=itemId=" + k.data.instance.attributes.item,
-                resourcetype: "collection",
-                returninstance: true
-            });
-            instance_oil.loadFromRemote().then(function (res) {
-                instance_dc = $("<br>").apiator({
-                    url: apiRoot + "/deliveries_contents?filter=delivery=" + k.data.instance.attributes.delivery + ",item=" + k.data.instance.attributes.item,
+            const instance_oil = $("<span></span>").apiator({
                     resourcetype: "collection",
                     returninstance: true
+                })
+                .setUrl(apiRoot + "/orders_items_labels?filter=itemId=" + k.data.instance.attributes.item)
+            const p1 = instance_oil.loadFromRemote();
+
+            const instance_dc = $("<br>").apiator({
+                            resourcetype: "collection",
+                            returninstance: true
+                        })
+                    .setUrl(apiRoot + "/deliveries_contents?filter=delivery=" + k.data.instance.attributes.delivery + ",item=" + k.data.instance.attributes.item)
+            const p2 = instance_dc.loadFromRemote();
+
+            Promise.all([p1,p2]).then(function (res_2) {
+
+                let seqs_str = data.seqList;
+
+                let seqs_arr = seqs_str.split(",");
+                const seqs_set = new Set();
+
+                seqs_arr.forEach(el => {
+                    if (el.indexOf("-") >= 0) {
+                        let aux_el = el.split("-");
+                        for (let i = aux_el[0]; i <= aux_el[1]; i++) {
+                            seqs_set.add(i);
+                        }
+                    } else {
+                        seqs_set.add(el);
+                    }
                 });
-                instance_dc.loadFromRemote().then(function (res_2) {
-                    // console.log("dig", instance_dig)
-                    // console.log("dc", instance_dc)
-                    // console.log("oil", instance_oil)
-                    let seqs_str = data.seqList;
 
-                    let seqs_arr = seqs_str.split(",");
-                    const seqs_set = new Set();
-
-                    seqs_arr.forEach(el => {
-                        if (el.indexOf("-") >= 0) {
-                            let aux_el = el.split("-");
-                            for (let i = aux_el[0]; i <= aux_el[1]; i++) {
-                                seqs_set.add(i);
-                            }
+                let seqs_final_arr = [];
+                seqs_set.forEach(el => {
+                    let aux_obj = {};
+                    aux_obj["seq"] = el;
+                    for(let item of instance_dc.items){
+                        if (item.attributes.seqno.toString() === el.toString()) {
+                            aux_obj["barcode"] = item.attributes.label;
                         } else {
-                            seqs_set.add(el);
+                            aux_obj["barcode"] = 0;
                         }
-                    });
-
-                    let seqs_final_arr = [];
-                    seqs_set.forEach(el => {
-                        let aux_obj = {};
-                        aux_obj["seq"] = el;
-                        for(let item of instance_dc.items){
-                            if (item.attributes.seqno.toString() === el.toString()) {
-                                aux_obj["barcode"] = item.attributes.label;
-                            } else {
-                                aux_obj["barcode"] = 0;
-                            }
-                            if (aux_obj.barcode !== 0) {
-                                seqs_final_arr.push(aux_obj);
-                                break;
-                            }
+                        if (aux_obj.barcode !== 0) {
+                            seqs_final_arr.push(aux_obj);
+                            break;
                         }
-                    });
-
-                    let label_data = {
-                        title: instance_oil.items[0].attributes.title,
-                        belegNum: instance_oil.items[0].attributes.belegNum,
-                        docNum: instance_oil.items[0].attributes.docnum,
-                        designId: instance_oil.items[0].attributes.designId,
-                        partId: instance_oil.items[0].attributes.partId,
-                        itemTotal: instance_dig.items[0].attributes.totalcnt,
-                        seqs: seqs_final_arr
-                    };
-
-                    let labels = {labels: [label_data]};
-
-                    labels = JSON.stringify(labels);
-                    let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
-                    $.ajax({
-                        url: urlPrint,
-                        data: labels,
-                        type: "POST",
-                        headers: {  'Access-Control-Allow-Origin':  urlPrint.split(".")[0] + "."},
-                        contentType: 'application/json',
-                        dataType: "json"
-                    })
-                        .done(function(response){
-                            console.log(response);
-                            resolve();
-                        })
-                        .fail(function (reject) {
-                            console.log(reject);
-                        })
+                    }
                 });
-            });
 
+                let label_data = {
+                    title: instance_oil.items[0].attributes.title,
+                    belegNum: instance_oil.items[0].attributes.belegNum,
+                    docNum: instance_oil.items[0].attributes.docnum,
+                    designId: instance_oil.items[0].attributes.designId,
+                    partId: instance_oil.items[0].attributes.partId,
+                    itemTotal: instance_dig.items[0].attributes.totalcnt,
+                    seqs: seqs_final_arr
+                };
+
+                let labels = {labels: [label_data]};
+
+                labels = JSON.stringify(labels);
+                let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
+                console.log(urlPrint.split(".")[0] + ".");
+                $.ajax({
+                    url: urlPrint,
+                    data: labels,
+                    type: "POST",
+                    headers: {  'Access-Control-Allow-Origin':  urlPrint.split(".")[0] + "."},
+                    contentType: 'application/json',
+                    dataType: "json"
+                })
+                    .done(function(response){
+                        console.log(response);
+                        resolve();
+                    })
+                    .fail(function (reject) {
+                        console.log(reject);
+                    })
+            });
 
         });
     }
