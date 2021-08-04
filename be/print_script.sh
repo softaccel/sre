@@ -1,4 +1,4 @@
 #!/bin/bash
 
 
-cat label.zpl>/dev/usb/lp0
+lpr -P ZTC-ZD220-203dpi-ZPL -o raw label.zpl

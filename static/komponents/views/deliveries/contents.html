@@ -64,7 +64,7 @@
                                 <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="event.stopPropagation();toggleSelect($(this).parents('tr'))" data-connected="#checkAllUnassingedItems"></td>
                                 <td><%= attributes.partid %></td>
                                 <td><%=  attributes.name %></td>
-                                <td><input type="number" name="qtys[]" size="4" max="<%=attributes.qty%>" value="<%=attributes.qty%>"> </td>
+                                <td><input type="number" name="qtys[]" size="4" max="<%=attributes.qty%>" min="0" value="<%=attributes.qty%>" onclick="event.stopPropagation();"> </td>
                             </tr>
                             </tbody>
                         </table>
@@ -76,7 +76,7 @@
             <button id="cancelAddToDlvrBtn">Anuleaza</button>
         </div>
     </div>
-<!--    <button class="btn btn-primary" id="startScanBut"><i class="fa fa-barcode"></i> Scaneaza elemente</button>-->
+    <button class="btn btn-primary" id="startScanBut"><i class="fa fa-barcode"></i> Scaneaza elemente</button>
     <form id="deliveryContentsFilter"></form>
     <button class="btn btn-secondary mb-3" id="addContentBtn"><i class="fa fa-truck-loading"></i> Adauga elemente la livrare</button>
     <div style="max-height: 400px; overflow: scroll">
@@ -124,14 +124,14 @@
                 <!--            <td><%= id %></td>-->
 
                 <td><%= attributes.item %></td> <!-- id din orders_items -->
-                <td><%= attributes.name %></td> <!-- name din idem si la fel -->
-                <td><%= attributes.docnum %></td> <!-- docnum din documents, relationship prin doc_id din orders -->
-                <td><%= attributes.qty %></td> <!-- qty din orders_items -->
-<!--                <td><%= attributes.labels %></td>-->
-<!--                <td><%= attributes.checkout %></td>-->
+                <td><%= attributes.label %></td> <!-- name din idem si la fel -->
+                <td><%= attributes.delivery %></td> <!-- docnum din documents, relationship prin doc_id din orders -->
+                <td><%= attributes.totalcnt %></td> <!-- qty din orders_items -->
+                <td><%= attributes.printed %></td>
+                <td><%= attributes.checkout %></td>
                 <td>
                     <button class="btn-danger" onclick="removeFromDelivery(this)"><i class="fa fa-trash"></i></button>
-                    <button class="btn-primary"><i class="fa fa-print"></i></button>
+                    <button class="btn-primary" onclick="goToPrint(this)"><i class="fa fa-print"></i></button>
                 </td>
             </tr>
             </tbody>
@@ -167,7 +167,7 @@
     function removeFromDelivery(src) {
         let instance = $(src).data("instance");
         komponentor.intent("/common/messagemodal").data({
-            body:"Sigur vrei sa elimini elementul <strong>"+instance.attributes.name+"</strong>?",
+            body:"Sigur vrei sa elimini elementul <strong>"+instance.attributes.label+"</strong>?",
             buttons:[
                 {
                     label: "Da",
@@ -177,13 +177,21 @@
                     class: "btn btn-danger",
                     callback: function () {
                         // instance.remove();
-                        instance.setUrl(apiRoot+"/deliveries_contents/"+instance.id);
+                        instance.setUrl(apiRoot+"/deliveries_contents/?filter=item="+instance.attributes.item + ",delivery=" + instance.attributes.delivery);
+                        console.log("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", instance);
                         instance.delete();
 
                     }
                 }
             ]
         }).send();
+    }
+
+    function goToPrint(src){
+        // k.$el.find(".printButton").on("click", function (e) {
+        //     console.log("smek");
+        komponentor.intent("/views/deliveries/printSelect").data({instance: $(src).data("instance")}).send();
+        // });
     }
 
     function init_komponent(k) {
@@ -278,11 +286,13 @@
             $(e.target).hide();
         });
 
+
+
         k.$el.find("#addToDlvrBtn").on("click",addToDelivery);
 
         k.$el.find("#cancelAddToDlvrBtn").on("click",()=>{k.$el.find("#addElsToDeliveryCard").hide(400);k.$el.find("#addContentBtn").show();});
 
-        let url = apiRoot + "/deliveries/"+k.data.instance.id+"/dlvrcontents_expanded/?";
+        let url = apiRoot + "/develivery_items_aggregated?filter=delivery="+k.data.instance.id + "&sort=item";
         // let url = apiRoot + "/deliveries/"+k.data.instance.id+"/deliveries_contents?include=inventory,inventory.order";
         let contentItems = k.$el.find("#deliveryContentsList").apiator({url:url,returninstance:true});
         console.log("asdasdasdasdasdasd",contentItems);
@@ -291,6 +301,8 @@
         k.$el.find("#startScanBut").on("click",function () {
             komponentor.intent("/views/deliveries/scan").data({data:k.data}).send();
         });
+
+        console.log("][[[[[[[[[[][", k.$el.find(".printButton"));
 
     }
 

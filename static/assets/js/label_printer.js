@@ -41,9 +41,9 @@ function create_label(title, bn, nc, zn, tn, seq_no) {
 
     let cpy_template;
     cpy_template = template_label.replace("%line1%", title.substr(0, 38))
-        .replace("%line2%", title.substr(38, 76))
-        .replace("%line3%", title.substr(76, 114))
-        .replace("%line4%", title.substr(114, 152))
+        .replace("%line2%", title.substr(38, 38))
+        .replace("%line3%", title.substr(76, 38))
+        .replace("%line4%", title.substr(114, 38))
         .replace("%bn%", bn)
         .replace("%nc%", nc)
         .replace("%zn%", zn)
