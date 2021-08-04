@@ -111,6 +111,8 @@
             apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
             authUrl: '/spaleck/be/main/auth/login',
             posPrintUrl: '/spaleck/be/main/POS/print',
+            fileApiUrl: '/spaleck/be/main/POS/print',
+
         },
         "devel": {
             name: 'devel',
@@ -118,6 +120,8 @@
             apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
             authUrl: '/spaleck/be/main/auth/login',
             posPrintUrl: '/spaleck/be/main/POS/print',
+            fileApiUrl: '/spaleck/be/main/POS/print',
+
         },
         "production": {
             name: 'production',
@@ -125,6 +129,8 @@
             apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
             authUrl: '/spaleck/be/main/auth/login',
             posPrintUrl: '/spaleck/be/main/POS/print',
+            fileApiUrl: '/spaleck/be/main/POS/print',
+
         },
         "sergiu_devel": {
             name: 'sergiu_devel',
@@ -132,6 +138,8 @@
             apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
             authUrl: '/spaleck/be/main/auth/login',
             posPrintUrl: '/spaleck/be/main/POS/print',
+            fileApiUrl: '/spaleck/be/main/POS/print',
+
         },
         "frominternet": {
             name: 'sergiu_devel',
@@ -139,6 +147,7 @@
             apiRoot: 'https://nemo1.softaccel.net/dbapi/v2/spaleck',
             authUrl: '/spaleck/be/main/auth/login',
             posPrintUrl: '/spaleck/be/main/POS/print',
+            fileApiUrl: '/spaleck/be/main/files',
         }
     };
 
@@ -157,6 +166,7 @@
     const apiRoot = env_config[env].apiRoot;
     const authUrl = env_config[env].authUrl;
     const posPrintUrl = env_config[env].posPrintUrl;
+    const fileApiUrl = env_config[env].fileApiUrl;
     let defaultView = "/views/dashboard";
 </script>
 <script>

@@ -2,21 +2,18 @@
 
 </style>
 
-<div id="imageGalleryForm">
-    <button onclick="newImage()" type="button" data-toggle="tooltip" title="Adauga imagine" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary">
-        Adauga imagine
-    </button>
-    <button id="saveImageButton" data-toggle="tooltip" title="Salveaza imagine" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary">
-        Salveaza imagine
-    </button>
-    <input type="file" name="files[]" multiple class="" id="addImageInput">
-    <span id="fileNameLabel"></span>
+<div id="imageGallery">
     <br>
+    <form id="imageGalleryForm">
+        <input type="file" name="files[]" multiple class="" id="addFiles">
+        <input type="submit" value="Upload" name="upload">
+    </form>
     <div id="gallery" data-resourcetype="collection">
         <% gallery = JSON.parse(attributes.meta_val); console.log(gallery); %>
         <ul class="mt-4 d-flex flex-row justify-content-start align-items-start" style="list-style-type: none;">
-            <% for(img in gallery) { %>
-            <li class="m-1 align-self-center"><img class="img-thumbnail img-fluid rounded mx-auto d-block" src="<%=gallery[img].tn%>"></li>
+            <% for(let img of gallery) { %>
+            <% console.log(img) %>
+            <li class="m-1 align-self-center"><img class="img-thumbnail img-fluid rounded mx-auto d-block" src="<%=img.tnp%>"></li>
             <% } %>
         </ul>
     </div>
@@ -24,57 +21,55 @@
 
 <script>
 
-    // function newImage() {
-    //     $("#imageGalleryForm").find("#addImageInput").click();
-    // }
-
     function init_komponent(k) {
-        console.log("@@@@@@@@@@@@@",k)
-        k.$el.find("#gallery").apiator(apiRoot + "/orders_items_meta/"+ k.data.instance.id +"/?filter=meta_key=Gallery");
+        const galInst = k.$el.find("#gallery")
+            .apiator({returninstance:true})
+            .setUrl(apiRoot + "/catalog/" + k.data.instance.attributes.cat_id + "/catalog_meta/?filter=meta_key=Gallery");
+        galInst.loadFromRemote();
 
-        // k.$el.find("#addImageInput").on("change", function () {
-        //     let name = $(this).val();
-        //     console.log("1111111111111111111111111111111111111111111",name);
-        //     name = name.slice(name.lastIndexOf("\\") + 1);
-        //     k.$el.find("#fileNameLabel").html(name);
-        // });
+        let form = $("#imageGalleryForm")[0];
+        const util = galInst.getUtilities();
 
-        function saveImage() {
-            var formData = new FormData();
-            formData.append('file', k.$el.find("#addImageInput")[0].files[0]);
-            console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^", formData);
+        util.captureFormSubmit(form, function (data) {
+            let formData = new FormData();
+            let $files = form["files[]"];
+            for (var index = 0; index < $files.files.length; index++) {
+                formData.append("files[]", $files.files[index]);
+            }
 
             $.ajax({
-                url : apiRoot + "/files",
+                url : fileApiUrl,
                 type : 'POST',
                 data : formData,
                 processData: false,
                 contentType: false,
                 success : function(data) {
-                    console.log(data);
-                    k.$el.find("#gallery").loadFromRemote();
+                    let imageList = galInst.items.length ? JSON.parse(galInst.items[0].attributes.meta_val) : [];
+
+                    console.log(data,galInst,imageList);
+                    data.data.forEach(function (img){
+                        console.log(img);
+                        imageList.push({
+                            fp: fileApiUrl+"/" + img.id,
+                            tnp: fileApiUrl+"/" + img.id+"/1",
+                            lbl: ""
+                        });
+                    });
+                    console.log(imageList)
+
+
+                    let p = galInst.items.length
+                        ? galInst.items[0].update({meta_val:JSON.stringify(imageList)})
+                        : galInst.append({meta_key:"Gallery",meta_val:JSON.stringify(imageList)})
+                    p.then(function (data){
+                        console.log(data);
+                    })
+                    .catch(function (err){
+                        console.log(err);
+                    });
                 }
             });
-        }
-
-        k.$el.find("#saveImageButton").on("click", function () {
-            saveImage();
         });
-
-        //
-        // instance = $("#imageGalleryForm").apiator({
-        //     resourcetype: "collection",
-        //     returninstance: true
-        // })
-        // instance.setUrl(apiRoot + "/media/").loadFromRemote().then(function (a) {
-        //     console.log("pppppppppppppppppppppppppppppppppppppppppppppp")
-        //     console.log(instance)
-        //
-        //     $("#thumb").attr("src", instance.items[0].attributes.thumbnail_path);
-        //     console.log(instance.items[0].attributes.thumbnail_path)
-        //
-        //
-        // });
 
     }
 
