@@ -1,4 +1,8 @@
 #!/bin/bash
 
+prt="print_script.sh"
+io=$(lsof -p $$ | awk '{print $NF}' | grep $prt)
+lbl="label.zpl"
+io=${io/$prt/$lbl}
 
-cat label.zpl>/dev/usb/lp0
+lpr -P ZTC-ZD220-203dpi-ZPL -o raw $io
