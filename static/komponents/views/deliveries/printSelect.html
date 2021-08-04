@@ -116,22 +116,29 @@
 
                 labels = JSON.stringify(labels);
                 let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
-                console.log(urlPrint.split(".")[0] + ".");
-                $.ajax({
-                    url: urlPrint,
-                    data: labels,
-                    type: "POST",
-                    headers: {  'Access-Control-Allow-Origin':  urlPrint.split(".")[0] + "."},
-                    contentType: 'application/json',
-                    dataType: "json"
-                })
-                    .done(function(response){
-                        console.log(response);
-                        resolve();
+                if (urlPrint === null) {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "Setati imprimanta in Preferinte inainte de a printa."
+                    }).send();
+                } else {
+                    console.log(urlPrint.split(".")[0] + ".");
+                    $.ajax({
+                        url: urlPrint,
+                        data: labels,
+                        type: "POST",
+                        headers: {  'Access-Control-Allow-Origin':  urlPrint.split(".")[0] + "."},
+                        contentType: 'application/json',
+                        dataType: "json"
                     })
-                    .fail(function (reject) {
-                        console.log(reject);
-                    })
+                        .done(function(response){
+                            console.log(response);
+                            resolve();
+                        })
+                        .fail(function (reject) {
+                            console.log(reject);
+                        })
+
+                }
             });
 
         });
