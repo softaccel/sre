@@ -116,11 +116,12 @@
                     let labels = {labels: [label_data]};
 
                     labels = JSON.stringify(labels);
-
+                    let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
                     $.ajax({
-                        url: localStorage.getItem(localStorageLabel+".lblPrintApi"),
+                        url: urlPrint,
                         data: labels,
                         type: "POST",
+                        headers: {  'Access-Control-Allow-Origin':  urlPrint.split(".")[0] + "."},
                         contentType: 'application/json',
                         dataType: "json"
                     })
