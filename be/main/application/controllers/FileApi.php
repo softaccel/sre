@@ -79,7 +79,7 @@ class FileApi extends CI_Controller
 				}
 
 				if($response && $response->data && $response->data[0]->id) {
-					$uploadedFiles[] = $response->data;
+					$uploadedFiles[] = $response->data[0];
 					continue;
 				}
 			}
@@ -101,7 +101,6 @@ class FileApi extends CI_Controller
 				'size' => $_FILES['files']['size'][$i]
 			];
 
-//			print_r($this->path);
 			// check and create path
 			$filePathPart = $this->path . "/" . $filename[0];
 			if (!file_exists($filePathPart)) {
@@ -113,7 +112,6 @@ class FileApi extends CI_Controller
 				mkdir($filePath, 0755, true);
 			}
 
-
 			$config['upload_path'] = $filePath;
 			$config['file_name'] = $filename;
 			$this->upload->initialize($config);
@@ -124,7 +122,6 @@ class FileApi extends CI_Controller
 				HttpResp::json_out(500, $error);
 			}
 			$uploadData = $this->upload->data();
-//			print_r($uploadData);
 
 			// create thumbnail
 			$thumbnail_path = "";
