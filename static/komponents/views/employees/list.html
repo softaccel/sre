@@ -9,7 +9,7 @@
     </div>
     <div class="container-fluid">
         <div class="row mt-4" id="employees">
-            <div class="col-3 mb-3" onclick="openEmployeeModal(this)">
+            <div class="col-lg-2 col-md-3 col-sm-4 mb-3" onclick="openEmployeeModal(this)">
                 <div class="card" style="cursor: pointer">
                     <div class="card-body text-center">
                             <span class="d-inline-block" style="width: 60px">
@@ -62,7 +62,7 @@
     function init_komponent(k) {
         console.log(k);
 
-        let url = apiRoot+"/employees?page[employees][limit]=5&include=team,jobtitle&fields[employees]=fname,lname";
+        let url = apiRoot+"/employees?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname";
 
         if(k.data && k.data.filter) {
             let filters = [];
