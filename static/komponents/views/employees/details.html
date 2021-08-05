@@ -161,7 +161,11 @@
         form.reset();
 
         util.captureFormSubmit(form,function (data) {
+            if(!data.card || data.card==="") {
+                delete data.card;
+            }
             console.log("/////////////////",data);
+
             if(data.id!=="") {
                 instance.update(data)
                     .then(function () {
