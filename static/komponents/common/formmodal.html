@@ -195,6 +195,9 @@
 
                         placeholder: fld.placeholder ? fld.placeholder : ""
                     });
+                    if(fld.onselect){
+                        inp.on("select2:select", fld.onselect);
+                    }
 
                 } else {
 
