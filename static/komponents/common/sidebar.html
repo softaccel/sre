@@ -44,36 +44,19 @@
 
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-
-
                 <li class="nav-item">
                     <a href="#" title="" class="nav-link">
                         <i class="metismenu-icon fa fa-home"></i>
                         <p>Home</p>
                     </a>
                 </li>
-
                 <li class="nav-header">Operational</li>
-                <li class="nav-item">
-                    <a href="#/views/dashboard" class="nav-link">
-                        <i class="metismenu-icon fa fa-tachometer-alt"></i>
-                        <p> Dashboard</p>
-                    </a>
-                </li>
                 <li class="nav-item">
                     <a href="#/views/orders" class="nav-link">
                         <i class="metismenu-icon fa fa-funnel-dollar"></i> <p>Comenzi</p>
                     </a>
                 </li>
-                <!--                <li class="nav-item">-->
-                <!--                    <a href="#/views/pontaj" class="nav-link">-->
-                <!--                        <i class="metismenu-icon fa fa-clock"></i>-->
-                <!--                        <p>-->
-                <!--                            Pontaj-->
-                <!--&lt;!&ndash;                            <span class="right badge badge-danger">New</span>&ndash;&gt;-->
-                <!--                        </p>-->
-                <!--                    </a>-->
-                <!--                </li>-->
+
                 <li class="nav-item">
                     <a href="#/views/deliveries" class="nav-link">
                         <i class="metismenu-icon fa fa-truck"></i> <p>Livrari</p>
@@ -92,29 +75,54 @@
                 <li class="nav-header">Administrativ</li>
                 <li class="nav-item">
                     <a href="#/views/partners" class="nav-link">
-                        <i class="metismenu-icon fa fa-handshake"></i> <p>Parteneri</p>
+                        <i class="fas fa-handshake"></i> <p>Parteneri</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#/views/employees" class="nav-link">
-                        <i class="metismenu-icon fa fa-user-friends"></i> <p>Angajati</p>
+                    <a data-toggle="collapse" href="#collapseExample" role="button" class="nav-link">
+                        <i class="fas fa-user-friends"></i> <p>Personal <i class="fas fa-angle-down right"></i></p>
                     </a>
+                    <ul class="collapse nav" id="collapseExample">
+                        <li class="nav-item">
+                            <a href="#/views/employees" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Angajati</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#/views/teams" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Echipe</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#/views/jobs" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Posturi</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="#/views/teams" class="nav-link">
-                        <i class="metismenu-icon fa fa-sitemap"></i> <p>Echipe</p>
-                    </a>
-                </li>
+<!--                <li class="nav-item">-->
+<!--                    <a href="#/views/employees" class="nav-link">-->
+<!--                        <i class="metismenu-icon fa fa-user-friends"></i> <p>Angajati</p>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li class="nav-item">-->
+<!--                    <a href="#/views/teams" class="nav-link">-->
+<!--                        <i class="metismenu-icon fa fa-sitemap"></i> <p>Echipe</p>-->
+<!--                    </a>-->
+<!--                </li>-->
                 <li class="nav-item">
                     <a href="#/views/units" class="nav-link">
                         <i class="metismenu-icon fa fa-balance-scale"></i> <p>Unitati de masura</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#/views/jobs" class="nav-link">
-                        <i class="metismenu-icon fa fa-address-card"></i> <p>Posturi</p>
-                    </a>
-                </li>
+<!--                <li class="nav-item">-->
+<!--                    <a href="#/views/jobs" class="nav-link">-->
+<!--                        <i class="metismenu-icon fa fa-address-card"></i> <p>Posturi</p>-->
+<!--                    </a>-->
+<!--                </li>-->
                 <!--                <li>-->
                 <!--                    <a href="#/views/teams" title="">-->
                 <!--                        <i class="metismenu-icon fa fa-sitemap"></i> Echipe-->
