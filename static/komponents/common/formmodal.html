@@ -138,12 +138,19 @@
             if (fld.name) {
                 inp.attr("name",fld.name);
             }
+
             if (fld.placeholder && fld.type!=="select") {
                 inp.attr("placeholder",fld.placeholder);
             }
 
             if (fld.pattern && fld.type === "text"){
                 inp.attr("pattern", fld.pattern);
+            }
+
+            if(fld.attrs) {
+                for(let attrName in fld.attrs) {
+                    inp.attr(attrName,fld.attrs[attrName]);
+                }
             }
 
             /*
@@ -198,7 +205,7 @@
                             optionElement.text = option.description;
                             inp.append(optionElement);
                         }
-                    })
+                    });
 
                     inp.select2();
                     if (!hasDefault) {
