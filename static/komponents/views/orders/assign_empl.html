@@ -87,11 +87,31 @@
         }
         console.log(instance);
 
+        let currencies_wrapper = k.$el.find("select[name=currency]");
+        let op_wrapper = k.$el.find("select[name=operation]");
+        let hrly_input = k.$el.find("#hourlyrateInput");
+        op_wrapper.select2wrapper({placeholder:null,url:apiRoot+"/catalog?filter=type=service",labelfld:"name"});
+        currencies_wrapper.select2wrapper({placeholder:null,url:apiRoot+"/currencies?sort=id",labelfld:"id"});
 
+        op_wrapper.on("select2:select", function (e) {
+            let data = e.params.data;
+            console.log(data);
 
-        k.$el.find("select[name=operation]").select2wrapper({placeholder:null,url:apiRoot+"/operations",labelfld:"name"});
-        k.$el.find("select[name=currency]").select2wrapper({placeholder:null,url:apiRoot+"/currencies?sort=id",labelfld:"id"});
+            let instance_aux_data = $("<span></span>").apiator({returninstance: true, resourcetype: "item"})
+                .setUrl(apiRoot + "/catalog/" + data.id);
+            instance_aux_data.loadFromRemote()
+                .then(function () {
+                    hrly_input.val(instance_aux_data.attributes.unit_price);
+                    console.log(instance_aux_data);
+                    currencies_wrapper.html("<option value='"+instance_aux_data.relationships.currency.id+"'>"+instance_aux_data.relationships.currency.id+"</option>")
+                })
+        }).on("select2:clear",function () {
+            hrly_input.val('');
+            currencies_wrapper.html('');
+        });
+
         k.$el.find("select[name=emplid]").select2wrapper({placeholder:null,url:apiRoot+"/employees_names",labelfld:"fullname"});
+
 
     }
 </script>
