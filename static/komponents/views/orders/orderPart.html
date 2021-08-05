@@ -143,7 +143,6 @@
                     updateCopy.path = updateCopy.path.replace("orders_items_wmeta", "orders_items");
                     instance.setUrl({updateUrl: updateCopy});
                     instance.type = "orders_items";
-                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1",data)
                     instance.update(data)
                         .then(function () {
                             $('#orderPartForm').removeClass('editMode');
@@ -153,7 +152,7 @@
                         .catch(function (jqxhr) {
                             if (jqxhr.errorThrown==="Conflict") {
                                 komponentor.intent("/common/errormodal").data({
-                                    body: "Card-ul este asociat cu alt angajat.<br> Pentru a il asociat cu acest angajat, mai intai trebuie sa il dezasociati."
+                                    body: "Conflict."
                                 }).send();
                             }
                             console.log(jqxhr);
