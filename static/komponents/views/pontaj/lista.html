@@ -13,6 +13,15 @@
     #timeTrackingEntries tr.edit select{
         display: unset;
     }
+    .employeeView .emplCol{
+        display: none;
+    }
+
+    .orderView .orderCol{
+        display: none;
+
+    }
+
 </style>
 <div>
     <button class="btn btn-primary" style="margin-bottom: 8px" id="newTTBtn">Intrare noua</button>
@@ -27,7 +36,7 @@
                 Angajat
                 <select id="emplNamefilter" name="employee" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
             </th>
-            <th class="align-top" style="min-width: 100px">
+            <th class="orderCol align-top" style="min-width: 100px">
                 Comanda
                 <select id="docNumFilter" name="order" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
             </th>
@@ -86,7 +95,7 @@
                     <input type="text" pattern="[0-9]{2,}:[0-5][0-9]:[0-5][0-9]" name="duration" class="form-control-sm form-control" data-operator="<=" form="timeTrackingEntriesFiltering">
                 </div>
             </th>
-            <th class="align-top" style="max-width: 60">
+            <th class="align-top" style="max-width: 60px">
                 Tarif orar
             </th>
             <th width="150px"></th>
@@ -102,7 +111,7 @@
             <td>
                 <p><%= relationships.order.relationships.doc_id.attributes.docnum %></p>
             </td>
-            <td class="">
+            <td class="orderCol">
                 <p><%= relationships.operation.attributes.name %></p>
                 <select name="op" style="min-width: 200px"></select>
             </td>
@@ -125,11 +134,13 @@
                 </select>
             </td>
             <td>
-                <button class="btn btn-secondary btn-sm" onclick="duplicateItem(this);"><i class="fa fa-copy"></i> </button>
-                <button class="btn btn-danger btn-sm" onclick="deleteUnit(this);"><i class="fa fa-trash"></i> </button>
-                <button class="btn btn-warning btn-sm" onclick="edit(this)"><i class="fa fa-edit"></i> </button>
-                <button class="btn btn-primary btn-sm edit" onclick="save(this)"><i class="fa fa-save"></i> </button>
-                <button class="btn btn-secondary btn-sm edit" onclick="cancelEdit(this)"><i class="fa fa-arrow-left"></i> </button>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-secondary btn-sm" onclick="duplicateItem(this);"><i class="fa fa-copy" title="Duplicare"></i></button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteUnit(this);" title="Stergere"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-warning btn-sm" onclick="edit(this)" title="Editare"><i class="fa fa-edit"></i> </button>
+                    <button class="btn btn-primary btn-sm edit" onclick="save(this)" title="Salvare"><i class="fa fa-save"></i> </button>
+                    <button class="btn btn-secondary btn-sm edit" onclick="cancelEdit(this)" title="Anulare"><i class="fa fa-window-close"></i> </button>
+                </div>
             </td>
         </tr>
         </tbody>
@@ -285,22 +296,43 @@
     //     });
     // }
 
+    function customUrl(k) {
+        if (!k.data) {
+            throw "Empty data";
+        }
+
+        let data = k.data;
+
+        if(data.instance) {
+            switch (data.instance.type) {
+                case "employees":
+                    k.$el.find("#timeTrackingTable").addClass("employeeView");
+                    return apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=5&include=employee,order,order.doc_id,operation&filter=employee="+data.instance.id;
+                case "orders":
+                    k.$el.find("#timeTrackingTable").addClass("orderView");
+                    return apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=5&include=employee,order,order.doc_id,operation&filter=order="+data.instance.id;
+                default:
+                    console.log(data.instance);
+                    throw "Unknown type";
+            }
+        }
+
+        if(data.emplid) {
+            return apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=5&filter=employee="+data.emplid;
+        }
+    }
+
     function init_komponent(k) {
         let url = apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10&include=employee,order,order.doc_id,operation";
 
-        if (k.data) {
-            let emplid;
-            if(k.data.instance && k.data.instance.type==="employees") {
-                emplid = k.data.instance.id;
-            }
-            if(k.data.emplid) {
-                emplid = k.data.emplid;
-            }
-            if(!emplid) {
-                return;
-            }
-            url = apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=5&filter=employee="+emplid;
+        try {
+            url = customUrl(k);
+
         }
+        catch (e) {
+            console.log(e)
+        }
+
 
         let instance = $("#timeTrackingEntries").apiator({
             url: url,
