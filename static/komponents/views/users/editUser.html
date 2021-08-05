@@ -7,10 +7,11 @@
             .data({
                 title: "Editare",
                 fields: [
-                    {type:"text", name: "fname", default: instance.attributes.fname, placeholder: "", label: "Prenume", options:[]},
-                    {type:"text", name: "lname", default: instance.attributes.lname, placeholder: "", label: "Nume", options:[]},
-                    {type:"text", name: "email", default: instance.attributes.email, placeholder: "", label: "E-Mail", options:[], pattern: `[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$`},
-                    {type:"text", name: "password", default: "", placeholder: "", label: "Parola", options:[]},
+                    {type:"text", name: "userid", default: instance.attributes.userid, placeholder: "", label: "Login", attrs:{disabled:true}},
+                    {type:"text", name: "fname", default: instance.attributes.fname, placeholder: "", label: "Prenume"},
+                    {type:"text", name: "lname", default: instance.attributes.lname, placeholder: "", label: "Nume"},
+                    {type:"text", name: "email", default: instance.attributes.email, placeholder: "", label: "E-Mail", pattern: `[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$`},
+                    {type:"text", name: "password", default: "", placeholder: "", label: "Parola"},
                 ],
                 callback: function (data) {
                     console.log(data);
