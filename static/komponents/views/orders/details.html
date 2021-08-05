@@ -38,7 +38,8 @@
             </tr>
             <tr>
                 <td>Client</td>
-                <td><a href="#" onclick="komponentor.intent('/views/customers/customer').data({id:0}).send()"><%= relationships.partner_id.attributes.name %></a></td>
+                <td><a href="#" onclick="event.preventDefault(); goToPartner(this);"><%= relationships.partner_id.attributes.name %></a></td>
+<!--                <td><a href="#" onclick="komponentor.intent('/views/customers/customer').data({id:0}).send()"><%= relationships.partner_id.attributes.name %></a></td>-->
             </tr>
             <tr>
                 <td>Stadiu</td>
@@ -113,6 +114,13 @@
 
 
 <script>
+    function goToPartner(src){
+        console.log(src);
+        console.log($(src).data().instance.relationships.partner_id);
+        komponentor.intent("/views/partners/addPartner").data({instance:$(src).data().instance.relationships.partner_id, title: "ceva"})
+            .send();
+    }
+
     function editTeamAssoc(src) {
         $(src).parent().addClass('editMode');
         $("#teamAllocation").select2wrapper({url: apiRoot+"/teams",placeholder:"Aloca echipa",labelfld:"name"});
