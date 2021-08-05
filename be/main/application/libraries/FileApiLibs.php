@@ -43,7 +43,8 @@ class FileApiLibs
 			'create_thumb' => TRUE,
 			'thumb_marker' => '',
 			'width' => 200,
-			'height' => 200
+			'height' => 200,
+			'quality' => 100
 		);
 
 		$image_lib->initialize($config_manip);

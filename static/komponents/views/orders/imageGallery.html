@@ -1,19 +1,32 @@
 <style>
+    .imageList {
+        display: grid;
+        grid-auto-rows: 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-gap: .5rem;
+        align-content: space-evenly;
+        justify-content: space-between;
+        text-align: center;
+    }
 
 </style>
 
-<div id="imageGallery">
+<div id="imageGalleryKomponent">
     <br>
     <form id="imageGalleryForm">
         <input type="file" name="files[]" multiple class="" id="addFiles">
         <input type="submit" value="Upload" name="upload">
     </form>
     <div id="gallery" data-resourcetype="collection">
-        <% gallery = JSON.parse(attributes.meta_val); console.log(gallery); %>
-        <ul class="mt-4 d-flex flex-row justify-content-start align-items-start" style="list-style-type: none;">
+        <% gallery = JSON.parse(attributes.meta_val); %>
+        <ul class="mt-4 imageList" style="list-style-type: none;">
             <% for(let img of gallery) { %>
-            <% console.log(img) %>
-            <li class="m-1 align-self-center"><img class="img-thumbnail img-fluid rounded mx-auto d-block" src="<%=img.tnp%>"></li>
+            <li class="card">
+                <img class="img-fluid mx-auto d-block" src="<%=img.tnp%>" data-fp="<%=img.fp%>" data-lbl="<%=img.lbl%>" style="max-width: 100%; height: 200px">
+                <br>
+                <span class="lbl"><%=img.lbl%></span>
+                <br>
+            </li>
             <% } %>
         </ul>
     </div>
@@ -22,10 +35,36 @@
 <script>
 
     function init_komponent(k) {
+
+        // update imageList
+        const updateSortable = function (e) {
+            let upd = [];
+            $(e.target).find("li>img").each(function () {
+                upd.push({
+                    tnp: $(this).attr("src"),
+                    fp: $(this).data("fp"),
+                    lbl: $(this).data("lbl"),
+                });
+            });
+            galInst.items[0].update({meta_val:JSON.stringify(upd)}).then(function () {
+                // DO NOT DELETE - needed cause update rebuilds the list
+                setSortable();
+            });
+        }
+
+        // add sortable to imageList
+        const setSortable = function () {
+            $("#imageGalleryKomponent").find("ul")
+                .sortable({ delay:100, update: updateSortable});
+        }
+
         const galInst = k.$el.find("#gallery")
             .apiator({returninstance:true})
             .setUrl(apiRoot + "/catalog/" + k.data.instance.attributes.cat_id + "/catalog_meta/?filter=meta_key=Gallery");
-        galInst.loadFromRemote();
+        galInst.loadFromRemote()
+        .then(function () {
+            setSortable();
+        });
 
         let form = $("#imageGalleryForm")[0];
         const util = galInst.getUtilities();
@@ -46,25 +85,21 @@
                 success : function(data) {
                     let imageList = galInst.items.length ? JSON.parse(galInst.items[0].attributes.meta_val) : [];
 
-                    console.log(data,galInst,imageList);
-                    data.data.forEach(function (img){
-                        console.log(img);
+                    data.data.forEach(function (img) {
                         imageList.push({
                             fp: fileApiUrl+"/" + img.id,
                             tnp: fileApiUrl+"/" + img.id+"/1",
                             lbl: ""
                         });
                     });
-                    console.log(imageList)
-
 
                     let p = galInst.items.length
                         ? galInst.items[0].update({meta_val:JSON.stringify(imageList)})
                         : galInst.append({meta_key:"Gallery",meta_val:JSON.stringify(imageList)})
-                    p.then(function (data){
-                        console.log(data);
+                    p.then(function (data) {
+                        setSortable();
                     })
-                    .catch(function (err){
+                    .catch(function (err) {
                         console.log(err);
                     });
                 }

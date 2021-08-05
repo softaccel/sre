@@ -179,10 +179,27 @@
     }
 
     function init_komponent(k) {
-        $("#orderPartsList").apiator({
+        let instance = $("#orderPartsList").apiator({
             type: "inventory",
             resourcetype: "collection"
-        }).data("instance").setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_items_wmeta?page[orders_items_wmeta][limit]=1000").loadFromRemote();
+        }).data("instance");
+        instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_items_wmeta?page[orders_items_wmeta][limit]=1000").loadFromRemote()
+        .then(function () {
+            for (let [idx, item] of instance.items.entries()) {
+                if (item.attributes.gallery != null && item.attributes.gallery != {}) {
+                    let gallery = "";
+                    try {
+                        gallery = JSON.parse(item.attributes.gallery);
+                    } catch (err) {
+                        console.log("JSON parse err: ", err);
+                    }
+
+                    $($("#orderPartsList").find("li").get(idx)).find("img").attr("src", gallery[0].tnp);
+
+                }
+            }
+
+        });
 
         $("#orderPartsListFilter").find("#viewToggle").bootstrapToggle().change(toggleSwitch);
 
