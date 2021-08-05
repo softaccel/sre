@@ -70,7 +70,7 @@
                         <a data-toggle="tab" href="#resurse" class="nav-link" id="allocResTab">Resurse alocate</a>
                     </li>
                     <li class="nav-item">
-                        <a data-toggle="tab" href="#pontaj" class="nav-link" id="timetrackTab">Pontaj</a>
+                        <a data-toggle="tab" href="#pontaj" class="nav-link" id="timeTrackTab">Pontaj</a>
                     </li>
                 </ul>
             </div>
@@ -109,7 +109,13 @@
                         <div is="komponent" data-url="/views/orders/partsGallery" id="repere"></div>
                     </div>
 
-                    <div class="tab-pane fade" id="elemente"></div>
+                    <div class="tab-pane fade" id="elemente">
+                        Elemente
+                    </div>
+                    <div class="tab-pane fade" id="pontaj" is="komponent" data-url="/views/pontaj/lista">
+                        Pontaj
+                    </div>
+
                 </div>
             </div>
             <div class="modal-footer">
@@ -182,6 +188,7 @@
 
         $("#repere").komponent({data:k.data});
         $("#sumar").komponent({data:k.data});
+        $("#pontaj").komponent({data:k.data});
 
 
 
