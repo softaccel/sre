@@ -1466,7 +1466,7 @@
 				}))
 				.loadFromData(itemData);
 
-			if(_collection.appendOnTop) {
+			if(_collection.appendontop) {
 				_collection.items.unshift(newItem);
 			}
 			else {
