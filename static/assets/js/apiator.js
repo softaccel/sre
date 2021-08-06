@@ -1421,8 +1421,6 @@
 					.then(function (resp) {
 						let data = resp.data;
 						let newItem = _self.receiveRemoteData(data);
-						console.log("recv data");
-
 						resolve(newItem);
 					})
 					.catch(function (resp) {
@@ -1468,7 +1466,13 @@
 				}))
 				.loadFromData(itemData);
 
-			_collection.items.push(newItem);
+			if(_collection.appendOnTop) {
+				_collection.items.unshift(newItem);
+			}
+			else {
+				_collection.items.push(newItem);
+
+			}
 
 			return newItem;
 		};
