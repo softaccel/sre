@@ -94,6 +94,7 @@
     }
 
     function toggleCheck(src) {
+
         let checked = src.checked;
 
         // toggleAll checkbox was pressed
@@ -120,17 +121,15 @@
             }
         }
         toggleAll.checked = allchecked;
+
     }
 
-
-    function init_komponent(k)
-    {
+    function init_komponent(k) {
 
         let orderMeta;
         function init_partner_select() {
             $("select[name=partner_id]").select2wrapper({url: apiRoot+"/partners",labelfld:"name"});
         }
-
 
         let $items = k.$el.find("[data-name=orderItems]");
         let templateTxt = $items.html().replace(/&lt;/gi, '<').replace(/&gt;/gi, ">");
@@ -139,7 +138,6 @@
              template = _.template(templateTxt);
         }
         $items.empty();
-
 
         let modal = k.$el.appendTo("body").filter(".modal");
         modal.on("hidden.bs.modal",function (e) {
@@ -150,25 +148,23 @@
 
         let orders = k.data.instance;
 
-
         let valuesMap = {
             E: "EUR",
             Stk: "buc"
         };
 
-        function publishHeader(response)
-        {
+        function publishHeader(response) {
             let sectionIDs = Object.getOwnPropertyNames(response.sections);
             let bestellung = null;
             // let sections = [];
             let order = null;
             orderMeta = [];
-            for(let i=0;i<sectionIDs.length;i++) {
-                if(response.sections[sectionIDs[i]].SectionKey==="K.F") {
+            for (let i=0;i<sectionIDs.length;i++) {
+                if (response.sections[sectionIDs[i]].SectionKey==="K.F") {
                     bestellung = response.sections[sectionIDs[i]];
                 }
 
-                if(response.sections[sectionIDs[i]].SectionKey==="K.E") {
+                if (response.sections[sectionIDs[i]].SectionKey==="K.E") {
                     order = response.sections[sectionIDs[i]];
                 }
 
@@ -176,11 +172,11 @@
                 //     sections.push(response.sections[sectionIDs[i]]);
                 // }
 
-                if(response.sections[sectionIDs[i]].SectionKey==="P.A") {
+                if (response.sections[sectionIDs[i]].SectionKey==="P.A") {
                     continue;
                 }
 
-                for(let fldName in response.sections[sectionIDs[i]].fields) {
+                for (let fldName in response.sections[sectionIDs[i]].fields) {
                     orderMeta.push({
                         meta_key: fldName,
                         meta_val: response.sections[sectionIDs[i]].fields[fldName].data
@@ -188,7 +184,7 @@
                 }
             }
 
-            if(bestellung===null) {
+            if (bestellung===null) {
                 return;
             }
 
@@ -201,16 +197,14 @@
             $("#deliverydate").val(bestellung.fields["K.F.E_BelegKopf.BelegDatum"].data.replaceAll(".","/"));
         }
 
-
-        function publishItems(response)
-        {
+        function publishItems(response) {
 
             let total = 0;
             let entries = [];
             Object.getOwnPropertyNames(response.sections).forEach(function (sectionId) {
                 let entry = response.sections[sectionId];
 
-                if(entry.SectionKey==="P.A") {
+                if (entry.SectionKey==="P.A") {
                     let entryData = {
                         cod: entry.fields["P.A.E_BelegPos.Artikel"].data,
                         desc: entry.fields["P.A.S_ArtikelSpr.Bezeichnung[1]"].data+" / " +entry.fields["P.A.S_ArtikelSpr.Bezeichnung[2]"].data+" / "
@@ -234,8 +228,7 @@
             });
         }
 
-        function uploadFile(form)
-        {
+        function uploadFile(form) {
             let files = form.orderfile.files;
             $items.empty();
 
@@ -268,10 +261,7 @@
             });
         }
 
-
-
-        function placeOrder(form)
-        {
+        function placeOrder(form) {
             console.log(orderMeta);
             // return ;
             let meta = $(form).data("meta");
@@ -288,7 +278,6 @@
                 }
             };
 
-
             let total = 0;
             $(form).find("input[name=cod]").filter(":checked").each(function () {
                 let instance = $(this).data("instance");
@@ -304,7 +293,7 @@
                             orders_items_meta: []
                         },
                 };
-                for(let key in instance.others.fields) {
+                for (let key in instance.others.fields) {
 
                     if(instance.others.fields[key].data!=="") {
                         order_part.attributes.orders_items_meta.push({
@@ -328,12 +317,11 @@
             return orders.createItem(order);
         }
 
-
-
         $orderButton.on("click",function (src) {
             placeOrder(src.target.form)
                 .then(function (a) {
                     console.log(a);
+                    k.data.instance.view.el.children().last().find("td:nth-child(2)").click();
                     modal.modal("hide");
                 })
                 .catch(function (resp) {

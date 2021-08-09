@@ -1,38 +1,32 @@
 <script>
-    function init_komponent(k){
-        console.log(k)
+    function init_komponent(k) {
+
         let jsonDec = jwt_decode(localStorage.getItem("spaleck")).sub;
-        console.log(jsonDec)
+
         komponentor.intent("/common/formmodal").data({
-            callback:function (data){
-                if(data.partner_id === null || data.model === "" || data.orderdate === "" || data.deliverydate === ""){
+            callback:function (data) {
+                if (data.partner_id === null || data.model === "" || data.orderdate === "" || data.deliverydate === "") {
                     komponentor.intent("/common/errormodal").data({
                         body: "Toate datele trebuie completate."
                     }).send();
                     return 1;
                 }
-                console.log("yoho1");
+
                 data["user_id"] = jsonDec;
-                k.data.instance.createItem(data)
-                    .then(function () {
-                        console.log("a mers");
-                        console.log(k.data.instance.view.el.children().last())
-                        // k.data.instance.views[0].hide().fadeIn(500)[0].scrollIntoView()
-                    }).catch(function () {
-                        console.log("a mers nu");
-                    });
-                console.log("yoho2");
+                k.data.instance.createItem(data).then(function () {
+                    k.data.instance.view.el.children().last().find("td:nth-child(2)").click();
+                });
+
                 k.data.instance.view.el.children().last().fadeIn(500)[0].scrollIntoView();
-                // komponentor.intent("/views/orders/addOrderContents").data({data: {k: k, data: data}}).send();
             },
             title:"Adauga Comanda Noua",
             size: "lg",
             fields:[
-                // {type:"text",name: "name",default: "test", placeholder: "Numele Echipei", label: "Nume",options:[]},
                 {type: "select", name: "partner_id", label: "Client", url: "/partners", labelfnc: "name", idfnc: "id"},
                 {type: "text", name: "label", label: "Descriere"},
                 {type: "select", name: "state", label: "Starea Comenzii", options: [{id: "offer", description: "Oferta"}, {id: "ord", description: "Comanda"}]}
             ],
         }).send();
+
     }
 </script>
