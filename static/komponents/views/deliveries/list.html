@@ -119,7 +119,7 @@
     function init_komponent(k) {
 
         let url = apiRoot+"/deliveries?sort=id";
-        let instance = k.$el.find("#deliveriesList").apiator({url:url,returninstance:true});
+        let instance = k.$el.find("#deliveriesList").apiator({url:url,returninstance:true,appendontop:true});
 
         k.$el.find("#newDlvrButt").on("click",function () {
             komponentor.intent("/views/deliveries/addDelivery")
