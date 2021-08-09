@@ -15,15 +15,16 @@
                     <li class="nav-item">
                         <a data-toggle="tab" href="#deliveryContentPanel" class="nav-link ">Continut</a>
                     </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#deliveryContentPanel" class="nav-link ">Continut</a>
+                    </li>
                 </ul>
             </div>
             <div class="modal-body ">
                 <div class="tab-content">
-                    <div class="tab-pane active" role="tabpanel" id="deliverySummaryPanel">
-                        <div is="komponent" data-url="/views/deliveries/summary"></div>
+                    <div class="tab-pane active" role="tabpanel" id="deliverySummaryPanel" is="komponent" data-url="/views/deliveries/summary">
                     </div>
-                    <div class="tab-pane" role="tabpanel" id="deliveryContentPanel">
-                        <div is="komponent" data-url="/views/deliveries/contents"></div>
+                    <div class="tab-pane" role="tabpanel" id="deliveryContentPanel" is="komponent" data-url="/views/deliveries/contents">
                     </div>
                 </div>
             </div>
@@ -40,7 +41,7 @@
             // $(document).scannerDetection(false);
             k.$el.remove();
         });
-        $("#deliveryContentPanel").children("[is=komponent]").komponent({data:k.data});
-        $("#deliverySummaryPanel").children("[is=komponent]").komponent({data: k.data});
+        $("#deliveryContentPanel").komponent({data:k.data});
+        $("#deliverySummaryPanel").komponent({data: k.data});
     }
 </script>
