@@ -1,3 +1,9 @@
+<style>
+    #partnersListHeader a{
+        cursor: pointer;
+    }
+</style>
+
 <div class="container-fluid">
     <section class="content-header">
         <div class="container-fluid">
@@ -17,24 +23,72 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
-
-                    <table class="table table-hover table-striped">
-                        <thead class="thead-dark">
+                    <form id="partnersListFilter" class="d-none"><button type="submit" id="partnersSubmitButton"></button></form>
+                    <table class="table table-hover table-striped" id="partnersTable">
+                        <thead class="thead-dark" id="partnersListHeader">
                         <tr>
-                            <th>#</th>
-                            <th>Nume</th>
-                            <th>Adresa</th>
+<!--                            <th>#</th>-->
+                            <th>
+                                <a class="text-white" data-sortfld="name">Nume
+                                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                                <input type="text" name="name" class="form-control-sm form-control" form="partnersListFilter" data-operator="~=~">
+                            </th>
+                            <th>
+                                <a class="text-white" data-sortfld="address1">Adresa
+                                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                                <input type="text" name="address1" class="form-control-sm form-control" form="partnersListFilter" data-operator="~=~">
+                            </th>
+                            <th>
+                                <a class="text-white" data-sortfld="cod_fiscal">Cod Fiscal
+                                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                                <input type="text" name="cod_fiscal" class="form-control-sm form-control" form="partnersListFilter" data-operator="~=~">
+                            </th>
                             <th style="text-align:center">Actiuni</th>
                         </tr>
                         </thead>
-                        <tbody id="partnersList" data-resourcetype="collection" data-type="partners">
-                        <tr onclick="openPartnerModal(this)" style="cursor:pointer;">
-                            <td><%= id %></td>
+<!--                        <tbody id="ordersList"-->
+<!--                               data-offsetinp="#ordersOffsetInp" data-pagesizeinp="#ordersPageSizeInp"-->
+<!--                               data-paging="#ordersListPaging"-->
+<!--                               data-filter="#ordersListFilter"-->
+<!--                               data-sort="#ordersListHeader">-->
+                        <tbody id="partnersList"
+                               data-resourcetype="collection"
+                               data-type="partners"
+                               data-offsetinp="#partnersOffsetInp" data-pagesizeinp="#partnersPageSizeInp"
+                               data-paging="#partnersListPaging"
+                               data-filter="#partnersListFilter"
+                               data-sort="#partnersListHeader">
+                        <tr onclick="openPartnerModal(this)" style="cursor:pointer;" class="order">
+<!--                            <td><%= id %></td>-->
                             <td><%= attributes.name %></td>
                             <td><%= attributes.address1 %></td>
+                            <td><%= attributes.cod_fiscal %></td>
                             <td align="center"><button class="btn-primary btn btn-sm" onclick="deletePartner(this,event)"><i class="fa fa-trash-alt"></i> Sterge</button></td>
                         </tr>
                         </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="4">
+
+                                <div class="btn-group"  id="partnersListPaging" data-pagesize="10">
+                                    <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+                                    <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+                                    <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+                                    <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+                                    <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+                                </div>
+                                Pagina <input type="number" name="offset" size="3" value="0" id="partnersOffsetInp">
+                                <select id="partnersPageSizeInp">
+                                    <option></option>
+                                    <option>5</option>
+                                    <option>10</option>
+                                    <option>25</option>
+                                    <option>50</option>
+                                    <option>75</option>
+                                </select> inregistrari pe pagina
+                            </td>
+                        </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -91,11 +145,19 @@
     }
 
     function init_komponent(k,c) {
-        let instance = $("#partnersList").apiator(apiRoot+"/partners").data("instance");
+        let instance = $("#partnersList").apiator({
+            url:apiRoot+"/partners?page[partners][offset]=0&page[partners][limit]=10",
+            type: "partners",
+            resourcetype: "collection",
+        }).data("instance");
+        let submitButton = k.$el.find("#partnersSubmitButton");
 
+        k.$el.find("#partnersTable").find("input").on("input", function () {
+            submitButton.click();
+        });
 
         $("#newUnitModalButton").on("click", function () {
-            //prepare the modal behindthe curtain
+            //prepare the modal behind the curtain
             komponentor.intent("/views/partners/addPartner")
                 //Take the data from the form and send them to beckend
                 .data({instance: instance})
