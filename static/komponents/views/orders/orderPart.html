@@ -154,6 +154,10 @@
                                 komponentor.intent("/common/errormodal").data({
                                     body: "Conflict."
                                 }).send();
+                            } else {
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "A aparut o eroare: <pre>"+JSON.stringify(jqxhr.jqXHR.responseText)+"</pre>"
+                                }).send();
                             }
                             console.log(jqxhr);
                         });

@@ -114,11 +114,11 @@
                 .then( function () {
                     $("#teamEditDiv").removeClass("editMode");
                 })
-                .catch(function (jqxhr){
+                .catch(function(data){
                     komponentor.intent("/common/errormodal").data({
-                        body: "Eroare la transferul de date catre Server."
+                        body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
                     }).send();
-                })
+                });
         });
     }
 
