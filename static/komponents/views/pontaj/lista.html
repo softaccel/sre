@@ -360,7 +360,7 @@
         });
 
         k.$el.find("#operationFilter").select2wrapper({
-            url: apiRoot + "/operations",
+            url: apiRoot + "/catalog?filter=type=service",
             labelfld: "name",
             idfld: "id",
             placeholder: "Operatie"
