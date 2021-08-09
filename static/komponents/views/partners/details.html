@@ -21,7 +21,7 @@
             </div>
             <div class="form-group col-3">
                 <label for="cod_fiscalInput">Cod fiscal</label>
-                <input form="customerDataForm" type="text" maxlength="20" id="cod_fiscalInput" data-sync="cod_fiscal" name="cod_fiscal" class="form-control form-control-sm" placeholder="RO2483866">
+                <input form="customerDataForm" type="text" maxlength="20" id="cod_fiscalInput" data-sync="cod_fiscal" name="cod_fiscal" class="form-control form-control-sm" required="" placeholder="RO2483866">
                 <div class="invalid-feedback"></div>
             </div>
             <div class="form-group col-3">
@@ -127,6 +127,12 @@
 
         function updatePartner(attrs) {
             $(form.elements).removeClass("is-invalid");
+            for(const attr in attrs){
+                if (attrs[attr] === ""){
+                    delete attrs[attr];
+                }
+            }
+            console.log(attrs);
             k.data.instance.update(attrs)
                 .then(function (d) {
                     // console.log("--------------",d);
