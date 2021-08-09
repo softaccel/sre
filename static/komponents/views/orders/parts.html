@@ -66,6 +66,10 @@
             resourcetype: "collection"
         }).data("instance").setUrl(apiRoot+"/orders/"+k.data.orderId+"/orders_items_wmeta").loadFromRemote().then(function () {
             JsBarcode(".barcode").init();
+        }).catch(function(data){
+            komponentor.intent("/common/errormodal").data({
+                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+            }).send();
         });
 
     }

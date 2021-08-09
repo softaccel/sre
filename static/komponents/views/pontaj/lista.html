@@ -431,9 +431,11 @@
                 $("[name=newTT]").toggle();
                 instance.loadFromRemote();
             })
-            .catch(function () {
-                console.log("nema")});
-        }
+            .catch(function(data){
+                komponentor.intent("/common/errormodal").data({
+                    body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                }).send();
+            });
 
         // k.$el.find("#addNewTTBtn").on("click", addNewTT);
 

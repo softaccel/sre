@@ -15,6 +15,10 @@
                 data["user_id"] = jsonDec;
                 k.data.instance.createItem(data).then(function () {
                     k.data.instance.view.el.children().last().find("td:nth-child(2)").click();
+                }).catch(function(data){
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                    }).send();
                 });
 
                 k.data.instance.view.el.children().last().fadeIn(500)[0].scrollIntoView();

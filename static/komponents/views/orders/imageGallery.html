@@ -49,6 +49,10 @@
             galInst.items[0].update({meta_val:JSON.stringify(upd)}).then(function () {
                 // DO NOT DELETE - needed cause update rebuilds the list
                 setSortable();
+            }).catch(function(data){
+                komponentor.intent("/common/errormodal").data({
+                    body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                }).send();
             });
         }
 
@@ -64,6 +68,10 @@
         galInst.loadFromRemote()
         .then(function () {
             setSortable();
+        }).catch(function(data){
+            komponentor.intent("/common/errormodal").data({
+                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+            }).send();
         });
 
         let form = $("#imageGalleryForm")[0];
@@ -99,8 +107,10 @@
                     p.then(function (data) {
                         setSortable();
                     })
-                    .catch(function (err) {
-                        console.log(err);
+                    .catch(function(data){
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare: <pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                        }).send();
                     });
                 }
             });
