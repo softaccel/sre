@@ -188,8 +188,10 @@
             else {
                 instance.createItem(data).then(function () {
                     $("#cancelButton").click();
-                }).catch(function () {
-
+                }).catch(function(data){
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                    }).send();
                 });
             }
         });
@@ -254,7 +256,11 @@
 
                         k.parent.hideModal();
                     });
-                });
+                }).catch(function(data){
+                komponentor.intent("/common/errormodal").data({
+                    body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                }).send();
+            });;
         }
 
         if(k.data.emplId) {

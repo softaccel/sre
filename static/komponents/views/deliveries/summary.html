@@ -217,7 +217,11 @@
                         }).then((a) => {
                             console.log(a);
                             prepare_a(new_state);
-                        });
+                        }).catch(function(data){
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                            }).send();
+                        });;
                     }
                 },
                 {
@@ -240,6 +244,10 @@
         k.data.instance.bindView($("#deliveryForm")).loadFromRemote().then(function (d) {
                 prepare_a(k.data.instance.attributes.status);
             }
-        );
+        ).catch(function(data){
+            komponentor.intent("/common/errormodal").data({
+                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+            }).send();
+        });;
     }
 </script>

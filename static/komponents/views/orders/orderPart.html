@@ -166,6 +166,10 @@
                 else {
                     instance.createItem(data).then(function () {
                         $("#cancelButton").click();
+                    }).catch(function(data){
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                        }).send();
                     });
                 }
             });
@@ -251,6 +255,11 @@
 
         instance.bindView("#orderPart").loadFromRemote().then(function () {
             $("#sumarReperePanel").tab("show");
+        })
+        .catch(function(data){
+            komponentor.intent("/common/errormodal").data({
+                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+            }).send();
         });
 
         $("#imageGallery").komponent({data:k.data});

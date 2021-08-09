@@ -106,7 +106,11 @@
                     hrly_input.val(instance_aux_data.attributes.unit_price);
                     console.log(instance_aux_data);
                     currencies_wrapper.html("<option value='"+instance_aux_data.relationships.currency.id+"'>"+instance_aux_data.relationships.currency.id+"</option>")
-                })
+                }).catch(function(data){
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                    }).send();
+                });
         }).on("select2:clear",function () {
             hrly_input.val('');
             currencies_wrapper.html('');
