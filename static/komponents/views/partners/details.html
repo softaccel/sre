@@ -145,22 +145,26 @@
                     // no valid JSONAPI error is provided
                     // => this is some server side error
                     // => display it and prepare it for reporting
+                    console.log(errorData);
+
                     if (!errorData.jqXHR.responseJSON || !errorData.jqXHR.responseJSON.errors
                         || !errorData.jqXHR.responseJSON.errors.length || !errorData.jqXHR.responseJSON.errors[0]
                         || !errorData.jqXHR.responseJSON.errors[0].code) {
                         displayServerError(errorData);
                         return;
-                    }
-
-                    switch (errorData.jqXHR.responseJSON.errors[0].code * 1) {
-                        // highlight faulty field
-                        case 1062:
+                    } else {
+                        if (errorData.jqXHR.responseJSON.errors[0].code * 1 == 1062){
                             let res = /Duplicate entry \'(.+)\' for key \'(.+)\.(.+)\'/.exec(errorData.jqXHR.responseJSON.errors[0].title);
                             if (res) {
                                 $(form[res[3]]).addClass("is-invalid").next().text("Date duplicate");
                             }
-                            break;
+                        } else {
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare: <pre>" + errorData.jqXHR.responseText + "</pre>"
+                            }).send();
+                        }
                     }
+
                 })
         }
     }
