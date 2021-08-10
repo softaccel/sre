@@ -34,7 +34,7 @@
         padding: 5px;
         cursor: pointer;
     }
-    #orderPartsList:not(.grid_3)>li{
+    #orderPartsList:not(.grid_4)>li{
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
@@ -43,13 +43,13 @@
         color: #212529;
         background-color: rgba(0,0,0,.075);
     }
-    #orderPartsList:not(.grid_3)>li>span{
+    #orderPartsList:not(.grid_4)>li>span{
         flex-grow: 1;
         flex-basis: 15%;
         padding-left: .75rem;
         /*margin: 10px;*/
     }
-    #orderPartsList:not(.grid_3)>li>div>img {
+    #orderPartsList:not(.grid_4)>li>div>img {
         visibility: hidden;
         position: absolute;
     }
@@ -62,16 +62,16 @@
         text-align: right;
     }
 
-    .grid_3 {
+    .grid_4 {
         display: grid;
         grid-auto-rows: 1fr;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
         grid-gap: .5rem;
         align-content: space-evenly;
         justify-content: space-between;
         text-align: center;
     }
-    .grid_3>li>span.count {
+    .grid_4>li>span.count {
         display: none;
     }
 
@@ -107,13 +107,17 @@
             </div>
         </div>
     </div>
-    <ul class="grid_3" id="orderPartsList"
+    <ul class="grid_4" id="orderPartsList"
         data-filter="#orderPartsMe"
         data-sort="#orderPartsListFilter">
 
         <li onclick="orderPartModal(this)">
+            <% let tn = "assets/images/spaleck.png"; %>
+            <% if(attributes.gallery != null && attributes.gallery != {}) {  %>
+            <% try { let gallery = JSON.parse(attributes.gallery); tn = gallery[0].tnp; } catch (err) {}%>
+            <% }%>
             <div class="">
-                <img src="assets/images/spaleck.png" class="img-thumbnail img-fluid rounded mx-auto d-block" style="max-width: 100%; height: 200px">
+                <img src="<%=tn%>" class="img-thumbnail img-fluid rounded mx-auto d-block" style="max-width: 200px; max-height: 150px">
             </div>
             <span class="partid"><%= attributes.partid %></span>
             <br>
@@ -170,10 +174,10 @@
     function toggleSwitch() {
 
         let $toggle = $("#orderPartsList");
-        if ($toggle.hasClass("grid_3")) {
-            $toggle.removeClass("grid_3");
+        if ($toggle.hasClass("grid_4")) {
+            $toggle.removeClass("grid_4");
         } else {
-            $toggle.addClass("grid_3");
+            $toggle.addClass("grid_4");
         }
 
     }
@@ -185,19 +189,19 @@
         }).data("instance");
         instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_items_wmeta?page[orders_items_wmeta][limit]=1000").loadFromRemote()
         .then(function () {
-            for (let [idx, item] of instance.items.entries()) {
-                if (item.attributes.gallery != null && item.attributes.gallery != {}) {
-                    let gallery = "";
-                    try {
-                        gallery = JSON.parse(item.attributes.gallery);
-                    } catch (err) {
-                        console.log("JSON parse err: ", err);
-                    }
-
-                    $($("#orderPartsList").find("li").get(idx)).find("img").attr("src", gallery[0].tnp);
-
-                }
-            }
+            // for (let [idx, item] of instance.items.entries()) {
+            //     if (item.attributes.gallery != null && item.attributes.gallery != {}) {
+            //         let gallery = "";
+            //         try {
+            //             gallery = JSON.parse(item.attributes.gallery);
+            //         } catch (err) {
+            //             console.log("JSON parse err: ", err);
+            //         }
+            //
+            //         $($("#orderPartsList").find("li").get(idx)).find("img").attr("src", gallery[0].tnp);
+            //
+            //     }
+            // }
 
         }).catch(function(data){
             komponentor.intent("/common/errormodal").data({

@@ -21,6 +21,7 @@
         <% gallery = JSON.parse(attributes.meta_val); %>
         <ul class="mt-4 imageList" style="list-style-type: none;">
             <% for(let img of gallery) { %>
+            <% console.log(img); %>
             <li class="card">
                 <img class="img-fluid mx-auto d-block" src="<%=img.tnp%>" data-fp="<%=img.fp%>" data-lbl="<%=img.lbl%>" style="max-width: 100%; height: 200px">
                 <br>
@@ -83,11 +84,11 @@
             for (var index = 0; index < $files.files.length; index++) {
                 formData.append("files[]", $files.files[index]);
             }
-
             $.ajax({
-                url : fileApiUrl,
+                url : fileApiUrl + "/files",
                 type : 'POST',
                 data : formData,
+                headers: { 'Access-Control-Allow-Origin': fileApiUrl.split(".")[0] + "." },
                 processData: false,
                 contentType: false,
                 success : function(data) {
@@ -95,8 +96,8 @@
 
                     data.data.forEach(function (img) {
                         imageList.push({
-                            fp: fileApiUrl+"/" + img.id,
-                            tnp: fileApiUrl+"/" + img.id+"/1",
+                            fp: fileApiUrl + "/files/" + img.id,
+                            tnp: fileApiUrl + "/files/" + img.id + "/1",
                             lbl: ""
                         });
                     });

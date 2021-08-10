@@ -1711,7 +1711,11 @@
 
 		templateTxt = templateTxt
 			.replace(/&lt;/gi, '<')
-			.replace(/&gt;/gi, ">");
+			.replace(/&gt;/gi, ">")
+			.replace(/&apos;/gi, "'")
+			.replace(/&quot;/gi, '"')
+			.replace(/&nbsp;/gi, " ")
+			.replace(/&amp;/gi, "&");
 		options.template = _.template(templateTxt);
 
 		options.view = CollectionView({
@@ -1813,8 +1817,11 @@
 
 		// extract template
 		let templateTxt = this[0].outerHTML
-			.replace(/&lt;%/gi, '<%')
-			.replace(/%&gt;/gi, "%>")
+			.replace(/&lt;/gi, '<')
+			.replace(/&gt;/gi, ">")
+			.replace(/&apos;/gi, "'")
+			.replace(/&quot;/gi, '"')
+			.replace(/&nbsp;/gi, " ")
 			.replace(/&amp;/gi, "&");
 
 		options.template = _.template(templateTxt);
