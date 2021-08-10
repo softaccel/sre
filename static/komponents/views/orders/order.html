@@ -159,9 +159,7 @@
     }
 
     function edit_employee_association(src) {
-        console.log($(src).data("instance"));
         komponentor.intent("/views/orders/assign_empl").data({instance: $(src).data("instance")}).send();
-
     }
 
     function init_komponent(k,d) {

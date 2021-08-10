@@ -137,17 +137,10 @@
             <button class="btn btn-secondary btn-save" type="button" id="cancelButton">Renunta</button>
         </div>
         <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+        <button class="btn btn-danger btn-delete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
     </div>
 </form>
 <script>
-
-    function update(data,instance) {
-
-    }
-    
-    function create(data,instance) {
-
-    }
 
     function editMode(instance) {
         $('#employeeSummary').addClass('editMode');
@@ -224,7 +217,45 @@
         }
     }
 
+    function deleteEmployee(instance) {
+
+        let bodyQuery = "Esti sigur ca vrei sa stergi acest angajat?";
+        console.log("wedem",instance);
+        let bodyData = "<br><strong>" + instance.attributes.fname + ' - ' + instance.attributes.lname + "</strong>";
+
+        komponentor.intent("/common/messagemodal").data({
+            body: bodyQuery + bodyData,
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        instance.delete().then(() => { console.log("ok", arguments) })
+                            .catch( function(data) {
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                                }).send();
+                            });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send().then(function () {
+            // instance.loadFromRemote();
+        });
+    }
+
     function init_komponent(k) {
+
         k.$el.find("#cancelButton").on("click", function (e) {
             if (e.target.form.id.value !== "") {
                 $('#employeeSummary').removeClass('editMode');
@@ -260,7 +291,7 @@
                 komponentor.intent("/common/errormodal").data({
                     body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
                 }).send();
-            });;
+            });
         }
 
         if(k.data.emplId) {
