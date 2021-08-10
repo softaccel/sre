@@ -27,7 +27,9 @@
     }
 
 </style>
-
+<div class="card-header" style="border: none;">
+    <button class="btn btn-primary" style="margin-bottom: 8px" onclick="addNewEmployee()">Angajat Nou</button>
+</div>
 <form id="employeesListForm">
 
     <div class="card-body">
@@ -87,6 +89,15 @@
 </form>
 
 <script>
+    function addNewEmployee() {
+        komponentor
+            .intent('/views/employees/newemployee')
+            .data({
+                instance:$("#employeesListUl").data('instance')
+            })
+            .send();
+    }
+
     /**
      *
      * @param src
