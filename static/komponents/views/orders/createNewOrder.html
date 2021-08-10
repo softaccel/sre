@@ -17,7 +17,7 @@
                     k.data.instance.view.el.children().last().find("td:nth-child(2)").click();
                 }).catch(function(data){
                     komponentor.intent("/common/errormodal").data({
-                        body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                        body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
                     }).send();
                 });
 
@@ -28,7 +28,7 @@
             fields:[
                 {type: "select", name: "partner_id", label: "Client", url: "/partners", labelfnc: "name", idfnc: "id"},
                 {type: "text", name: "label", label: "Descriere"},
-                {type: "select", name: "state", label: "Starea Comenzii", options: [{id: "offer", description: "Oferta"}, {id: "ord", description: "Comanda"}]}
+                {type: "select", name: "state", label: "Starea Comenzii", options: [{id: "offer", description: "Oferta"}, {id: "ord", description: "Comanda"}], default: {id: "offer", description: "Oferta"}}
             ],
         }).send();
 
