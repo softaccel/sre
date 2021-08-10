@@ -1,6 +1,6 @@
 <style>
 
-    #employeesListFilter {
+    #employeesListForm {
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
@@ -8,11 +8,11 @@
         margin-bottom: 5px;
         padding: 5px;
     }
-    #employeesListFilter>div{
+    #employeesListForm>div{
         flex: 0 0 auto;
         padding: .75rem;
     }
-    #employeesListFilter:nth-child(1){
+    #employeesListForm:nth-child(1){
         flex: 1 0 60%;
     }
 
@@ -30,36 +30,39 @@
 <div class="card-header" style="border: none;">
     <button class="btn btn-primary" style="margin-bottom: 8px" onclick="addNewEmployee()">Angajat Nou</button>
 </div>
-<form id="employeesListForm">
-
     <div class="card-body">
         <div id="employeesListFilter">
-            <div class="align-top">
-                <a class="text-white" data-sortfld="fname">Prenume
-                    <i class="fa fa-sort-up sort-up" style="display: none"></i>
-                    <i class="fa fa-sort-down sort-down" style="display: none"></i>
-                    <i class="fa fa-sort sort-default text-light"></i>
-                </a>
-                <input type="text" name="fname" class="form-control-sm form-control" form="employeesListForm" data-operator="~=~">
-            </div>
-            <div class="align-top">
-                <a class="text-white" data-sortfld="lname">Nume
-                    <i class="fa fa-sort-up sort-up" style="display: none"></i>
-                    <i class="fa fa-sort-down sort-down" style="display: none"></i>
-                    <i class="fa fa-sort sort-default text-light"></i>
-                </a>
-                <input type="text" name="lname" class="form-control-sm form-control" form="employeesListForm" data-operator="~=~">
-            </div>
-            <div class="align-top">
-                <a class="text-white" data-sortfld="card">Card</a>
-                <input type="text" name="card" class="form-control-sm form-control" form="employeesListForm" data-operator="=">
-            </div>
-        </div>
+            <form id="employeesListForm">
+                <button type="submit" class="d-none" id="employeesListFilterBtn"></button>
 
+                <div class="align-top">
+                    <a class="text-white" data-sortfld="fname">Prenume
+                        <i class="fa fa-sort-up sort-up" style="display: none"></i>
+                        <i class="fa fa-sort-down sort-down" style="display: none"></i>
+                        <i class="fa fa-sort sort-default text-light"></i>
+                    </a>
+                    <input type="text" name="fname" class="form-control-sm form-control" form="employeesListForm" data-operator="~=~">
+                </div>
+                <div class="align-top">
+                    <a class="text-white" data-sortfld="lname">Nume
+                        <i class="fa fa-sort-up sort-up" style="display: none"></i>
+                        <i class="fa fa-sort-down sort-down" style="display: none"></i>
+                        <i class="fa fa-sort sort-default text-light"></i>
+                    </a>
+                    <input type="text" name="lname" class="form-control-sm form-control" form="employeesListForm" data-operator="~=~">
+                </div>
+                <div class="align-top">
+                    <a class="text-white" data-sortfld="card">Card</a>
+                    <input type="text" name="card" class="form-control-sm form-control" form="employeesListForm" data-operator="=">
+                </div>
+            </form>
+        </div>
         <ul class="grid_6 mr-5" id="employeesListUl"
             data-filter="#employeesListForm"
             data-sort="#employeesListFilter"
-            data-paging="#employeesPaging">
+            data-paging="#employeesPaging"
+            data-offsetinp="#employeesOffsetInp"
+            data-pagesizeinp="#employeesPageSizeInp">
 
             <li onclick="openEmployeeModal(this)" class="card">
                 <div class="card-body text-center" style="cursor: pointer">
@@ -83,10 +86,18 @@
             <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
             <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
         </div>
+        Pagina <input type="number" size="3" value="0" id="employeesOffsetInp">
+        <select id="employeesPageSizeInp">
+            <option></option>
+            <option>5</option>
+            <option>10</option>
+            <option>25</option>
+            <option>50</option>
+            <option>75</option>
+        </select> inregistrari pe pagina
     </div>
 
-    <button type="submit" class="d-none" id="employeesListFilterBtn"></button>
-</form>
+
 
 <script>
     function addNewEmployee() {
