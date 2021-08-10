@@ -199,6 +199,10 @@
                 }
             }
 
+        }).catch(function(data){
+            komponentor.intent("/common/errormodal").data({
+                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+            }).send();
         });
 
         $("#orderPartsListFilter").find("#viewToggle").bootstrapToggle().change(toggleSwitch);

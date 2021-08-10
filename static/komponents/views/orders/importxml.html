@@ -336,8 +336,10 @@
                     $($uploadButton.hide()[0].form).hide();
                     $($orderButton.show()[0].form).show();
                 })
-                .catch(function () {
-
+                .catch(function(data){
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare: <pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                    }).send();
                 });
         });
 
