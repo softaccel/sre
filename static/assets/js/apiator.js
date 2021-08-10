@@ -1344,7 +1344,6 @@
 		function parseData4InsertUpdate(itemData)
 		{
 
-
 			if(itemData===null) {
 				return null;
 			}
@@ -1368,14 +1367,15 @@
 			let resource = {};
 
 
-			if(!itemData.hasOwnProperty("type") && !itemData.hasOwnProperty("attributes") ) {
+			// if(!itemData.hasOwnProperty("type") && !itemData.hasOwnProperty("attributes") ) {
+			if(!itemData.hasOwnProperty("attributes") ) {
 				let tmp = {attributes:{}};
 				Object.assign(tmp.attributes, itemData);
 				itemData = tmp;
 			}
-			else if(itemData.hasOwnProperty("type")) {
-				resource.type = itemData.type;
-			}
+			// else if(itemData.hasOwnProperty("type")) {
+			// 	resource.type = itemData.type;
+			// }
 
 			Object.getOwnPropertyNames(itemData.attributes).forEach(function (attr) {
 				if(itemData.attributes[attr] && typeof itemData.attributes[attr]==="object") {
