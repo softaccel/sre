@@ -16,7 +16,7 @@
     </div>
 </div>
 <script>
-    function init_komponent(k){
+    function init_komponent(k) {
         k.hideModal = function() {
             $modal.modal("hide");
         };
@@ -36,12 +36,9 @@
             })
             .then(function (d) {
                 $modal.modal();
-                // console.log("*///////////////",d);
-                // editMode(d.data.instance);
             });
         $("#closeModal").on("click", function () {
             k.hideModal();
         });
-
     }
 </script>

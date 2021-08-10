@@ -58,6 +58,7 @@
         }
 
         function createUnit(data) {
+            console.log(data);
             k.data.instance.createItem(data).then(function () {
                 k.parent.hideModal();
             })
