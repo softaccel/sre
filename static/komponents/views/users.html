@@ -75,16 +75,15 @@
                         </tr>
                         </thead>
                         <tbody data-resourcetype="collection" id="users"
-                               data-addeditmodal='#addEditModal' data-deletemodal='#confirmDeleteModal'
                                data-filter="filterUsers" data-type="users" data-sort="#usersThead"
                                data-paging="#usersPaging" data-filter="#filterUsers">
                         <tr onclick="openEditUserModal(this);" style="cursor: pointer">
                             <td ><%= attributes.userid %></td>
                             <td><%= attributes.fname %></td>
                             <td><%= attributes.lname %></td>
-                            <td><span class="badge badge-<%= attributes.locked*1?'danger':'success' %>"><%= attributes.locked*1?'blocat':'activ' %></span> </td>
+                            <td><span class="badge badge-<%= attributes.active*1===0?'danger':'success' %>"><%= attributes.active*1===1?'activ':'inactiv' %></span> </td>
                             <td>
-                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmDeleteModal" onclick="event.stopPropagation();" data-action="showDeleteConfirm">Sterge</button>
+                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" onclick="event.stopPropagation();deleteUser(this)">Sterge</button>
                             </td>
                         </tr>
                         </tbody>
@@ -109,6 +108,35 @@
 <script>
     function openEditUserModal(src){
         komponentor.intent("/views/users/editUser").data({instance: $(src).data().instance}).send();
+    }
+
+    function deleteUser(src) {
+        let inst = $(src).data().instance;
+        komponentor.intent("/common/messagemodal").data({
+            body:"Esti sigur ca vrei sa stergi utilizatorul "+inst.id +"?",
+            buttons:[
+                {
+                    label: "Da",
+                    attrs: {
+                        "data-dismiss": "modal",
+                    },
+                    class: "btn btn-danger",
+                    callback: ()=>inst.delete().catch(function (data) {
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                        }).send();
+                    })
+                },
+                {
+                    label: "Nu",
+                    attrs: {
+                        "data-dismiss": "modal",
+                    },
+                    class: "btn btn-secondary",
+                }
+
+            ]
+        }).send();
     }
 
     function init_komponent(k,html) {

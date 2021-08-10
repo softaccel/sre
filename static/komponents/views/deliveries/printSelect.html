@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title">
-                    Elemente de printat
+                    Tiparire etichete
                 </div>
             </div>
             <form id="listToPrintForm" class="d-none"></form>
@@ -15,13 +15,13 @@
 <!--                        <li></li>-->
 <!--                    </ul>-->
                     <h6>De printat:</h6>
-                    <p style="color: #888888">format: "a-b" - se printeaza toate etichetele de la a pana la b<br>     "a,b,c" - se printeaza doar etichetele a, b si c<br>
-                        a, b si c sunt numere naturale mai mici decat <%= attributes.totalcnt %></p>
+                    <div class="alert alert-default-info font-weight-bold">format: "a-b" - se printeaza toate etichetele de la a pana la b<br>     "a,b,c" - se printeaza doar etichetele a, b si c<br>
+                        a, b si c sunt numere naturale mai mici decat <%= attributes.totalcnt %></div>
                     <input type="text" name="delivery" value="<%=attributes.delivery%>" form="listToPrintForm" class="d-none">
                     <input type="text" name="item" value="<%=attributes.item%>" form="listToPrintForm" class="d-none">
 
+                    <input type="text" id="toBePrinted" name="seqList" value="1-<%=attributes.totalcnt%>" class="form-control-sm form-control" form="listToPrintForm" placeholder="1-5,7,9" autocomplete="off" pattern="^([0-9-,]+)$">
                 </div>
-                <input type="text" id="toBePrinted" name="seqList" class="form-control-sm form-control" form="listToPrintForm" placeholder="1-5,7,9" autocomplete="off" pattern="^([0-9-,]+)$">
                 <br>
                 <button type="submit" form="listToPrintForm" class="btn btn-success">Print</button>
             </div>

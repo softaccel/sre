@@ -38,6 +38,7 @@
     }
 </style>
 <div>
+    <button class="btn btn-primary" id="startScanBut"><i class="fa fa-barcode"></i> Scaneaza elemente</button>
     <div class="card mb-3" style="background: #f4f4f4; display: none" id="addElsToDeliveryCard">
         <div class="card-body">
             <div class="form-group">
@@ -60,11 +61,11 @@
                             </tr>
                             </thead>
                             <tbody id="unassingedItems" data-resourcetype="collection" data-type="">
-                            <tr onclick="toggleSelect(this)">
-                                <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="event.stopPropagation();toggleSelect($(this).parents('tr'))" data-connected="#checkAllUnassingedItems"></td>
+                            <tr>
+                                <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="toggleSelect($(this).parents('tr'))" data-connected="#checkAllUnassingedItems"></td>
                                 <td><%= attributes.partid %></td>
                                 <td><%=  attributes.name %></td>
-                                <td><input type="number" name="qtys[]" size="4" max="<%=attributes.qty%>" min="0" value="<%=attributes.qty%>" onclick="event.stopPropagation();"> </td>
+                                <td><input type="number" name="qtys[]" size="4" max="<%=attributes.qty-attributes.dlvd_qty%>" min="0" value="<%=attributes.qty-attributes.dlvd_qty%>" onclick="event.stopPropagation();"> </td>
                             </tr>
                             </tbody>
                         </table>
@@ -73,10 +74,9 @@
                 </div>
                 <button id="addToDlvrBtn" >Adauga elementele selectate</button>
             </div>
-            <button id="cancelAddToDlvrBtn">Anuleaza</button>
+            <button id="cancelAddToDlvrBtn" class="btn btn-secondary">Anuleaza</button>
         </div>
     </div>
-    <button class="btn btn-primary" id="startScanBut"><i class="fa fa-barcode"></i> Scaneaza elemente</button>
     <form id="deliveryContentsFilter"></form>
     <button class="btn btn-secondary mb-3" id="addContentBtn"><i class="fa fa-truck-loading"></i> Adauga elemente la livrare</button>
     <div style="max-height: 400px; overflow: scroll">
@@ -120,9 +120,8 @@
                    data-offsetinp="#deliveryContentsOffsetInp" data-pagesize="50" data-pagesizeinp="#deliveryContentsPageSizeInp">
             <tr class="">
                 <td><button class="btn-success btn">OK</button></td>
-                <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="event.stopPropagation();toggleSelect($(this).parents('tr'))" data-connected="#checkAllAssignedItems"></td>
+                <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="toggleSelect($(this).parents('tr'))" data-connected="#checkAllAssignedItems"></td>
                 <!--            <td><%= id %></td>-->
-
                 <td><%= attributes.item %></td> <!-- id din orders_items -->
                 <td><%= attributes.label %></td> <!-- name din idem si la fel -->
                 <td><%= attributes.delivery %></td> <!-- docnum din documents, relationship prin doc_id din orders -->
@@ -139,7 +138,7 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td colspan="6">
+                <td colspan="7">
 
                     <div class="btn-group"  id="deliveryContentsListPaging" data-pagesize="50">
                         <button name="first" class="btn btn-sm btn-outline-secondary" title="0">&lt;&lt;</button>
@@ -163,7 +162,6 @@
 </div>
 
 <script>
-
     function removeFromDelivery(src) {
         let instance = $(src).data("instance");
         komponentor.intent("/common/messagemodal").data({
@@ -176,12 +174,17 @@
                     },
                     class: "btn btn-danger",
                     callback: function () {
-                        // instance.remove();
-                        instance.setUrl(apiRoot+"/deliveries_contents/?filter=item="+instance.attributes.item + ",delivery=" + instance.attributes.delivery);
-                        console.log("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", instance);
+                        instance.setUrl({deleteUrl: apiRoot+"/deliveries_contents/?filter=item="+instance.attributes.item + ",delivery=" + instance.attributes.delivery});
                         instance.delete();
 
                     }
+                },
+                {
+                    label: "Nu",
+                    attrs: {
+                        "data-dismiss": "modal",
+                    },
+                    class: "btn btn-secondary",
                 }
             ]
         }).send();
@@ -212,14 +215,14 @@
 
 
             if(!$select.hasClass("select2")) {
-                $select.select2wrapper({url: apiRoot+"/orders_extended",placeholder:"Alege comanda",labelfld:"docnum"});
+                $select.select2wrapper({url: apiRoot+"/orders_totalcnt_item?filter=cnt>0",placeholder:"Alege comanda",labelfld:"docnum"});
                 $select
                     .on('select2:select', function (e) {
                         $unassignedItemsContainer.show(400);
                         let data = e.params.data;
                         console.log(data);
-                            unassignedItemsInstance
-                            .setUrl(apiRoot+"/orders/"+data.id+"/orders_items_wmeta?filter=qty>0")
+                        unassignedItemsInstance
+                            .setUrl(apiRoot+"/orders/"+data.id+"/orders_items_wmeta_notdlvd")
                             .loadFromRemote();
 
 
@@ -234,50 +237,62 @@
 
         function addToDelivery() {
             let instance = contentItems;
-            let cbs = $('#unassingedItems').find("input[type=checkbox]");
-            let qtys = $('#unassingedItems').find("input[type=number]");
+            let $uai = $('#unassingedItems')
+            let cbs = $uai.find("input[type=checkbox]");
+            let qtys = $uai.find("input[type=number]");
             let toAdd = [];
             for(let i=0;i<cbs.length;i++) {
                 if(!cbs[i].checked)
                     continue;
                 toAdd.push([cbs[i].value,qtys[i].value,k.data.instance.id]);
             }
-            // console.log("@@@@@@@@@@@@@@@@@@",toAdd);
-            // return;
 
-            let promises = [];
+            // let promises = [];
             let errors =[];
+            let insData = [];
+
             toAdd.forEach(function (el) {
                 console.log("++++++++++++++++++++++++++++++++++++++", el);
                 let [item,qty,delivery] = el;
-                // for(let i = 0; i < qty; i++){
-                    let data = {
+                for(let i = 0; i < qty; i++){
+                    insData.push({
                         item: item,
                         delivery: delivery
-                    };
-
-
-                    promises.push(
-                        instance.setUrl({insertUrl:apiRoot + "/deliveries_contents"})
-                            .createItem(data)
-                            .catch((resp)=>errors.push(resp.jqXHR.responseJSON)));
-                // }
+                    });
+                }
             });
-            // console.log("------------////////////////----",promises.length)
-
-            Promise.all(promises)
-                .then(() => instance.loadFromRemote())
-                .finally(()=>{
-                    // k.$el.find("#addElsToDeliveryCard").hide(400);
-                    // k.$el.find("#addContentBtn").show();
+            $("<div>").apiator({resourcetype: "collection",returninstance:true})
+                .setUrl(apiRoot + "/deliveries_contents")
+                .createItem(insData)
+                .finally(function () {
+                    instance.loadFromRemote();
                     unassignedItemsInstance.loadFromRemote();
-                    instance.loadFromRemote()
                     if(errors.length) {
                         komponentor.intent("/common/errormodal").data({
                             body: "A aparut o eroare:<pre>"+JSON.stringify(errors,null, "\t")+"</pre>"
                         }).send();
                     }
                 });
+
+            // promises.push(
+                // instance.setUrl({insertUrl:apiRoot + "/deliveries_contents"})
+                //     .createItem(data)
+                //     .catch((resp)=>errors.push(resp.jqXHR.responseJSON)));
+            // console.log("------------////////////////----",promises.length)
+
+            // Promise.all(promises)
+            //     .then(() => instance.loadFromRemote())
+            //     .finally(()=>{
+            //         // k.$el.find("#addElsToDeliveryCard").hide(400);
+            //         // k.$el.find("#addContentBtn").show();
+            //         unassignedItemsInstance.loadFromRemote();
+            //         instance.loadFromRemote()
+            //         if(errors.length) {
+            //             komponentor.intent("/common/errormodal").data({
+            //                 body: "A aparut o eroare:<pre>"+JSON.stringify(errors,null, "\t")+"</pre>"
+            //             }).send();
+            //         }
+            //     });
 
         }
 
