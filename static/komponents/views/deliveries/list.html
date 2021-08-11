@@ -14,24 +14,28 @@
     <div class="d-inline-block" id="newOrderButtons">
         <button type="button" aria-haspopup="true" aria-expanded="false" class="mb-2 mr-2 btn btn-primary" id="newDlvrButt">Livrare noua</button>
     </div>
-    <form id="deliveriesListFilter" class="d-none"><button type="submit" name="submit"></button></form>
+    <form id="deliveriesListForm" class="d-none"><button type="submit" name="submit" id="deliveriesListFilterBtn"></button></form>
     <table class="table table-striped table-hover ">
-        <thead class="thead-dark" id="deliveriesListHeader">
+        <thead class="thead-dark" id="deliveriesListFilter">
         <tr>
             <th class="align-top" style="width: 100px">
                 <a data-sortfld="docnum">Nr. crt.
-                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i>
+                    <i class="fa fa-sort-down sort-down" style="display: none"></i>
+                    <i class="fa fa-sort sort-default text-light"></i>
+                </a>
             </th>
             <th class="align-top">
                 <a data-sortfld="label">Denumire
                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                <input type="text" name="label" class="form-control-sm form-control" form="deliveriesListFilter" data-operator="~=~">
+                <input type="text" name="label" class="form-control-sm form-control" form="deliveriesListForm" data-operator="~=~">
             </th>
             <th class="align-top">
-                <a data-sortfld="state">Status
-                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                <select name="state" class="custom-select custom-select-sm" form="deliveriesListFilter" data-operator="=">
-                    <option></option>
+                <a data-sortfld="status">Status
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+                </a>
+                <br>
+                <select id="deliveriesListStatusSelect" name="status" class="custom-select custom-select-sm" form="deliveriesListForm" data-operator="=">
                     <option value="created">Creat</option>
                     <option value="loading">Incarcare</option>
                     <option value="ready">Gata de livrare</option>
@@ -40,42 +44,46 @@
                 </select>
             </th>
             <th>
-                <a data-sortfld="created_on">Data livrare
+                <a data-sortfld="dlv_date">Data livrare
                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 <div class="input-group input-group-sm ">
                     <div class="input-group-prepend">
                         <span class="input-group-text">de la</span>
                     </div>
-                    <input type="date" name="created_on" class="form-control-sm form-control" form="deliveriesListFilter" data-operator=">">
+                    <input type="date" name="dlv_date" class="form-control-sm form-control" form="deliveriesListForm" data-operator=">">
                 </div>
                 <div class="input-group input-group-sm">
                     <div class="input-group-prepend">
                         <span class="input-group-text">pana</span>
                     </div>
-                    <input type="date" name="created_on" class="form-control-sm form-control" form="deliveriesListFilter" data-operator="<">
+                    <input type="date" name="dlv_date" class="form-control-sm form-control" form="deliveriesListForm" data-operator="<">
                 </div>
             </th>
             <th>
-                <a data-sortfld="closed_on">Ultima modificare
+                <a data-sortfld="lastupdate">Ultima modificare
                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 <div class="input-group input-group-sm ">
                     <div class="input-group-prepend">
                         <span class="input-group-text">de la</span>
                     </div>
-                    <input type="date" name="closed_on" class="form-control-sm form-control" form="deliveriesListFilter">
+                    <input type="date" name="lastupdate" class="form-control-sm form-control" form="deliveriesListForm" data-operator=">">
                 </div>
                 <div class="input-group input-group-sm">
                     <div class="input-group-prepend">
                         <span class="input-group-text">pana</span>
                     </div>
-                    <input type="date" name="closed_on" class="form-control-sm form-control" form="deliveriesListFilter">
+                    <input type="date" name="lastupdate" class="form-control-sm form-control" form="deliveriesListForm" data-operator="<">
                 </div>
             </th>
         </tr>
         </thead>
-        <tbody id="deliveriesList" data-paging="#deliveriesListPaging" data-type="deliveries" data-resourcetype="collection"
-               data-offsetinp="#deliveriesOffsetInp" data-pagesizeinp="#deliveriesPageSizeInp">
-        <tr class="order <%= attributes.state %>" onclick="openDeliveryModal(this)">
+        <tbody id="deliveriesList" data-type="deliveries" data-resourcetype="collection"
+               data-filter="#deliveriesListForm"
+               data-sort="#deliveriesListFilter"
+               data-paging="#deliveriesListPaging"
+               data-offsetinp="#deliveriesOffsetInp"
+               data-pagesizeinp="#deliveriesPageSizeInp">
+        <tr class="order <%= attributes.status %>" onclick="openDeliveryModal(this)">
             <td>
                 <%= id %>
             </td>
@@ -126,5 +134,15 @@
                 .data({instance:instance})
                 .send();
         });
+
+        let filterList = $("#deliveriesListFilter");
+        filterList.find("input").on("input",function () {
+            $("#deliveriesListFilterBtn").click();
+        });
+        filterList.find("#deliveriesListStatusSelect").select2({placeholder: '', allowClear: true}).on("select2:select",function () {
+            $("#deliveriesListFilterBtn").click();
+        }).on("select2:clear", function () {
+            $("#deliveriesListFilterBtn").click();
+        }).val(null).trigger('change');
     }
 </script>
