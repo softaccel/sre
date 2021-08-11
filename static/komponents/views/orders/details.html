@@ -30,7 +30,14 @@
             </tr>
             <tr>
                 <td>Denumire</td>
-                <td><%= attributes.label %></td>
+                <td>
+                    <span class="display"><%= attributes.label %></span>
+                    <span class="edit" style="min-width: 200px">
+                        <input type="text" id="denumChange" class="form-control form-control-sm" value="<%= attributes.label %>">
+                    </span>
+                    <button class="btn btn-success float-right btn-sm save" onclick="saveDenumChange(this)"><i class="fa fa-save"></i></button>
+                    <button class="btn btn-secondary float-right btn-sm edit" onclick="editDenumChange(this)"><i class="fa fa-edit"></i></button>
+                </td>
             </tr>
             <tr>
                 <td>Bestellung</td>
@@ -45,11 +52,9 @@
                 <td>Stadiu</td>
                 <td>
                     <div class="btn-group">
-                        <button type="button" id="orderState" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-                        </button>
+                        <button type="button" id="orderState" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                         <div class="dropdown-menu" id="statesDropdown">
-                            <a class="dropdown-item" id="changeToState" style="cursor:pointer;" onclick="changeState(this)">yo</a>
+                            <a class="dropdown-item" id="changeToState" style="cursor:pointer;" onclick="changeState(this)">Change to <%= attributes.state %></a>
                         </div>
                     </div>
                 </td>
@@ -121,6 +126,26 @@
             .send();
     }
 
+    function editDenumChange(src) {
+        $(src).parent().addClass('editMode');
+        // $("#teamAllocation").select2wrapper({url: apiRoot+"/teams",placeholder:"Aloca echipa",labelfld:"name"});
+    }
+
+    function saveDenumChange(src) {
+        let $denum = $("#denumChange");
+        $(src).parent().removeClass('editMode');
+        console.log($(src),$(src).data("instance"), $denum.val());
+        $(src).data("instance").update({label: $denum.val()}).then(function (a){
+            console.log(a);
+            prepare_a(a.attributes.state);
+        })
+            .catch(function(data){
+                komponentor.intent("/common/errormodal").data({
+                    body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                }).send();
+            });
+    }
+
     function editTeamAssoc(src) {
         $(src).parent().addClass('editMode');
         $("#teamAllocation").select2wrapper({url: apiRoot+"/teams",placeholder:"Aloca echipa",labelfld:"name"});
@@ -128,9 +153,12 @@
 
     function saveTeamAssoc(src) {
         $(src).parent().removeClass('editMode');
-        console.log($(src),$(src).data("instance"),$("#teamAllocation").val());
-        $(src).data("instance").update({team:$("#teamAllocation").val()}).then(function (a){
-            console.log(a)})
+        let $teamalloc = $("#teamAllocation");
+        console.log($(src),$(src).data("instance"), $teamalloc.val());
+        $(src).data("instance").update({team: $teamalloc.val()}).then(function (a){
+            console.log(a);
+            prepare_a(a.attributes.state);
+        })
             .catch(function(data){
                 komponentor.intent("/common/errormodal").data({
                     body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
@@ -143,6 +171,7 @@
         let $origState = $("#orderState");
         let states = ["offer", "ord", "proc", "ctc", "fix", "ready", "dlvd"];
         let normalized_states = ["Oferta", "Comandat", "In Lucru", "Control", "Corectii", "Gata de Livrare", "Livrat"];
+        // let colors = ["orange", "red", "blue", "green", "black", "grey"];
         let currentState = states.indexOf(state);
 
         let nextState;
