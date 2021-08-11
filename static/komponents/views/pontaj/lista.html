@@ -174,7 +174,6 @@
     }
 
     function save(src) {
-        console.log(src);
         let itemContainer = $(src).parents("tr");
         let opSel = itemContainer.find("select[name=op]").val();
 
@@ -203,8 +202,6 @@
 
         let [oid,opid] = opSel.split("/");
 
-        console.log(instance);
-        // return;
         instance.update({
             operation: opid,
             order: oid,
@@ -221,7 +218,6 @@
         let itemContainer = $(src).parents("tr").addClass("edit");
         let opSel = itemContainer.find("select[name=op]");
         let instance = $(src).data("instance");
-        console.log(instance);
 
         if(opSel.hasClass("select2")) opSel.select2("destroy");
         opSel.empty().append("<option value='"+instance.relationships.order.id + "/" + instance.relationships.operation.id + "'>"
@@ -235,7 +231,6 @@
                 return item.attributes.docnum + " - " + item.attributes.opname;
             },
             idfld: function (item) {
-                console.log(item.attributes);
                 return item.attributes.oid + "/" + item.attributes.opid;
             },
 
@@ -247,50 +242,74 @@
         itemContainer.find("input[name=submit]");
     }
 
-    // function loadNewTTRow() {
-    //     let newTTRow = $("[name=newTT]").toggle();
-    //     let emplSel = newTTRow.find("#emplNameSel");
-    //
-    //     emplSel.select2wrapper({
-    //         url: apiRoot+"/employees",
-    //         labelfld: function (item) {
-    //             return item.attributes.fname + " " + item.attributes.lname;
-    //         },
-    //         idfld: function (item) {
-    //             return item.attributes.id;
-    //         },
-    //
-    //         placeholder: "Nume Angajat"
-    //     });
-    //
-    //     let docnumSel = newTTRow.find("#docNumSel");
-    //
-    //     docnumSel.select2wrapper({
-    //         url: apiRoot+"/emplToOrdAssoc?filter=status=ord",
-    //         labelfld: function (item) {
-    //             return item.attributes.docnum + " - " + item.attributes.opname;
-    //         },
-    //         idfld: function (item) {
-    //             return item.attributes.oid + "/" + item.attributes.opid;
-    //         },
-    //
-    //         placeholder: "Comanda/proiect"
-    //     });
-    //
-    //     let units = newTTRow.find("#unitFilter");
-    //
-    //     units.select2wrapper({
-    //         url: apiRoot+"/units",
-    //         labelfld: function (item) {
-    //             return item.attributes.unit + " - " + item.attributes.type;
-    //         },
-    //         idfld: function (item) {
-    //             return item.attributes.unit;
-    //         },
-    //
-    //         placeholder: "Moneda"
-    //     });
-    // }
+    function deleteUnit(src) {
+
+        komponentor.intent("/common/messagemodal").data({
+            body: "Esti sigur ca vrei sa stergi pontajul lui <br><strong>" + $(src).data("instance").relationships.employee.attributes.fname + " " + $(src).data("instance").relationships.employee.attributes.lname + "</strong> de <strong>" + $(src).data("instance").attributes.duration + "ore?</strong>",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss": "modal"
+                    },
+                    callback: function () {
+                        $(src).data('instance').delete().catch(function (data) {
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss": "modal"
+                    }
+                }
+            ]
+        }).send();
+    }
+
+    function duplicateItem(src) {
+        let itemInstance = $(src).data("instance");
+        komponentor.intent("/common/messagemodal").data({
+            body: "Esti sigur ca vrei sa creezi o dublura pontajului lui <br><strong>" + itemInstance.relationships.employee.attributes.fname + " " + $(src).data("instance").relationships.employee.attributes.lname + "</strong> de <strong>" + $(src).data("instance").attributes.duration + "ore?</strong>",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss": "modal"
+                    },
+                    callback: function () {
+                        let data = itemInstance.attributes;
+                        data.employee = itemInstance.relationships.employee.id;
+                        data.operation = itemInstance.relationships.operation.id;
+                        data.order = itemInstance.relationships.order.id;
+                        data.currency = itemInstance.relationships.currency.id;
+                        delete data.id;
+                        itemInstance.collection.createItem(data)
+                            .catch(function (data) {
+                                komponentor.intent("/common/errormodal")
+                                    .data({
+                                        body: "A aparut o eroare:<pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
+                                    })
+                                    .send();
+                            });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss": "modal"
+                    }
+                }
+            ]
+        }).send();
+    }
 
     function customUrl(k) {
         if (!k.data) {
@@ -319,15 +338,14 @@
     }
 
     function init_komponent(k) {
+
         let url = apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10&include=employee,order,order.doc_id,operation";
 
         try {
             url = customUrl(k);
-
         } catch (e) {
             console.log(e)
         }
-
 
         let instance = $("#timeTrackingEntries").apiator({
             url: url,
@@ -390,7 +408,6 @@
         let form = $("#newTTForm")[0];
 
         util.captureFormSubmit(form, function (data) {
-            console.log(data);
             addNewTT(data);
         })
 
@@ -419,9 +436,7 @@
             data.order = data.docnum.split("/")[0];
 
             delete data.docnum;
-            console.log(data);
             instance.createItem(data).then(function () {
-                console.log(data);
                 $("[name=newTT]").toggle();
                 instance.loadFromRemote();
             })
@@ -433,89 +448,11 @@
 
             // k.$el.find("#addNewTTBtn").on("click", addNewTT);
 
-
             k.exec = function (b) {
                 console.log("exec order", k, b);
             }
         }
 
-        function deleteUnit(src) {
-            console.log("////", $(src).data("instance").attributes)
-
-            komponentor.intent("/common/messagemodal").data({
-                //relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname
-                body: "Esti sigur ca vrei sa stergi pontajul lui <br><strong>" + $(src).data("instance").relationships.employee.attributes.fname + " " + $(src).data("instance").relationships.employee.attributes.lname + "</strong> de <strong>" + $(src).data("instance").attributes.duration + "ore?</strong>",
-                buttons: [
-                    {
-                        label: "Da",
-                        class: "btn-danger",
-                        attrs: {
-                            "data-dismiss": "modal"
-                        },
-                        callback: function () {
-                            $(src).data('instance').delete().catch(function (data) {
-                                console.log(data);
-                                komponentor.intent("/common/errormodal").data({
-                                    body: "A aparut o eroare:<pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
-                                }).send();
-                            });
-                        }
-                    },
-                    {
-                        label: "Nu",
-                        class: "btn-secondary",
-                        attrs: {
-                            "data-dismiss": "modal"
-                        }
-                    }
-                ]
-            }).send();
-        }
-
-        function duplicateItem(src) {
-            // let util = $("<span>").apiator({resourcetype: "collection", returninstance:true});
-            // util.url = apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10&include=employee,order,order.doc_id";
-            // console.log(util, "//////////////////");
-            let itemInstance = $(src).data("instance");
-            komponentor.intent("/common/messagemodal").data({
-                body: "Esti sigur ca vrei sa creezi o dublura pontajului lui <br><strong>" + itemInstance.relationships.employee.attributes.fname + " " + $(src).data("instance").relationships.employee.attributes.lname + "</strong> de <strong>" + $(src).data("instance").attributes.duration + "ore?</strong>",
-                buttons: [
-                    {
-                        label: "Da",
-                        class: "btn-danger",
-                        attrs: {
-                            "data-dismiss": "modal"
-                        },
-                        callback: function () {
-                            console.log(itemInstance);
-                            // return;
-                            let data = itemInstance.attributes;
-                            data.employee = itemInstance.relationships.employee.id;
-                            data.operation = itemInstance.relationships.operation.id;
-                            data.order = itemInstance.relationships.order.id;
-                            data.currency = itemInstance.relationships.currency.id;
-                            delete data.id;
-                            itemInstance.collection.createItem(data)
-                                .catch(function (data) {
-                                    console.log(data);
-                                    komponentor.intent("/common/errormodal")
-                                        .data({
-                                            body: "A aparut o eroare:<pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
-                                        })
-                                        .send();
-                                });
-                        }
-                    },
-                    {
-                        label: "Nu",
-                        class: "btn-secondary",
-                        attrs: {
-                            "data-dismiss": "modal"
-                        }
-                    }
-                ]
-            }).send();
-        }
     }
 
 </script>
