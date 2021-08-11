@@ -7,7 +7,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6 ">
                     <div class="breadcrumb float-sm-right">
-                        <button class="btn btn-primary" id="newJobModalButton"><i class="fa fa-plus"></i> Post nou</button>
+                        <button class="btn btn-primary btn-sm" id="newJobModalButton"><i class="fa fa-plus"></i> Post nou</button>
                     </div>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -17,7 +17,7 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover table-sm">
                         <thead class="thead-dark">
                         <tr>
                             <th>#</th>
@@ -29,7 +29,7 @@
                         <tr class="tr-job" onclick="openJobModal(this)" style="cursor:pointer;">
                             <td><%= id %></td>
                             <td><%= attributes.name %></td>
-                            <td><button class="btn-primary btn btn-sm" onclick="deleteUnit(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
+                            <td><button class="btn-danger btn btn-sm" onclick="deleteUnit(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
                         </tr>
                         </tbody>
                     </table>

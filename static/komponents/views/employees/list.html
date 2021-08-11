@@ -28,7 +28,7 @@
 
 </style>
 <div class="card-header" style="border: none;">
-    <button class="btn btn-primary" style="margin-bottom: 8px" onclick="addNewEmployee()">Angajat Nou</button>
+    <button class="btn btn-primary" style="margin-bottom: 8px" onclick="addNewEmployee()" id="newEmplBtn">Angajat Nou</button>
 </div>
     <div class="card-body">
         <div id="employeesListFilter">
@@ -144,6 +144,16 @@
         // }
 
         let url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname";
+
+        if(k.data && k.data.instance && k.data.instance.type==="teams") {
+            k.$el.find(".teamsColumn").remove();
+            $("#newEmplBtn").remove();
+            url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id;
+            // insertUrl = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
+        }
+        console.log(k.data,url);
+
+
         let employeesEl = $("#employeesListUl");
         employeesEl.apiator({
             url: url,

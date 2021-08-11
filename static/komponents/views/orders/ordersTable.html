@@ -190,6 +190,13 @@
             // insertUrl = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
         }
 
+        if(k.data && k.data.instance && k.data.instance.type==="teams") {
+            // k.$el.find(".customerColumn").remove();
+            $("#newOrderButtons").remove();
+            url = apiRoot+"/orders?filter=team="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10&include=doc_id,partner_id";
+            // insertUrl = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
+        }
+
         let instance = $("#ordersList").apiator({
             url: url,
             type: "orders",
