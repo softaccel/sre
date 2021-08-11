@@ -86,21 +86,25 @@
                 });
 
                 let seqs_final_arr = [];
+                let printed_items = [];
                 seqs_set.forEach(el => {
                     let aux_obj = {};
                     aux_obj["seq"] = el;
                     for(let item of instance_dc.items){
                         if (item.attributes.seqno.toString() === el.toString()) {
-                            aux_obj["barcode"] = item.attributes.label;
+                            aux_obj["barcode"] = item.id;
                         } else {
                             aux_obj["barcode"] = 0;
                         }
                         if (aux_obj.barcode !== 0) {
                             seqs_final_arr.push(aux_obj);
+                            printed_items.push(item.id);
                             break;
                         }
                     }
                 });
+
+                console.log("asdasdasd", printed_items);
 
                 let label_data = {
                     title: instance_oil.items[0].attributes.title,
@@ -122,21 +126,40 @@
                     }).send();
                 } else {
                     console.log(urlPrint.split(".")[0] + ".");
-                    $.ajax({
+                    let ajx = $.ajax({
                         url: urlPrint,
                         data: labels,
                         type: "POST",
-                        headers: {  'Access-Control-Allow-Origin':  urlPrint.split(".")[0] + "."},
                         contentType: 'application/json',
-                        dataType: "json"
-                    })
-                        .done(function(response){
-                            console.log(response);
-                            resolve();
-                        })
-                        .fail(function (reject) {
-                            console.log(reject);
-                        })
+                    }).done(function (resp) {
+                        let instances = [];
+                        for(let id of printed_items) {
+                            instances.push($("<p></p>").apiator({returninstance: true, resourcetype: "item"}).setUrl(apiRoot + "/deliveries_contents/" + id));
+                            instances[instances.length-1].loadFromRemote();
+                        }
+                        Promise.all(instances)
+                            .then(function (val) {
+                                console.log(val);
+                                for(let instance of val){
+                                    // aici instance contine doar null. nu e incarcat
+                                    //TODO
+                                    let cpy = {...instance};
+                                    console.log(",,,,,,,,,,", instance);
+                                    console.log(",,,,,,,,,,", cpy);
+                                    instance.update({label_printed: "1"});
+                                }
+                            }).catch(function (err) {
+                                console.log("nu mere", err)
+                            });
+                    // .then(function () {
+                    //         let cpy = {...inst_aux};
+                    //         console.log(id+",,,,,,,,,,"+id, inst_aux);
+                    //         console.log(id+",,,,,,,,,,"+id, cpy);
+                    //         inst_aux.update({label_printed: "1"});
+                    //     });
+                        console.log("----------------------.",instance_dc);
+                        // instance_dc.update()
+                    });
 
                 }
             }).catch(function(data){
