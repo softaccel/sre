@@ -4,7 +4,6 @@
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
-        background: #212529;
         margin-bottom: 5px;
         padding: 5px;
     }
@@ -16,14 +15,10 @@
         flex: 1 0 60%;
     }
 
-    .grid_6 {
-        display: grid;
-        grid-auto-rows: 1fr;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-        grid-gap: .5rem;
-        align-content: space-evenly;
-        justify-content: space-between;
-        text-align: center;
+    #employeesListUl{
+        list-style: none;
+        margin: 0px;
+        padding: 5px;
     }
 
 </style>
@@ -33,46 +28,34 @@
     <div class="card-body">
         <div id="employeesListFilter">
             <form id="employeesListForm">
-                <button type="submit" class="d-none" id="employeesListFilterBtn"></button>
+                <div class="input-group mb-3">
+                    <input type="text"  name="search" class="form-control" placeholder="Cautare dupa nume, prenume sau Card ID" onkeyup="this.form.submitButt.click()">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit" name="submitButt">Cauta</button>
+                        <button class="btn btn-outline-secondary" type="reset">Reseteaza</button>
+                    </div>
+                </div>
 
-                <div class="align-top">
-                    <a class="text-white" data-sortfld="fname">Prenume
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i>
-                        <i class="fa fa-sort-down sort-down" style="display: none"></i>
-                        <i class="fa fa-sort sort-default text-light"></i>
-                    </a>
-                    <input type="text" name="fname" class="form-control-sm form-control" form="employeesListForm" data-operator="~=~">
-                </div>
-                <div class="align-top">
-                    <a class="text-white" data-sortfld="lname">Nume
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i>
-                        <i class="fa fa-sort-down sort-down" style="display: none"></i>
-                        <i class="fa fa-sort sort-default text-light"></i>
-                    </a>
-                    <input type="text" name="lname" class="form-control-sm form-control" form="employeesListForm" data-operator="~=~">
-                </div>
-                <div class="align-top">
-                    <a class="text-white" data-sortfld="card">Card</a>
-                    <input type="text" name="card" class="form-control-sm form-control" form="employeesListForm" data-operator="=">
-                </div>
             </form>
         </div>
-        <ul class="grid_6 mr-5" id="employeesListUl"
-            data-filter="#employeesListForm"
+        <ul class="row" id="employeesListUl"
+            data-resourcetype="collection"
             data-sort="#employeesListFilter"
             data-paging="#employeesPaging"
             data-offsetinp="#employeesOffsetInp"
             data-pagesizeinp="#employeesPageSizeInp">
 
-            <li onclick="openEmployeeModal(this)" class="card">
-                <div class="card-body text-center" style="cursor: pointer">
-                    <div class="d-inline-block" style="width: 60px">
-                        <img class="rounded-circle" src="assets/img/pexels-photo-220453.webp" alt="" width="52" height="52">
+            <li onclick="openEmployeeModal(this)" class="col-lg-2 col-md-3 col-sm-4">
+                <div class="card" style="min-height: 140px">
+                    <div class="card-body text-center" style="cursor: pointer">
+                        <div class="d-inline-block mb-3" style="width: 60px">
+                            <i class="fa fa-user d-inline rounded-circle bg-secondary" style="font-size: 15px; padding: 10px; color: white"></i>
+                        </div>
+                        <br>
+                        <strong><%=attributes.fname%> <%=attributes.lname%></strong>
+                        <br>
+                        <span class="font-weight-normal"><%=relationships.jobtitle.attributes.name%></span>
                     </div>
-                    <br>
-                    <strong><%=attributes.fname%> <%=attributes.lname%></strong>
-                    <br>
-                    <span class="font-weight-normal"><%=relationships.jobtitle.attributes.name%></span>
                 </div>
             </li>
         </ul>
@@ -130,18 +113,8 @@
     }
 
     function init_komponent(k) {
-        console.log(k);
 
-        // if(k.data && k.data.filter) {
-        //     let filters = [];
-        //     k.data.filter.forEach(function (filter) {
-        //         filters.push(filter.fld+filter.op+filter.val);
-        //     });
-        //
-        //     if(filters.length) {
-        //         url += "&filter="+filters.join(",");
-        //     }
-        // }
+
 
         let url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname";
 
@@ -151,22 +124,29 @@
             url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id;
             // insertUrl = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
         }
-        console.log(k.data,url);
 
 
-        let employeesEl = $("#employeesListUl");
-        employeesEl.apiator({
-            url: url,
-            resourcetype: "collection",
-            type: "employees"
+        let employeesInstance = $("#employeesListUl").apiator({returninstance:true}).setUrl(url);
+        employeesInstance.loadFromRemote();
+
+        $("#employeesListForm").on("submit",function (e) {
+            e.preventDefault();
+            let sTerm = e.target.search.value;
+            if(sTerm==="") {
+                delete employeesInstance.url.parameters.where;
+            }
+            else {
+                employeesInstance.url.parameters.where = "fname~=~"+sTerm+"||lname~=~"+sTerm+"||card="+sTerm;
+            }
+            console.log(e,sTerm,employeesInstance.url);
+            employeesInstance.loadFromRemote();
+
         });
 
-        $("#employeesListForm").find("input").on("input",function () {
-            $("#employeesListFilterBtn").click();
-        });
+
 
         k.getListInstance = function() {
-            return employeesEl.data("instance");
+            return employeesInstance;
         };
 
         function codeRcvd(code,qty) {
