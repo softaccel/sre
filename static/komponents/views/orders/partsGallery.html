@@ -11,7 +11,7 @@
         font-size: 0.9em;
     }
 
-    #orderPartsListFilter{
+    #orderPartsForm{
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
@@ -19,11 +19,11 @@
         margin-bottom: 5px;
         padding: 5px;
     }
-    #orderPartsListFilter>div{
+    #orderPartsForm>div{
         flex: 0 0 auto;
         padding: .75rem;
     }
-    #orderPartsList:nth-child(1){
+    #orderPartsForm:nth-child(1){
         flex: 1 0 60%;
     }
 
@@ -79,37 +79,44 @@
     .toggle.ios .toggle-handle { border-radius: 1rem; }
 
 </style>
-<form id="orderPartsMe">
-    <div id="orderPartsListFilter">
-        <div class="align-top" style="width: 100px">
-            <a class="text-white" data-sortfld="partid">Part id
-                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
-            </a>
-            <input type="text" name="partid" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
-        </div>
-        <div class="align-top">
-            <a class="text-white" data-sortfld="name">Denumire
-                <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
-            </a>
-            <input type="text" name="name" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
-        </div>
-        <div>
 
-        </div>
-        <div>
-            <input type="checkbox" id="viewToggle" checked data-toggle="toggle" data-style="ios" data-size="sm">
-        </div>
-        <div>
-            <div class="float-sm-right">
-                <button onclick="newOrderPart()" type="button" data-toggle="tooltip" title="Adauga reper" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary">
-                    Adauga reper
-                </button>
+<div id="orderPartsMe">
+    <div id="orderPartsListFilter">
+        <form id="orderPartsForm">
+            <button type="submit" class="d-none" id="filterSubmitBtn"></button>
+            <div class="align-top" style="width: 100px">
+                <a class="text-white" data-sortfld="partid">Part id
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+                </a>
+                <input type="text" name="partid" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
             </div>
-        </div>
+            <div class="align-top">
+                <a class="text-white" data-sortfld="name">Denumire
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+                </a>
+                <input type="text" name="name" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
+            </div>
+            <div>
+
+            </div>
+            <div>
+                <input type="checkbox" id="viewToggle" checked data-toggle="toggle" data-style="ios" data-size="sm">
+            </div>
+            <div>
+                <div class="float-sm-right">
+                    <button onclick="newOrderPart()" type="button" data-toggle="tooltip" title="Adauga reper" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary">
+                        Adauga reper
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
     <ul class="grid_4" id="orderPartsList"
         data-filter="#orderPartsMe"
-        data-sort="#orderPartsListFilter">
+        data-sort="#orderPartsListFilter"
+        data-paging="#orderPartsPaging"
+        data-offsetinp="#orderPartsOffsetInp"
+        data-pagesizeinp="#orderPartsPageSizeInp">
 
         <li onclick="orderPartModal(this)">
             <% let tn = "assets/images/spaleck.png"; %>
@@ -127,8 +134,26 @@
         </li>
     </ul>
 
-    <button type="submit" class="d-none" id="filterSubmitBtn"></button>
-</form>
+    <div class="card-footer">
+        <div class="btn-group"  id="orderPartsPaging" data-pagesize="10">
+            <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+            <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+            <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+            <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+            <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+        </div>
+        Pagina <input type="number" size="3" value="0" id="orderPartsOffsetInp">
+        <select id="orderPartsPageSizeInp">
+            <option></option>
+            <option>5</option>
+            <option>10</option>
+            <option>25</option>
+            <option>50</option>
+            <option>75</option>
+        </select> inregistrari pe pagina
+    </div>
+
+</div>
 
 <script>
 
@@ -184,14 +209,14 @@
 
     function init_komponent(k) {
         let instance = $("#orderPartsList").apiator({
-            type: "inventory",
+            type: "orders_items_wmeta",
             resourcetype: "collection"
         }).data("instance");
-        instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_items_wmeta?page[orders_items_wmeta][limit]=1000").loadFromRemote();
+        instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_items_wmeta?page[orders_items_wmeta][limit]=1000&page[orders_items_wmeta][limit]=8").loadFromRemote();
 
         $("#orderPartsListFilter").find("#viewToggle").bootstrapToggle().change(toggleSwitch);
 
-        let form = $("#orderPartsMe");
+        let form = $("#orderPartsForm");
         form.find("input").on("input",function () {
             $("#filterSubmitBtn").click();
         });
