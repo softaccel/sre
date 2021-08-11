@@ -1,21 +1,27 @@
 <style>
-    .offer .state .badge{
-        background: silver;
 
+    .offer .state .badge{
+        background: #6C757D;
+        width: 60%;
+        color: white;
     }
     .offer .state .badge::after{
         content: "OFERTA"
     }
 
     .ord .state .badge{
-        background: dodgerblue;
+        background: #FCC107;
+        width: 60%;
+        color: black;
     }
     .ord .state .badge::after{
         content: "COMANDAT"
     }
 
     .proc .state .badge{
-        background: #d91c22;
+        background: #DC3545;
+        width: 60%;
+        color: white;
     }
     .proc .state .badge::after{
         content: "IN LUCRU"
@@ -23,6 +29,8 @@
 
     .ctc .state .badge{
         background: #d5c80f;
+        width: 60%;
+        color: white;
     }
     .ctc .state .badge::after{
         content: "CONTROL"
@@ -30,26 +38,28 @@
 
     .fix .state .badge{
         background: #c06109;
+        width: 60%;
+        color: white;
     }
     .fix .state .badge::after{
         content: "CORECTII"
     }
     .ready .state .badge{
-        background: #24c011;
+        background: #2AA744;
+        width: 60%;
+        color: white;
     }
     .ready .state .badge::after{
         content: "GATA DE LIVRARE"
     }
     .dlvd .state .badge{
-        background: #bb1dc0;
+        background: #2AA744;
+        width: 60%;
+        color: white;
     }
     .dlvd .state .badge::after{
         content: "LIVRAT"
     }
-
-
-
-
 </style>
 <div class="container-fluid">
     <section class="content-header">
@@ -74,6 +84,8 @@
     </section>
 </div>
 <script>
+    // let $denum;
+    // let old_denum;
     function init_komponent(k) {
         komponentor.loadKomponents(k.$el);
     }

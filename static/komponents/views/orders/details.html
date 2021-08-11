@@ -40,10 +40,6 @@
                 </td>
             </tr>
             <tr>
-                <td>Bestellung</td>
-                <td>D12542357</td>
-            </tr>
-            <tr>
                 <td>Client</td>
                 <td><a href="#" onclick="event.preventDefault(); goToPartner(this);"><%= relationships.partner_id.attributes.name %></a></td>
 <!--                <td><a href="#" onclick="komponentor.intent('/views/customers/customer').data({id:0}).send()"><%= relationships.partner_id.attributes.name %></a></td>-->
@@ -52,10 +48,38 @@
                 <td>Stadiu</td>
                 <td>
                     <div class="btn-group">
-                        <button type="button" id="orderState" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                        <div class="dropdown-menu" id="statesDropdown">
-                            <a class="dropdown-item" id="changeToState" style="cursor:pointer;" onclick="changeState(this)">Change to <%= attributes.state %></a>
-                        </div>
+<!--                        //     let states = ["offer", "ord", "proc", "ctc", "fix", "ready", "dlvd"];-->
+<!--                        //     let normalized_states = ["Oferta", "Comandat", "In Lucru", "Control", "Corectii", "Gata de Livrare", "Livrat"];-->
+<!--                        //     // let colors = ["orange", "red", "blue", "green", "black", "grey"];-->
+
+
+                        <% if(attributes.state === "offer") { %>
+                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Oferta</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ord`)" value="ord">Comandat</a>
+                            </div>
+                        <% } else if(attributes.state === "ord") { %>
+                            <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Comandat</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `proc`)" value="proc">In Lucru</a>
+                            </div>
+                        <% } else if(attributes.state === "proc") { %>
+                            <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">In Lucru</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ready`)" value="ctc">Gata de Livrare</a>
+                            </div>
+                        <% } else if(attributes.state === "ready") { %>
+                            <button disabled type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gata de Livrare</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `dlvd`)" value="dlvd">Livrat</a>
+                            </div>
+                        <% } else if(attributes.state === "dlvd") { %>
+                            <button disabled type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat</button>
+<!--                        <div class="dropdown-menu">-->
+<!--                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this)">Change to <%= attributes.state %></a>-->
+<!--                        </div>-->
+                        <% } %>
+
                     </div>
                 </td>
             </tr>
@@ -81,39 +105,43 @@
                 </td>
 
             </tr>
-            <tr>
-                <td>Data preluare comanda</td>
-                <td><%= attributes.created_on %></td>
-            </tr>
-            <tr>
-                <td>Date dare in executie</td>
-                <td><%= attributes.startwork_on?attributes.startwork_on:"-" %></td>
-            </tr>
-            <tr>
-                <td>Data finalizare</td>
-                <td><%= attributes.readytodeliver_on?attributes.readytodeliver_on:"-" %></td>
-            </tr>
-            <tr>
-                <td>Data livrare</td>
-                <td><%= attributes.closed_on?attributes.closed_on:"-" %></td>
-            </tr>
-            <tr>
-                <td>Pret comanda</td>
-                <td><%= attributes.order_value ?  attributes.order_value + " " + (relationships.currency?relationships.currency.id:"-") : "-" %> </td>
-
-            </tr>
-            <tr>
-                <td>Pret calculat</td>
-                <td><%= attributes.calculated_value ?  attributes.calculated_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %> </td>
-            </tr>
-            <tr>
-                <td>Pret final</td>
-                <td><%= attributes.final_value ?  attributes.final_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %> </td>
-            </tr>
         </table>
     </div>
-    <div class="col-6 text-center">
-        <img src="assets/img/product.jpg" width="300">
+    <div class="col-6">
+        <table class="order-summary-table">
+            <tbody>
+                <tr>
+                    <td>Data preluare comanda</td>
+                    <td><%= attributes.created_on %></td>
+                </tr>
+                <tr>
+                    <td>Date dare in executie</td>
+                    <td><%= attributes.startwork_on?attributes.startwork_on:"-" %></td>
+                </tr>
+                <tr>
+                    <td>Data finalizare</td>
+                    <td><%= attributes.readytodeliver_on?attributes.readytodeliver_on:"-" %></td>
+                </tr>
+                <tr>
+                    <td>Data livrare</td>
+                    <td><%= attributes.closed_on?attributes.closed_on:"-" %></td>
+                </tr>
+                <tr>
+                    <td>Pret comanda</td>
+                    <td><%= attributes.order_value ?  attributes.order_value + " " + (relationships.currency?relationships.currency.id:"-") : "-" %> </td>
+
+                </tr>
+                <tr>
+                    <td>Pret calculat</td>
+                    <td><%= attributes.calculated_value ?  attributes.calculated_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %> </td>
+                </tr>
+                <tr>
+                    <td>Pret final</td>
+                    <td><%= attributes.final_value ?  attributes.final_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %>  </td>
+<!--                    <td><%= relationships.currency %>  </td>-->
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -132,13 +160,18 @@
     }
 
     function saveDenumChange(src) {
-        let $denum = $("#denumChange");
+        let $denum;
+        $denum = $("#denumChange");
+
+
         $(src).parent().removeClass('editMode');
-        console.log($(src),$(src).data("instance"), $denum.val());
+        // if(old_denum === $denum.val()){
+        //     return;
+        // }
         $(src).data("instance").update({label: $denum.val()}).then(function (a){
-            console.log(a);
-            prepare_a(a.attributes.state);
-        })
+                console.log("saveDenumChangesaveDenumChangesaveDenumChange", $(src).data("instance"));
+                // prepare_a(a.attributes.state);
+            })
             .catch(function(data){
                 komponentor.intent("/common/errormodal").data({
                     body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
@@ -154,10 +187,9 @@
     function saveTeamAssoc(src) {
         $(src).parent().removeClass('editMode');
         let $teamalloc = $("#teamAllocation");
-        console.log($(src),$(src).data("instance"), $teamalloc.val());
         $(src).data("instance").update({team: $teamalloc.val()}).then(function (a){
             console.log(a);
-            prepare_a(a.attributes.state);
+            // prepare_a(a.attributes.state);
         })
             .catch(function(data){
                 komponentor.intent("/common/errormodal").data({
@@ -166,59 +198,22 @@
             });
     }
 
-    function prepare_a(state){
-        let $changeTo = $("#changeToState");
-        let $origState = $("#orderState");
-        let states = ["offer", "ord", "proc", "ctc", "fix", "ready", "dlvd"];
-        let normalized_states = ["Oferta", "Comandat", "In Lucru", "Control", "Corectii", "Gata de Livrare", "Livrat"];
-        // let colors = ["orange", "red", "blue", "green", "black", "grey"];
-        let currentState = states.indexOf(state);
-
-        let nextState;
-        let normalizedNext;
-
-        if(currentState === states.length - 1){
-            $changeTo.html("Starea este finala.");
-            $changeTo.attr("val", "dlvd");
-        } else {
-            nextState = states[currentState + 1];
-            normalizedNext = normalized_states[currentState + 1];
-            $changeTo.html("Schimbati statusul comenzii in \"" + normalizedNext + "\"");
-            $changeTo.attr("val", nextState);
-        }
-        $origState.html(normalized_states[currentState]);
+    function changeState(src, new_state){
+        let instance = $(src).data("instance");
+        instance.update({state: new_state}).catch(function (error) {
+            komponentor.intent("/common/errormodal").data({
+                body: "A aparut o eroare:<pre>"+JSON.stringify(error)+"</pre>"
+            }).send();
+        });
     }
-
-    function changeState(src){
-        let instance = $(src).data().instance;
-        let $changeTo = $("#changeToState");
-        let oldState = $("#orderState").html();
-
-        let new_state = $changeTo.attr("val");
-        let data = $(src).data().instance.attributes
-
-
-        if(oldState !== "Livrat"){
-            instance.update({
-                oid: data.oid,
-                state: new_state
-            }).then((a) => {
-                console.log(a);
-                prepare_a(new_state);
-            }).catch(function(data){
-                komponentor.intent("/common/errormodal").data({
-                    body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
-                }).send();
-            });
-        }
-    }
-
-
 
     function init_komponent(k) {
+        // $denum = $("#denumChange");
+        // old_denum = $denum.val();
+        console.log("lklklklklklkk", k);
         k.data.instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
             .bindView(k.$el.children()).loadFromRemote().then(function (d) {
-                prepare_a(k.data.instance.attributes.state);
+            // prepare_a(k.data.instance.attributes.state);
                 console.log(d)
             })
             .catch(function(data){
