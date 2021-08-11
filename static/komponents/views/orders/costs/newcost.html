@@ -1,0 +1,40 @@
+<script>
+    function init_komponent(k) {
+        let instance = k.data.instance;
+        let fields = [
+            {type:"text", name: "name", placeholder: "", label: "Denumire",attrs:{required:true}},
+            {type:"number", name: "qty", placeholder: "", label: "Cantitate",attrs:{required:true}},
+            {type:"select", name: "unit", label: "Unitate de masura", url: "/units", labelfnc: "unit", idfnc: "unit",attrs:{required:true}},
+            {type:"number", name: "unit_price", placeholder: "", label: "Pret unitar",attrs:{required:true}},
+            {type:"select", name: "currency", label: "Moneda", url: "/currencies", labelfnc: "id", idfnc: "id",attrs:{required:true}},
+            {type:"number", name: "vat", placeholder: "", label: "Cota TVA",attrs:{required:true},default:19},
+        ];
+        let title = "Adaugare cost";
+
+        if(typeof instance.items==="undefined") {
+            title = "Editare cost";
+            fields[0].default = instance.attributes.name;
+            fields[1].default = instance.attributes.qty;
+            fields[2].default = {id:instance.relationships.unit.id,description:instance.relationships.unit.id};
+            fields[3].default = instance.attributes.unit_price;
+            fields[4].default = {id:instance.relationships.currency.id,description:instance.relationships.currency.id};
+            fields[5].default = instance.attributes.vat;
+            fields.push({type:"hidden", name: "id", default:instance.id});
+        }
+
+        komponentor
+            .intent("/common/formmodal")
+            .data({
+                title: title,
+                fields: fields,
+                callback: function (data) {
+                    let p = (typeof instance.items==="undefined") ? instance.update(data) : instance.createItem(data);
+                    p.then(function () {
+                        if(typeof k.data.cb === "function") {
+                            k.data.cb();
+                        }
+                    });
+                }
+            }).send();
+    }
+</script>

@@ -1,0 +1,71 @@
+<div>
+    <button class="btn btn-primary" id="newCostEntryBtn"><i class="fa fa-plus"></i> Adauga</button>
+    <table class="table table-sm table-hover mt-2">
+        <thead>
+        <tr>
+            <th>Denumire</th>
+            <th style="width: 130px">Cantitate</th>
+            <th style="width: 130px">U.M.</th>
+            <th style="width: 130px">Pret unitar</th>
+            <th style="width: 130px">Total</th>
+            <th style="width: 130px">Total cu TVA</th>
+            <th style="width: 50px"></th>
+        </tr>
+        </thead>
+        <tbody id="orderCostsList" data-resourcetype="collection">
+        <tr>
+            <td><%= attributes.name %></td>
+            <td><%= attributes.qty %></td>
+            <td><%= relationships.unit.id %></td>
+            <td><%= attributes.unit_price %> <%= relationships.currency.id %></td>
+            <td><%= attributes.total %> <%= relationships.currency.id %></td>
+            <td><%= attributes.total_wvat %> <%= relationships.currency.id %></td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-warning" onclick="editCost(this)"><i class="fa fa-edit"></i></button>
+                    <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+
+        <tfoot id="orderCostsTotal" data-resourcetype="item" class="font-weight-bold">
+        <tr>
+            <td>Total</td>
+            <td colspan="4"></td>
+            <td><%= attributes.total%></td>
+        </tr>
+        <tr>
+            <td>TVA</td>
+            <td colspan="4"></td>
+            <td><%= Math.round((attributes.total_wvat - attributes.total)*100)/100%></td>
+        </tr>
+        <tr>
+            <td>Total + TVA</td>
+            <td colspan="4"></td>
+            <td><%= attributes.total_wvat%></td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<script>
+    function editCost(src) {
+        komponentor.intent("/views/orders/costs/newcost").data({instance:$(src).data().instance,cb:()=>{$("#orderCostsTotal").data().instance.loadFromRemote()}}).send();
+    }
+
+    function init_komponent(k) {
+        let costsListIntance = $("#orderCostsList").apiator({returninstance:true}).setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_costs");
+        costsListIntance.loadFromRemote().then(function () {
+            if(costsListIntance.items.length)
+                $("#orderCostsTotal").show().apiator({returninstance:true}).setUrl(apiRoot+"/orders_costs_total/"+k.data.instance.id).loadFromRemote();
+            else
+                $("#orderCostsTotal").hide()
+        });
+
+        $("#newCostEntryBtn").on("click",function () {
+            komponentor.intent("/views/orders/costs/newcost").data({instance:costsListIntance,cb:()=>{$("#orderCostsTotal").data().instance.loadFromRemote()}}).send();
+        });
+
+
+    }
+</script>
