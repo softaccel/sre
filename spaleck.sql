@@ -1,12 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 12, 2021 at 11:26 AM
--- Server version: 8.0.25-0ubuntu0.20.04.1
+-- Generation Time: Aug 12, 2021 at 03:25 PM
+-- Server version: 8.0.26-0ubuntu0.20.04.2
 -- PHP Version: 7.4.3
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -20,6 +21,23 @@ SET time_zone = "+00:00";
 --
 -- Database: `spaleck`
 --
+
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`vsergiu`@`localhost` PROCEDURE `addToDelivery` (IN `invId` INT, IN `dqty` FLOAT(10,3), IN `dlvrId` INT)  begin
+	update inventory set qty=qty-dqty WHERE id=invId;
+    insert into deliveries_contents(delivery,item,qty) VALUES(dlvrId,invId,dqty) on duplicate key update qty=qty+dqty;
+END$$
+
+CREATE DEFINER=`sysadmin`@`localhost` PROCEDURE `log` (IN `msg` TEXT)  NO SQL
+SELECT CURRENT_DATE$$
+
+CREATE DEFINER=`sysadmin`@`localhost` PROCEDURE `login` (IN `uid` VARCHAR(50), IN `pass` VARCHAR(255), OUT `cnt` INT)  NO SQL
+select count(*) into cnt from users where userid=uid and password=sha2(pass,224) and active=1$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -185,14 +203,6 @@ CREATE TABLE `deliveries_labels` (
 -- (See below for the actual view)
 --
 CREATE TABLE `develivery_items_aggregated` (
-`checkout` decimal(25,0)
-,`delivery` int
-,`item` int
-,`label` tinytext
-,`notcheckout` decimal(26,0)
-,`notprinted` decimal(26,0)
-,`printed` decimal(25,0)
-,`totalcnt` bigint
 );
 
 -- --------------------------------------------------------
@@ -550,9 +560,6 @@ DELIMITER ;
 -- (See below for the actual view)
 --
 CREATE TABLE `orders_costs_total` (
-`oid` int
-,`total` double(19,2)
-,`total_wvat` double(19,2)
 );
 
 -- --------------------------------------------------------
@@ -654,13 +661,6 @@ DELIMITER ;
 -- (See below for the actual view)
 --
 CREATE TABLE `orders_items_labels` (
-`belegNum` text
-,`designId` text
-,`docnum` varchar(45)
-,`itemId` int
-,`orderId` int
-,`partId` text
-,`title` tinytext
 );
 
 -- --------------------------------------------------------
@@ -693,25 +693,6 @@ DELIMITER ;
 -- (See below for the actual view)
 --
 CREATE TABLE `orders_items_wmeta` (
-`cat_id` int
-,`currency` varchar(10)
-,`design` text
-,`dlvd_qty` float(10,3)
-,`gallery` text
-,`id` int
-,`match_key` varchar(50)
-,`match_value` varchar(255)
-,`name` tinytext
-,`order` int
-,`partid` text
-,`qty` float(10,3)
-,`total_value` float(10,3)
-,`total_value_wvat` float(10,3)
-,`unit` varchar(45)
-,`unit_price` float(10,3)
-,`unit_price_wvat` float(10,3)
-,`vat` float(10,3)
-,`vat_value` float(10,3)
 );
 
 -- --------------------------------------------------------
@@ -721,25 +702,6 @@ CREATE TABLE `orders_items_wmeta` (
 -- (See below for the actual view)
 --
 CREATE TABLE `orders_items_wmeta_notdlvd` (
-`cat_id` int
-,`currency` varchar(10)
-,`design` text
-,`dlvd_qty` float(10,3)
-,`gallery` text
-,`id` int
-,`match_key` varchar(50)
-,`match_value` varchar(255)
-,`name` tinytext
-,`order` int
-,`partid` text
-,`qty` float(10,3)
-,`total_value` float(10,3)
-,`total_value_wvat` float(10,3)
-,`unit` varchar(45)
-,`unit_price` float(10,3)
-,`unit_price_wvat` float(10,3)
-,`vat` float(10,3)
-,`vat_value` float(10,3)
 );
 
 -- --------------------------------------------------------
@@ -762,9 +724,6 @@ CREATE TABLE `orders_meta` (
 -- (See below for the actual view)
 --
 CREATE TABLE `orders_totalcnt_item` (
-`cnt` double(20,3)
-,`docnum` varchar(45)
-,`oid` int
 );
 
 -- --------------------------------------------------------
@@ -1121,12 +1080,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`userid`, `password`, `fname`, `lname`, `email`, `creationtime`, `lastlogin`, `active`, `type`) VALUES
-('5dfgdfg', '9ba4e75c443101896c7c626d34ce8a27e211d11a3e637fbe78978894', 'Alinosu', 'evvev', 'efevfevf@gmail.com', '2021-07-21 10:12:38', NULL, 1, NULL),
 ('admin', '9ba4e75c443101896c7c626d34ce8a27e211d11a3e637fbe78978894', 'Adita', 'Minunat', 'sv@softaccel.net', '2020-12-08 09:25:26', NULL, 1, 'adm'),
-('Alin', '4c73b20c9d0e4bc8b6892a27371acad10a366193480ddea11be357e4', 'Mariusic', 'Costache', 'alin@gmail.com', '2021-08-05 05:43:40', NULL, 1, NULL),
 ('asd', '7c768595eec1dd5f86dd62fc4353c719e54acb515f275fa49a4b7169', 'dsa', 'asd', 'asd@msil.com', '2021-07-19 08:01:46', NULL, 1, NULL),
-('asdasdasd', '7c768595eec1dd5f86dd62fc4353c719e54acb515f275fa49a4b7169', 'dsa', 'asd', 'mail@asd.ro', '2021-08-12 07:45:45', NULL, 1, NULL),
 ('Constantin', '99fb2f48c6af4761f904fc85f95eb56190e5d40b1f44ec3a9c1fa319', 'Florin', 'Maranescu', 'maranescu@gmielusel.com', '2021-08-05 05:56:47', NULL, 1, NULL),
+('gge', 'aa650374567040477d1c59ebc6908ff7d3f2e094dd1d2f09ebbca813', 'tertt', 'nume fain', 'twqtqt@hfhfj.mbn', '2021-07-29 12:04:42', NULL, 1, NULL),
 ('Loco', '4c73b20c9d0e4bc8b6892a27371acad10a366193480ddea11be357e4', 'loco', 'loco', 'ioan@gmielusel.com', '2021-08-05 10:59:24', NULL, 1, NULL),
 ('matei', '7c768595eec1dd5f86dd62fc4353c719e54acb515f275fa49a4b7169', 'Matei', 'yo', 'mail@altmail.com', '2021-07-22 08:47:19', NULL, 1, NULL),
 ('Pomion', '99fb2f48c6af4761f904fc85f95eb56190e5d40b1f44ec3a9c1fa319', 'Ionica', 'Pompilica', 'maranescu.florin@gmail.com', '2021-07-19 08:38:40', NULL, 1, NULL),
@@ -1183,7 +1140,7 @@ CREATE TABLE `users_2_groups` (
 --
 DROP TABLE IF EXISTS `alloc_orders`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VIEW `alloc_orders`  AS SELECT `e`.`id` AS `emplid`, `e`.`fname` AS `fname`, `e`.`lname` AS `lname`, `e`.`card` AS `card`, `op`.`name` AS `op_name`, `op`.`id` AS `op_id`, `d`.`docnum` AS `order_name`, `o`.`oid` AS `order_id`, `o2e`.`hourlyrate` AS `hourlyrate`, `o2e`.`currency` AS `currency`, concat(`e`.`id`,`d`.`docnum`,`op`.`name`) AS `unq` FROM ((((`employees` `e` left join `orders_2_employees` `o2e` on((`o2e`.`emplid` = `e`.`id`))) left join `orders` `o` on((`o`.`oid` = `o2e`.`orderid`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) left join `catalog` `op` on((`op`.`id` = `o2e`.`operation`))) WHERE ((`d`.`docnum` is not null) AND (`o`.`state` = 'proc')) ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `alloc_orders`  AS  select `e`.`id` AS `emplid`,`e`.`fname` AS `fname`,`e`.`lname` AS `lname`,`e`.`card` AS `card`,`op`.`name` AS `op_name`,`op`.`id` AS `op_id`,`d`.`docnum` AS `order_name`,`o`.`oid` AS `order_id`,`o2e`.`hourlyrate` AS `hourlyrate`,`o2e`.`currency` AS `currency`,concat(`e`.`id`,`d`.`docnum`,`op`.`name`) AS `unq` from ((((`employees` `e` left join `orders_2_employees` `o2e` on((`o2e`.`emplid` = `e`.`id`))) left join `orders` `o` on((`o`.`oid` = `o2e`.`orderid`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) left join `catalog` `op` on((`op`.`id` = `o2e`.`operation`))) where ((`d`.`docnum` is not null) and (`o`.`state` = 'proc')) ;
 
 -- --------------------------------------------------------
 
@@ -1192,7 +1149,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `develivery_items_aggregated`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`sysadmin`@`localhost` SQL SECURITY DEFINER VIEW `develivery_items_aggregated`  AS SELECT `a`.`delivery` AS `delivery`, `a`.`label` AS `label`, `a`.`item` AS `item`, `a`.`totalcnt` AS `totalcnt`, `a`.`printed` AS `printed`, `a`.`checkout` AS `checkout`, (`a`.`totalcnt` - `a`.`printed`) AS `notprinted`, (`a`.`totalcnt` - `a`.`checkout`) AS `notcheckout` FROM (select `deliveries_contents`.`delivery` AS `delivery`,`orders_items`.`name` AS `label`,`deliveries_contents`.`item` AS `item`,count(0) AS `totalcnt`,sum(`deliveries_contents`.`label_printed`) AS `printed`,sum(`deliveries_contents`.`checkout`) AS `checkout` from (`orders_items` join `deliveries_contents`) where (`orders_items`.`id` = `deliveries_contents`.`item`) group by `deliveries_contents`.`delivery`,`deliveries_contents`.`item`) AS `a` ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `develivery_items_aggregated`  AS  select `a`.`delivery` AS `delivery`,`a`.`label` AS `label`,`a`.`item` AS `item`,`a`.`totalcnt` AS `totalcnt`,`a`.`printed` AS `printed`,`a`.`checkout` AS `checkout`,(`a`.`totalcnt` - `a`.`printed`) AS `notprinted`,(`a`.`totalcnt` - `a`.`checkout`) AS `notcheckout` from (select `deliveries_contents`.`delivery` AS `delivery`,`orders_items`.`name` AS `label`,`deliveries_contents`.`item` AS `item`,count(0) AS `totalcnt`,sum(`deliveries_contents`.`label_printed`) AS `printed`,sum(`deliveries_contents`.`checkout`) AS `checkout` from (`orders_items` join `deliveries_contents`) where (`orders_items`.`id` = `deliveries_contents`.`item`) group by `deliveries_contents`.`delivery`,`deliveries_contents`.`item`) `a` ;
 
 -- --------------------------------------------------------
 
@@ -1201,7 +1158,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`sysadmin`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `employeesExtended`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VIEW `employeesExtended`  AS SELECT `empl`.`id` AS `id`, `empl`.`fname` AS `fname`, `empl`.`lname` AS `lname`, `empl`.`bdate` AS `bdate`, `empl`.`cnp` AS `cnp`, `empl`.`address_1` AS `address_1`, `empl`.`address_2` AS `address_2`, `empl`.`city` AS `city`, `empl`.`postcode` AS `postcode`, `empl`.`county` AS `county`, `empl`.`country` AS `country`, `empl`.`userid` AS `userid`, `empl`.`docs` AS `docs`, `empl`.`team` AS `team`, `empl`.`activ` AS `activ`, `empl`.`jobtitle` AS `jobtitle`, `empl`.`card` AS `card`, `j`.`name` AS `jobname`, `t`.`name` AS `teamname` FROM ((`employees` `empl` left join `jobs` `j` on((`j`.`codcor` = `empl`.`jobtitle`))) left join `teams` `t` on((`t`.`tid` = `empl`.`team`))) ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `employeesExtended`  AS  select `empl`.`id` AS `id`,`empl`.`fname` AS `fname`,`empl`.`lname` AS `lname`,`empl`.`bdate` AS `bdate`,`empl`.`cnp` AS `cnp`,`empl`.`address_1` AS `address_1`,`empl`.`address_2` AS `address_2`,`empl`.`city` AS `city`,`empl`.`postcode` AS `postcode`,`empl`.`county` AS `county`,`empl`.`country` AS `country`,`empl`.`userid` AS `userid`,`empl`.`docs` AS `docs`,`empl`.`team` AS `team`,`empl`.`activ` AS `activ`,`empl`.`jobtitle` AS `jobtitle`,`empl`.`card` AS `card`,`j`.`name` AS `jobname`,`t`.`name` AS `teamname` from ((`employees` `empl` left join `jobs` `j` on((`j`.`codcor` = `empl`.`jobtitle`))) left join `teams` `t` on((`t`.`tid` = `empl`.`team`))) ;
 
 -- --------------------------------------------------------
 
@@ -1210,7 +1167,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `employees_names`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VIEW `employees_names`  AS SELECT `employees`.`id` AS `id`, concat(`employees`.`fname`,' ',`employees`.`lname`) AS `fullname` FROM `employees` ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `employees_names`  AS  select `employees`.`id` AS `id`,concat(`employees`.`fname`,' ',`employees`.`lname`) AS `fullname` from `employees` ;
 
 -- --------------------------------------------------------
 
@@ -1219,7 +1176,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `emplToOrdAssoc`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VIEW `emplToOrdAssoc`  AS SELECT `o2e`.`id` AS `id`, `ord`.`oid` AS `oid`, `ord`.`state` AS `status`, `doc`.`docnum` AS `docnum`, `ops`.`name` AS `opname`, `o2e`.`hourlyrate` AS `hourlyrate`, `o2e`.`currency` AS `currency`, `empl`.`fname` AS `fname`, `empl`.`lname` AS `lname`, `o2e`.`emplid` AS `emplid`, `ord`.`label` AS `label`, `ops`.`id` AS `opid` FROM ((((`orders_2_employees` `o2e` left join `orders` `ord` on((`ord`.`oid` = `o2e`.`orderid`))) left join `catalog` `ops` on((`ops`.`id` = `o2e`.`operation`))) left join `documents` `doc` on((`doc`.`id` = `ord`.`doc_id`))) left join `employees` `empl` on((`empl`.`id` = `o2e`.`emplid`))) ORDER BY `o2e`.`emplid` ASC ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `emplToOrdAssoc`  AS  select `o2e`.`id` AS `id`,`ord`.`oid` AS `oid`,`ord`.`state` AS `status`,`doc`.`docnum` AS `docnum`,`ops`.`name` AS `opname`,`o2e`.`hourlyrate` AS `hourlyrate`,`o2e`.`currency` AS `currency`,`empl`.`fname` AS `fname`,`empl`.`lname` AS `lname`,`o2e`.`emplid` AS `emplid`,`ord`.`label` AS `label`,`ops`.`id` AS `opid` from ((((`orders_2_employees` `o2e` left join `orders` `ord` on((`ord`.`oid` = `o2e`.`orderid`))) left join `catalog` `ops` on((`ops`.`id` = `o2e`.`operation`))) left join `documents` `doc` on((`doc`.`id` = `ord`.`doc_id`))) left join `employees` `empl` on((`empl`.`id` = `o2e`.`emplid`))) order by `o2e`.`emplid` ;
 
 -- --------------------------------------------------------
 
@@ -1228,7 +1185,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `orders_costs_total`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`sysadmin`@`localhost` SQL SECURITY DEFINER VIEW `orders_costs_total`  AS SELECT `orders_costs`.`oid` AS `oid`, sum(`orders_costs`.`total`) AS `total`, sum(`orders_costs`.`total_wvat`) AS `total_wvat` FROM `orders_costs` GROUP BY `orders_costs`.`oid` ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `orders_costs_total`  AS  select `orders_costs`.`oid` AS `oid`,sum(`orders_costs`.`total`) AS `total`,sum(`orders_costs`.`total_wvat`) AS `total_wvat` from `orders_costs` group by `orders_costs`.`oid` ;
 
 -- --------------------------------------------------------
 
@@ -1237,7 +1194,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`sysadmin`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `orders_count_bystate`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VIEW `orders_count_bystate`  AS SELECT `orders`.`state` AS `state`, count(0) AS `cnt` FROM `orders` GROUP BY `orders`.`state` ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `orders_count_bystate`  AS  select `orders`.`state` AS `state`,count(0) AS `cnt` from `orders` group by `orders`.`state` ;
 
 -- --------------------------------------------------------
 
@@ -1246,7 +1203,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `orders_extended`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VIEW `orders_extended`  AS SELECT `o`.`oid` AS `oid`, `o`.`label` AS `label`, `o`.`state` AS `state`, `o`.`doc_id` AS `doc_id`, `o`.`partner_id` AS `partner_id`, `o`.`created_on` AS `created_on`, `o`.`closed_on` AS `closed_on`, `o`.`final_value` AS `final_value`, `o`.`meta` AS `meta`, `o`.`user_id` AS `user_id`, `p`.`name` AS `pname`, `d`.`docnum` AS `docnum` FROM ((`orders` `o` left join `partners` `p` on((`p`.`id` = `o`.`partner_id`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `orders_extended`  AS  select `o`.`oid` AS `oid`,`o`.`label` AS `label`,`o`.`state` AS `state`,`o`.`doc_id` AS `doc_id`,`o`.`partner_id` AS `partner_id`,`o`.`created_on` AS `created_on`,`o`.`closed_on` AS `closed_on`,`o`.`final_value` AS `final_value`,`o`.`meta` AS `meta`,`o`.`user_id` AS `user_id`,`p`.`name` AS `pname`,`d`.`docnum` AS `docnum` from ((`orders` `o` left join `partners` `p` on((`p`.`id` = `o`.`partner_id`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) ;
 
 -- --------------------------------------------------------
 
@@ -1255,7 +1212,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `orders_items_labels`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`sysadmin`@`localhost` SQL SECURITY DEFINER VIEW `orders_items_labels`  AS SELECT `o`.`oid` AS `orderId`, `oi`.`id` AS `itemId`, `oi`.`name` AS `title`, `om`.`meta_val` AS `belegNum`, `d`.`docnum` AS `docnum`, `oim1`.`meta_val` AS `partId`, `oim2`.`meta_val` AS `designId` FROM (((((`orders_items` `oi` left join `orders` `o` on((`o`.`oid` = `oi`.`order`))) left join `orders_items_meta` `oim1` on(((`oim1`.`order_item_id` = `oi`.`id`) and (`oim1`.`meta_key` = 'P.A.E_BelegPos.Artikel')))) left join `orders_items_meta` `oim2` on(((`oim2`.`order_item_id` = `oi`.`id`) and (`oim2`.`meta_key` = 'P.A.P_ZeichnungSpr.Zeichnung')))) left join `orders_meta` `om` on(((`om`.`order_id` = `o`.`oid`) and (`om`.`meta_key` = 'K.E.E_BelegKopf.BelegNummer')))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) ORDER BY `o`.`oid` ASC, `oi`.`id` ASC ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `orders_items_labels`  AS  select `o`.`oid` AS `orderId`,`oi`.`id` AS `itemId`,`oi`.`name` AS `title`,`om`.`meta_val` AS `belegNum`,`d`.`docnum` AS `docnum`,`oim1`.`meta_val` AS `partId`,`oim2`.`meta_val` AS `designId` from (((((`orders_items` `oi` left join `orders` `o` on((`o`.`oid` = `oi`.`order`))) left join `orders_items_meta` `oim1` on(((`oim1`.`order_item_id` = `oi`.`id`) and (`oim1`.`meta_key` = 'P.A.E_BelegPos.Artikel')))) left join `orders_items_meta` `oim2` on(((`oim2`.`order_item_id` = `oi`.`id`) and (`oim2`.`meta_key` = 'P.A.P_ZeichnungSpr.Zeichnung')))) left join `orders_meta` `om` on(((`om`.`order_id` = `o`.`oid`) and (`om`.`meta_key` = 'K.E.E_BelegKopf.BelegNummer')))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) order by `o`.`oid`,`oi`.`id` ;
 
 -- --------------------------------------------------------
 
@@ -1264,7 +1221,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`sysadmin`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `orders_items_wmeta`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`sysadmin`@`localhost` SQL SECURITY DEFINER VIEW `orders_items_wmeta`  AS SELECT `oi`.`id` AS `id`, `oi`.`order` AS `order`, `oi`.`name` AS `name`, `oi`.`cat_id` AS `cat_id`, `oi`.`unit` AS `unit`, `oi`.`qty` AS `qty`, `oi`.`dlvd_qty` AS `dlvd_qty`, `oi`.`unit_price` AS `unit_price`, `oi`.`vat` AS `vat`, `oi`.`unit_price_wvat` AS `unit_price_wvat`, `oi`.`vat_value` AS `vat_value`, `oi`.`total_value` AS `total_value`, `oi`.`total_value_wvat` AS `total_value_wvat`, `oi`.`currency` AS `currency`, `oi`.`match_key` AS `match_key`, `oi`.`match_value` AS `match_value`, `opm1`.`meta_val` AS `partid`, `opm2`.`meta_val` AS `design`, `cm`.`meta_val` AS `gallery` FROM (((`orders_items` `oi` left join `orders_items_meta` `opm1` on(((`opm1`.`order_item_id` = `oi`.`id`) and (`opm1`.`meta_key` = 'P.A.E_BelegPos.Artikel')))) left join `orders_items_meta` `opm2` on(((`opm2`.`order_item_id` = `oi`.`id`) and (`opm2`.`meta_key` = 'design_id')))) left join `catalog_meta` `cm` on(((`cm`.`cat_id` = `oi`.`cat_id`) and (`cm`.`meta_key` = 'Gallery')))) ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `orders_items_wmeta`  AS  select `oi`.`id` AS `id`,`oi`.`order` AS `order`,`oi`.`name` AS `name`,`oi`.`cat_id` AS `cat_id`,`oi`.`unit` AS `unit`,`oi`.`qty` AS `qty`,`oi`.`dlvd_qty` AS `dlvd_qty`,`oi`.`unit_price` AS `unit_price`,`oi`.`vat` AS `vat`,`oi`.`unit_price_wvat` AS `unit_price_wvat`,`oi`.`vat_value` AS `vat_value`,`oi`.`total_value` AS `total_value`,`oi`.`total_value_wvat` AS `total_value_wvat`,`oi`.`currency` AS `currency`,`oi`.`match_key` AS `match_key`,`oi`.`match_value` AS `match_value`,`opm1`.`meta_val` AS `partid`,`opm2`.`meta_val` AS `design`,`cm`.`meta_val` AS `gallery` from (((`orders_items` `oi` left join `orders_items_meta` `opm1` on(((`opm1`.`order_item_id` = `oi`.`id`) and (`opm1`.`meta_key` = 'P.A.E_BelegPos.Artikel')))) left join `orders_items_meta` `opm2` on(((`opm2`.`order_item_id` = `oi`.`id`) and (`opm2`.`meta_key` = 'design_id')))) left join `catalog_meta` `cm` on(((`cm`.`cat_id` = `oi`.`cat_id`) and (`cm`.`meta_key` = 'Gallery')))) ;
 
 -- --------------------------------------------------------
 
@@ -1273,7 +1230,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`sysadmin`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `orders_items_wmeta_notdlvd`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`sysadmin`@`localhost` SQL SECURITY DEFINER VIEW `orders_items_wmeta_notdlvd`  AS SELECT `oi`.`id` AS `id`, `oi`.`order` AS `order`, `oi`.`name` AS `name`, `oi`.`cat_id` AS `cat_id`, `oi`.`unit` AS `unit`, `oi`.`qty` AS `qty`, `oi`.`dlvd_qty` AS `dlvd_qty`, `oi`.`unit_price` AS `unit_price`, `oi`.`vat` AS `vat`, `oi`.`unit_price_wvat` AS `unit_price_wvat`, `oi`.`vat_value` AS `vat_value`, `oi`.`total_value` AS `total_value`, `oi`.`total_value_wvat` AS `total_value_wvat`, `oi`.`currency` AS `currency`, `oi`.`match_key` AS `match_key`, `oi`.`match_value` AS `match_value`, `opm1`.`meta_val` AS `partid`, `opm2`.`meta_val` AS `design`, `cm`.`meta_val` AS `gallery` FROM (((`orders_items` `oi` left join `catalog_meta` `opm1` on(((`opm1`.`cat_id` = `oi`.`cat_id`) and (`opm1`.`meta_key` = 'part_id')))) left join `catalog_meta` `opm2` on(((`opm2`.`cat_id` = `oi`.`cat_id`) and (`opm2`.`meta_key` = 'design_id')))) left join `catalog_meta` `cm` on(((`cm`.`cat_id` = `oi`.`cat_id`) and (`cm`.`meta_key` = 'Gallery')))) WHERE (`oi`.`qty` > `oi`.`dlvd_qty`) ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `orders_items_wmeta_notdlvd`  AS  select `oi`.`id` AS `id`,`oi`.`order` AS `order`,`oi`.`name` AS `name`,`oi`.`cat_id` AS `cat_id`,`oi`.`unit` AS `unit`,`oi`.`qty` AS `qty`,`oi`.`dlvd_qty` AS `dlvd_qty`,`oi`.`unit_price` AS `unit_price`,`oi`.`vat` AS `vat`,`oi`.`unit_price_wvat` AS `unit_price_wvat`,`oi`.`vat_value` AS `vat_value`,`oi`.`total_value` AS `total_value`,`oi`.`total_value_wvat` AS `total_value_wvat`,`oi`.`currency` AS `currency`,`oi`.`match_key` AS `match_key`,`oi`.`match_value` AS `match_value`,`opm1`.`meta_val` AS `partid`,`opm2`.`meta_val` AS `design`,`cm`.`meta_val` AS `gallery` from (((`orders_items` `oi` left join `catalog_meta` `opm1` on(((`opm1`.`cat_id` = `oi`.`cat_id`) and (`opm1`.`meta_key` = 'part_id')))) left join `catalog_meta` `opm2` on(((`opm2`.`cat_id` = `oi`.`cat_id`) and (`opm2`.`meta_key` = 'design_id')))) left join `catalog_meta` `cm` on(((`cm`.`cat_id` = `oi`.`cat_id`) and (`cm`.`meta_key` = 'Gallery')))) where (`oi`.`qty` > `oi`.`dlvd_qty`) ;
 
 -- --------------------------------------------------------
 
@@ -1282,7 +1239,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`sysadmin`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `orders_totalcnt_item`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`sysadmin`@`localhost` SQL SECURITY DEFINER VIEW `orders_totalcnt_item`  AS SELECT `o`.`oid` AS `oid`, `d`.`docnum` AS `docnum`, sum((`oi`.`qty` - `oi`.`dlvd_qty`)) AS `cnt` FROM ((`orders_items` `oi` left join `orders` `o` on((`o`.`oid` = `oi`.`order`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) GROUP BY `oi`.`order` ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `orders_totalcnt_item`  AS  select `o`.`oid` AS `oid`,`d`.`docnum` AS `docnum`,sum((`oi`.`qty` - `oi`.`dlvd_qty`)) AS `cnt` from ((`orders_items` `oi` left join `orders` `o` on((`o`.`oid` = `oi`.`order`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) group by `oi`.`order` ;
 
 -- --------------------------------------------------------
 
@@ -1291,7 +1248,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`sysadmin`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `started_work`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VIEW `started_work`  AS SELECT `tt`.`id` AS `id`, `tt`.`employee` AS `employee`, `tt`.`start` AS `start`, `tt`.`stop` AS `stop`, timediff(now(),`tt`.`start`) AS `worktime`, `tt`.`operation` AS `operation`, `op`.`name` AS `operation_name`, `tt`.`order` AS `order`, `doc`.`docnum` AS `order_label`, `tt`.`hourly_rate` AS `hourly_rate`, `tt`.`currency` AS `currency`, `e`.`card` AS `card` FROM ((((`timetracking` `tt` left join `employees` `e` on((`e`.`id` = `tt`.`employee`))) left join `catalog` `op` on((`op`.`id` = `tt`.`operation`))) left join `orders` `o` on((`o`.`oid` = `tt`.`order`))) left join `documents` `doc` on((`doc`.`id` = `o`.`doc_id`))) WHERE (`tt`.`stop` is null) ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `started_work`  AS  select `tt`.`id` AS `id`,`tt`.`employee` AS `employee`,`tt`.`start` AS `start`,`tt`.`stop` AS `stop`,timediff(now(),`tt`.`start`) AS `worktime`,`tt`.`operation` AS `operation`,`op`.`name` AS `operation_name`,`tt`.`order` AS `order`,`doc`.`docnum` AS `order_label`,`tt`.`hourly_rate` AS `hourly_rate`,`tt`.`currency` AS `currency`,`e`.`card` AS `card` from ((((`timetracking` `tt` left join `employees` `e` on((`e`.`id` = `tt`.`employee`))) left join `catalog` `op` on((`op`.`id` = `tt`.`operation`))) left join `orders` `o` on((`o`.`oid` = `tt`.`order`))) left join `documents` `doc` on((`doc`.`id` = `o`.`doc_id`))) where (`tt`.`stop` is null) ;
 
 -- --------------------------------------------------------
 
@@ -1300,7 +1257,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `tags`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VIEW `tags`  AS SELECT `employees`.`id` AS `emplid`, `employees`.`fname` AS `fname`, `employees`.`lname` AS `lname`, `employees`.`card` AS `card` FROM `employees` WHERE (`employees`.`card` is not null) ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `tags`  AS  select `employees`.`id` AS `emplid`,`employees`.`fname` AS `fname`,`employees`.`lname` AS `lname`,`employees`.`card` AS `card` from `employees` where (`employees`.`card` is not null) ;
 
 -- --------------------------------------------------------
 
@@ -1309,7 +1266,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `timetracking_wdiff`;
 
-CREATE ALGORITHM=MERGE DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VIEW `timetracking_wdiff`  AS SELECT `timetracking`.`id` AS `id`, `timetracking`.`employee` AS `employee`, `timetracking`.`start` AS `start`, `timetracking`.`stop` AS `stop`, `timetracking`.`operation` AS `operation`, `timetracking`.`order` AS `order`, `timetracking`.`hourly_rate` AS `hourly_rate`, `timetracking`.`currency` AS `currency`, `timetracking`.`status` AS `status`, timediff(`timetracking`.`stop`,`timetracking`.`start`) AS `diff` FROM `timetracking` ;
+CREATE ALGORITHM=MERGE SQL SECURITY DEFINER VIEW `timetracking_wdiff`  AS  select `timetracking`.`id` AS `id`,`timetracking`.`employee` AS `employee`,`timetracking`.`start` AS `start`,`timetracking`.`stop` AS `stop`,`timetracking`.`operation` AS `operation`,`timetracking`.`order` AS `order`,`timetracking`.`hourly_rate` AS `hourly_rate`,`timetracking`.`currency` AS `currency`,`timetracking`.`status` AS `status`,timediff(`timetracking`.`stop`,`timetracking`.`start`) AS `diff` from `timetracking` ;
 
 -- --------------------------------------------------------
 
@@ -1318,7 +1275,7 @@ CREATE ALGORITHM=MERGE DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VIEW `
 --
 DROP TABLE IF EXISTS `tt_expanded`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VIEW `tt_expanded`  AS SELECT `tt`.`id` AS `id`, `tt`.`employee` AS `employee`, `tt`.`start` AS `start`, `tt`.`stop` AS `stop`, `tt`.`operation` AS `operation`, timediff(`tt`.`stop`,`tt`.`start`) AS `duration`, `tt`.`order` AS `order`, `tt`.`hourly_rate` AS `hourly_rate`, `tt`.`currency` AS `currency`, `tt`.`status` AS `status`, concat(`e`.`fname`,' ',`e`.`lname`) AS `empl_name`, `ops`.`name` AS `op_name`, `doc`.`docnum` AS `docnum` FROM ((((`timetracking` `tt` left join `employees` `e` on((`e`.`id` = `tt`.`employee`))) left join `catalog` `ops` on((`ops`.`id` = `tt`.`operation`))) left join `orders` `o` on((`o`.`oid` = `tt`.`order`))) left join `documents` `doc` on((`doc`.`id` = `o`.`doc_id`))) ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `tt_expanded`  AS  select `tt`.`id` AS `id`,`tt`.`employee` AS `employee`,`tt`.`start` AS `start`,`tt`.`stop` AS `stop`,`tt`.`operation` AS `operation`,timediff(`tt`.`stop`,`tt`.`start`) AS `duration`,`tt`.`order` AS `order`,`tt`.`hourly_rate` AS `hourly_rate`,`tt`.`currency` AS `currency`,`tt`.`status` AS `status`,concat(`e`.`fname`,' ',`e`.`lname`) AS `empl_name`,`ops`.`name` AS `op_name`,`doc`.`docnum` AS `docnum` from ((((`timetracking` `tt` left join `employees` `e` on((`e`.`id` = `tt`.`employee`))) left join `catalog` `ops` on((`ops`.`id` = `tt`.`operation`))) left join `orders` `o` on((`o`.`oid` = `tt`.`order`))) left join `documents` `doc` on((`doc`.`id` = `o`.`doc_id`))) ;
 
 -- --------------------------------------------------------
 
@@ -1327,7 +1284,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VI
 --
 DROP TABLE IF EXISTS `usergroups`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER VIEW `usergroups`  AS SELECT `g`.`groupid` AS `groupid`, `g`.`description` AS `description`, `u2g`.`userid` AS `userid` FROM (`users_2_groups` `u2g` left join `groups` `g` on((`u2g`.`groupid` = `g`.`groupid`))) ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `usergroups`  AS  select `g`.`groupid` AS `groupid`,`g`.`description` AS `description`,`u2g`.`userid` AS `userid` from (`users_2_groups` `u2g` left join `groups` `g` on((`u2g`.`groupid` = `g`.`groupid`))) ;
 
 --
 -- Indexes for dumped tables
@@ -1937,6 +1894,7 @@ ALTER TABLE `timetracking`
 ALTER TABLE `users_2_groups`
   ADD CONSTRAINT `users_2_groups_ibfk_1` FOREIGN KEY (`groupid`) REFERENCES `groups` (`groupid`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `users_2_groups_ibfk_2` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
+SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
