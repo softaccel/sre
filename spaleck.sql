@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 11, 2021 at 01:20 PM
+-- Generation Time: Aug 12, 2021 at 11:26 AM
 -- Server version: 8.0.25-0ubuntu0.20.04.1
 -- PHP Version: 7.4.3
 
@@ -133,13 +133,12 @@ CREATE TABLE `deliveries` (
 --
 
 CREATE TABLE `deliveries_contents` (
-  `id` int NOT NULL,
+  `id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `delivery` int NOT NULL,
   `item` int NOT NULL,
   `seqno` int UNSIGNED DEFAULT NULL,
   `label_printed` tinyint(1) NOT NULL DEFAULT '0',
-  `checkout` tinyint(1) NOT NULL DEFAULT '0',
-  `label` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL
+  `checkout` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -151,7 +150,7 @@ CREATE TRIGGER `create_sqqno` BEFORE INSERT ON `deliveries_contents` FOR EACH RO
 	SELECT count(*) +1 INTO @seqno from deliveries_contents where delivery=NEW.delivery and item=NEW.item;
     SET NEW.seqno=@seqno;
     ## generate and set label
-    SET NEW.label=CONCAT(LPAD(NEW.delivery,6,"0"),"-",LPAD(NEW.item,5,"0"),"-",LPAD(NEW.seqno,3,"0"));
+    SET NEW.id=CONCAT(LPAD(NEW.delivery,6,"0"),".",LPAD(NEW.item,5,"0"),".",LPAD(NEW.seqno,3,"0"));
     ## increment dlvd_qty in orders_item
     UPDATE orders_items SET dlvd_qty=dlvd_qty+1 WHERE id=NEW.item;
 END
@@ -1118,6 +1117,23 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`userid`, `password`, `fname`, `lname`, `email`, `creationtime`, `lastlogin`, `active`, `type`) VALUES
+('5dfgdfg', '9ba4e75c443101896c7c626d34ce8a27e211d11a3e637fbe78978894', 'Alinosu', 'evvev', 'efevfevf@gmail.com', '2021-07-21 10:12:38', NULL, 1, NULL),
+('admin', '9ba4e75c443101896c7c626d34ce8a27e211d11a3e637fbe78978894', 'Adita', 'Minunat', 'sv@softaccel.net', '2020-12-08 09:25:26', NULL, 1, 'adm'),
+('Alin', '4c73b20c9d0e4bc8b6892a27371acad10a366193480ddea11be357e4', 'Mariusic', 'Costache', 'alin@gmail.com', '2021-08-05 05:43:40', NULL, 1, NULL),
+('asd', '7c768595eec1dd5f86dd62fc4353c719e54acb515f275fa49a4b7169', 'dsa', 'asd', 'asd@msil.com', '2021-07-19 08:01:46', NULL, 1, NULL),
+('asdasdasd', '7c768595eec1dd5f86dd62fc4353c719e54acb515f275fa49a4b7169', 'dsa', 'asd', 'mail@asd.ro', '2021-08-12 07:45:45', NULL, 1, NULL),
+('Constantin', '99fb2f48c6af4761f904fc85f95eb56190e5d40b1f44ec3a9c1fa319', 'Florin', 'Maranescu', 'maranescu@gmielusel.com', '2021-08-05 05:56:47', NULL, 1, NULL),
+('Loco', '4c73b20c9d0e4bc8b6892a27371acad10a366193480ddea11be357e4', 'loco', 'loco', 'ioan@gmielusel.com', '2021-08-05 10:59:24', NULL, 1, NULL),
+('matei', '7c768595eec1dd5f86dd62fc4353c719e54acb515f275fa49a4b7169', 'Matei', 'yo', 'mail@altmail.com', '2021-07-22 08:47:19', NULL, 1, NULL),
+('Pomion', '99fb2f48c6af4761f904fc85f95eb56190e5d40b1f44ec3a9c1fa319', 'Ionica', 'Pompilica', 'maranescu.florin@gmail.com', '2021-07-19 08:38:40', NULL, 1, NULL),
+('vsergiu', '7c768595eec1dd5f86dd62fc4353c719e54acb515f275fa49a4b7169', 'Sergiu', 'Voicu', 'sv@softaccel.net', '2020-12-08 09:25:26', NULL, 1, 'adm'),
+('xzzzzzz', '7c768595eec1dd5f86dd62fc4353c719e54acb515f275fa49a4b7169', 'asd', 'sad', 'as@as.cc', '2021-07-19 08:05:34', NULL, 1, NULL);
+
+--
 -- Triggers `users`
 --
 DELIMITER $$
@@ -1628,12 +1644,6 @@ ALTER TABLE `catalog_meta`
 -- AUTO_INCREMENT for table `deliveries`
 --
 ALTER TABLE `deliveries`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `deliveries_contents`
---
-ALTER TABLE `deliveries_contents`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
