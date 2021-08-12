@@ -174,12 +174,13 @@
             */
             if (fld.type==="select") {
 
-                let hasDefault = fld.default && fld.default.id && fld.default.description;
+                let hasDefault = fld.default && (fld.default.id || fld.default.value);
                 if (hasDefault) {
-                    let option = document.createElement("option");
-                    option.value = fld.default.id;
-                    option.text = fld.default.description;
-                    inp.append(option);
+                    let option = $("<option>");
+                    option
+                        .val(fld.default.value ? fld.default.value : fld.default.id)
+                        .text(fld.default.label ? fld.default.label : (fld.default.description ? fld.default.description : option.value))
+                        .appendTo(inp);
                 }
 
                 if (!fld.options || fld.options.length <= 0) {
@@ -204,8 +205,8 @@
                     fld.options.forEach(function (option) {
                         if (!hasDefault || (hasDefault && option.id !== fld.default.id && option.description !== fld.default.description) ) {
                             let optionElement = document.createElement("option");
-                            optionElement.value = option.id;
-                            optionElement.text = option.description;
+                            optionElement.value = option.value ? option.value : option.id;
+                            optionElement.text = option.label ? option.label : (option.description ? option.description : optionElement.value);
                             inp.append(optionElement);
                         }
                     });

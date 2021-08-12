@@ -6,9 +6,9 @@
                     <div class="card-header">
                         Scaneaza
                     </div>
-
+                    <div id="alertSpace" class="p-3"></div>
                     <div class="card-body" style="min-height: 400px">
-                        <ul id="checkOutList"></ul>
+                        <ol type="1" id="checkOutList"></ol>
                     </div>
                     <div class="card-footer">
                         <button class="btn btn-success">OK</button>
@@ -19,10 +19,20 @@
         </div>
     </div>
 </div>
+<div class="d-none">
+    <div class="alert alert-default-danger alert-dismissible fade show" role="alert" id="alertTpl">
+        <span name="message"></span>
+    </div>
+</div>
 <ul class="d-none">
-    <li id="liTemplate">
-        <span class="name"><%= attributes.name %></span>
-        <span class="qty"><%= attributes.qty %></span>
+    <li id="liTemplate" data-resourcetype="item">
+        <span class="name"><%= id %></span>
+        <span class="qty"><%= attributes.seqno %></span>
+    </li>
+    <li id="groupTemplate" data-resourcetype="item">
+        <span name="name"></span>
+        <span name="qty"></span>
+        <ul></ul>
     </li>
 </ul>
 
@@ -31,6 +41,7 @@
 
 
     function init_komponent(k) {
+        console.log(k);
         k.$el.filter(".modal").remove().appendTo("body").modal().on("hidden.bs.modal",function () {
             k.$el.remove();
             $(document).scannerDetection(false);
@@ -51,36 +62,46 @@
 
         function search(code) {
             let container = k.$el.find("#checkOutList");
-            let $litpl = k.$el.find("#liTemplate").clone(true)
-                .attr("id",null)
-                .appendTo(container)
-                .addClass("d-none");
-            let cinstance = $litpl.apiator({resourcetype: "item",returninstance:true});
 
-            cinstance.setUrl(apiRoot+"/orders_items/"+code+"?include=order")
-                .loadFromRemote()
-                .then(function (a) {
-                    let els = container.children();
-                    console.log(cinstance,els);
-                    for (let i = 0; i < els.length; i++) {
-                        cinstance.views[0].el.removeClass("d-none");
-                        let instance = $(els[i]).data("instance");
-                        console.log(instance,cinstance);
-                        if (!instance) {
-                            continue;
-                        }
+            let itemEl = k.$el.find("#liTemplate").clone(true).attr("id",null).appendTo("#alertSpace");
 
-                        if (instance.id === cinstance.id && instance!==cinstance) {
-                            console.log("equal");
-                            cinstance.remove();
-                            // if(cinstance.attributes.qty)
-                            return;
-                        }
+            let cinstance = itemEl.apiator({returninstance:true})
+                .setUrl(apiRoot+"/deliveries_contents/"+code+"?include=item,item.order,item.order.doc_id");
 
+            cinstance.loadFromRemote()
+                .then(function () {
+                    let view = cinstance.views[0]
+                    console.log(cinstance,cinstance.relationships.delivery.id,k.data.instance.id);
+                    if(cinstance.relationships.delivery.id!==k.data.instance.id) {
+                        let alert = k.$el.find("#alertTpl").clone(true).attr("id",null).appendTo("#alertSpace");
+                        alert.find("[name=message]").text("Elementul scanat este alocat la alta livrare.");
+                        setTimeout(()=>alert.alert('close'),2000);
+                        return 1;
                     }
+
+                    let group = container.find("[name=item"+cinstance.relationships.item.id+"]");
+                    if(!group.length) {
+                        group = k.$el.find("#groupTemplate").clone(true)
+                            .attr("id",null).attr("name","item"+cinstance.relationships.item.id)
+                            .appendTo(container);
+                        group.find("[name=name]").text(cinstance.relationships.item.attributes.name);
+                    }
+
+                    let subItems = group.find("ul").children();
+                    console.log(subItems);
+                    for(let i=0;i<subItems.length;i++) {
+                        if($(subItems[i]).data().instance.id===cinstance.id) {
+                            // view.appendTo(group.find("ul")).fadeOut(300, ()=>itemEl.remove());
+                            return 1;
+                        }
+                    }
+                    view.remove().appendTo(group.find("ul"))
                 })
-                .catch(function (b) {
-                    $litpl.remove();
+                .catch(function (res) {
+                    console.log(res);
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare:\n<pre>"+(res.jqXHR.responseJSON?JSON.stringify(res.jqXHR.responseJSON,null, 2):res.jqXHR.responseText)+"</pre>"
+                    }).send();
                 })
         }
     }

@@ -1027,7 +1027,6 @@
 
 			if(returnView) {
 				this.el = renderedEl;
-				// console.log("...............",renderedEl);
 				return this.el;
 			}
 
@@ -1037,12 +1036,11 @@
 				return null;
 			}
 
-			renderedEl.insertAfter(_itemview.el[0]);
-			_itemview.el.remove();
+			renderedEl.insertBefore(this.el[0]);
 
-			_itemview.el = renderedEl;
-
-			return _itemview.el;
+			this.el.remove();
+			this.el = renderedEl;
+			return this.el;
 		};
 
 		_itemview.renderEmpty = function(returnView) {
@@ -1823,8 +1821,8 @@
 			.replace(/&quot;/gi, '"')
 			.replace(/&nbsp;/gi, " ")
 			.replace(/&amp;/gi, "&");
-
 		options.template = _.template(templateTxt);
+		console.log(templateTxt,options.template);
 
 
 		return Item(options).bindView(ItemView({

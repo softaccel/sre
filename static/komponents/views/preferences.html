@@ -7,7 +7,17 @@
                     type: "text",
                     name: "lblPrintApi",
                     default: localStorage.getItem(localStorageLabel+".lblPrintApi")
-                }
+                },
+                {
+                    label: "Environment",
+                    type: "select",
+                    name: "env",
+                    default: {value: localStorage.getItem(localStorageLabel+".env")},
+                    options: Object.getOwnPropertyNames(env_config).map(function (item) {
+                        return {value:item,label:item};
+                    })
+                },
+
                 // ,
                 // {
                 //     label: "Altceva",

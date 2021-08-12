@@ -16,7 +16,7 @@
                         <a data-toggle="tab" href="#deliveryContentPanel" class="nav-link ">Continut</a>
                     </li>
                     <li class="nav-item">
-                        <a data-toggle="tab" href="#deliveryContentPanel" class="nav-link ">Continut</a>
+                        <a data-toggle="tab" href="#checkoutPanel" class="nav-link">Checkout</a>
                     </li>
                 </ul>
             </div>
@@ -25,6 +25,9 @@
                     <div class="tab-pane active" role="tabpanel" id="deliverySummaryPanel" is="komponent" data-url="/views/deliveries/summary">
                     </div>
                     <div class="tab-pane" role="tabpanel" id="deliveryContentPanel" is="komponent" data-url="/views/deliveries/contents">
+                    </div>
+                    <div class="tab-pane" role="tabpanel" id="checkoutPanel" is="komponent" data-url="/views/deliveries/checkout">
+                        <button class="btn btn-primary" id="startScanBut" ><i class="fa fa-barcode"></i> Scaneaza elemente</button>
                     </div>
                 </div>
             </div>
@@ -40,6 +43,9 @@
         let $modal =  k.$el.appendTo("body").filter(".modal").modal().on("hidden.bs.modal",function (event) {
             // $(document).scannerDetection(false);
             k.$el.remove();
+        });
+        $("#startScanBut").on("click",function () {
+            komponentor.intent("/views/deliveries/scan").data(k.data).send();
         });
         $("#deliveryContentPanel").komponent({data:k.data});
         $("#deliverySummaryPanel").komponent({data: k.data});
