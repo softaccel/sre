@@ -73,7 +73,10 @@
                         <a data-toggle="tab" href="#pontaj" class="nav-link" id="timeTrackTab">Pontaj</a>
                     </li>
                     <li class="nav-item">
-                        <a data-toggle="tab" href="#pontaj" class="nav-link" id="deliveriesTab">Livrari</a>
+                        <a data-toggle="tab" href="#deliveries" class="nav-link" id="deliveriesTab">Livrari</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#proprietati" class="nav-link" id="metaTab">Proprietati</a>
                     </li>
 
                 </ul>
@@ -122,6 +125,8 @@
                     </div>
                     <div class="tab-pane fade" id="deliveriesContent" is="komponent" data-url="/views/pontaj/deliveries">
                         Deliveries
+                    </div>
+                    <div class="tab-pane fade" id="proprietati" is="komponent" data-url="/views/orders/orderDetails">
                     </div>
                 </div>
             </div>
@@ -194,6 +199,7 @@
         $("#repere").komponent({data:k.data});
         $("#sumar").komponent({data:k.data});
         $("#pontaj").komponent({data:k.data});
+        $("#proprietati").komponent({data:k.data});
 
 
 
