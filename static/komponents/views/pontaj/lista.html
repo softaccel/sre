@@ -110,12 +110,13 @@
             </td>
             <td class="orderCol">
                 <p><%= relationships.operation.attributes.name %></p>
-                <select name="op" style="min-width: 200px"></select>
-                <p><%= attributes.hourly_rate %> <%= relationships.currency.id %></p>
-                <input type="number" name="hourly_rate" value="<%= attributes.hourly_rate %>" style="max-width: 60px">
-                <select name="currency">
-                    <option><%= relationships.currency.id %></option>
-                </select>
+                    <select name="order" style="min-width: 200px"></select>
+                    <select name="op" style="min-width: 200px"><option value="<%= relationships.operation.id %>"><%= relationships.operation.attributes.name %></option></select>
+                    <p><%= attributes.hourly_rate %> <%= relationships.currency.id %></p>
+                    <input type="number" name="hourly_rate" value="<%= attributes.hourly_rate %>" style="max-width: 60px">
+                    <select name="currency">
+                        <option><%= relationships.currency.id %></option>
+                    </select>
             </td>
             <td>
                 <p><%= attributes.start %></p>
@@ -175,6 +176,7 @@
 
     function save(src) {
         let itemContainer = $(src).parents("tr");
+        let orderSel = itemContainer.find("select[name=order]").val();
         let opSel = itemContainer.find("select[name=op]").val();
 
         let startVal = itemContainer.find("input[name=start]").val();
@@ -183,6 +185,7 @@
         let currency = itemContainer.find("select[name=currency]").val();
 
         let instance = $(src).data("instance");
+        console.log(instance);
 
         if(opSel === null || startVal.length == 0 || stopVal.length == 0){
             komponentor.intent("/common/messagemodal").data({
@@ -200,16 +203,18 @@
             return;
         }
 
-        let [oid,opid] = opSel.split("/");
-
-        instance.update({
-            operation: opid,
-            order: oid,
-            start: startVal.replace("T", " "),
-            stop: stopVal.replace("T", " "),
+        let data = {
+            order: orderSel,
+            operation: opSel,
+            start: startVal.replace("T", " ").split(".")[0],
+            stop: stopVal.replace("T", " ").split(".")[0],
             currency: currency,
             hourly_rate: hourly_rate
-        }).catch(function (e) {
+        };
+
+        console.log(data);
+
+        instance.update(data).catch(function (e) {
             komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + e.jqXHR.responseText + "</pre>"}).send();
         });
     }
@@ -217,28 +222,55 @@
     function edit(src) {
         let itemContainer = $(src).parents("tr").addClass("edit");
         let opSel = itemContainer.find("select[name=op]");
+        let orderSel = itemContainer.find("select[name=order]");
+        let currencySel = itemContainer.find("select[name=currency]");
         let instance = $(src).data("instance");
 
         if(opSel.hasClass("select2")) opSel.select2("destroy");
-        opSel.empty().append("<option value='"+instance.relationships.order.id + "/" + instance.relationships.operation.id + "'>"
-            +instance.relationships.order.relationships.doc_id.attributes.docnum + " / "
-            +instance.relationships.operation.attributes.name+"</option>");
+        if(orderSel.hasClass("select2")) orderSel.select2("destroy");
+
+        orderSel.empty().append("<option value='"+instance.relationships.order.id + "'>"
+            +instance.relationships.order.relationships.doc_id.attributes.docnum + "</option>");
 
         opSel.select2wrapper({
             // url: apiRoot+"/employees/"+instance.attributes.employee+"/emplToOrdAssoc?filter=status=ord",
-            url: apiRoot+"/employees/"+instance.relationships.employee.id+"/emplToOrdAssoc?filter=status!><offer,ready,dlvd",
-            labelfld: function (item) {
-                return item.attributes.docnum + " - " + item.attributes.opname;
-            },
-            idfld: function (item) {
-                return item.attributes.oid + "/" + item.attributes.opid;
-            },
-
+            // url: apiRoot+"/emplToOrdAssoc?filter=status!><offer,ready,dlvd",
+            url: apiRoot+"/catalog?filter=type=service",
+            labelfld: "name",
+            idfld: "id",
             placeholder: "Comanda/proiect"
         });
 
-        itemContainer.find("input[name=start]").val(instance.attributes.start);
-        itemContainer.find("input[name=stop]").val(instance.attributes.stop);
+        opSel.on("select2:select", function (val) {
+            opSel.val(val.params.data.id);
+        });
+
+        orderSel.select2wrapper({
+            url: apiRoot + "/orders_extended",
+            labelfld: "docnum",
+            idfld: "oid",
+            placeholder: "Doc num"
+        });
+
+        orderSel.on("select2:select", function (val) {
+            console.log(val.params.data.id);
+            orderSel.val(val.params.data.id);
+        });
+
+        currencySel.select2wrapper({
+            url: apiRoot + "/currencies",
+            labelfld: "id",
+            idfld: "id",
+        });
+
+        currencySel.on("select2:select", function (val) {
+            currencySel.val(val.params.data.id);
+        });
+
+        let start_val = new Date(instance.attributes.start);
+        let stop_val = new Date(instance.attributes.stop);
+        itemContainer.find("input[name=start]").val(start_val.toISOString().slice(0, -1));
+        itemContainer.find("input[name=stop]").val(stop_val.toISOString().slice(0, -1));
         itemContainer.find("input[name=submit]");
     }
 
