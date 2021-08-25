@@ -22,14 +22,15 @@
     }
 
 </style>
+
 <div class="card-header" style="border: none;">
     <button class="btn btn-primary" style="margin-bottom: 8px" onclick="addNewEmployee()" id="newEmplBtn">Angajat Nou</button>
 </div>
-    <div class="card-body">
+<div class="card-body">
         <div id="employeesListFilter">
             <form id="employeesListForm">
                 <div class="input-group mb-3">
-                    <input type="text"  name="search" class="form-control" placeholder="Cautare dupa nume, prenume sau Card ID" onkeyup="this.form.submitButt.click()">
+                    <input type="text"  name="search" class="form-control" placeholder="Cautare dupa nume, prenume sau Card ID" oninput="this.form.submitButt.click()">
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="submit" name="submitButt">Cauta</button>
                         <button class="btn btn-outline-secondary" type="reset">Reseteaza</button>
@@ -60,27 +61,25 @@
             </li>
         </ul>
 
+</div>
+<div class="card-footer">
+    <div class="btn-group"  id="employeesPaging" data-pagesize="10">
+        <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+        <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+        <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+        <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+        <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
     </div>
-    <div class="card-footer">
-        <div class="btn-group"  id="employeesPaging" data-pagesize="10">
-            <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
-            <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
-            <button name="page" class="btn btn-outline-secondary" title="0">1</button>
-            <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
-            <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
-        </div>
-        Pagina <input type="number" size="3" value="0" id="employeesOffsetInp">
-        <select id="employeesPageSizeInp">
-            <option></option>
-            <option>5</option>
-            <option>10</option>
-            <option>25</option>
-            <option>50</option>
-            <option>75</option>
-        </select> inregistrari pe pagina
-    </div>
-
-
+    Pagina <input type="number" size="3" value="0" id="employeesOffsetInp">
+    <select id="employeesPageSizeInp">
+        <option></option>
+        <option>5</option>
+        <option>10</option>
+        <option>25</option>
+        <option>50</option>
+        <option>75</option>
+    </select> inregistrari pe pagina
+</div>
 
 <script>
     function addNewEmployee() {
@@ -93,7 +92,6 @@
     }
 
     /**
-     *
      * @param src
      */
     function openEmployeeModal(src) {
@@ -113,8 +111,6 @@
     }
 
     function init_komponent(k) {
-
-
 
         let url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname";
 
