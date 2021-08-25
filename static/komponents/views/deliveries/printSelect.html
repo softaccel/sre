@@ -10,16 +10,11 @@
             <div class="modal-body bg-light">
                 <div id="dataForPrinting">
                     <h5><%= attributes.label %></h5>
-<!--                    <p style="color: #999999">Piese printate deja:</p>-->
-<!--                    <ul>-->
-<!--                        <li></li>-->
-<!--                    </ul>-->
                     <h6>De printat:</h6>
                     <div class="alert alert-default-info font-weight-bold">format: "a-b" - se printeaza toate etichetele de la a pana la b<br>     "a,b,c" - se printeaza doar etichetele a, b si c<br>
                         a, b si c sunt numere naturale mai mici decat <%= attributes.totalcnt %></div>
                     <input type="text" name="delivery" value="<%=attributes.delivery%>" form="listToPrintForm" class="d-none">
                     <input type="text" name="item" value="<%=attributes.item%>" form="listToPrintForm" class="d-none">
-
                     <input type="text" id="toBePrinted" name="seqList" value="1-<%=attributes.totalcnt%>" class="form-control-sm form-control" form="listToPrintForm" placeholder="1-5,7,9" autocomplete="off" pattern="^([0-9-,]+)$">
                 </div>
                 <br>
@@ -34,7 +29,6 @@
 
 <script>
     function init_komponent(k){
-        console.log(k);
         let $modal = k.$el.appendTo("body")
             .filter("#printModal")
             .on("hidden.bs.modal",function () {
@@ -49,10 +43,8 @@
         let util = instance.getUtilities();
 
 
-        console.log(instance.attributes)
 
         util.captureFormSubmit($form,function (data) {
-            console.log(data);
             const instance_oil = $("<span></span>").apiator({
                     resourcetype: "collection",
                     returninstance: true
@@ -104,62 +96,82 @@
                     }
                 });
 
-                console.log("asdasdasd", printed_items);
 
                 let label_data = {
-                    title: instance_oil.items[0].attributes.title,
-                    belegNum: instance_oil.items[0].attributes.belegNum,
-                    docNum: instance_oil.items[0].attributes.docnum,
-                    designId: instance_oil.items[0].attributes.designId,
-                    partId: instance_oil.items[0].attributes.partId,
-                    itemTotal: instance_dig.items[0].attributes.totalcnt,
+                    title1: instance_oil.items[0].attributes.title.substr(0, 38),
+                    title2: instance_oil.items[0].attributes.title.substr(38, 76),
+                    subtitle: "LA: 10-00346221-0110",
+                    property1: "IN: " + instance_oil.items[0].attributes.belegNum,
+                    property2: "NC: " + instance_oil.items[0].attributes.docnum,
+                    property3: "ZN: " + instance_oil.items[0].attributes.designId,
+                    property4: "TN: " + instance_oil.items[0].attributes.partId,
+                    totalnum: instance_dig.items[0].attributes.totalcnt,
                     seqs: seqs_final_arr
                 };
 
                 let labels = {labels: [label_data]};
 
-                labels = JSON.stringify(labels);
                 let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
                 if (urlPrint === null) {
                     komponentor.intent("/common/errormodal").data({
                         body: "Setati imprimanta in <a style='cursor:pointer;' class='primary' onclick='komponentor.intent(\"/views/preferences\").send()'>Preferinte</a> inainte de a printa."
                     }).send();
                 } else {
-                    console.log(urlPrint.split(".")[0] + ".");
-                    let ajx = $.ajax({
-                        url: urlPrint,
-                        data: labels,
-                        type: "POST",
-                        contentType: 'application/json',
-                    }).done(function (resp) {
-                        let instances = [];
-                        for(let id of printed_items) {
-                            instances.push($("<p></p>").apiator({returninstance: true, resourcetype: "item"}).setUrl(apiRoot + "/deliveries_contents/" + id));
-                            instances[instances.length-1].loadFromRemote();
-                        }
-                        Promise.all(instances)
-                            .then(function (val) {
-                                console.log(val);
-                                for(let instance of val){
-                                    // aici instance contine doar null. nu e incarcat
-                                    //TODO
-                                    let cpy = {...instance};
-                                    console.log(",,,,,,,,,,", instance);
-                                    console.log(",,,,,,,,,,", cpy);
-                                    instance.update({label_printed: "1"});
-                                }
-                            }).catch(function (err) {
+                    let template_inst = $("<div></div>").apiator({returninstance: true, resourcetype: "item"}).setUrl(apiRoot + "/settings/label_template.spaleck");
+                    template_inst.loadFromRemote().then(function () {
+
+                        let template = template_inst.attributes.value;
+
+
+                        template = JSON.parse(template).template;
+
+                        let template_arr = [];
+
+                        template = template.replace("<title1>", labels.labels[0].title1)
+                            .replace("<title2>", labels.labels[0].title2)
+                            .replace("<subtitle>", labels.labels[0].subtitle)
+                            .replace("<property1>", labels.labels[0].property1)
+                            .replace("<property2>", labels.labels[0].property2)
+                            .replace("<property3>", labels.labels[0].property3)
+                            .replace("<property4>", labels.labels[0].property4)
+                            .replace("<property5>", "SEQ: <seq> / " + labels.labels[0].totalnum);
+                        labels.labels[0].seqs.forEach(item => {
+                            let temp_aux = template;
+                            console.log(temp_aux);
+                            template_arr.push(temp_aux.replace("<seq>", item.seq).replace("<barcode>", item.barcode))
+                        });
+                        let ajx = $.ajax({
+                            url: urlPrint,
+                            data: JSON.stringify({labels: template_arr}),
+                            type: "POST",
+                            contentType: 'application/json',
+                        }).done(function (resp) {
+                            let instances = [];
+                            for(let id of printed_items) {
+                                instances.push($("<p></p>").apiator({returninstance: true, resourcetype: "item"}).setUrl(apiRoot + "/deliveries_contents/" + id));
+                                instances[instances.length-1].loadFromRemote();
+                            }
+                            Promise.all(instances)
+                                .then(function (val) {
+                                    for(let instance of val){
+                                        // aici instance contine doar null. nu e incarcat
+                                        //TODO
+                                        let cpy = {...instance};
+                                        instance.update({label_printed: "1"});
+                                    }
+                                }).catch(function (err) {
                                 console.log("nu mere", err)
                             });
-                    // .then(function () {
-                    //         let cpy = {...inst_aux};
-                    //         console.log(id+",,,,,,,,,,"+id, inst_aux);
-                    //         console.log(id+",,,,,,,,,,"+id, cpy);
-                    //         inst_aux.update({label_printed: "1"});
-                    //     });
-                        console.log("----------------------.",instance_dc);
-                        // instance_dc.update()
+                            // .then(function () {
+                            //         let cpy = {...inst_aux};
+                            //         console.log(id+",,,,,,,,,,"+id, inst_aux);
+                            //         console.log(id+",,,,,,,,,,"+id, cpy);
+                            //         inst_aux.update({label_printed: "1"});
+                            //     });
+                            // instance_dc.update()
+                        });
                     });
+
 
                 }
             }).catch(function(data){
