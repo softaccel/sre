@@ -53,11 +53,21 @@
                         <div id="newTTData">
                             <div class="row hide-till-comm">
                                 <div class="col-3">Start</div>
-                                <div class="col-9"><input type="datetime-local" name="start" id="datetimeStart" form="newTTForm" class="form-control"></div>
+                                <% let today_date = new Date(); %>
+                                <% let time_offset = today_date.getTimezoneOffset()/60; %>
+                                <% today_date.setHours(8-time_offset);  %>
+                                <% today_date.setMinutes(0);  %>
+                                <% today_date.setSeconds(0);  %>
+                                <% today_date.setMilliseconds(0);  %>
+                                <div class="col-9"><input type="datetime-local" value="<%= today_date.toISOString().slice(0, -1) %>" name="start" id="datetimeStart" form="newTTForm" class="form-control"></div>
                             </div>
                             <div class="row hide-till-comm">
                                 <div class="col-3">Stop</div>
                                 <div class="col-9"><input type="datetime-local" name="stop" id="datetimeStop" form="newTTForm" class="form-control"></div>
+                            </div>
+                            <div class="row hide-till-comm">
+                                <div class="col-3">Durata</div>
+                                <div class="col-9"><input type="number" name="duration" id="durationInput" form="newTTForm" class="form-control" pattern="[1-9][0-9]*"></div>
                             </div>
                             <div class="row hide-till-comm">
                                 <div class="col-3">Tarif Orar</div>
@@ -80,8 +90,14 @@
 </div>
 
 <script>
+    function addMinutes(date, minutes){
+        let date2 = new Date(date);
+        console.log(date2, date2.getMinutes() + minutes);
+        date2.setMinutes(date2.getMinutes() + minutes);
+        return date2;
+    }
+
     function init_komponent(k){
-        console.log("oyoyoyoy");
 
         let $modal = k.$el.appendTo("body")
             .filter(".modal")
@@ -90,13 +106,16 @@
             });
 
         $modal.modal();
-        console.log(k.data);
 
         let $dataDiv = k.$el.find("#newTTData");
         let $selectAng = k.$el.find("#selectAngajat");
         let $selectComm = k.$el.find("#selectComm");
         let $tarif;
         let $selectMoneda;
+        // let date = new Date();
+        // console.log($("input[name=start]"));
+        // console.log(date.toISOString().slice(0, -1))
+
         $selectAng.select2wrapper({placeholder: null, url:apiRoot+"/employees_names", labelfld: "fullname"});
 
 
@@ -105,7 +124,6 @@
             $(".hide-till-comm").css("display", "none");
             $(".hide-till-empl").css("display", "flex");
             let data = e.params.data;
-            console.log(data);
             $selectComm.select2wrapper({
                 placeholder: null,
                 url: apiRoot+"/emplToOrdAssoc?filter=emplid=" + data.id + "&status=proc",
@@ -115,7 +133,7 @@
                 idfld: function (item) {
                     return item.attributes.opid + "-" + item.attributes.oid + "-" + item.attributes.id;
                 }
-            })
+            });
         });
 
         $selectAng.on("select2:clear", function (){
@@ -131,8 +149,8 @@
         $selectComm.on("select2:select", function (e){
             $(".hide-till-comm").css("display", "flex");
             let data = e.params.data;
+            // $("input[name=start]").val(date.toISOString().slice(0, -1));
 
-            console.log(data);
             let instance = $dataDiv.apiator({returninstance:true, resourcetype: "item"})
                 .setUrl(apiRoot + "/emplToOrdAssoc/" + data.id.split("-")[2]);
 
@@ -142,7 +160,6 @@
                     tarifOrarDefault = instance.attributes.hourlyrate;
                     monedaDefault = instance.attributes.currency;
                     $tarif = k.$el.find("#numberTarif");
-                    console.log(instance,$tarif);
 
                     $tarif.val(tarifOrarDefault);
                     $selectMoneda = k.$el.find("#selectCurrency");
@@ -150,8 +167,6 @@
                         .setUrl(apiRoot + "/currencies/" + monedaDefault);
                     instance_moneda.loadFromRemote()
                         .then(function (monezi) {
-                            console.log(monezi);
-                            console.log($selectMoneda);
                             $selectMoneda.html("<option value=" + monedaDefault + ">" + monedaDefault + " - " + monezi.attributes.desc + "</option>");
 
                             $selectMoneda.select2wrapper({
@@ -159,6 +174,55 @@
                                 url: apiRoot + "/currencies",
                                 labelfld: function (item) {
                                     return item.attributes.id + " - " + item.attributes.desc
+                                }
+                            });
+
+                            let startInp = k.$el.find("input[name=start]");
+                            let stopInp = k.$el.find("input[name=stop]");
+                            let durataInp = k.$el.find("input[name=duration]");
+
+                            let time_offset = -(new Date().getTimezoneOffset())/60;
+
+                            durataInp.on("change", function (val) {
+                                let value = parseInt(val.target.value);
+                                console.log("[[[[[[[[[[[[[[[]]]", value, "\n[]]]]]]]]]]", stopInp.val(), "\n;;;;;;;;;;;;;", startInp.val());
+                                if (startInp.val() !== ""){
+                                    let new_stop = addMinutes(startInp.val(), value);
+                                    // let new_stop = ;
+                                    console.log(new_stop);
+                                    new_stop.setHours(new_stop.getHours() + time_offset);
+                                    stopInp.val(new_stop.toISOString().slice(0, -1));
+                                } else {
+                                    if (stopInp.val() !== ""){
+                                        let new_start = addMinutes(new Date(stopInp.val()), -value)
+                                        new_start.setHours(new_start.getHours() + time_offset);
+                                        startInp.val(new_start.toISOString().slice(0, -1));
+                                    }
+                                }
+                                console.log("after[[[[[[[[[[[[[[[]]]", durataInp.val(), "\n[]]]]]]]]]]", stopInp.val(), "\n;;;;;;;;;;;;;", startInp.val());
+                            });
+
+                            stopInp.on("change", function (val) {
+                                if (startInp.val() !== ""){
+                                    durataInp.val((new Date(val.target.value).getTime() - new Date(startInp.val()).getTime())/60000);
+                                } else {
+                                    if (durataInp.val() !== ""){
+                                        let new_start = addMinutes(new Date(val.target.value), -durataInp.val());
+                                        new_start.setHours(new_start.getHours() + time_offset);
+                                        startInp.val(new_start.toISOString().slice(0, -1));
+                                    }
+                                }
+                            });
+
+                            startInp.on("change", function (val) {
+                                if (stopInp.val() !== ""){
+                                    durataInp.val((new Date(stopInp.val()).getTime() - new Date(val.target.value).getTime())/60000);
+                                } else {
+                                    if (durataInp.val() !== ""){
+                                        let new_stop = addMinutes(new Date(val.target.value), durataInp.val());
+                                        new_stop.setHours(new_stop.getHours() + time_offset);
+                                        stopInp.val(new_stop.toISOString().slice(0, -1));
+                                    }
                                 }
                             });
                         })
@@ -179,6 +243,7 @@
         let util = aux_instance.getUtilities();
 
 
+
         util.captureFormSubmit(form, function (data) {
             if (data.currency && data.hourly_rate && data.start && data.stop && data.employee && data.operation){
                 let op_cpy = data.operation;
@@ -189,7 +254,6 @@
                 data.start += ":00";
                 data.stop = data.stop.replace("T", " ");
                 data.stop += ":00";
-                console.log(data);
 
                 if(data.hourly_rate > 0){
                     aux_instance.createItem(data).then(function () {
@@ -213,6 +277,8 @@
                 }).send();
             }
         });
+
+
     }
 </script>
 
