@@ -1,105 +1,152 @@
 <div data-resourcetype="item" data-type="item">
-  <form id="customerDataForm"></form>
-  <div class="alert alert-success d-none" role="alert" id="insertJobSuccessAlert">
-    Datele au fost salvate cu succes!
-  </div>
-
-  <div class="alert alert-danger d-none" role="alert" id="insertJobServerErrorAlert">
-    A aparut o eroare la salvare
-    <button type="button" class="close" aria-label="Close" onclick="$(this).parent().addClass('d-none')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-    <pre class="errorMsg bg-light border border-focus mt-2 p-3 rounded"></pre>
-    <button class="btn btn-primary" onclick="komponentor.intent('/common/report').send({data:$(this).prev().data('error')})">Raporteaza eroare</button>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group col-3">
-      <label for="codcorInput">Cod Cor</label>
-      <input form="customerDataForm" id="codcorInput" name="codcor" class="form-control form-control-sm" required="" pattern="[0-9]{2,6}" autocomplete="off">
-      <div class="invalid-feedback"></div>
+    <form id="customerDataForm"></form>
+    <div class="alert alert-success d-none" role="alert" id="insertJobSuccessAlert">
+        Datele au fost salvate cu succes!
     </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-12">
-      <label for="nameInput">Denumire</label>
-      <input form="customerDataForm" type="text" maxlength="155" id="nameInput" name="name" class="form-control form-control-sm" required="" autocomplete="off">
-      <div class="invalid-feedback"></div>
+
+    <div class="alert alert-danger d-none" role="alert" id="insertJobServerErrorAlert">
+        A aparut o eroare la salvare
+        <button type="button" class="close" aria-label="Close" onclick="$(this).parent().addClass('d-none')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <pre class="errorMsg bg-light border border-focus mt-2 p-3 rounded"></pre>
+        <button class="btn btn-primary" onclick="komponentor.intent('/common/report').send({data:$(this).prev().data('error')})">Raporteaza eroare</button>
     </div>
-  </div>
-  <button class="btn btn-success" type="submit" form="customerDataForm">Save</button>
+
+    <div class="form-row">
+        <div class="form-group col-3">
+            <label for="codcorInput">Cod Cor</label>
+            <input form="customerDataForm" id="codcorInput" name="codcor" class="form-control form-control-sm" required="" pattern="[0-9]{2,6}" autocomplete="off">
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-12">
+            <label for="nameInput">Denumire</label>
+            <input form="customerDataForm" type="text" maxlength="155" id="nameInput" name="name" class="form-control form-control-sm" required="" autocomplete="off">
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>
+    <button class="btn btn-success" type="submit" form="customerDataForm">Save</button>
+    <button class="btn-danger btn" id="deleteJob">Sterge</button>
 </div>
 
 <script>
-function init_komponent(k){
-  let util = k.data.instance.getUtilities();
-  let form = $("#customerDataForm")[0];
-  form.reset();
-
-  util.captureFormSubmit(form,function (data){
-    if(!k.data.instance.hasOwnProperty("items")) {
-      updateJob(data);
-    }
-    else {
-      createJob(data);
-    }
-  });
 
 
-  if(k.data.instance.hasOwnProperty("items")){
-      return;
-    }
-    form.codcor.disabled = true;
-    util.fillForm(form,k.data.instance);
+    function init_komponent(k){
+        let util = k.data.instance.getUtilities();
+        let form = $("#customerDataForm")[0];
+        form.reset();
+
+        if(k.data.instance.hasOwnProperty("items")) {
+            $("#deleteJob").hide();
+        }
+
+        util.captureFormSubmit(form,function (data){
+            if(!k.data.instance.hasOwnProperty("items")) {
+                updateJob(data);
+            }
+            else {
+                createJob(data);
+            }
+        });
 
 
-    function displayServerError(errorData) {
-      $("#insertJobServerErrorAlert").removeClass("d-none").find("pre")
-              .text(errorData.jqXHR.responseText)
-              .data("error", errorData);
-    }
+        if(k.data.instance.hasOwnProperty("items")){
+            return;
+        }
+        form.codcor.disabled = true;
+        util.fillForm(form,k.data.instance);
 
-    function createJob(data) {
-      k.data.instance.createItem(data).then(function (){
-        k.parent.hideModal();
-      })
-      .catch(function (errorData) {
-        displayServerError(errorData);
-      });
-    }
 
-    function updateJob(attrs){
-      $(form.elements).removeClass("is-invalid");
-      k.data.instance.update(attrs)
-              .then(function (d) {
-                // console.log("--------------",d);
-                $("#insertJobSuccessAlert").removeClass("d-none");
-                setTimeout(function () {
-                  $("#insertJobSuccessAlert").addClass("d-none");
-                },1000);
-              })
-              .catch(function (errorData) {
-                // no valid JSONAPI error is provided
-                // => this is some server side error
-                // => display it and prepare it for reporting
-                if(!errorData.jqXHR.responseJSON || !errorData.jqXHR.responseJSON.errors
+        function displayServerError(errorData) {
+            $("#insertJobServerErrorAlert").removeClass("d-none").find("pre")
+                .text(errorData.jqXHR.responseText)
+                .data("error", errorData);
+        }
+
+        function createJob(data) {
+            k.data.instance.createItem(data).then(function (){
+                k.parent.hideModal();
+            })
+                .catch(function (errorData) {
+                    displayServerError(errorData);
+                });
+        }
+
+        function updateJob(attrs){
+            $(form.elements).removeClass("is-invalid");
+            k.data.instance.update(attrs)
+                .then(function (d) {
+                    // console.log("--------------",d);
+                    $("#insertJobSuccessAlert").removeClass("d-none");
+                    setTimeout(function () {
+                        $("#insertJobSuccessAlert").addClass("d-none");
+                    },1000);
+                })
+                .catch(function (errorData) {
+                    // no valid JSONAPI error is provided
+                    // => this is some server side error
+                    // => display it and prepare it for reporting
+                    if(!errorData.jqXHR.responseJSON || !errorData.jqXHR.responseJSON.errors
                         || !errorData.jqXHR.responseJSON.errors.length || !errorData.jqXHR.responseJSON.errors[0]
                         || !errorData.jqXHR.responseJSON.errors[0].code) {
-                  displayServerError(errorData);
-                  return;
-                }
-
-                switch (errorData.jqXHR.responseJSON.errors[0].code*1) {
-                        // highlight faulty field
-                  case 1062:
-                    let res = /Duplicate entry \'(.+)\' for key \'(.+)\.(.+)\'/.exec(errorData.jqXHR.responseJSON.errors[0].title);
-                    if(res) {
-                      $(form[res[3]]).addClass("is-invalid").next().text("Date duplicate");
+                        displayServerError(errorData);
+                        return;
                     }
-                    break;
-                }
-              })
+
+                    switch (errorData.jqXHR.responseJSON.errors[0].code*1) {
+                        // highlight faulty field
+                        case 1062:
+                            let res = /Duplicate entry \'(.+)\' for key \'(.+)\.(.+)\'/.exec(errorData.jqXHR.responseJSON.errors[0].title);
+                            if(res) {
+                                $(form[res[3]]).addClass("is-invalid").next().text("Date duplicate");
+                            }
+                            break;
+                    }
+                })
+        }
+
+        function deleteUnit(){
+            let instance = k.data.instance;
+
+            komponentor.intent("/common/messagemodal").data({
+                body: "Esti sigur ca vrei sa stergi postul <br><strong>"+instance.attributes.name + "</strong> cu codul <strong>" + instance.id + "?</strong>",
+                buttons: [
+                    {
+                        label: "Da",
+                        class: "btn-danger",
+                        attrs: {
+                            "data-dismiss":"modal"
+                        },
+                        callback: function () {
+                            instance.delete().then(function () {
+                                $("#job_details_modal").modal("hide");
+                            }).catch(function(data){
+                                console.log(data);
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                                }).send();
+                            });
+                        }
+                    },
+                    {
+                        label: "Nu",
+                        class: "btn-secondary",
+                        attrs: {
+                            "data-dismiss":"modal"
+                        }
+                    }
+                ]
+            }).send();
+        }
+
+        $("#deleteJob").on("click", deleteUnit);
+        console.log(k.$el);
+
+
+
     }
-}
 
 </script>

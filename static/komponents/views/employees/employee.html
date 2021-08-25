@@ -80,8 +80,9 @@
 </div>
 
 <script>
+
     function init_komponent(k) {
-        console.log(k);
+
         let $modal = k.$el.appendTo("body")
             .filter(".modal")
             .on("hidden.bs.modal",function () {
@@ -100,9 +101,9 @@
             $modal.modal("hide");
         };
 
-
         $("#employeeTimetracking").komponent({data:k.data,parent:k});
         $("#allocatedProjects").komponent({data:k.data,parent:k});
 
     }
+
 </script>
