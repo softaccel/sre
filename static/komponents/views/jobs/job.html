@@ -1,0 +1,58 @@
+<style>
+
+</style>
+
+<div class="modal" id="job_details_modal">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header" style="display: flex; align-items: center">
+                <div class="modal-title">
+                    Post
+                </div>
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#sumar" class="nav-link" id="sumarTab">Sumar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#reperePanel" class="nav-link" id="repereTab">Angajati</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-body bg-white">
+                <div class="tab-content">
+                    <!--// sumar-->
+                    <div class="tab-pane fade" id="sumar" is="komponent" data-url="/views/jobs/details"></div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function init_komponent(k) {
+
+        let $modal = k.$el.appendTo("body")
+            .filter(".modal")
+            .on("hidden.bs.modal",function () {
+                k.$el.remove();
+            });
+
+        $("#sumar").komponent({data:k.data, parent:k})
+            .then(function () {
+                $modal.modal("show");
+            })
+            .catch(function () {
+                $modal.modal('hide');
+            });
+
+        k.hideModal = function() {
+            $modal.modal("hide");
+        };
+    }
+
+</script>
