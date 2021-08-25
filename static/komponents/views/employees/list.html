@@ -114,11 +114,18 @@
 
         let url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname";
 
+        console.log("nu stiu")
+
         if(k.data && k.data.instance && k.data.instance.type==="teams") {
             k.$el.find(".teamsColumn").remove();
             $("#newEmplBtn").remove();
             url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id;
             // insertUrl = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
+        }
+        if(k.data && k.data.instance && k.data.instance.type==="jobs") {
+            k.$el.find(".teamsColumn").remove();
+            $("#newEmplBtn").remove();
+            url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id;
         }
 
 

@@ -28,13 +28,20 @@
         </div>
     </div>
     <button class="btn btn-success" type="submit" form="customerDataForm">Save</button>
+    <button class="btn-danger btn" id="deleteJob">Sterge</button>
 </div>
 
 <script>
+
+
     function init_komponent(k){
         let util = k.data.instance.getUtilities();
         let form = $("#customerDataForm")[0];
         form.reset();
+
+        if(k.data.instance.hasOwnProperty("items")) {
+            $("#deleteJob").hide();
+        }
 
         util.captureFormSubmit(form,function (data){
             if(!k.data.instance.hasOwnProperty("items")) {
@@ -100,6 +107,46 @@
                     }
                 })
         }
+
+        function deleteUnit(){
+            let instance = k.data.instance;
+
+            komponentor.intent("/common/messagemodal").data({
+                body: "Esti sigur ca vrei sa stergi postul <br><strong>"+instance.attributes.name + "</strong> cu codul <strong>" + instance.id + "?</strong>",
+                buttons: [
+                    {
+                        label: "Da",
+                        class: "btn-danger",
+                        attrs: {
+                            "data-dismiss":"modal"
+                        },
+                        callback: function () {
+                            instance.delete().then(function () {
+                                $("#job_details_modal").modal("hide");
+                            }).catch(function(data){
+                                console.log(data);
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                                }).send();
+                            });
+                        }
+                    },
+                    {
+                        label: "Nu",
+                        class: "btn-secondary",
+                        attrs: {
+                            "data-dismiss":"modal"
+                        }
+                    }
+                ]
+            }).send();
+        }
+
+        $("#deleteJob").on("click", deleteUnit);
+        console.log(k.$el);
+
+
+
     }
 
 </script>

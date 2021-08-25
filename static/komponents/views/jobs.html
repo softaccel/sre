@@ -22,7 +22,7 @@
                         <tr>
                             <th>#</th>
                             <th>Nume</th>
-                            <th>Actiuni</th>
+<!--                            <th>Actiuni</th>-->
                         </tr>
                         </thead>
                         <tbody id="jobsList" data-resourcetype="collection" data-type="jobs">
@@ -30,7 +30,7 @@
                         <tr class="tr-job" onclick="jobDetailsModal(this)" style="cursor: pointer">
                             <td><%= id %></td>
                             <td><%= attributes.name %></td>
-                            <td><button class="btn-danger btn btn-sm" onclick="deleteUnit(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
+<!--                            <td><button class="btn-danger btn btn-sm" onclick="deleteUnit(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>-->
                         </tr>
                         </tbody>
                     </table>
@@ -67,38 +67,6 @@
             .finally(()=>$(src).data("locked",null));
     }
 
-    function deleteUnit(src, e){
-        console.log("////",$(src).data("instance").attributes.unit)
-
-        komponentor.intent("/common/messagemodal").data({
-            body: "Esti sigur ca vrei sa stergi postul <br><strong>"+$(src).data("instance").attributes.name + "</strong> cu codul <strong>" + $(src).data("instance").id + "?</strong>",
-            buttons: [
-                {
-                    label: "Da",
-                    class: "btn-danger",
-                    attrs: {
-                        "data-dismiss":"modal"
-                    },
-                    callback: function () {
-                        $(src).data('instance').delete().catch(function(data){
-                            console.log(data);
-                            komponentor.intent("/common/errormodal").data({
-                                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
-                            }).send();
-                        });
-                    }
-                },
-                {
-                    label: "Nu",
-                    class: "btn-secondary",
-                    attrs: {
-                        "data-dismiss":"modal"
-                    }
-                }
-            ]
-        }).send();
-        e.stopPropagation();
-    }
 
 
     function init_komponent(k,c) {
