@@ -24,6 +24,10 @@
                         <input name="belegnummer" id="belegnummer"  type="text" class="form-control">
                     </div>
                     <div class="position-relative form-group">
+                        <label for="multiplied_by" class="">Cantitate</label>
+                        <input name="multiplied_by" id="multiplied_by"  type="number" value="1" class="form-control">
+                    </div>
+                    <div class="position-relative form-group">
                         <label for="model" class="">Descriere</label>
                         <input name="model" id="model"  type="text" class="form-control">
                     </div>
@@ -84,9 +88,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 <script>
     function show(src) {
@@ -287,7 +288,7 @@
                         {
                             unit: valuesMap[instance.unit],
                             name: instance.desc,
-                            qty: instance.qty,
+                            qty: parseInt(instance.qty) * parseInt($("input[name=multiplied_by]").val()),
                             unit_price: instance.unit_price,
                             currency: valuesMap[instance.curr],
                             orders_items_meta: []
@@ -310,10 +311,9 @@
                 total += instance.qty*instance.unit_price;
             });
 
-            // return ;
-            order.attributes.order_value = total;
+            order.attributes.multiplied_by = $("input[name=multiplied_by]").val();
+            order.attributes.order_value = total * order.attributes.multiplied_by;
             console.log(order);
-            // return ;
             return orders.createItem(order);
         }
 
