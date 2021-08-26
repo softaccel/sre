@@ -126,6 +126,9 @@
     function renderKomponent(k,data)
     {
         let dummy = $("<div>").appendTo("body");
+        // let tpl = _.template(data);
+        // let rights = JSON.parse(localStorage.getItem("rights"));
+        // let $renderedKomponent = $(tpl(rights)).appendTo(dummy);
         let $renderedKomponent = $(data).appendTo(dummy);
         $renderedKomponent = $renderedKomponent.remove();
         dummy.remove();
@@ -151,7 +154,11 @@
 
         k.$el.data("komponent",k).attr("is","komponent");
 
-        return initFunc(k);
+        let moduleName = initFunc(k);
+        let modules = JSON.parse(localStorage.getItem("modules"));
+        if(modules[moduleName]) {
+            k.$el.addClass(modules[moduleName].join(" "));
+        }
     }
 
     /**
