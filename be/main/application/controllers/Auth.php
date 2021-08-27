@@ -82,19 +82,20 @@ class Auth extends CI_Controller
 			HttpResp::not_authorized();
 		}
 
-		$data = json_decode(file_get_contents($this->config->item("api_root_full")."/users/$login?include=groups"));
+		// add include rights
+		$data = json_decode(file_get_contents($this->config->item("api_root_full")."/users/$login?include="));
 
 		$record = $data->data;
 
-		$grps = [];
-		foreach ($record->relationships->groups->data as $grp) {
-			$grps[] = $grp->id;
-		}
+//		$grps = [];
+//		foreach ($record->relationships->groups->data as $grp) {
+//			$grps[] = $grp->id;
+//		}
 		$this->load->config("jwt");
 		$jwtPayload = [
 			"sub"=>$login,
 			"unm"=>$record->attributes->fname,
-			"grps"=>$grps,
+//			"grps"=>$grps,
 			"exp"=>time()+$this->config->item("jwt_exp")
 		];
 
