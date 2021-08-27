@@ -156,7 +156,7 @@
 
         let moduleName = initFunc(k);
         let modules = JSON.parse(localStorage.getItem("modules"));
-        if(modules[moduleName]) {
+        if(modules && modules[moduleName]) {
             k.$el.addClass(modules[moduleName].join(" "));
         }
     }
