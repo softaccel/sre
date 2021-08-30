@@ -1,4 +1,30 @@
-<div class="modal" id="scanModal">
+<style>
+    .scanModal ul, .scanModal li {
+        padding: 0px;
+        list-style: none;
+    }
+    li.itemTypeEntry{
+        padding: 5px;
+        border-bottom: solid silver 1px;
+        /*border-radius: 5px;*/
+    }
+    li.itemEntry{
+        margin-top: 5px;
+        padding: 5px;
+        border-bottom: solid silver 1px;
+        border-radius: 10px;
+        background: #dddddd;
+    }
+    li.itemEntry button{
+        padding: 2px;
+    }
+    .removeItem{
+        font-size: 1.2em;
+        color: red;
+        cursor: pointer;
+    }
+</style>
+<div class="modal scanModal" id="scanModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body bg-light">
@@ -8,10 +34,10 @@
                     </div>
                     <div id="alertSpace" class="p-3"></div>
                     <div class="card-body" style="min-height: 400px">
-                        <ol type="1" id="checkOutList"></ol>
+                        <ul id="checkOutList"></ul>
                     </div>
                     <div class="card-footer">
-                        <button class="btn btn-success">OK</button>
+                        <button class="btn btn-success" id="checkoutItemsButt">OK</button>
                         <button class="btn btn-secondary" data-dismiss="modal">Anuleaza</button>
                     </div>
                 </div>
@@ -25,27 +51,53 @@
     </div>
 </div>
 <ul class="d-none">
-    <li id="liTemplate" data-resourcetype="item">
+    <li id="liTemplate" class="itemEntry" data-name="<%= id %>">
         <span class="name"><%= id %></span>
         <span class="qty"><%= attributes.seqno %></span>
+        <a class="font-weight-bold float-right removeItem" data-dismiss="alert" aria-label="Close" onclick="removeItem(this)">
+            <span aria-hidden="true">&times;</span>
+        </a>
     </li>
-    <li id="groupTemplate" data-resourcetype="item">
-        <span name="name"></span>
-        <span name="qty"></span>
-        <ul></ul>
+    <li id="groupTemplate" class="itemTypeEntry">
+        <input type="number" name="qty" size="2" disabled>
+        <span name="name"><%= relationships.item.attributes.name %> </span>
+        <ul class=""></ul>
     </li>
 </ul>
 
 
 <script>
 
+    function removeItem(src) {
+        let itemEl =  $(src).parent().parents("li");
+        let dlvrItem = $($(src).parents("li")[0]);
+        console.log(itemEl,dlvrItem);
+        dlvrItem.fadeOut(500,function() {
+            dlvrItem.remove();
+            let qty = itemEl.find("li").length;
+            if(qty) {
+                itemEl.find("[name=qty]").val(qty);
+                return;
+            }
+            itemEl.remove();
+        });
+
+    }
 
     function init_komponent(k) {
-        console.log(k);
-        k.$el.filter(".modal").remove().appendTo("body").modal().on("hidden.bs.modal",function () {
+        let currentDelivery = k.data.instance;
+        let modal = k.$el.appendTo("body").filter(".modal").modal().on("hidden.bs.modal",function () {
             k.$el.remove();
             $(document).scannerDetection(false);
         });
+
+        function localAlert(msg)
+        {
+            let alert = $(k.$el.find("#alertTpl")[0]).clone(true).attr("id",null).appendTo(k.$el.find("#alertSpace")).alert();
+            alert.find("[name=message]").html(msg);
+            setTimeout(()=>alert.alert('close'),1500);
+        }
+
 
         $(document).scannerDetection({
             timeBeforeScanTest: 200, // wait for the next character for upto 200m0006075014s
@@ -60,48 +112,97 @@
             onError: function(string){alert('Error ' + string);}
         });
 
-        function search(code) {
-            let container = k.$el.find("#checkOutList");
+        let  $checkoutList = k.$el.find("#checkOutList");
 
-            let itemEl = k.$el.find("#liTemplate").clone(true).attr("id",null).appendTo("#alertSpace");
 
-            let cinstance = itemEl.apiator({returninstance:true})
-                .setUrl(apiRoot+"/deliveries_contents/"+code+"?include=item,item.order,item.order.doc_id");
-
-            cinstance.loadFromRemote()
-                .then(function () {
-                    let view = cinstance.views[0]
-                    console.log(cinstance,cinstance.relationships.delivery.id,k.data.instance.id);
-                    if(cinstance.relationships.delivery.id!==k.data.instance.id) {
-                        let alert = k.$el.find("#alertTpl").clone(true).attr("id",null).appendTo("#alertSpace");
-                        alert.find("[name=message]").text("Elementul scanat este alocat la alta livrare.");
-                        setTimeout(()=>alert.alert('close'),2000);
-                        return 1;
+        k.$el.find("#checkoutItemsButt").on("click",function () {
+            let items = k.$el.find("#checkOutList").find("[data-name]");
+            // console.log(items);
+            // return;
+            if(items.length===0) {
+                localAlert("Nu exista elemente");
+                return;
+            }
+            let data = [];
+            $checkoutList.find("[data-name]").each(function () {
+                data.push({
+                    id: $(this).data("name"),
+                    attributes:{
+                        checkout: true
                     }
-
-                    let group = container.find("[name=item"+cinstance.relationships.item.id+"]");
-                    if(!group.length) {
-                        group = k.$el.find("#groupTemplate").clone(true)
-                            .attr("id",null).attr("name","item"+cinstance.relationships.item.id)
-                            .appendTo(container);
-                        group.find("[name=name]").text(cinstance.relationships.item.attributes.name);
-                    }
-
-                    let subItems = group.find("ul").children();
-                    console.log(subItems);
-                    for(let i=0;i<subItems.length;i++) {
-                        if($(subItems[i]).data().instance.id===cinstance.id) {
-                            // view.appendTo(group.find("ul")).fadeOut(300, ()=>itemEl.remove());
-                            return 1;
-                        }
-                    }
-                    view.remove().appendTo(group.find("ul"))
                 })
-                .catch(function (res) {
-                    console.log(res);
-                    komponentor.intent("/common/errormodal").data({
-                        body: "A aparut o eroare:\n<pre>"+(res.jqXHR.responseJSON?JSON.stringify(res.jqXHR.responseJSON,null, 2):res.jqXHR.responseText)+"</pre>"
-                    }).send();
+            });
+            let tmp = $("<div>").apiator({resourcetype: "collection",returninstance:true});
+            $.ajax({
+                    url: apiRoot+"/deliveries_contents",
+                    method: "PATCH",
+                    contentType:"application/vnd.api+json",
+                    data: JSON.stringify({data: data})
+                })
+                .done(function(data){
+                    modal.modal("hide");
+                })
+                .fail(function (xhr) {
+                    console.log("fail",xhr)
+                });
+        });
+
+        function search(code) {
+            $.get(apiRoot+"/deliveries_contents/"+code+"?include=item")
+                .done(function (data) {
+                    let item = data.data;
+                    if(item.attributes.checkout*1===1) {
+                        localAlert("Elementul scanat este deja livrat ");
+                        return;
+                    }
+
+                    item.relationships.delivery = item.relationships.delivery.data;
+                    item.relationships.item = data.includes[0];
+                    console.log(item,currentDelivery);
+                    if(item.relationships.delivery.id!==currentDelivery.id) {
+                        localAlert("Elementul scanat face parte din alta livrare");
+                        return;
+                    }
+
+                    let itemEl = $checkoutList.find("#item_"+currentDelivery.id+"_"+item.relationships.item.id);
+                    if(itemEl.length==0) {
+                        let templateTxt = k.$el.find("#groupTemplate")[0].outerHTML
+                            .replace(/&lt;/gi, '<')
+                            .replace(/&gt;/gi, ">")
+                            .replace(/&apos;/gi, "'")
+                            .replace(/&quot;/gi, '"')
+                            .replace(/&nbsp;/gi, " ")
+                            .replace(/&amp;/gi, "&");
+                        let tpl = _.template(templateTxt);
+                        itemEl = $(tpl(item)).appendTo($checkoutList).attr("id","item_"+currentDelivery.id+"_"+item.relationships.item.id);
+                    }
+
+                    let dlvrItem = itemEl.find("[data-name='"+item.id+"']");
+                    if(dlvrItem.length) {
+                        localAlert("Elementul scanat se afla deja in lista");
+                        return;
+                    }
+
+                    let templateTxt = k.$el.find("#liTemplate")[0].outerHTML
+                        .replace(/&lt;/gi, '<')
+                        .replace(/&gt;/gi, ">")
+                        .replace(/&apos;/gi, "'")
+                        .replace(/&quot;/gi, '"')
+                        .replace(/&nbsp;/gi, " ")
+                        .replace(/&amp;/gi, "&");
+                    let tpl = _.template(templateTxt);
+
+                    $(tpl(item)).appendTo(itemEl.find("ul")).attr("id",null);
+
+                    itemEl.find("[name=qty]").val(itemEl.find("li").length);
+
+
+
+                })
+                .fail(function (xhr) {
+                    if(xhr.status===404) {
+                        localAlert("Elementul scanat nu a fost gasit in baza de date");
+                    }
                 })
         }
     }
