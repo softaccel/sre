@@ -41,7 +41,6 @@
     function init_komponent(k) {
         // console.log(data)
         let $modal =  k.$el.appendTo("body").filter(".modal").modal().on("hidden.bs.modal",function (event) {
-            // $(document).scannerDetection(false);
             k.$el.remove();
         });
         $("#startScanBut").on("click",function () {
