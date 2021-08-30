@@ -1,0 +1,69 @@
+<div class="modal" id="productModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    Fisa de Produs
+                </div>
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#detaliiProdus" class="nav-link active">Sumar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#proprietatiProdus" class="nav-link">Proprietati</a>
+                    </li>
+                    <li class="nav-item" id="retetaTab">
+                        <a data-toggle="tab" href="#retetaProdus" class="nav-link">Reteta</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-body bg-light">
+                <div class="tab-content">
+                    <div class="tab-pane active" role="tabpanel" id="detaliiProdus">
+                        <div id="productDetails" is="komponent" data-url="/views/products/details"></div>
+                    </div>
+                    <div class="tab-pane" role="tabpanel" id="proprietatiProdus">
+                        <div id="productProperties" is="komponent" data-url="/views/products/properties"></div>
+                    </div>
+                    <div class="tab-pane" role="tabpanel" id="retetaProdus" >
+                        <div id="productRecipe" is="komponent" data-url="/views/products/recipe"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function init_komponent(k) {
+
+        let $modal = k.$el.appendTo("body")
+            .filter(".modal")
+            .on("hidden.bs.modal",function () {
+                k.$el.remove();
+            });
+
+
+        $("#productDetails").komponent({data:k.data,parent:k})
+            .then(function () {
+                $modal.modal("show");
+            })
+            .catch(function () {
+                $modal.modal('hide');
+            });
+
+        k.hideModal = function() {
+            $modal.modal("hide");
+        };
+
+        if (k.data.instance.attributes.type !== "product_composed"){
+            $("#retetaTab").remove();
+        }
+
+        $("#productProperties").komponent({data:k.data,parent:k});
+        $("#productRecipe").komponent({data:k.data,parent:k});
+
+    }
+</script>

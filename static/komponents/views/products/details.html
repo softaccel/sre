@@ -1,31 +1,142 @@
-<div data-resourcetype="item" data-type="item">
-    <form id="customerDataForm"></form>
-    <div class="alert alert-success d-none" role="alert" id="insertJobSuccessAlert">
-        Datele au fost salvate cu succes!
-    </div>
+<style>
+    #productSummary>.row>div{
+        padding: 5px;
+    }
+    #productSummary>.row>div:nth-child(1) {
+        padding: 10px;
+        font-weight: bold;
+    }
+    #productSummary>.row>div:nth-child(2){
+        padding: 10px;
+    }
+    #productSummary>.row{
+        border-bottom: silver solid 1px;
+    }
+    #productSummary>.row>div:nth-child(3) {
+        display: none;
+    }
+    #productSummary.editMode>.row>div:nth-child(2) {
+        display: none;
+    }
+    #productSummary.editMode>.row>div:nth-child(3) {
+        display: inline-block;
+    }
+    .btn.btn-save{
+        display: none;
+    }
+    .editMode .btn.btn-edit{
+        display: none;
+    }
+    .editMode .btn.btn-save{
+        display: block;
+    }
+    .editMode .hide-on-edit{
+        display: none;
+    }
+</style>
 
-    <div class="alert alert-danger d-none" role="alert" id="insertJobServerErrorAlert">
-        A aparut o eroare la salvare
-        <button type="button" class="close" aria-label="Close" onclick="$(this).parent().addClass('d-none')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <pre class="errorMsg bg-light border border-focus mt-2 p-3 rounded"></pre>
-        <button class="btn btn-primary" onclick="komponentor.intent('/common/report').send({data:$(this).prev().data('error')})">Raporteaza eroare</button>
-    </div>
+<form id="productFormSubmit">
+    <div class="content" id="productSummary">
+        <div class="row hide-on-edit">
+            <div class="col-3">ID Produs</div>
+            <div class="col-9"><%= id %></div>
+            <div class="col-9"><input name="id" class="form-control form-control-sm" type="text" value="<%= id %>"></div>
+        </div>
+        <div class="row">
+            <div class="col-3">Denumire</div>
+            <div class="col-9"><%= attributes.name %></div>
+            <div class="col-9"><input name="name" class="form-control form-control-sm" value="<%= attributes.name %>" type="text"></div>
+        </div>
+        <div class="row">
+            <div class="col-3">Tip</div>
+            <div class="col-9"><%= attributes.type %></div>
+            <div class="col-9">
+                <select class="form-control" id="productTypeSelect" name="type">
+                    <option value="service">Serviciu</option>
+                    <option value="product">Produs</option>
+                    <option value="product_composed">Produs Compus</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Unitate</div>
+            <div class="col-9"><%= relationships.unit.id %></div>
+            <div class="col-9">
+                <select id="productUnitSelect" name="unit" class="form-control-sm form-control" data-operator="="><option><%= relationships.unit.id %></option></select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Pret</div>
+            <div class="col-9"><%= attributes.unit_price ? attributes.unit_price : "-" %> <%= relationships.currency !== null ? relationships.currency.id : "" %></div>
+            <div class="col-9">
+                <div class="row">
+                    <div class="col-8"><input name="unit_price" step=0.01 class="form-control form-control-sm" value="<%= attributes.unit_price ? attributes.unit_price : '' %>" type="number"></div>
+                    <div class="col-4"><select id="productPriceUnitSelect" name="currency" class="form-control-sm form-control" data-operator="="><option><%= relationships.currency !== null ? relationships.currency.id : "" %></option></select></div>
+                </div>
+            </div>
+        </div>
 
-    <div class="form-row">
-        <div class="form-group col-3">
-            <label for="nameInput">ID</label>
-            <input form="customerDataForm" id="idInput" name="id" class="form-control form-control-sm" type="number" required="">
-            <div class="invalid-feedback"></div>
+        <div class="input-group mt-5">
+            <button class="btn btn-warning btn-save" onclick="" type="submit">Salveaza</button>
+            <button class="btn btn-secondary btn-save" type="button" onclick="cancelEdit()" id="cancelButton">Renunta</button>
         </div>
+        <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+        <button class="btn btn-danger btn-delete" data-dismiss="modal" onclick="deleteProduct($(this).data('instance'))" type="button">Sterge</button>
     </div>
-    <div class="form-row">
-        <div class="form-group col-12">
-            <label for="nameInput">Denumire</label>
-            <input form="customerDataForm" type="text" maxlength="155" id="nameInput" name="name" class="form-control form-control-sm" required="">
-            <div class="invalid-feedback"></div>
-        </div>
-    </div>
-    <button type="submit" form="customerDataForm">Save</button>
-</div>
+</form>
+
+<script>
+    function editMode(instance){
+        $("#productSummary").addClass("editMode");
+
+        $("#productTypeSelect").select2({placeholder: "", allowClear: true}).val(instance.attributes.type).trigger("change");
+        $("#productUnitSelect").select2wrapper({url: apiRoot+"/units",labelfld:"unit"});
+        $("#productPriceUnitSelect").select2wrapper({url: apiRoot+"/currencies",labelfld:"id"});
+
+        let util = instance.getUtilities();
+        let form = $("#productFormSubmit")[0];
+
+        util.captureFormSubmit(form, function (data) {
+            instance.update(data);
+        });
+    }
+
+    function deleteProduct(instance){
+
+        komponentor.intent("/common/messagemodal").data({
+            body:"Sigur vrei sa elimini elementul <strong>"+instance.attributes.name+"</strong>?",
+            buttons:[
+                {
+                    label: "Da",
+                    attrs: {
+                        "data-dismiss": "modal",
+                    },
+                    class: "btn btn-danger",
+                    callback: function () {
+                        instance.delete().catch(function(data){
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    attrs: {
+                        "data-dismiss": "modal",
+                    },
+                    class: "btn btn-secondary",
+                }
+            ]
+        }).send();
+    }
+
+    function cancelEdit(){
+        $("#productSummary").removeClass("editMode");
+    }
+
+    function init_komponent(k){
+        let instance = k.data.instance;
+        instance.bindView($("#productSummary")).loadFromRemote();
+    }
+</script>
