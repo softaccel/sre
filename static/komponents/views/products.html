@@ -1,3 +1,9 @@
+<style>
+    #productListHeader a{
+        cursor: pointer;
+    }
+</style>
+
 <div class="container-fluid">
     <section class="content-header">
         <div class="container-fluid">
@@ -15,50 +21,87 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
+                    <div class="d-inline-block" id="newProductButtons">
+                        <button type="button" aria-haspopup="true" aria-expanded="false" class="mb-2 mr-2 btn btn-primary" id="newProdButt">Produs nou</button>
+                    </div>
+                    <form id="productListFilter" class="d-none"><button type="submit" name="submit"></button></form>
                     <table class="table  table-hover table-striped">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Denumire</th>
-                            <th>Tip</th>
-                            <th>P.U.</th>
-                            <th>U.M.</th>
-                            <th>Cod</th>
-                            <th>Documente</th>
-                            <th>Stoc</th>
-                            <!--                                    <th>Moneda</th>-->
-                            <th>Stare</th>
-                        </tr>
-                        </thead>
-                        <tbody id="catalogList" data-resourcetype="collection">
-                        <tr onclick="openJobModal(this)" style="cursor:pointer;">
-                            <td><%= id %></td>
-                            <td><%= attributes.name %></td>
-                            <td><%= attributes.type %></td>
-                            <td><%= attributes.unit_price + " " + relationships.currency.id + "/ " + relationships.units_unit.id %></td>
-                            <td><%= relationships.units_unit.id %></td>
-                            <td><%= attributes.code %></td>
-                            <td><%= attributes.docs===null ? "None" : attributes.docs %></td>
-                            <td><%= relationships.default_stock.type %></td>
-                            <!--                                    <td><%= attributes.currency %></td>-->
-                            <td><span class="badge badge-secondary"><%= attributes.active === "1" ? "Activ" : "Inactiv" %></span></td>
-                        </tr>
-                        </tbody>
+                        <thead class="thead-dark" id="productListHeader">
+                            <tr>
+                                <th class="align-top" style="width: 100px">
+                                    <a class="text-white" data-sortfld="id">Nr. crt.
+                                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                                </th>
+                                <th class="align-top">
+                                    <a class="text-white" data-sortfld="name">Denumire
+                                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                                    <input type="text" name="name" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">
+                                </th>
+                                <th class="align-top">
+                                    <a class="text-white" data-sortfld="type">Tip
+                                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+<!--                                    <input type="text" name="type" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">-->
+                                    <br>
+                                    <select id="productTypeFilter" name="type" class="form-control-sm form-control" form="productListFilter" data-operator="=">
+                                        <option value="service">Serviciu</option>
+                                        <option value="product">Produs</option>
+                                        <option value="product_composed">Produs Compus</option>
+                                    </select>
 
+                                </th>
+                                <th class="align-top">
+                                    <a class="text-white" data-sortfld="unit">Unitate
+                                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+<!--                                    <input type="text" name="unit" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">-->
+                                    <br>
+                                    <select id="productUnitFilter" name="unit" class="form-control-sm form-control" form="productListFilter" data-operator="="><option> </option></select>
+
+                                </th>
+                                <th class="align-top">
+                                    <a class="text-white" data-sortfld="unit_price">Pret
+                                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                                    <input type="text" name="unit_price" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="productList" data-resourcetype="collection"
+                               data-pagesizeinp="#productListSizeInp"
+                               data-offsetinp="#productListOffsetInp"
+                               data-paging="#productListPaging"
+                               data-filter="#productListFilter"
+                               data-sort="#productListHeader">
+                            <tr onclick="openProductModal(this);" style="cursor:pointer;">
+                                <td><%= id %></td>
+                                <td><%= attributes.name %></td>
+                                <td><%= attributes.type %></td>
+                                <td><%= relationships.unit.id %></td>
+                                <td><%= attributes.unit_price ? attributes.unit_price : "-" %> <%= relationships.currency !== null ? relationships.currency.id : "" %></td>
+                            </tr>
+                        </tbody>
                         <tfoot>
-                        <tr>
-                            <td colspan="5" align="left">
-                                <div class="btn-group" id="usersPaging" data-pagesize="20">
-                                    <button data-type="first" class="btn btn-outline-secondary">&lt;&lt;</button>
-                                    <button data-type="prev" class="btn btn-outline-secondary">&lt;</button>
-                                    <button data-type="page" class="btn btn-outline-secondary">1</button>
-                                    <button data-type="next" class="btn btn-outline-secondary">&gt;</button>
-                                    <button data-type="last" class="btn btn-outline-secondary">&gt;&gt;</button>
-                                </div>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <div class="btn-group"  id="productListPaging" data-pagesize="10">
+                                        <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+                                        <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+                                        <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+                                        <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+                                        <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+                                    </div>
+                                    Pagina <input type="number" name="offset" size="3" value="0" id="productListOffsetInp">
+                                    <select id="productListSizeInp">
+                                        <option></option>
+                                        <option>5</option>
+                                        <option>10</option>
+                                        <option>25</option>
+                                        <option>50</option>
+                                        <option>75</option>
+                                    </select> inregistrari pe pagina
+                                </td>
+                            </tr>
                         </tfoot>
-                    </table>                </div>
+                    </table>
+                </div>
             </div>
         </div>
     </section>
@@ -66,25 +109,95 @@
 
 
 <script>
-    // function openJobModal(src){
-    //     $(src).data("locked", true);
-    //     // console.log(src);
-    //     komponentor
-    //         .intent('/views/products/updateProduct')
-    //         .data({instance:$(src).data('instance')})
-    //         .send()
-    //         .then(function (k) {
-    //             console.log("**************",k);
-    //         })
-    //         .finally(function () {
-    //             $(src).removeData("locked");
-    //         })
-    // }
+    function openProductModal(src){
+        // $(src).data("locked", true);
+        komponentor
+            .intent('/views/products/productModal')
+            .data({instance:$(src).data('instance')})
+            .send()
+            .then(function (k) {
+            })
+            .finally(function () {
+                $(src).removeData("locked");
+            })
+    }
 
     function init_komponent(k){
-        // console.log(apiRoot+"/products");
+        let instance = $("#productList").apiator(apiRoot+"/catalog?page[catalog][offset]=0&page[catalog][limit]=10").data("instance");
 
-        let instance = $("#catalogList").apiator(apiRoot+"/products").data("instance");
-        console.log(instance);
+
+        k.$el.find("#productTypeFilter").select2({placeholder: "", allowClear: true}).val(null).trigger("change");
+        k.$el.find("#productUnitFilter").select2wrapper({url: apiRoot+"/units",labelfld:"unit"});
+
+
+        let formElements = $($("#productListFilter")[0].elements);
+        formElements.filter("input").on("keyup",function () {
+            formElements.filter("button[type=submit]").click();
+        })
+            .on("change",function () {
+                formElements.filter("button[type=submit]").click();
+
+            });
+        formElements.filter("select").on("change",function () {
+            formElements.filter("button[type=submit]").click();
+
+        });
+        let formData;
+        formData = {
+            callback: function (data) {
+                if (data.name === "" || data.type === null || data.unit === null) {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "Denumirea, tipul si unitatea sunt necesare."
+                    }).send();
+                    return 1;
+                }
+                instance.createItem(data).catch(function(data){
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                    }).send();
+                });
+
+                instance.view.el.children().last().fadeIn(500)[0].scrollIntoView();
+            },
+            title:"Adauga Comanda Noua",
+            fields: [
+                {
+                    label: "Denumire",
+                    type: "text",
+                    name: "name",
+                },
+                {
+                    label: "Tip",
+                    type: "select",
+                    name: "type",
+                    options: [{id: "service", description: "Serviciu"}, {id: "product", description: "Produs"}, {id: "product_composed", description: "Produs compus"}],
+                },
+                {
+                    label: "Unitate",
+                    type: "select",
+                    name: "unit",
+                    url: "/units",
+                    labelfnc: "unit",
+                    idfnc: "unit"
+                },
+                {
+                    label: "Pret",
+                    type: "number",
+                    name: "unit_price",
+                },
+                {
+                    label: "Moneda",
+                    type: "select",
+                    name: "currency",
+                    url: "/currencies",
+                    labelfnc: "id",
+                    idfnc: "id"
+                }
+            ]
+        }
+
+        k.$el.find("#newProdButt").on("click", function () {
+            komponentor.intent("/common/formmodal").data(formData).send();
+        });
     }
 </script>

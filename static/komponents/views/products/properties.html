@@ -1,0 +1,150 @@
+<style>
+
+    #productMetaList tr input,
+    #productMetaList tr textarea,
+    #productMetaList tr button.edit,
+    #productMetaList tr select {
+        display: none;
+    }
+    #productMetaList tr.edit p,
+    #productMetaList tr.edit button {
+        display: none;
+    }
+    #productMetaList tr.edit input,
+    #productMetaList tr.edit textarea,
+    #productMetaList tr.edit button.edit,
+    #productMetaList tr.edit select {
+        display: unset;
+    }
+
+    .elli {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+</style>
+
+<div id="productMeta">
+    <form id="productMetaFilter" class="d-none"> <button type="submit" name="submit" id="submitButton"></button> </form>
+    <table class="table table-striped table-hover" style="table-layout: fixed">
+        <thead class="thead-dark" id="productMetaHeader">
+        <tr>
+            <th class="align-top" style="width: 350px">
+                <a class="text-white" data-sortfld="label">Denumire</a>
+                <input type="text" name="meta_key" class="form-control-sm form-control" form="productMetaFilter" data-operator="~=~">
+            </th>
+            <th class="customerColumn align-top" style="min-width: 500px">
+                <a class="text-white">Valoare</a>
+            </th>
+            <th style="width: 100px">
+                <div class="float-sm-right">
+                    <button onclick="newProductPartMeta()" type="button" data-toggle="tooltip" title="Adauga proprietate" data-placement="top" class="float-sm-right btn btn-primary btn-sm">
+                        &nbsp;+&nbsp;
+                    </button>
+                </div>
+            </th>
+        </tr>
+        </thead>
+        <tbody id="productMetaList"
+               data-filter="#productMetaFilter"
+               data-sort="#productMetaHeader">
+        <tr class="product <%= attributes.state %>">
+            <td><%= attributes.meta_key %></td>
+            <td>
+                <p class="elli"> <%= attributes.meta_val %> </p>
+                <textarea id="metaEdit" name="meta_val" rows="2" cols="35"></textarea>
+            </td>
+            <td class="float-sm-right">
+                <button class="btn btn-warning btn-sm" onclick="edit(this)"><i class="fa fa-edit"></i> </button>
+                <button class="btn btn-primary btn-sm edit" onclick="save(this)"><i class="fa fa-save"></i> </button>
+                <button class="btn btn-secondary btn-sm edit" onclick="cancelEdit(this)"><i class="fa fa-arrow-left"></i> </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteProductPartMeta(this, event);"><i class="fa fa-trash-alt"></i></button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function newProductPartMeta() {
+        komponentor.intent("/common/formmodal").data({
+            callback:function (data) {
+                $("#productMetaList").data("instance").createItem(data).then().catch(function (data) {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare: <pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
+                    }).send();
+                });
+            },
+            title:"Adauga Propietate Noua",
+            fields:[
+                {type:"text", name: "meta_key", default: "", placeholder: "", label: "Denumire"},
+                {type:"text", name: "meta_val", default: "0", placeholder: "", label: "Valoare"}
+            ]
+        }).send();
+    }
+
+    function deleteProductPartMeta(src, e) {
+        komponentor.intent("/common/messagemodal").data({
+            body: "Esti sigur ca vrei sa stergi proprietatea <br><strong>" + $(src).data("instance").attributes.meta_key + "?</strong>",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        $(src).data("instance").delete().catch(function(data){
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
+        e.stopPropagation();
+    }
+
+    function cancelEdit(src) {
+        $(src).parents('tr').removeClass('edit');
+    }
+
+    function edit(src) {
+        let itemContainer = $(src).parents("tr").addClass("edit");
+        let instance = $(src).data("instance");
+        itemContainer.find("textarea[name=meta_val]").val(instance.attributes.meta_val);
+    }
+
+    function save(src) {
+        let meta_val = $(src).parents("tr").find("textarea[name=meta_val]").val();
+        let instance = $(src).data("instance");
+
+        instance.update({
+            meta_val: meta_val
+        }).catch(function (e) {
+            komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + e.jqXHR.responseText + "</pre>"}).send();
+        });
+    }
+
+    function init_komponent(k) {
+        $("#productMetaList").apiator({
+            type: "catalog_meta",
+            resourcetype: "collection",
+            appendontop: true
+        }).data("instance").setUrl(apiRoot + "/catalog/" + k.data.instance.id + "/catalog_meta/").loadFromRemote();
+
+        let submitButton = $("#productMetaFilter").find("#submitButton");
+        $("#productMetaHeader").find("input").on("input", function () {
+            submitButton.click();
+        });
+    }
+</script>
