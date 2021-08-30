@@ -1822,8 +1822,6 @@
 			.replace(/&nbsp;/gi, " ")
 			.replace(/&amp;/gi, "&");
 		options.template = _.template(templateTxt);
-		console.log(templateTxt,options.template);
-
 
 		return Item(options).bindView(ItemView({
 			template: options.template,
