@@ -56,6 +56,16 @@
             <div class="col-9"><%= attributes.card %></div>
             <div class="col-9"><input name="card" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
         </div>
+        <div class="row hide-on-edit">
+            <div class="col-3">Status</div>
+            <div class="col-9">
+                <button type="button" class="btn btn-sm btn-danger dropdown-toggle" name="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= attributes.active === "1" ? "Activ" : "Inactiv" %></button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" id="change_active" style="cursor:pointer;" onclick="changeStatus(this);" value="attributes.active"><%= attributes.active !== "1" ? "Activ" : "Inactiv" %></a>
+                </div>
+            </div>
+            <div class="col-9"><input name="active" class="form-control form-control-sm" type="number" value="<% attributes.active %>"></div>
+        </div>
         <div class="row">
             <div class="col-3">Functia</div>
             <div class="col-9"><%= relationships.jobtitle.attributes.name %></div>
@@ -136,11 +146,51 @@
             <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
             <button class="btn btn-secondary btn-save" type="button" id="cancelButton">Renunta</button>
         </div>
-        <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
-        <button class="btn btn-danger btn-delete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
+        <% if(attributes.active === "1") { %>
+            <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+            <button class="btn btn-danger btn-delete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
+        <% } else { %>
+            <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button" disabled>Editeaza</button>
+            <button class="btn btn-danger btn-delete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button" disabled>Sterge</button>
+        <% } %>
     </div>
 </form>
 <script>
+    function changeStatus(src){
+        let instance = $(src).data().instance;
+
+        komponentor.intent("/common/messagemodal").data({
+            body: instance.attributes.active === "1" ? "Prin trecerea angajatului <strong>" + instance.attributes.fname + " " + instance.attributes.lname + "</strong> in starea de inactivitate, cardul va fi dezalocat, angajatul va fi eliberat din echipa din care face parte si nu va mai putea fi editat profilul acestuia. Sunteti sigur ca doriti sa continuati?" : "Doriti reactivarea angajatului <strong>" + instance.attributes.fname + " " + instance.attributes.lname + "</strong>?",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        data = {
+                            active: instance.attributes.active === "1" ? "0" : "1",
+                            card: null,
+                            team: null
+                        };
+                        instance.update(data).catch(function(data){
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
+    }
 
     function editMode(instance) {
         $('#employeeSummary').addClass('editMode');
@@ -264,6 +314,8 @@
             k.parent.hideModal();
         });
 
+        console.log(k.data.instance);
+
         if(k.data.instance) {
             let instance = k.data.instance;
 
@@ -301,6 +353,7 @@
                 type: "employees"
             });
         }
+
 
         return k;
     }
