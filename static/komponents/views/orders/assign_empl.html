@@ -77,14 +77,19 @@
                     })
                     .catch(function(data){
                             komponentor.intent("/common/errormodal").data({
-                                body: "A aparut o eroare: <pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                                body: "A aparut o eroare: <pre>"+(data.jqXHR.responseText)+"</pre>"
                             }).send();
                     });
             });
         }
         else {
             util.captureFormSubmit($form,function (data) {
-                instance.createItem(data);
+                instance.createItem(data).catch(function (xhr) {
+                    komponentor.intent("/common/errormodal").data({
+                        title: "Eroare la creare",
+                        body: "<pre>"+xhr.jqXHR.responseText+"</pre>"
+                    }).send();
+                })
             });
         }
         console.log(instance);
@@ -108,7 +113,7 @@
                     currencies_wrapper.html("<option value='"+instance_aux_data.relationships.currency.id+"'>"+instance_aux_data.relationships.currency.id+"</option>")
                 }).catch(function(data){
                     komponentor.intent("/common/errormodal").data({
-                        body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                        body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
                     }).send();
                 });
         }).on("select2:clear",function () {

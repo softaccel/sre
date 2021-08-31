@@ -171,7 +171,7 @@
                             }).send();
                         } else {
                             komponentor.intent("/common/errormodal").data({
-                                body: "A aparut o eroare: <pre>"+JSON.stringify(jqxhr.jqXHR.responseText)+"</pre>"
+                                body: "A aparut o eroare: <pre>"+(jqxhr.jqXHR.responseText)+"</pre>"
                             }).send();
                         }
                         console.log(jqxhr);
@@ -183,7 +183,7 @@
                     $("#cancelButton").click();
                 }).catch(function(data){
                     komponentor.intent("/common/errormodal").data({
-                        body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                        body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
                     }).send();
                 });
             }
@@ -236,7 +236,7 @@
                         instance.delete().then(() => { console.log("ok", arguments) })
                             .catch( function(data) {
                                 komponentor.intent("/common/errormodal").data({
-                                    body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                                    body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
                                 }).send();
                             });
                     }
@@ -289,7 +289,7 @@
                     });
                 }).catch(function(data){
                 komponentor.intent("/common/errormodal").data({
-                    body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                    body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
                 }).send();
             });
         }

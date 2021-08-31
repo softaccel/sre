@@ -72,7 +72,7 @@
             callback:function (data) {
                 $("#productMetaList").data("instance").createItem(data).then().catch(function (data) {
                     komponentor.intent("/common/errormodal").data({
-                        body: "A aparut o eroare: <pre>" + JSON.stringify(data.jqXHR.responseText) + "</pre>"
+                        body: "A aparut o eroare: <pre>" + data.jqXHR.responseText + "</pre>"
                     }).send();
                 });
             },
@@ -97,7 +97,7 @@
                     callback: function () {
                         $(src).data("instance").delete().catch(function(data){
                             komponentor.intent("/common/errormodal").data({
-                                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                                body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
                             }).send();
                         });
                     }

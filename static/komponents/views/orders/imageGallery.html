@@ -67,7 +67,7 @@
             setSortable();
         }).catch(function(data){
             komponentor.intent("/common/errormodal").data({
-                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
             }).send();
         });
 
@@ -106,7 +106,7 @@
                     })
                     .catch(function(data){
                         komponentor.intent("/common/errormodal").data({
-                            body: "A aparut o eroare: <pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                            body: "A aparut o eroare: <pre>"+data.jqXHR.responseText+"</pre>"
                         }).send();
                     });
                 }
