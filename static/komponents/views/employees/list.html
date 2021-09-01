@@ -20,84 +20,72 @@
         margin: 0px;
         padding: 5px;
     }
-    .employees>*{
-        display: none;
-    }
-    .employees>.placeholder{
-        display: unset;
-    }
-    .employees.allowView>*{
-        display: unset;
-    }
-    .employees.allowView>.placeholder{
-        display: none;
-    }
-
 
 </style>
-<div class="card employees allowView">
-    <div class="card-header" style="border: none;">
-        <button class="btn btn-primary" style="margin-bottom: 8px" onclick="addNewEmployee()" id="newEmplBtn">Angajat Nou</button>
-    </div>
-    <div class="card-body" >
-            <div id="employeesListFilter">
-                <form id="employeesListForm">
-                    <div class="input-group mb-3">
-                        <input type="text"  name="search" class="form-control" placeholder="Cautare dupa nume, prenume sau Card ID" oninput="this.form.submitButt.click()">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="submit" name="submitButt">Cauta</button>
-                            <button class="btn btn-outline-secondary" type="reset">Reseteaza</button>
-                        </div>
-                    </div>
 
-                </form>
-            </div>
-            <ul class="row" id="employeesListUl"
-                data-resourcetype="collection"
-                data-sort="#employeesListFilter"
-                data-paging="#employeesPaging"
-                data-offsetinp="#employeesOffsetInp"
-                data-pagesizeinp="#employeesPageSizeInp">
-
-                <li onclick="openEmployeeModal(this)" class="col-lg-2 col-md-3 col-sm-4">
-                    <div class="card" style="min-height: 140px">
-                        <div class="card-body text-center" style="cursor: pointer">
-                            <div class="d-inline-block mb-3" style="width: 60px">
-                                <i class="fa fa-user d-inline rounded-circle bg-secondary" style="font-size: 15px; padding: 10px; color: white"></i>
-                            </div>
-                            <br>
-                            <strong><%=attributes.fname%> <%=attributes.lname%></strong>
-                            <br>
-                            <span class="font-weight-normal"><%=relationships.jobtitle.attributes.name%></span>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-
-    </div>
-    <div class="card-footer">
-        <div class="btn-group"  id="employeesPaging" data-pagesize="10">
-            <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
-            <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
-            <button name="page" class="btn btn-outline-secondary" title="0">1</button>
-            <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
-            <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
-        </div>
-        Pagina <input type="number" size="3" value="0" id="employeesOffsetInp">
-        <select id="employeesPageSizeInp">
-            <option></option>
-            <option>5</option>
-            <option>10</option>
-            <option>25</option>
-            <option>50</option>
-            <option>75</option>
-        </select> inregistrari pe pagina
-    </div>
-    <div class="placeholder">
-        Nu aveti acces la aceasta clasa
-    </div>
+<div class="card-header" style="border: none;">
+    <button class="btn btn-primary" style="margin-bottom: 8px" onclick="addNewEmployee()" id="newEmplBtn">Angajat Nou</button>
 </div>
+<div class="card-body">
+        <div id="employeesListFilter">
+            <form id="employeesListForm">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Optiuni</button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" id="displayActiveEmpl" onclick="event.preventDefault();" href="#">Afisare doar angajati activi</a>
+                            <a class="dropdown-item" id="displayAllEmpl" onclick="event.preventDefault();" href="#">Afisarea tuturor angajatilor</a>
+                        </div>
+                    </div>
+                    <input type="text"  name="search" class="form-control" placeholder="Cautare dupa nume, prenume sau Card ID" oninput="this.form.submitButt.click()">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit" name="submitButt">Cauta</button>
+                        <button class="btn btn-outline-secondary" type="reset">Reseteaza</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <ul class="row" id="employeesListUl"
+            data-resourcetype="collection"
+            data-sort="#employeesListFilter"
+            data-paging="#employeesPaging"
+            data-offsetinp="#employeesOffsetInp"
+            data-pagesizeinp="#employeesPageSizeInp">
 
+            <li onclick="openEmployeeModal(this)" class="col-lg-2 col-md-3 col-sm-4">
+                <div class="card" style="min-height: 140px">
+                    <div class="card-body text-center" style="cursor: pointer">
+                        <div class="d-inline-block mb-3" style="width: 60px">
+                            <i class="fa fa-user d-inline rounded-circle bg-secondary" style="font-size: 15px; padding: 10px; color: white"></i>
+                        </div>
+                        <br>
+                        <strong><%=attributes.fname%> <%=attributes.lname%></strong>
+                        <br>
+                        <span class="font-weight-normal"><%=relationships.jobtitle.attributes.name%></span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+</div>
+<div class="card-footer">
+    <div class="btn-group"  id="employeesPaging" data-pagesize="10">
+        <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+        <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+        <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+        <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+        <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+    </div>
+    Pagina <input type="number" size="3" value="0" id="employeesOffsetInp">
+    <select id="employeesPageSizeInp">
+        <option></option>
+        <option>5</option>
+        <option>10</option>
+        <option>25</option>
+        <option>50</option>
+        <option>75</option>
+    </select> inregistrari pe pagina
+</div>
 
 <script>
     function addNewEmployee() {
@@ -129,21 +117,21 @@
     }
 
     function init_komponent(k) {
-
-        let url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname";
-
-        console.log("nu stiu")
+        let url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=active=1";
+        let dispAllUrl = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname";
 
         if(k.data && k.data.instance && k.data.instance.type==="teams") {
             k.$el.find(".teamsColumn").remove();
             $("#newEmplBtn").remove();
-            url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id;
+            url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id + ",active=1";
+            dispAllUrl = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id;
             // insertUrl = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
         }
         if(k.data && k.data.instance && k.data.instance.type==="jobs") {
             k.$el.find(".teamsColumn").remove();
             $("#newEmplBtn").remove();
-            url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id;
+            url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id+",active=1";
+            dispAllUrl = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id;
         }
 
 
@@ -192,6 +180,16 @@
             onScanButtonLongPressed: longPress, // callback for long pressing the scan button
             onError: function(string){alert('Error ' + string);}
         });
+
+        $("#displayActiveEmpl").on("click", () => {
+            employeesInstance.setUrl(url).loadFromRemote();
+        });
+
+        $("#displayAllEmpl").on("click", () => {
+            employeesInstance.setUrl(dispAllUrl).loadFromRemote();
+        });
+
+
 
     }
 </script>
