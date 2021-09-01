@@ -122,7 +122,7 @@
                     callback: function () {
                         instance.delete().catch(function(data){
                             komponentor.intent("/common/errormodal").data({
-                                body: "A aparut o eroare: <pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                                body: "A aparut o eroare: <pre>"+(data.jqXHR.responseText)+"</pre>"
                             }).send();
                         });
                     }
@@ -168,7 +168,7 @@
                 })
                 .catch(function (data){
                     komponentor.intent("/common/errormodal").data({
-                        body: "A aparut o eroare: <pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+                        body: "A aparut o eroare: <pre>"+(data.jqXHR.responseText)+"</pre>"
                     }).send();
                 })
         });
@@ -243,7 +243,7 @@
     //                         prepare_a(new_state);
     //                     }).catch(function(data){
     //                         komponentor.intent("/common/errormodal").data({
-    //                             body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
+    //                             body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
     //                         }).send();
     //                     });
     //                 }
@@ -270,7 +270,7 @@
         ).catch(function(data){
             console.log(data);
             komponentor.intent("/common/errormodal").data({
-                body: "A aparut o eroare:<pre>"+JSON.stringify(data.responseText)+"</pre>"
+                body: "A aparut o eroare:<pre>"+(data.responseText)+"</pre>"
             }).send();
         });
     }
