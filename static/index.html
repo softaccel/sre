@@ -237,6 +237,82 @@
 </script>
 
 
+<style>
+    .checkRead {
+        display: none;
+    }
+    .checkCreate {
+        display: none;
+    }
+    .checkUpdate {
+        display: none;
+    }
+    .checkDelete {
+        display: none;
+    }
+
+    .checkRead.readAllow {
+        display: block;
+    }
+    .checkCreate.createAllow {
+        display: block;
+    }
+    .checkUpdate.updateAllow {
+        display: block;
+    }
+    .checkDelete.deleteAllow {
+        display: block;
+    }
+
+</style>
+<script>
+
+    function checkUserRights(el, modules) {
+
+        let checkRights = function (module) {
+            let rights = allRights[module];
+            if (rights.indexOf("r") === -1) {
+                // show not enough rights
+                return;
+            }
+
+            el.find(".checkRead").each(function () {
+                $(this).addClass("readAllow");
+            });
+
+            if (rights.indexOf("c") !== -1) {
+                el.find(".checkCreate").each(function () {
+                    $(this).addClass("createAllow");
+                });
+            }
+
+            if (rights.indexOf("u") !== -1) {
+                el.find(".checkUpdate").each(function () {
+                    $(this).addClass("updateAllow");
+                });
+            }
+
+            if (rights.indexOf("d") !== -1) {
+                el.find(".checkDelete").each(function () {
+                    $(this).addClass("deleteAllow");
+                });
+            }
+        }
+
+        let allRights = JSON.parse(localStorage.getItem("rights"));
+
+        if (typeof modules === "string") {
+            checkRights(modules);
+            return;
+        }
+
+        modules.forEach(function (module) {
+            checkRights(module);
+        });
+
+    }
+
+</script>
 
 
 </body>
