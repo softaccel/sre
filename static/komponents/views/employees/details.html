@@ -160,7 +160,7 @@
         let instance = $(src).data().instance;
 
         komponentor.intent("/common/messagemodal").data({
-            body: instance.attributes.active === "1" ? "Prin trecerea angajatului <strong>" + instance.attributes.fname + " " + instance.attributes.lname + "</strong> in starea de inactivitate, cardul va fi dezalocat, angajatul va fi eliberat din echipa din care face parte si nu va mai putea fi editat profilul acestuia. Sunteti sigur ca doriti sa continuati?" : "Doriti reactivarea angajatului <strong>" + instance.attributes.fname + " " + instance.attributes.lname + "</strong>?",
+            body: instance.attributes.active === "1" ? "Prin trecerea angajatului <strong>" + instance.attributes.fname + " " + instance.attributes.lname + "</strong> in starea de inactivitate, cardul va fi dealocat, angajatul va fi eliberat din echipa din care face parte si nu va mai putea fi editat profilul acestuia. Sunteti sigur ca doriti sa continuati?" : "Doriti reactivarea angajatului <strong>" + instance.attributes.fname + " " + instance.attributes.lname + "</strong>?",
             buttons: [
                 {
                     label: "Da",
