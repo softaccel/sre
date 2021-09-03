@@ -101,7 +101,7 @@
                        data-offsetinp="#ordersOffsetInp" data-pagesizeinp="#ordersPageSizeInp">
                 <tr class="order <%= attributes.state %>">
                     <td>
-                        <span class="actions <%= relationships.doc_id.attributes.docnum %>"><button id="orderDeleteButton" name="deleteOrderBtn" class="btn btn-danger btn-sm " onclick="deleteOrder(this)"><i class="fa fa-trash-alt"></i></button></span>
+                        <span class="actions <%= relationships.doc_id.attributes.docnum %>"><button id="orderDeleteButton" name="deleteOrderBtn" class="btn btn-danger btn-sm checkDelete" onclick="deleteOrder(this)"><i class="fa fa-trash-alt"></i></button></span>
                         <span class="auftragNumLbl <%= relationships.doc_id.attributes.docnum %> bnt btn-sm btn-secondary"><%= relationships.doc_id.attributes.docnum %></span>
                     </td>
                     <td onclick="orderDetailsModal(this)" style="cursor: pointer"><%= attributes.label %></td>
