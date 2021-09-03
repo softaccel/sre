@@ -1,3 +1,7 @@
+<style>
+
+</style>
+
 <div class="modal" id="partnerModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -15,13 +19,13 @@
         </div>
     </div>
 </div>
+
 <script>
-    function init_komponent(k){
-        console.log(k);
-        let title = k.$el.find("#idTitleAddPartner.modal-title")
-        if (k.data.instance.resourcetype === undefined){
-            console.log(k.data.instance.attributes.name);
-            console.log("hahahaaa");
+
+    function init_komponent(k) {
+
+        let title = k.$el.find("#idTitleAddPartner.modal-title");
+        if (k.data.instance.resourcetype === undefined) {
             title.text(k.data.instance.attributes.name);
         }
         k.hideModal = function() {
@@ -51,4 +55,5 @@
         });
 
     }
+
 </script>

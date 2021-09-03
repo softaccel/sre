@@ -1,37 +1,47 @@
-<div data-resourcetype="item" data-type="item">
-    <form id="customerDataForm"></form>
-    <div class="alert alert-success d-none" role="alert" id="insertUnitSuccessAlert">
-        Datele au fost salvate cu succes!
-    </div>
+<style>
 
-    <div class="alert alert-danger d-none" role="alert" id="insertUnitServerErrorAlert">
-        A aparut o eroare la salvare
-        <button type="button" class="close" aria-label="Close" onclick="$(this).parent().addClass('d-none')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <pre class="errorMsg bg-light border border-focus mt-2 p-3 rounded"></pre>
-        <button class="btn btn-primary" onclick="komponentor.intent('/common/report').send({data:$(this).prev().data('error')})">Raporteaza eroare</button>
-    </div>
+</style>
 
-    <div class="form-row">
-        <div class="form-group col-3">
-            <label for="unitInput">Unitatea</label>
-            <input form="customerDataForm" id="unitInput" name="unit" class="form-control form-control-sm" required autocomplete="off">
-            <div class="invalid-feedback"></div>
+<div>
+    <div data-resourcetype="item" data-type="item">
+        <form id="customerDataForm"></form>
+        <div class="alert alert-success d-none" role="alert" id="insertUnitSuccessAlert">
+            Datele au fost salvate cu succes!
         </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-12">
-            <label for="typeInput">Tipul</label>
-            <input form="customerDataForm" type="text" maxlength="155" id="typeInput" name="type" class="form-control form-control-sm"  autocomplete="off">
-            <div class="invalid-feedback"></div>
+
+        <div class="alert alert-danger d-none" role="alert" id="insertUnitServerErrorAlert">
+            A aparut o eroare la salvare
+            <button type="button" class="close" aria-label="Close" onclick="$(this).parent().addClass('d-none')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <pre class="errorMsg bg-light border border-focus mt-2 p-3 rounded"></pre>
+            <button class="btn btn-primary" onclick="komponentor.intent('/common/report').send({data:$(this).prev().data('error')})">Raporteaza eroare</button>
         </div>
+
+        <div class="form-row">
+            <div class="form-group col-3">
+                <label for="unitInput">Unitatea</label>
+                <input form="customerDataForm" id="unitInput" name="unit" class="form-control form-control-sm" required autocomplete="off">
+                <div class="invalid-feedback"></div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-12">
+                <label for="typeInput">Tipul</label>
+                <input form="customerDataForm" type="text" maxlength="155" id="typeInput" name="type" class="form-control form-control-sm"  autocomplete="off">
+                <div class="invalid-feedback"></div>
+            </div>
+        </div>
+        <button id="updateUnit" class="btn btn-primary checkUpdate" type="submit" form="customerDataForm">Save</button>
     </div>
-    <button id="updateUnit" class="btn btn-primary" type="submit" form="customerDataForm">Save</button>
 </div>
 
 <script>
+
     function init_komponent(k) {
+
+        checkUserRights(k.$el, "units");
+
         let util = k.data.instance.getUtilities();
         let form = $("#customerDataForm")[0];
         form.reset();
@@ -39,7 +49,6 @@
         util.captureFormSubmit(form, function (data) {
             if (!k.data.instance.hasOwnProperty("items")) {
                 updateUnit(data);
-                // console.log("item");
             } else {
                 createUnit(data);
             }
@@ -50,6 +59,11 @@
         }
         form.unit.disabled = true;
         util.fillForm(form, k.data.instance);
+
+        let node = k.$el.find("#updateUnit");
+        if (!node.hasClass("updateAllow")) {
+            node.parent().find("#typeInput").attr("disabled", true);
+        }
 
         function displayServerError(errorData) {
             $("#insertUnitServerErrorAlert").removeClass("d-none").find("pre")

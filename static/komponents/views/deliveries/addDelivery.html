@@ -16,6 +16,7 @@
         margin-top: 10px;
     }
 </style>
+
 <div class="modal" id="addDelModal">
     <form id="addDeliveryForm">
         <div class="modal-dialog modal-lg">
@@ -58,7 +59,7 @@
 </div>
 
 <script>
-    function init_komponent(k){
+    function init_komponent(k) {
         k.hideModal = function() {
             $modal.modal("hide");
         };
@@ -72,7 +73,6 @@
         let util = instance.getUtilities();
 
         util.captureFormSubmit(form, function (data) {
-            console.log(data);
             if(data.label === "" || data.dlv_date === ""){
                 komponentor.intent("/common/errormodal").data({
                     body: "Completati toate campurile."

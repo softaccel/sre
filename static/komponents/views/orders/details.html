@@ -36,7 +36,7 @@
                         <input type="text" id="denumChange" class="form-control form-control-sm" value="<%= attributes.label %>">
                     </span>
                     <button class="btn btn-success float-right btn-sm save" onclick="saveDenumChange(this)"><i class="fa fa-save"></i></button>
-                    <button class="btn btn-secondary float-right btn-sm edit" onclick="editDenumChange(this)"><i class="fa fa-edit"></i></button>
+                    <button class="btn btn-secondary float-right btn-sm edit checkUpdate" onclick="editDenumChange(this)"><i class="fa fa-edit"></i></button>
                 </td>
             </tr>
             <tr>
@@ -47,29 +47,29 @@
             <tr>
                 <td>Stadiu</td>
                 <td>
-                    <div class="btn-group">
+                    <div class="btn-group ">
 <!--                        //     let states = ["offer", "ord", "proc", "ctc", "fix", "ready", "dlvd"];-->
 <!--                        //     let normalized_states = ["Oferta", "Comandat", "In Lucru", "Control", "Corectii", "Gata de Livrare", "Livrat"];-->
 <!--                        //     // let colors = ["orange", "red", "blue", "green", "black", "grey"];-->
 
 
                         <% if(attributes.state === "offer") { %>
-                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Oferta</button>
+                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Oferta</button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ord`)" value="ord">Comandat</a>
                             </div>
                         <% } else if(attributes.state === "ord") { %>
-                            <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Comandat</button>
+                            <button type="button" class="btn btn-sm btn-warning dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Comandat</button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `proc`)" value="proc">In Lucru</a>
                             </div>
                         <% } else if(attributes.state === "proc") { %>
-                            <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">In Lucru</button>
+                            <button type="button" class="btn btn-sm btn-danger dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">In Lucru</button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ready`)" value="ctc">Gata de Livrare</a>
                             </div>
                         <% } else if(attributes.state === "ready") { %>
-                            <button disabled type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gata de Livrare</button>
+                            <button disabled type="button" class="btn btn-sm btn-success dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gata de Livrare</button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `dlvd`)" value="dlvd">Livrat</a>
                             </div>
@@ -98,7 +98,7 @@
                         </select>
                     </span>
                     <button class="btn btn-success float-right btn-sm save" onclick="saveTeamAssoc(this)"><i class="fa fa-save"></i></button>
-                    <button class="btn btn-secondary float-right btn-sm edit" onclick="editTeamAssoc(this)"><i class="fa fa-edit"></i></button>
+                    <button class="btn btn-secondary float-right btn-sm edit checkUpdate" onclick="editTeamAssoc(this)"><i class="fa fa-edit"></i></button>
                 </td>
 
             </tr>
@@ -148,7 +148,8 @@
 
 
 <script>
-    function goToPartner(src){
+
+    function goToPartner(src) {
         console.log(src);
         console.log($(src).data().instance.relationships.partner_id);
         komponentor.intent("/views/partners/addPartner").data({instance:$(src).data().instance.relationships.partner_id, title: "ceva"})
@@ -209,15 +210,19 @@
     }
 
     function init_komponent(k) {
-        // $denum = $("#denumChange");
-        // old_denum = $denum.val();
-        console.log("lklklklklklkk", k);
+
+        checkUserRights(k.$el, "orders");
+        k.$el.find(".orderStageBtn").each(function () {
+            if (!$(this).hasClass("updateAllow"))
+                $(this).attr("disabled", true).removeClass("checkUpdate");
+        });
+
         k.data.instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
             .bindView(k.$el.children()).loadFromRemote().then(function (d) {
             // prepare_a(k.data.instance.attributes.state);
-                console.log(d)
+            //     console.log(d)
             })
-            .catch(function(data){
+            .catch(function(data) {
                 komponentor.intent("/common/errormodal").data({
                     body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
                 }).send();

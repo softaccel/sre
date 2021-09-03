@@ -1,3 +1,7 @@
+<style>
+
+</style>
+
 <div class="container-fluid">
     <section class="content-header">
         <div class="container-fluid">
@@ -7,7 +11,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6 ">
                     <div class="breadcrumb float-sm-right">
-                        <button class="btn btn-primary" id="newUnitModalButton"><i class="fa fa-plus"></i> Unitate noua</button>
+                        <button class="btn btn-primary checkCreate" id="newUnitModalButton"><i class="fa fa-plus"></i> Unitate noua</button>
                     </div>
                 </div>
             </div><!-- /.row -->
@@ -16,7 +20,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body checkRead">
                     <table class="table table-hover table-striped">
                         <thead class="thead-dark">
                         <tr>
@@ -29,7 +33,7 @@
                         <tr class="tr-unit" onclick="openUnitModal(this)" style="cursor:pointer;">
                             <td><%= attributes.unit %></td>
                             <td><%= attributes.type %></td>
-                            <td align="center"><button class="btn-warning btn btn-sm" onclick="deleteUnit(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
+                            <td align="center"><button class="btn-warning btn btn-sm checkDelete" onclick="deleteUnit(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
                         </tr>
                         </tbody>
                     </table>
@@ -39,25 +43,23 @@
     </section>
 </div>
 
-
 <script>
+
     function openUnitModal(src){
         $(src).data("locked", true);
-        console.log(src);
         komponentor
             .intent('/views/units/addUnit')
             .data({instance:$(src).data('instance')})
             .send()
-            .then(function (k) {
-                console.log("**************",k);
-            })
+            // .then(function (k) {
+            //     console.log("**************",k);
+            // })
             .finally(function () {
                 $(src).removeData("locked");
             })
     }
 
     function deleteUnit(src, e){
-        console.log("////",$(src).data("instance").attributes.unit)
 
         komponentor.intent("/common/messagemodal").data({
             body: "Esti sigur ca vrei sa stergi unitatea <br><strong>"+$(src).data("instance").attributes.unit   + "</strong>",
@@ -89,10 +91,11 @@
         e.stopPropagation();
     }
 
-
     function init_komponent(k,c) {
+
+        checkUserRights(k.$el, "units");
+
         let instance = $("#unitsList").apiator(apiRoot+"/units").data("instance");
-        console.log("---------**",k);
         $("#newUnitModalButton").on("click", function () {
             //prepare the modal behind the curtain
             komponentor.intent("/views/units/addUnit")
@@ -101,4 +104,5 @@
                 .send();
         })
     }
+
 </script>

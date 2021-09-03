@@ -21,13 +21,13 @@
                 </ul>
             </div>
             <div class="modal-body ">
-                <div class="tab-content">
+                <div class="tab-content checkRead">
                     <div class="tab-pane active" role="tabpanel" id="deliverySummaryPanel" is="komponent" data-url="/views/deliveries/summary">
                     </div>
                     <div class="tab-pane" role="tabpanel" id="deliveryContentPanel" is="komponent" data-url="/views/deliveries/contents">
                     </div>
-                    <div class="tab-pane" role="tabpanel" id="checkoutPanel" is="komponent" data-url="/views/deliveries/checkout">
-                        <button class="btn btn-primary" id="startScanBut" ><i class="fa fa-barcode"></i> Scaneaza elemente</button>
+                    <div class="tab-pane" role="tabpanel" id="checkoutPanel" is="komponent">
+                        <button class="btn btn-primary checkUpdate" id="startScanBut" ><i class="fa fa-barcode"></i> Scaneaza elemente</button>
                     </div>
                 </div>
             </div>
@@ -39,13 +39,17 @@
 </div>
 <script>
     function init_komponent(k) {
-        // console.log(data)
+
+        checkUserRights(k.$el, "deliveries");
+
         let $modal =  k.$el.appendTo("body").filter(".modal").modal().on("hidden.bs.modal",function (event) {
             k.$el.remove();
         });
+
         $("#startScanBut").on("click",function () {
             komponentor.intent("/views/deliveries/scan").data(k.data).send();
         });
+
         $("#deliveryContentPanel").komponent({data:k.data});
         $("#deliverySummaryPanel").komponent({data: k.data});
     }

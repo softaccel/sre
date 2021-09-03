@@ -1,3 +1,7 @@
+<style>
+
+</style>
+
 <div class="container-fluid">
     <section class="content-header">
         <div class="container-fluid">
@@ -18,7 +22,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body checkRead">
                     <div class="row" data-resourcetype="collection" id="teamsList" data-type="teams" data-paging="#teamsListPaging">
                         <div class="col-lg-2 col-md-3 col-sm-4" onclick="teamModal(this)">
                             <div class="card" style="cursor: pointer">
@@ -62,10 +66,15 @@
             fields:[{type:"text",name: "name",default: "test", placeholder: "Numele Echipei", label: "Nume",options:[]}]
         }).send();
     }
+
     function teamModal(src) {
         komponentor.intent('/views/teams/team').data({instance: $(src).data('instance')}).send();
     }
+
     function init_komponent(k,html) {
+
+        checkUserRights(k.$el, "teams");
+
         $("#teamsList").apiator({url:apiRoot+"/teams"});
 
         k.exec = function (options) {

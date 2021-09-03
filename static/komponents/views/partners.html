@@ -13,7 +13,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6 ">
                     <div class="breadcrumb float-sm-right">
-                        <button class="btn btn-primary" id="newUnitModalButton"><i class="fa fa-plus"></i> Partener nou</button>
+                        <button class="btn btn-primary checkCreate" id="newUnitModalButton"><i class="fa fa-plus"></i> Partener nou</button>
                     </div>
                 </div>
             </div>
@@ -22,7 +22,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body checkRead">
                     <form id="partnersListFilter" class="d-none"><button type="submit" id="partnersSubmitButton"></button></form>
                     <table class="table table-hover table-striped" id="partnersTable">
                         <thead class="thead-dark" id="partnersListHeader">
@@ -43,7 +43,7 @@
                                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                 <input type="text" name="cod_fiscal" class="form-control-sm form-control" form="partnersListFilter" data-operator="~=~">
                             </th>
-                            <th style="text-align:center">Actiuni</th>
+                            <th style="width: 150px"></th>
                         </tr>
                         </thead>
                         <tbody id="partnersList"
@@ -58,7 +58,7 @@
                             <td><%= attributes.name %></td>
                             <td><%= attributes.address1 %></td>
                             <td><%= attributes.cod_fiscal %></td>
-                            <td align="center"><button class="btn-primary btn btn-sm" onclick="deletePartner(this,event)"><i class="fa fa-trash-alt"></i> Sterge</button></td>
+                            <td align="center"><button class="btn-primary btn btn-sm checkDelete" onclick="deletePartner(this,event)"><i class="fa fa-trash-alt"></i> Sterge</button></td>
                         </tr>
                         </tbody>
                         <tfoot>
@@ -92,10 +92,10 @@
 </div>
 
 <script>
+
     function openPartnerModal(src) {
         $(src).data("locked",true);
-        komponentor
-            .intent('/views/partners/addPartner')
+        komponentor.intent('/views/partners/addPartner')
             .data({instance:$(src).data('instance')})
             .send()
             .then(function (k) {
@@ -106,8 +106,7 @@
             })
     }
 
-    function deletePartner(src, e){
-        //console.log("////",$(src).data("instance").attributes.name)
+    function deletePartner(src, e) {
 
         komponentor.intent("/common/messagemodal").data({
             body: "Esti sigur ca vrei sa stergi unitatea <br><strong>"+$(src).data("instance").attributes.name+ "</strong>",
@@ -140,6 +139,9 @@
     }
 
     function init_komponent(k,c) {
+
+        checkUserRights(k.$el, "partners");
+
         let instance = $("#partnersList").apiator({
             url:apiRoot+"/partners?page[partners][offset]=0&page[partners][limit]=10",
             type: "partners",

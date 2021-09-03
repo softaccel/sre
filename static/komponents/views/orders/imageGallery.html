@@ -1,4 +1,5 @@
 <style>
+
     .imageList {
         display: grid;
         grid-auto-rows: 1fr;
@@ -11,31 +12,35 @@
 
 </style>
 
-<div id="imageGalleryKomponent">
-    <br>
-    <form id="imageGalleryForm">
-        <input type="file" name="files[]" multiple class="" id="addFiles">
-        <input type="submit" value="Upload" name="upload">
-    </form>
-    <div id="gallery" data-resourcetype="collection">
-        <% gallery = JSON.parse(attributes.meta_val); %>
-        <ul class="mt-4 imageList" style="list-style-type: none;">
-            <% for(let img of gallery) { %>
-            <% console.log(img); %>
-            <li class="card">
-                <img class="img-fluid mx-auto d-block" src="<%=img.tnp%>" data-fp="<%=img.fp%>" data-lbl="<%=img.lbl%>" style="max-width: 100%; height: 200px">
-                <br>
-                <span class="lbl"><%=img.lbl%></span>
-                <br>
-            </li>
-            <% } %>
-        </ul>
+<div>
+    <div id="imageGalleryKomponent">
+        <br>
+        <form id="imageGalleryForm" class="checkUpdate">
+            <input type="file" name="files[]" multiple class="" id="addFiles">
+            <input type="submit" value="Upload" name="upload">
+        </form>
+        <div id="gallery" data-resourcetype="collection" class="checkUpdate">
+            <% gallery = JSON.parse(attributes.meta_val); %>
+            <ul class="mt-4 imageList" style="list-style-type: none;">
+                <% for(let img of gallery) { %>
+                <% console.log(img); %>
+                <li class="card">
+                    <img class="img-fluid mx-auto d-block" src="<%=img.tnp%>" data-fp="<%=img.fp%>" data-lbl="<%=img.lbl%>" style="max-width: 100%; height: 200px">
+                    <br>
+                    <span class="lbl"><%=img.lbl%></span>
+                    <br>
+                </li>
+                <% } %>
+            </ul>
+        </div>
     </div>
 </div>
 
 <script>
 
     function init_komponent(k) {
+
+        checkUserRights(k.$el, "orders");
 
         // update imageList
         const updateSortable = function (e) {
@@ -62,9 +67,15 @@
         const galInst = k.$el.find("#gallery")
             .apiator({returninstance:true})
             .setUrl(apiRoot + "/catalog/" + k.data.instance.attributes.cat_id + "/catalog_meta/?filter=meta_key=Gallery");
-        galInst.loadFromRemote()
-        .then(function () {
-            setSortable();
+
+        galInst.loadFromRemote().then(function () {
+            let node = k.$el.find("#gallery");
+            if(!node.hasClass("updateAllow")) {
+                node.removeClass("checkUpdate");
+            } else {
+                setSortable();
+            }
+
         }).catch(function(data){
             komponentor.intent("/common/errormodal").data({
                 body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"

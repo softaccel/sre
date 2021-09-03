@@ -1,4 +1,5 @@
 <style>
+
     #teamEditDiv>.row>div:nth-child(1) {
         padding: 10px;
         font-weight: bold;
@@ -22,41 +23,49 @@
     .btn-warning, .btn-secondary, .editMode .btn-success, .editMode .btn-danger{
         display: none;
     }
-    .editMode .btn-warning,.editMode .btn-secondary, .btn-success, .btn-danger{
+    .editMode .btn-warning,.editMode .btn-secondary {
         display: inline-block;
     }
+
 </style>
+
 <div>
-<form id="teamEditForm">
-    <div class="content" id="teamEditDiv">
-        <input type="number" name="tid" value="<%= id %>" style="display:none;">
-        <div class="row">
-            <div class="col-3">Team Name</div>
-            <div class="col-9"><%= attributes.name %></div>
-            <div class="col-9">
-                <input type="text" input="teamName" name="name" value="<%= attributes.name %>" class="form-control-sm form-control" autocomplete="off">
+    <form id="teamEditForm">
+        <div class="content" id="teamEditDiv">
+            <input type="number" name="tid" value="<%= id %>" style="display:none;">
+            <div class="row">
+                <div class="col-3">Team Name</div>
+                <div class="col-9"><%= attributes.name %></div>
+                <div class="col-9">
+                    <input type="text" input="teamName" name="name" value="<%= attributes.name %>" class="form-control-sm form-control" autocomplete="off">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">Team Leader</div>
+                <div class="col-9"><%= relationships.teamlead ? relationships.teamlead.attributes.fname : '-' %></div>
+                <div class="col-9">
+                    <select name="teamlead" id="selectLead">
+                        <option value="<%= relationships.teamlead ? relationships.teamlead.id : '' %>"><%= relationships.teamlead ? relationships.teamlead.attributes.fname : '-' %></option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-5" >
+                <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
+                <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
+                <div class="row">
+                    &nbsp;
+                    <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+                    &nbsp;
+                    <button class="btn btn-danger checkDelete" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-3">Team Leader</div>
-            <div class="col-9"><%= relationships.teamlead ? relationships.teamlead.attributes.fname : '-' %></div>
-            <div class="col-9">
-                <select name="teamlead" id="selectLead">
-                    <option value="<%= relationships.teamlead ? relationships.teamlead.id : '' %>"><%= relationships.teamlead ? relationships.teamlead.attributes.fname : '-' %></option>
-                </select>
-            </div>
-        </div>
-        <div class="mt-5" >
-            <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
-            <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
-            <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
-            <button class="btn btn-danger" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
-        </div>
-    </div>
-</form>
+    </form>
 </div>
+
 <script>
-    function exitEditMode(){
+
+    function exitEditMode() {
         $("#teamEditDiv").removeClass("editMode");
     }
 
@@ -122,12 +131,16 @@
         });
     }
 
-    function init_komponent(k){
+    function init_komponent(k) {
+
+        checkUserRights(k.$el, "teams");
+
         let teamDiv = $("#teamEditDiv");
-        // let url = apiRoot + "/teams/" + k.data.filter[0].val+"?include=teamlead";
-        console.log(k.data.instance)
+        console.log("instasdasdasdasd", k.data.instance)
         k.data.instance.url.parameters.include = "teamlead";
         k.data.instance.bindView("#teamEditDiv").loadFromRemote();
+
+
 
     }
 </script>

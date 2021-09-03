@@ -1464,7 +1464,7 @@
 				}))
 				.loadFromData(itemData);
 
-			if(_collection.appendontop) {
+			if(_collection.addontop) {
 				_collection.items.unshift(newItem);
 			}
 			else {

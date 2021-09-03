@@ -12,6 +12,9 @@
     #employeeSummary>.row{
         border-bottom: silver solid 1px;
     }
+    #employeeSummary>.row:last-of-type{
+        border-bottom: none;
+    }
     #employeeSummary>.row>div:nth-child(3) {
         display: none;
     }
@@ -33,130 +36,142 @@
     .editMode .hide-on-edit{
         display: none;
     }
+
 </style>
-<form id="employeeForm">
-    <div class="content" id="employeeSummary">
-        <div class="row hide-on-edit">
-            <div class="col-3">ID Angajat</div>
-            <div class="col-9"><%= id %></div>
-            <div class="col-9"><input name="id" class="form-control form-control-sm" type="text"></div>
-        </div>
-        <div class="row">
-            <div class="col-3">Prenume</div>
-            <div class="col-9"><%= attributes.fname %></div>
-            <div class="col-9"><input name="fname" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
-        </div>
-        <div class="row">
-            <div class="col-3">Nume</div>
-            <div class="col-9"><%= attributes.lname %></div>
-            <div class="col-9"><input name="lname" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
-        </div>
-        <div class="row">
-            <div class="col-3">Card</div>
-            <div class="col-9"><%= attributes.card %></div>
-            <div class="col-9"><input name="card" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
-        </div>
-        <div class="row hide-on-edit">
-            <div class="col-3">Status</div>
-            <div class="col-9">
-                <button type="button" class="btn btn-sm btn-danger dropdown-toggle" name="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= attributes.active === "1" ? "Activ" : "Inactiv" %></button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" id="change_active" style="cursor:pointer;" onclick="changeStatus(this);" value="attributes.active"><%= attributes.active !== "1" ? "Activ" : "Inactiv" %></a>
+
+<div>
+    <form id="employeeForm">
+        <div class="content" id="employeeSummary">
+            <div class="row hide-on-edit">
+                <div class="col-3">ID Angajat</div>
+                <div class="col-9"><%= id %></div>
+                <div class="col-9"><input name="id" class="form-control form-control-sm" type="text"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Prenume</div>
+                <div class="col-9"><%= attributes.fname %></div>
+                <div class="col-9"><input name="fname" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Nume</div>
+                <div class="col-9"><%= attributes.lname %></div>
+                <div class="col-9"><input name="lname" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Card</div>
+                <div class="col-9"><%= attributes.card %></div>
+                <div class="col-9"><input name="card" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
+            </div>
+            <div class="row hide-on-edit">
+                <div class="col-3">Status</div>
+                <div class="col-9">
+                    <button type="button" id="employeeStatusButton" class="btn btn-sm btn-danger dropdown-togglecheckUpdate checkUpdate" name="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= attributes.active === "1" ? "Activ" : "Inactiv" %></button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" id="change_active" style="cursor:pointer;" onclick="changeStatus(this);" value="attributes.active"><%= attributes.active !== "1" ? "Activ" : "Inactiv" %></a>
+                    </div>
+                </div>
+                <div class="col-9"><input name="active" class="form-control form-control-sm" type="number" value="<% attributes.active %>"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Functia</div>
+                <div class="col-9"><%= relationships.jobtitle.attributes.name %></div>
+                <div class="col-9">
+                    <select class="form-control" name="jobtitle" data-source="<%= apiRoot+'/jobs' %>" data-type="operations" data-labelfld="name"  data-searchfld="name" data-searchop="~=~"></select>
                 </div>
             </div>
-            <div class="col-9"><input name="active" class="form-control form-control-sm" type="number" value="<% attributes.active %>"></div>
-        </div>
-        <div class="row">
-            <div class="col-3">Functia</div>
-            <div class="col-9"><%= relationships.jobtitle.attributes.name %></div>
-            <div class="col-9">
-                <select class="form-control" name="jobtitle" data-source="<%= apiRoot+'/jobs' %>" data-type="operations" data-labelfld="name"  data-searchfld="name" data-searchop="~=~"></select>
+            <div class="row">
+                <div class="col-3">Echipa</div>
+                <div class="col-9"><%= relationships.team?relationships.team.attributes.name:"-" %></div>
+                <div class="col-9">
+                    <select class="form-control" name="team" data-source="<%= apiRoot+'/teams' %>" data-type="teams" data-labelfld="name"  data-searchfld="name" data-searchop="~=~"></select>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-3">Echipa</div>
-            <div class="col-9"><%= relationships.team?relationships.team.attributes.name:"-" %></div>
-            <div class="col-9">
-                <select class="form-control" name="team" data-source="<%= apiRoot+'/teams' %>" data-type="teams" data-labelfld="name"  data-searchfld="name" data-searchop="~=~"></select>
+            <div class="row">
+                <div class="col-3">Data nasterii</div>
+                <div class="col-9"><%= attributes.bdate %></div>
+                <div class="col-9"><input name="bdate" class="form-control form-control-sm" type="date" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-3">Data nasterii</div>
-            <div class="col-9"><%= attributes.bdate %></div>
-            <div class="col-9"><input name="bdate" class="form-control form-control-sm" type="date" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
-        </div>
-        <div class="row">
-            <div class="col-3">CNP</div>
-            <div class="col-9"><%= attributes.cnp %></div>
-            <div class="col-9"><input name="cnp" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
-        </div>
-        <div class="row">
-            <div class="col-3">Adresa</div>
-            <div class="col-9">
-                <%= attributes.address_1 %> <%= attributes.address_2 %><br>
-                <%= attributes.city %> <%= attributes.postcode %><br>
-                <%= attributes.county %>,<%= attributes.country %><br>
+            <div class="row">
+                <div class="col-3">CNP</div>
+                <div class="col-9"><%= attributes.cnp %></div>
+                <div class="col-9"><input name="cnp" class="form-control form-control-sm" type="text" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
             </div>
-            <div class="col-9">
-                <div class="content">
-                    <div class="form-row">
-                        <div class="col-md-6">
-                            <div class="position-relative form-group">
-                                <label for="address_1Input" class="">Adresa 1</label>
-                                <input name="address_1" id="address_1Input" type="text" class="form-control form-control-sm">
+            <div class="row">
+                <div class="col-3">Adresa</div>
+                <div class="col-9">
+                    <%= attributes.address_1 %> <%= attributes.address_2 %><br>
+                    <%= attributes.city %> <%= attributes.postcode %><br>
+                    <%= attributes.county %>,<%= attributes.country %><br>
+                </div>
+                <div class="col-9">
+                    <div class="content">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="position-relative form-group">
+                                    <label for="address_1Input" class="">Adresa 1</label>
+                                    <input name="address_1" id="address_1Input" type="text" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="position-relative form-group">
+                                    <label for="address_2_input" class="">Adresa 2</label>
+                                    <input name="address_2" id="address_2_input" type="text" class="form-control form-control-sm">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="position-relative form-group">
-                                <label for="address_2_input" class="">Adresa 2</label>
-                                <input name="address_2" id="address_2_input" type="text" class="form-control form-control-sm">
+                        <div class="form-row">
+                            <div class="col-md-3">
+                                <div class="position-relative form-group">
+                                    <label for="city_input" class="">Localitate</label>
+                                    <input name="city" id="city_input" type="text" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="position-relative form-group">
+                                    <label for="postcode_input" class="">Cod postal</label>
+                                    <input name="postcode" id="postcode_input" type="text" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="position-relative form-group">
+                                    <label for="county_input" class="">Judet</label>
+                                    <input name="county" id="county_input" type="text" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="position-relative form-group">
+                                    <label for="country_input" class="">Tara</label>
+                                    <input name="country" id="country_input" type="text" class="form-control form-control-sm" value="Romania">
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="col-md-3">
-                            <div class="position-relative form-group">
-                                <label for="city_input" class="">Localitate</label>
-                                <input name="city" id="city_input" type="text" class="form-control form-control-sm">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="position-relative form-group">
-                                <label for="postcode_input" class="">Cod postal</label>
-                                <input name="postcode" id="postcode_input" type="text" class="form-control form-control-sm">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="position-relative form-group">
-                                <label for="county_input" class="">Judet</label>
-                                <input name="county" id="county_input" type="text" class="form-control form-control-sm">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="position-relative form-group">
-                                <label for="country_input" class="">Tara</label>
-                                <input name="country" id="country_input" type="text" class="form-control form-control-sm" value="Romania">
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
+            <div class="input-group mt-5">
+                <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
+                <button class="btn btn-secondary btn-save" type="button" id="cancelButton">Renunta</button>
+            </div>
+            <div class="row">
+                &nbsp;
+                <% if(attributes.active === "1") { %>
+                <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+                &nbsp;
+                <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
+                <% } else { %>
+                <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button" disabled>Editeaza</button>
+                &nbsp;
+                <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button" disabled>Sterge</button>
+                <% } %>
+            </div>
+
         </div>
-        <div class="input-group mt-5">
-            <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
-            <button class="btn btn-secondary btn-save" type="button" id="cancelButton">Renunta</button>
-        </div>
-        <% if(attributes.active === "1") { %>
-            <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
-            <button class="btn btn-danger btn-delete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
-        <% } else { %>
-            <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button" disabled>Editeaza</button>
-            <button class="btn btn-danger btn-delete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button" disabled>Sterge</button>
-        <% } %>
-    </div>
-</form>
+    </form>
+</div>
+
 <script>
-    function changeStatus(src){
+
+    function changeStatus(src) {
         let instance = $(src).data().instance;
 
         komponentor.intent("/common/messagemodal").data({
@@ -305,6 +320,11 @@
     }
 
     function init_komponent(k) {
+
+        checkUserRights(k.$el, "employees");
+        let statusBtn = k.$el.find("#employeeStatusButton");
+        if (!statusBtn.hasClass("updateAllow"))
+            statusBtn.attr("disabled", true).removeClass("checkUpdate");
 
         k.$el.find("#cancelButton").on("click", function (e) {
             if (e.target.form.id.value !== "") {

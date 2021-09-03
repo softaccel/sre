@@ -7,7 +7,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6 ">
                     <div class="breadcrumb float-sm-right">
-                        <button class="btn btn-primary" id="newJobModalButton" ><i class="fa fa-user-plus"></i> Adauga</button>
+                        <button class="btn btn-primary checkCreate" id="newJobModalButton" ><i class="fa fa-user-plus"></i> Adauga</button>
                     </div>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -16,7 +16,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body checkRead">
                     <form id="filterUsers"></form>
                     <table class="table table-striped table-hover">
                         <thead class="thead-dark" id="usersThead">
@@ -69,22 +69,16 @@
                                     <option value="0">Blocat</option>
                                 </select>
                             </th>
-                            <th width="100">
-
-                            </th>
                         </tr>
                         </thead>
                         <tbody data-resourcetype="collection" id="users"
-                               data-filter="filterUsers" data-type="users" data-sort="#usersThead"
+                               data-type="users" data-sort="#usersThead"
                                data-paging="#usersPaging" data-filter="#filterUsers">
-                        <tr onclick="openEditUserModal(this);" style="cursor: pointer">
+                        <tr onclick="openUserModal(this);" style="cursor: pointer">
                             <td ><%= attributes.userid %></td>
                             <td><%= attributes.fname %></td>
                             <td><%= attributes.lname %></td>
                             <td><span class="badge badge-<%= attributes.active*1===0?'danger':'success' %>"><%= attributes.active*1===1?'activ':'inactiv' %></span> </td>
-                            <td>
-                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" onclick="event.stopPropagation();deleteUser(this)">Sterge</button>
-                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -106,41 +100,16 @@
 
 
 <script>
-    function openEditUserModal(src){
-        komponentor.intent("/views/users/editUser").data({instance: $(src).data().instance}).send();
-    }
 
-    function deleteUser(src) {
-        let inst = $(src).data().instance;
-        komponentor.intent("/common/messagemodal").data({
-            body:"Esti sigur ca vrei sa stergi utilizatorul "+inst.id +"?",
-            buttons:[
-                {
-                    label: "Da",
-                    attrs: {
-                        "data-dismiss": "modal",
-                    },
-                    class: "btn btn-danger",
-                    callback: ()=>inst.delete().catch(function (data) {
-                        komponentor.intent("/common/errormodal").data({
-                            body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
-                        }).send();
-                    })
-                },
-                {
-                    label: "Nu",
-                    attrs: {
-                        "data-dismiss": "modal",
-                    },
-                    class: "btn btn-secondary",
-                }
-
-            ]
-        }).send();
+    function openUserModal(src){
+        komponentor.intent("/views/users/user").data({instance: $(src).data().instance}).send();
     }
 
     function init_komponent(k,html) {
-        let instance = $("#users").apiator({url:apiRoot+"/users?page[users][limit]=20",returninstance: true});
+
+        checkUserRights(k.$el, "users");
+
+        let instance = $("#users").apiator({url:apiRoot+"/users?page[users][limit]=20&sort=userid",returninstance: true,addontop:true});
         k.$el.find("#newJobModalButton").off("click").on("click", function (src){
             komponentor.intent("/views/users/addUser").data({instance:instance}).send();
         });

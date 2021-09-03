@@ -1,9 +1,11 @@
 <style>
+
     #filterEmployees {
         display: none;
     }
 
 </style>
+
 <div class="modal">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -43,22 +45,21 @@
         </div>
     </div>
 </div>
+
 <script>
+
     function init_komponent(k) {
-        // console.log(data)
+
+        checkUserRights(k.$el, "teams");
+
         let $modal =  k.$el.appendTo("body").filter(".modal").modal().on("hidden.bs.modal",function (event) {
             k.$el.remove();
         });
         k.data.instance.bindView($modal.find('.modal-title')).loadFromRemote();
 
         $("#teamMembersList").komponent({data: k.data});
-        console.log(k);
         $("#editTeam").komponent({data: k.data});
         $("#teamOrders").komponent({data: k.data});
-        // console.log($modal);
-        // k.exec = function (data) {
-        //     $("#employeeModal .modal-title").html(data.instance.attributes.fname+' '+ data.instance.attributes.lname);
-        //     $modal.modal("show");
-        // }
     }
+
 </script>

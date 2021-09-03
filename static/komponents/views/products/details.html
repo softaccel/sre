@@ -1,4 +1,5 @@
 <style>
+
     #productSummary>.row>div{
         padding: 5px;
     }
@@ -11,6 +12,9 @@
     }
     #productSummary>.row{
         border-bottom: silver solid 1px;
+    }
+    #productSummary>.row:last-of-type{
+        border-bottom: none;
     }
     #productSummary>.row>div:nth-child(3) {
         display: none;
@@ -33,59 +37,67 @@
     .editMode .hide-on-edit{
         display: none;
     }
+
 </style>
 
-<form id="productFormSubmit">
-    <div class="content" id="productSummary">
-        <div class="row hide-on-edit">
-            <div class="col-3">ID Produs</div>
-            <div class="col-9"><%= id %></div>
-            <div class="col-9"><input name="id" class="form-control form-control-sm" type="text" value="<%= id %>"></div>
-        </div>
-        <div class="row">
-            <div class="col-3">Denumire</div>
-            <div class="col-9"><%= attributes.name %></div>
-            <div class="col-9"><input name="name" class="form-control form-control-sm" value="<%= attributes.name %>" type="text"></div>
-        </div>
-        <div class="row">
-            <div class="col-3">Tip</div>
-            <div class="col-9"><%= attributes.type %></div>
-            <div class="col-9">
-                <select class="form-control" id="productTypeSelect" name="type">
-                    <option value="service">Serviciu</option>
-                    <option value="product">Produs</option>
-                    <option value="product_composed">Produs Compus</option>
-                </select>
+<div>
+    <form id="productFormSubmit">
+        <div class="content" id="productSummary">
+            <div class="row hide-on-edit">
+                <div class="col-3">ID Produs</div>
+                <div class="col-9"><%= id %></div>
+                <div class="col-9"><input name="id" class="form-control form-control-sm" type="text" value="<%= id %>"></div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-3">Unitate</div>
-            <div class="col-9"><%= relationships.unit.id %></div>
-            <div class="col-9">
-                <select id="productUnitSelect" name="unit" class="form-control-sm form-control" data-operator="="><option><%= relationships.unit.id %></option></select>
+            <div class="row">
+                <div class="col-3">Denumire</div>
+                <div class="col-9"><%= attributes.name %></div>
+                <div class="col-9"><input name="name" class="form-control form-control-sm" value="<%= attributes.name %>" type="text"></div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-3">Pret</div>
-            <div class="col-9"><%= attributes.unit_price ? attributes.unit_price : "-" %> <%= relationships.currency !== null ? relationships.currency.id : "" %></div>
-            <div class="col-9">
-                <div class="row">
-                    <div class="col-8"><input name="unit_price" step=0.01 class="form-control form-control-sm" value="<%= attributes.unit_price ? attributes.unit_price : '' %>" type="number"></div>
-                    <div class="col-4"><select id="productPriceUnitSelect" name="currency" class="form-control-sm form-control" data-operator="="><option><%= relationships.currency !== null ? relationships.currency.id : "" %></option></select></div>
+            <div class="row">
+                <div class="col-3">Tip</div>
+                <div class="col-9"><%= attributes.type %></div>
+                <div class="col-9">
+                    <select class="form-control" id="productTypeSelect" name="type">
+                        <option value="service">Serviciu</option>
+                        <option value="product">Produs</option>
+                        <option value="product_composed">Produs Compus</option>
+                    </select>
                 </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-3">Unitate</div>
+                <div class="col-9"><%= relationships.unit.id %></div>
+                <div class="col-9">
+                    <select id="productUnitSelect" name="unit" class="form-control-sm form-control" data-operator="="><option><%= relationships.unit.id %></option></select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">Pret</div>
+                <div class="col-9"><%= attributes.unit_price ? attributes.unit_price : "-" %> <%= relationships.currency !== null ? relationships.currency.id : "" %></div>
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-8"><input name="unit_price" step=0.01 class="form-control form-control-sm" value="<%= attributes.unit_price ? attributes.unit_price : '' %>" type="number"></div>
+                        <div class="col-4"><select id="productPriceUnitSelect" name="currency" class="form-control-sm form-control" data-operator="="><option><%= relationships.currency !== null ? relationships.currency.id : "" %></option></select></div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="input-group mt-5">
-            <button class="btn btn-warning btn-save" onclick="" type="submit">Salveaza</button>
-            <button class="btn btn-secondary btn-save" type="button" onclick="cancelEdit()" id="cancelButton">Renunta</button>
+            <div class="input-group mt-5">
+                <button class="btn btn-warning btn-save" onclick="" type="submit">Salveaza</button>
+                <button class="btn btn-secondary btn-save" type="button" onclick="cancelEdit()" id="cancelButton">Renunta</button>
+            </div>
+            <div class="row">
+                &nbsp;
+                <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+                &nbsp;
+                <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteProduct($(this).data('instance'))" type="button">Sterge</button>
+            </div>
         </div>
-        <button class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
-        <button class="btn btn-danger btn-delete" data-dismiss="modal" onclick="deleteProduct($(this).data('instance'))" type="button">Sterge</button>
-    </div>
-</form>
+    </form>
+</div>
 
 <script>
+
     function editMode(instance){
         $("#productSummary").addClass("editMode");
 
@@ -131,11 +143,14 @@
         }).send();
     }
 
-    function cancelEdit(){
+    function cancelEdit() {
         $("#productSummary").removeClass("editMode");
     }
 
-    function init_komponent(k){
+    function init_komponent(k) {
+
+        checkUserRights(k.$el, "catalog");
+
         let instance = k.data.instance;
         instance.bindView($("#productSummary")).loadFromRemote();
     }
