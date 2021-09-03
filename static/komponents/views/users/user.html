@@ -12,6 +12,9 @@
     #userDetailsForm .row{
         border-bottom: silver solid 1px;
     }
+    #userDetailsForm .row:last-of-type{
+        border-bottom: none;
+    }
     #userDetailsForm .row>div:nth-child(3) {
         display: none;
     }
@@ -106,8 +109,12 @@
                             <div class="mt-5">
                                 <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
                                 <button class="btn btn-secondary btn-save" type="button" id="cancelButton">Renunta</button>
-                                <button class="btn btn-success btn-edit" type="button">Editeaza</button>
-                                <button class="btn btn-danger btn-delete" data-dismiss="modal" type="button">Sterge</button>
+                                <div class="row">
+                                    &nbsp;
+                                    <button class="btn btn-success btn-edit checkUpdate" type="button">Editeaza</button>
+                                    &nbsp;
+                                    <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" type="button">Sterge</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -128,6 +135,8 @@
 <script>
 
     function init_komponent(k) {
+
+        checkUserRights(k.$el, "users");
 
         function editMode() {
             $('#userDetailsForm').addClass('editMode');

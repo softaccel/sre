@@ -1,56 +1,68 @@
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th colspan="2">Comanda</th>
-        <th>Operatie</th>
-        <th>Tarif orar</th>
-    </tr>
-    </thead>
-    <tbody id="emplAllocOrders" >
-    <tr>
-        <td><%=attributes.docnum%></td>
-        <td><%=attributes.label%></td>
-        <td><%=attributes.status%></td>
-        <td><%=attributes.opname%></td>
-        <td><%=attributes.hourlyrate%> <%=attributes.currency%></td>
-    </tr>
-    </tbody>
-    <tbody id="#emplAllocOrdersEmpty">
-    <tr><td colspan="5">Nu exista nicio comanda</td></tr>
-    </tbody>
-    <tfoot id="emplAllocOrdersPaging">
-    <tr>
-        <td colspan="6">
-            <div class="btn-group" data-pagesize="20">
-                <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
-                <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
-                <button name="page" class="btn btn-outline-secondary" title="0">1</button>
-                <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
-                <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
-            </div>
-            Pagina <input type="number" size="3" value="0" id="emplAllocOrdersOffset">
-            <select id="emplAllocOrdersLimit" >
-                <option></option>
-                <option>5</option>
-                <option>10</option>
-                <option>25</option>
-                <option>50</option>
-                <option>75</option>
-            </select> inregistrari pe pagina
-        </td>
-    </tr>
-    </tfoot>
-</table>
+<style>
+
+</style>
+
+<div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th colspan="2">Comanda</th>
+            <th>Operatie</th>
+            <th>Tarif orar</th>
+        </tr>
+        </thead>
+        <tbody id="emplAllocOrders" >
+        <tr>
+            <td><%=attributes.docnum%></td>
+            <td><%=attributes.label%></td>
+            <td><%=attributes.status%></td>
+            <td><%=attributes.opname%></td>
+            <td><%=attributes.hourlyrate%> <%=attributes.currency%></td>
+        </tr>
+        </tbody>
+        <tbody id="#emplAllocOrdersEmpty">
+        <tr><td colspan="5">Nu exista nicio comanda</td></tr>
+        </tbody>
+        <tfoot id="emplAllocOrdersPaging">
+        <tr>
+            <td colspan="6">
+                <div class="btn-group" data-pagesize="20">
+                    <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+                    <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+                    <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+                    <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+                    <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+                </div>
+                Pagina <input type="number" size="3" value="0" id="emplAllocOrdersOffset">
+                <select id="emplAllocOrdersLimit" >
+                    <option></option>
+                    <option>5</option>
+                    <option>10</option>
+                    <option>25</option>
+                    <option>50</option>
+                    <option>75</option>
+                </select> inregistrari pe pagina
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+
 <script>
+
     function init_komponent(k) {
+
         let emplid;
-        if(k.data.instance && k.data.instance.type==="employees") {
+
+        if (k.data.instance && k.data.instance.type==="employees") {
             emplid = k.data.instance.id;
         }
-        if(k.data.emplid) {
+
+        if (k.data.emplid) {
             emplid = k.data.emplid;
         }
-        if(!emplid) {
+
+        if (!emplid) {
             //todo render some error stuff
             return;
         }
@@ -58,11 +70,13 @@
         $("#emplAllocOrders").apiator({
             resourcetype: "collection",
             type: "emplToOrdAssoc",
-            url: apiRoot+"/emplToOrdAssoc?filter=emplid="+emplid,
+            url: apiRoot + "/emplToOrdAssoc?filter=emplid=" + emplid,
             paging: "#emplAllocOrdersPaging",
             offsetinp: "#emplAllocOrdersOffset",
             pagesizeinp: "#emplAllocOrdersLimit",
             emptyview: "#emplAllocOrdersEmpty"
-        })
+        });
+
     }
+
 </script>

@@ -1,16 +1,18 @@
 <style>
+
     #productListHeader a{
         cursor: pointer;
     }
+
 </style>
 
 <div class="container-fluid">
-    <div class="d-inline-block" id="newComponent">
-        <button type="button" aria-haspopup="true" aria-expanded="false" class="mb-2 mr-2 btn btn-primary" id="newComponentButton">Componenta noua</button>
+    <div id="newComponent">
+        <button type="button" aria-haspopup="true" aria-expanded="false" class="mb-2 mr-2 btn btn-primary checkUpdate" id="newComponentButton">Componenta noua</button>
     </div>
 
     <div class="recipeTable">
-        <table class="table  table-hover table-striped">
+        <table class="table table-hover table-striped">
             <thead class="thead-dark" id="productListHeader">
                 <tr>
                     <th class="align-top" style="width: 100px">Nr. crt.</th>
@@ -34,7 +36,11 @@
 </div>
 
 <script>
+
     function init_komponent(k) {
+
+        checkUserRights(k.$el, "catalog");
+
         let instance_recipes = $("#recipeList").apiator({url: apiRoot + "/recipes_expanded?filter=parent_id=" + k.data.instance.id, returninstance: true});
         let formData;
         let instance = $("<span></span>").apiator({returninstance: true, resourcetype: "collection"}).setUrl(apiRoot+"/recipes");
@@ -80,4 +86,5 @@
             komponentor.intent("/common/formmodal").data(formData).send();
         });
     }
+
 </script>

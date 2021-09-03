@@ -23,6 +23,7 @@
 
 
 </style>
+
 <div class="container-fluid jobs">
     <section class="content-header">
         <div class="container-fluid">
@@ -41,7 +42,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body checkRead">
                     <table class="table table-striped table-hover">
                         <thead class="thead-dark">
                         <tr>
@@ -66,6 +67,7 @@
 </div>
 
 <script>
+
     // function openJobModal(src){
     //     $(src).data("locked", true);
     //     // console.log(src);
@@ -82,19 +84,23 @@
     // }
 
     function jobDetailsModal(src) {
+
         if($(src).data("locked")) {
             return;
         }
         $(src).data("locked",true);
+
         komponentor.intent('/views/jobs/job')
             .send({instance:$(src).data('instance')})
-            .then((k)=>{console.log('#######',k)})
+            // .then((k)=>{console.log('#######',k)})
             .finally(()=>$(src).data("locked",null));
+
     }
 
-
-
     function init_komponent(k,c) {
+
+        checkUserRights(k.$el, "jobs");
+
         let instance = $("#jobsList").apiator(apiRoot+"/jobs").data("instance");
 
         $("#newJobModalButton").on("click", function () {

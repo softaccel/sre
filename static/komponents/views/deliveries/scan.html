@@ -1,4 +1,5 @@
 <style>
+
     .scanModal ul, .scanModal li {
         padding: 0px;
         list-style: none;
@@ -23,47 +24,51 @@
         color: red;
         cursor: pointer;
     }
+
 </style>
-<div class="modal scanModal" id="scanModal">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-body bg-light">
-                <div class="card">
-                    <div class="card-header">
-                        Scaneaza
-                    </div>
-                    <div id="alertSpace" class="p-3"></div>
-                    <div class="card-body" style="min-height: 400px">
-                        <ul id="checkOutList"></ul>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-success" id="checkoutItemsButt">OK</button>
-                        <button class="btn btn-secondary" data-dismiss="modal">Anuleaza</button>
+
+<div>
+    <div class="modal scanModal" id="scanModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body bg-light">
+                    <div class="card">
+                        <div class="card-header">
+                            Scaneaza
+                        </div>
+                        <div id="alertSpace" class="p-3"></div>
+                        <div class="card-body" style="min-height: 400px">
+                            <ul id="checkOutList"></ul>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-success" id="checkoutItemsButt">OK</button>
+                            <button class="btn btn-secondary" data-dismiss="modal">Anuleaza</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="d-none">
-    <div class="alert alert-default-danger alert-dismissible fade show" role="alert" id="alertTpl">
-        <span name="message"></span>
+    <div class="d-none">
+        <div class="alert alert-default-danger alert-dismissible fade show" role="alert" id="alertTpl">
+            <span name="message"></span>
+        </div>
     </div>
+    <ul class="d-none">
+        <li id="liTemplate" class="itemEntry" data-name="<%= id %>">
+            <span class="name"><%= id %></span>
+            <span class="qty"><%= attributes.seqno %></span>
+            <a class="font-weight-bold float-right removeItem" data-dismiss="alert" aria-label="Close" onclick="removeItem(this)">
+                <span aria-hidden="true">&times;</span>
+            </a>
+        </li>
+        <li id="groupTemplate" class="itemTypeEntry">
+            <input type="number" name="qty" size="2" disabled>
+            <span name="name"><%= relationships.item.attributes.name %> </span>
+            <ul class=""></ul>
+        </li>
+    </ul>
 </div>
-<ul class="d-none">
-    <li id="liTemplate" class="itemEntry" data-name="<%= id %>">
-        <span class="name"><%= id %></span>
-        <span class="qty"><%= attributes.seqno %></span>
-        <a class="font-weight-bold float-right removeItem" data-dismiss="alert" aria-label="Close" onclick="removeItem(this)">
-            <span aria-hidden="true">&times;</span>
-        </a>
-    </li>
-    <li id="groupTemplate" class="itemTypeEntry">
-        <input type="number" name="qty" size="2" disabled>
-        <span name="name"><%= relationships.item.attributes.name %> </span>
-        <ul class=""></ul>
-    </li>
-</ul>
 
 
 <script>
@@ -85,19 +90,18 @@
     }
 
     function init_komponent(k) {
+
         let currentDelivery = k.data.instance;
         let modal = k.$el.appendTo("body").filter(".modal").modal().on("hidden.bs.modal",function () {
             k.$el.remove();
             $(document).scannerDetection(false);
         });
 
-        function localAlert(msg)
-        {
+        function localAlert(msg) {
             let alert = $(k.$el.find("#alertTpl")[0]).clone(true).attr("id",null).appendTo(k.$el.find("#alertSpace")).alert();
             alert.find("[name=message]").html(msg);
             setTimeout(()=>alert.alert('close'),1500);
         }
-
 
         $(document).scannerDetection({
             timeBeforeScanTest: 200, // wait for the next character for upto 200m0006075014s
@@ -114,11 +118,8 @@
 
         let  $checkoutList = k.$el.find("#checkOutList");
 
-
         k.$el.find("#checkoutItemsButt").on("click",function () {
             let items = k.$el.find("#checkOutList").find("[data-name]");
-            // console.log(items);
-            // return;
             if(items.length===0) {
                 localAlert("Nu exista elemente");
                 return;
@@ -158,7 +159,6 @@
 
                     item.relationships.delivery = item.relationships.delivery.data;
                     item.relationships.item = data.includes[0];
-                    console.log(item,currentDelivery);
                     if(item.relationships.delivery.id!==currentDelivery.id) {
                         localAlert("Elementul scanat face parte din alta livrare");
                         return;
@@ -206,4 +206,5 @@
                 })
         }
     }
+
 </script>

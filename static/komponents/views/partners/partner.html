@@ -1,4 +1,4 @@
-
+<!-- @todo: finalizare sectiune parteneri-->
 <div class="modal" id="partnerModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -133,7 +133,6 @@
                             </div>
                             <div class="tab-pane" id="partnerModalPanelReports" role="tabpanel" >
                                 rapoarte
-<!--                                <div is="komponent" data-url="/views/pontaj/lista"></div>-->
                             </div>
                         </div>
                     </div>
@@ -144,12 +143,13 @@
 </div>
 
 <script>
+
     function init_komponent(k) {
+
         let $modal = k.$el.appendTo("body").filter(".modal");
         $modal.modal().on("hidden.bs.modal",()=>k.$el.remove());
 
         $("#ordersTableKomponent").komponent({data:{instance: k.data.instance}});
-
 
         let util = k.data.instance.getUtilities();
         let form = $("#customerDataForm")[0];
@@ -169,7 +169,7 @@
                 .data("error", errorData);
         }
 
-        function updatePartner(attrs){
+        function updatePartner(attrs) {
             $(form.elements).removeClass("is-invalid");
             // console.log(arguments);
             k.data.instance.update(attrs)
@@ -205,5 +205,6 @@
 
 
     }
+
 </script>
 

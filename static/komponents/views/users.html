@@ -6,8 +6,8 @@
                     <h1 class="m-0">Utilizatori</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6 ">
-                    <div class="breadcrumb float-sm-right checkCreate">
-                        <button class="btn btn-primary" id="newJobModalButton" ><i class="fa fa-user-plus"></i> Adauga</button>
+                    <div class="breadcrumb float-sm-right">
+                        <button class="btn btn-primary checkCreate" id="newJobModalButton" ><i class="fa fa-user-plus"></i> Adauga</button>
                     </div>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -16,7 +16,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body checkRead">
                     <form id="filterUsers"></form>
                     <table class="table table-striped table-hover">
                         <thead class="thead-dark" id="usersThead">
@@ -107,7 +107,7 @@
 
     function init_komponent(k,html) {
 
-        checkUserRights(k.$el, "users")
+        checkUserRights(k.$el, "users");
 
         let instance = $("#users").apiator({url:apiRoot+"/users?page[users][limit]=20&sort=userid",returninstance: true,addontop:true});
         k.$el.find("#newJobModalButton").off("click").on("click", function (src){

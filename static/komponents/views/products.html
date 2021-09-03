@@ -1,32 +1,35 @@
 <style>
-    #productListHeader a{
+
+    #productListHeader a {
         cursor: pointer;
     }
+
 </style>
 
-<div class="container-fluid">
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Catalog</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6 ">
+<div>
+    <div class="container-fluid">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Catalog</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6 ">
 
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </section>
-    <section class="content">
-        <div class="container-fluid">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-inline-block" id="newProductButtons">
-                        <button type="button" aria-haspopup="true" aria-expanded="false" class="mb-2 mr-2 btn btn-primary" id="newProdButt">Produs nou</button>
-                    </div>
-                    <form id="productListFilter" class="d-none"><button type="submit" name="submit"></button></form>
-                    <table class="table  table-hover table-striped">
-                        <thead class="thead-dark" id="productListHeader">
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="card">
+                    <div class="card-body checkRead">
+                        <div id="newProductButtons">
+                            <button type="button" aria-haspopup="true" aria-expanded="false" class="mb-2 mr-2 btn btn-primary checkCreate" id="newProdButt">Produs nou</button>
+                        </div>
+                        <form id="productListFilter" class="d-none"><button type="submit" name="submit"></button></form>
+                        <table class="table  table-hover table-striped">
+                            <thead class="thead-dark" id="productListHeader">
                             <tr>
                                 <th class="align-top" style="width: 100px">
                                     <a class="text-white" data-sortfld="id">Nr. crt.
@@ -40,7 +43,7 @@
                                 <th class="align-top">
                                     <a class="text-white" data-sortfld="type">Tip
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-<!--                                    <input type="text" name="type" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">-->
+                                    <!--                                    <input type="text" name="type" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">-->
                                     <br>
                                     <select id="productTypeFilter" name="type" class="form-control-sm form-control" form="productListFilter" data-operator="=">
                                         <option value="service">Serviciu</option>
@@ -52,7 +55,7 @@
                                 <th class="align-top">
                                     <a class="text-white" data-sortfld="unit">Unitate
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-<!--                                    <input type="text" name="unit" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">-->
+                                    <!--                                    <input type="text" name="unit" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">-->
                                     <br>
                                     <select id="productUnitFilter" name="unit" class="form-control-sm form-control" form="productListFilter" data-operator="="><option> </option></select>
 
@@ -63,13 +66,13 @@
                                     <input type="text" name="unit_price" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">
                                 </th>
                             </tr>
-                        </thead>
-                        <tbody id="productList" data-resourcetype="collection"
-                               data-pagesizeinp="#productListSizeInp"
-                               data-offsetinp="#productListOffsetInp"
-                               data-paging="#productListPaging"
-                               data-filter="#productListFilter"
-                               data-sort="#productListHeader">
+                            </thead>
+                            <tbody id="productList" data-resourcetype="collection"
+                                   data-pagesizeinp="#productListSizeInp"
+                                   data-offsetinp="#productListOffsetInp"
+                                   data-paging="#productListPaging"
+                                   data-filter="#productListFilter"
+                                   data-sort="#productListHeader">
                             <tr onclick="openProductModal(this);" style="cursor:pointer;">
                                 <td><%= id %></td>
                                 <td><%= attributes.name %></td>
@@ -77,8 +80,8 @@
                                 <td><%= relationships.unit.id %></td>
                                 <td><%= attributes.unit_price ? attributes.unit_price : "-" %> <%= relationships.currency !== null ? relationships.currency.id : "" %></td>
                             </tr>
-                        </tbody>
-                        <tfoot>
+                            </tbody>
+                            <tfoot>
                             <tr>
                                 <td colspan="6">
                                     <div class="btn-group"  id="productListPaging" data-pagesize="10">
@@ -99,16 +102,17 @@
                                     </select> inregistrari pe pagina
                                 </td>
                             </tr>
-                        </tfoot>
-                    </table>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 </div>
 
-
 <script>
+
     function openProductModal(src){
         // $(src).data("locked", true);
         komponentor
@@ -122,7 +126,10 @@
             })
     }
 
-    function init_komponent(k){
+    function init_komponent(k) {
+
+        checkUserRights(k.$el, "catalog");
+
         let instance = $("#productList").apiator(apiRoot+"/catalog?page[catalog][offset]=0&page[catalog][limit]=10").data("instance");
 
 

@@ -1,26 +1,27 @@
 <style>
-    .order-summary-table{
+
+    .order-summary-table {
         width: 100%;
         border-collapse: separate;
         -webkit-border-vertical-spacing: 10px;
     }
-    .order-summary-table tr{
+    .order-summary-table tr {
         margin-bottom: 5px;
     }
-    .order-summary-table td{
+    .order-summary-table td {
         border-bottom: solid #e6e6e6 1px;
         padding: 5px;
         margin-bottom: 5px;
     }
-    .order-summary-table td:first-child{
+    .order-summary-table td:first-child {
         font-weight: bold;
         background: #E6E6E6;
 
     }
-    .bg-light-me{
+    .bg-light-me {
         background-color: #d6d6d6 !important
     }
-    a.bg-light-me:hover, a.bg-light:focus, button.bg-light:hover, button.bg-light:focus{
+    a.bg-light-me:hover, a.bg-light:focus, button.bg-light:hover, button.bg-light:focus {
         background-color: #d5d5d5 !important
     }
     .employeeIconDelete {
@@ -34,20 +35,18 @@
         top: 0.2rem;
         left: 0.2rem;
     }
-    .employee:hover .employeeIconDelete{
+    .employee:hover .employeeIconDelete {
         display: inline-block;
     }
-    .employee:hover .employeeIcon{
+    .employee:hover .employeeIcon {
         display: none;
     }
-    .employeeName{
+    .employeeName {
         font-weight: bold;
         cursor: pointer;
     }
 
 </style>
-
-
 
 <div class="modal" id="order_details_modal">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -86,9 +85,28 @@
                     <!--// sumar-->
                     <div class="tab-pane fade" id="sumar" is="komponent" data-url="/views/orders/details" ></div>
 
+                    <!--// sumar-->
+                    <div class="tab-pane fade" id="reperePanel">
+                        <div is="komponent" data-url="/views/orders/partsGallery" id="repere"></div>
+                    </div>
+
+                    <div class="tab-pane fade" id="ordersCostsPanel">
+                        <div is="komponent" data-url="/views/orders/orderCosts" id="ordersCosts"></div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pontaj" is="komponent" data-url="/views/pontaj/lista">
+                    </div>
+
+                    <div class="tab-pane fade" id="deliveriesContent" is="komponent" data-url="/views/pontaj/deliveries">
+                        Deliveries
+                    </div>
+
+                    <div class="tab-pane fade" id="proprietati" is="komponent" data-url="/views/orders/orderDetails">
+                    </div>
+
                     <!--// resurse-->
-                    <div class="tab-pane fade" id="resurse">
-                        <button class="btn btn-primary" id="allocateEmpl"><i class="fa fa-user-plus"></i> Adauga</button>
+                    <div class="tab-pane fade checkRead" id="resurse">
+                        <button class="btn btn-primary checkUpdate" id="allocateEmpl"><i class="fa fa-user-plus"></i> Adauga</button>
                         <hr>
                         <div class="row" id="allocatedEmployees">
                             <div class="col-3 mb-4 ">
@@ -111,23 +129,6 @@
                         </div>
                     </div>
 
-                    <!--// sumar-->
-                    <div class="tab-pane fade" id="reperePanel">
-                        <div is="komponent" data-url="/views/orders/partsGallery" id="repere"></div>
-                    </div>
-
-                    <div class="tab-pane fade" id="ordersCostsPanel">
-                        <div is="komponent" data-url="/views/orders/orderCosts" id="ordersCosts"></div>
-
-                    </div>
-                    <div class="tab-pane fade" id="pontaj" is="komponent" data-url="/views/pontaj/lista">
-                        Pontaj
-                    </div>
-                    <div class="tab-pane fade" id="deliveriesContent" is="komponent" data-url="/views/pontaj/deliveries">
-                        Deliveries
-                    </div>
-                    <div class="tab-pane fade" id="proprietati" is="komponent" data-url="/views/orders/orderDetails">
-                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -138,6 +139,7 @@
 </div>
 
 <script>
+
     function remove_employee_from_order(src) {
         let emplid = ($(src).data("instance")).relationships.emplid;
         komponentor.intent("/common/messagemodal").data({
@@ -174,6 +176,9 @@
     }
 
     function init_komponent(k,d) {
+
+        checkUserRights(k.$el, "orders");
+
         k.$el.appendTo("body");
 
         let url = apiRoot+"/orders/"+k.data.instance.id+"/orders_2_employees?include=emplid,operation&page[orders_2_employees][limit]=100";

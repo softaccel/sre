@@ -3,56 +3,60 @@
 </style>
 
 <div>
-    <table class="table table-striped table-hover" style="table-layout: fixed" >
-        <thead class="thead-dark">
-        <tr class="text-white">
-            <th>Denumire </th>
-            <th>Create </th>
-            <th>Read </th>
-            <th>Update </th>
-            <th>Delete </th>
-        </tr>
-        </thead>
-        <tbody id="userRightsList" data-resourcetype="collection" data-type="">
-        <tr>
-            <td><%= attributes.module %></td>
-            <td>
-                <% let rights = JSON.parse(attributes.meta_val); %>
-                <% if(rights.indexOf("c") !== -1) { %>
-                <input type="checkbox" name="create" checked>
-                <% } else { %>
-                <input type="checkbox" name="create">
-                <% } %>
-            </td>
-            <td>
-                <% if(rights.indexOf("r") !== -1) { %>
-                <input type="checkbox" name="read" checked>
-                <% } else { %>
-                <input type="checkbox" name="read">
-                <% } %>
-            </td>
-            <td>
-                <% if(rights.indexOf("u") !== -1) { %>
-                <input type="checkbox" name="update" checked>
-                <% } else { %>
-                <input type="checkbox" name="update">
-                <% } %>
-            </td>
-            <td>
-                <% if(rights.indexOf("d") !== -1) { %>
-                <input type="checkbox" name="delete" checked>
-                <% } else { %>
-                <input type="checkbox" name="delete">
-                <% } %>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="checkUpdate">
+        <table class="table table-striped table-hover" style="table-layout: fixed" >
+            <thead class="thead-dark">
+            <tr class="text-white">
+                <th>Denumire </th>
+                <th>Create </th>
+                <th>Read </th>
+                <th>Update </th>
+                <th>Delete </th>
+            </tr>
+            </thead>
+            <tbody id="userRightsList" data-resourcetype="collection" data-type="">
+            <tr>
+                <td><%= attributes.module %></td>
+                <td>
+                    <% let rights = JSON.parse(attributes.meta_val); %>
+                    <% if(rights.indexOf("c") !== -1) { %>
+                    <input type="checkbox" name="create" checked>
+                    <% } else { %>
+                    <input type="checkbox" name="create">
+                    <% } %>
+                </td>
+                <td>
+                    <% if(rights.indexOf("r") !== -1) { %>
+                    <input type="checkbox" name="read" checked>
+                    <% } else { %>
+                    <input type="checkbox" name="read">
+                    <% } %>
+                </td>
+                <td>
+                    <% if(rights.indexOf("u") !== -1) { %>
+                    <input type="checkbox" name="update" checked>
+                    <% } else { %>
+                    <input type="checkbox" name="update">
+                    <% } %>
+                </td>
+                <td>
+                    <% if(rights.indexOf("d") !== -1) { %>
+                    <input type="checkbox" name="delete" checked>
+                    <% } else { %>
+                    <input type="checkbox" name="delete">
+                    <% } %>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
 
     function init_komponent(k) {
+
+        checkUserRights(k.$el, "users");
 
         let instance = $("#userRightsList").apiator({resourcetype: "collection", returninstance: true});
 

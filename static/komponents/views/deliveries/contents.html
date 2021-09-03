@@ -77,7 +77,7 @@
         </div>
     </div>
     <form id="deliveryContentsFilter"></form>
-    <button class="btn btn-secondary mb-3" id="addContentBtn"><i class="fa fa-truck-loading"></i> Adauga elemente la livrare</button>
+    <button class="btn btn-secondary mb-3 checkUpdate" id="addContentBtn"><i class="fa fa-truck-loading"></i> Adauga elemente la livrare</button>
     <div style="max-height: 400px; overflow: scroll">
         <table class="items table table-sm" id="deliveryContentsTable">
             <thead id="deliveriesListHeader">
@@ -128,7 +128,7 @@
                 <td><%= attributes.printed %></td>
                 <td><%= attributes.checkout %></td>
                 <td>
-                    <button class="btn-danger" onclick="removeFromDelivery(this)"><i class="fa fa-trash"></i></button>
+                    <button class="btn-danger checkDelete" onclick="removeFromDelivery(this)"><i class="fa fa-trash"></i></button>
                     <button class="btn-primary" onclick="goToPrint(this)"><i class="fa fa-print"></i></button>
                 </td>
             </tr>
@@ -161,6 +161,7 @@
 </div>
 
 <script>
+
     function removeFromDelivery(src) {
         let instance = $(src).data("instance");
         komponentor.intent("/common/messagemodal").data({
@@ -189,14 +190,13 @@
         }).send();
     }
 
-    function goToPrint(src){
-        // k.$el.find(".printButton").on("click", function (e) {
-        //     console.log("smek");
+    function goToPrint(src) {
         komponentor.intent("/views/deliveries/printSelect").data({instance: $(src).data("instance")}).send();
-        // });
     }
 
     function init_komponent(k) {
+
+        checkUserRights(k.$el, "deliveries");
 
         if(!k.data || !k.data.instance) {
             return;

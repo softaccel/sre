@@ -1,35 +1,42 @@
+<style>
+
+</style>
+
+<div>
+
+</div>
+
 <script>
-  function init_komponent(k){
-      console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[", k)
-      // let instance = $("<span></span>").apiator({returninstance: true, resourcetype: "collection"});
-      let instance = k.data.instance;
-      // instance.setUrl(apiRoot + "/users");
-      komponentor.intent("/common/formmodal").data({
-          callback:function (data) {
-              console.log(data);
-              if(data.userid === "" || data.fname === "" || data.lname === "" || data.email === "" || data.password === ""){
-                  komponentor.intent("/common/messagemodal").data({
-                      body:"Toate campurile trebuie completate.",
-                      buttons:[
-                          {
-                              label: "Ok",
-                              attrs: {
-                                  "data-dismiss": "modal",
-                              },
-                              class: "btn btn-danger",
-                          }
-                      ]
-                  }).send();
+
+    function init_komponent(k) {
+
+        let instance = k.data.instance;
+
+        komponentor.intent("/common/formmodal").data({
+            callback:function (data) {
+                if (data.userid === "" || data.fname === "" || data.lname === "" || data.email === "" || data.password === ""){
+                    komponentor.intent("/common/messagemodal").data({
+                        body:"Toate campurile trebuie completate.",
+                        buttons:[
+                            {
+                                label: "Ok",
+                                attrs: {
+                                    "data-dismiss": "modal",
+                                },
+                                class: "btn btn-danger",
+                            }
+                        ]
+                    }).send();
                   return 1;
-              }
-              instance.createItem(data).catch(function (data) {
-                  komponentor.intent("/common/errormodal").data({
-                      body: "A aparut o eroare: <pre>"+data.jqXHR.responseText+"</pre>"
-                  }).send();
-              });
-          },
-          title:"Adauga angajat nou",
-          fields:[
+                }
+                instance.createItem(data).catch(function (data) {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare: <pre>"+data.jqXHR.responseText+"</pre>"
+                    }).send();
+                });
+              },
+              title:"Adauga angajat nou",
+              fields:[
               {type:"text", name: "userid", default: "", placeholder: "", label: "Username", options:[], pattern: `[a-zA-Z+-_!@0-9.&#*]+$`},
               {type:"text", name: "fname", default: "", placeholder: "", label: "Prenume", options:[]},
               {type:"text", name: "lname", default: "", placeholder: "", label: "Nume", options:[]},
@@ -37,6 +44,7 @@
               {type:"select", name: "active", default: {id:1,description:"Activ"}, placeholder: "", label: "Activ", options:[{id:1,description:"Activ"},{id:0,description:"Inactiv"}]},
               {type:"text", name: "password", default: "", placeholder: "", label: "Parola", options:[]},
           ]
-      }).send();
-  }
+        }).send();
+    }
+
 </script>

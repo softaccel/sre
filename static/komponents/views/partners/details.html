@@ -1,97 +1,107 @@
-<div data-resourcetype="item" data-type="item">
-    <form id="customerDataForm"></form>
-    <div class="alert alert-success d-none" role="alert" id="insertPartnerSuccessAlert">
-        Datele au fost salvate cu succes!
-    </div>
+<style>
 
-    <div class="alert alert-danger d-none" role="alert" id="insertPartnerServerErrorAlert">
-        A aparut o eroare la salvare
-        <button type="button" class="close" aria-label="Close" onclick="$(this).parent().addClass('d-none')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <pre class="errorMsg bg-light border border-focus mt-2 p-3 rounded"></pre>
-        <button class="btn btn-primary" onclick="komponentor.intent('/common/report').send({data:$(this).prev().data('error')})">Raporteaza eroare</button>
-    </div>
+</style>
 
-    <div class="form-row">
-        <div class="form-group col-6">
-            <label for="nameInput">Denumire</label>
-            <input form="customerDataForm" type="text" maxlength="155" id="nameInput" name="name" class="form-control form-control-sm" required="" placeholder="ABOGAR S.R.L.">
-            <div class="invalid-feedback"></div>
+<div>
+    <div data-resourcetype="item" data-type="item" class="checkRead" id="partnerDetails">
+        <form id="customerDataForm"></form>
+        <div class="alert alert-success d-none" role="alert" id="insertPartnerSuccessAlert">
+            Datele au fost salvate cu succes!
         </div>
-        <div class="form-group col-3">
-            <label for="cod_fiscalInput">Cod fiscal</label>
-            <input form="customerDataForm" type="text" maxlength="20" id="cod_fiscalInput" data-sync="cod_fiscal" name="cod_fiscal" class="form-control form-control-sm" required="" placeholder="RO2483866">
-            <div class="invalid-feedback"></div>
+
+        <div class="alert alert-danger d-none" role="alert" id="insertPartnerServerErrorAlert">
+            A aparut o eroare la salvare
+            <button type="button" class="close" aria-label="Close" onclick="$(this).parent().addClass('d-none')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <pre class="errorMsg bg-light border border-focus mt-2 p-3 rounded"></pre>
+            <button class="btn btn-primary" onclick="komponentor.intent('/common/report').send({data:$(this).prev().data('error')})">Raporteaza eroare</button>
         </div>
-        <div class="form-group col-3">
-            <label for="reg_comInput">Reg Com</label>
-            <input form="customerDataForm" type="text" maxlength="45" id="reg_comInput" data-sync="reg_com" name="reg_com" class="form-control form-control-sm" placeholder="J35/1236/1992">
-            <div class="invalid-feedback"></div>
+
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label for="nameInput">Denumire</label>
+                <input form="customerDataForm" type="text" maxlength="155" id="nameInput" name="name" class="form-control form-control-sm" required="" placeholder="ABOGAR S.R.L.">
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="form-group col-3">
+                <label for="cod_fiscalInput">Cod fiscal</label>
+                <input form="customerDataForm" type="text" maxlength="20" id="cod_fiscalInput" data-sync="cod_fiscal" name="cod_fiscal" class="form-control form-control-sm" required="" placeholder="RO2483866">
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="form-group col-3">
+                <label for="reg_comInput">Reg Com</label>
+                <input form="customerDataForm" type="text" maxlength="45" id="reg_comInput" data-sync="reg_com" name="reg_com" class="form-control form-control-sm" placeholder="J35/1236/1992">
+                <div class="invalid-feedback"></div>
+            </div>
         </div>
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label for="address1Input">Adresa 1</label>
+                <input form="customerDataForm" type="text" maxlength="100" id="address1Input" name="address1" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-6">
+                <label for="address2Input">Adresa 2</label>
+                <input form="customerDataForm" type="text" maxlength="100" id="address2Input" name="address2" class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-4">
+                <label for="cityInput">Localitate</label>
+                <input form="customerDataForm" type="text" maxlength="45" id="cityInput" name="city" class="form-control form-control-sm" required="">
+            </div>
+            <div class="form-group col-4">
+                <label for="countyInput">Judet</label>
+                <input form="customerDataForm" type="text" maxlength="45" id="countyInput" name="county" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-4">
+                <label for="countryInput">Tara</label>
+                <input form="customerDataForm" type="text" maxlength="45" id="countryInput" name="country" class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-3">
+                <label for="emailInput">Email</label>
+                <input form="customerDataForm" type="text" maxlength="100" id="emailInput" name="email" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-3">
+                <label for="phoneInput">Telefon</label>
+                <input form="customerDataForm" type="text" maxlength="45" id="phoneInput" name="phone" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-3">
+                <label for="bank_nameInput">Banca</label>
+                <input form="customerDataForm" type="text" maxlength="45" id="bank_nameInput" name="bank_name" class="form-control form-control-sm">
+            </div>
+            <div class="form-group col-3">
+                <label for="bank_accountInput">Cont</label>
+                <input form="customerDataForm" type="text" maxlength="45" id="bank_accountInput" name="bank_account" class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-3">
+                <label>Furnizor</label>
+                <select form="customerDataForm" name="is_supplier" class="form-control custom-select custom-select-sm">
+                    <option value="1">da</option>
+                    <option value="0">nu</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-12">
+                <label>Notite</label>
+                <textarea form="customerDataForm" class="form-control" rows="3" name="comments"></textarea>
+            </div>
+        </div>
+        <button id="updatePartner" class="btn btn-primary checkUpdate" type="submit" form="customerDataForm">Save</button>
     </div>
-    <div class="form-row">
-        <div class="form-group col-6">
-            <label for="address1Input">Adresa 1</label>
-            <input form="customerDataForm" type="text" maxlength="100" id="address1Input" name="address1" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-6">
-            <label for="address2Input">Adresa 2</label>
-            <input form="customerDataForm" type="text" maxlength="100" id="address2Input" name="address2" class="form-control form-control-sm">
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-4">
-            <label for="cityInput">Localitate</label>
-            <input form="customerDataForm" type="text" maxlength="45" id="cityInput" name="city" class="form-control form-control-sm" required="">
-        </div>
-        <div class="form-group col-4">
-            <label for="countyInput">Judet</label>
-            <input form="customerDataForm" type="text" maxlength="45" id="countyInput" name="county" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-4">
-            <label for="countryInput">Tara</label>
-            <input form="customerDataForm" type="text" maxlength="45" id="countryInput" name="country" class="form-control form-control-sm">
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-3">
-            <label for="emailInput">Email</label>
-            <input form="customerDataForm" type="text" maxlength="100" id="emailInput" name="email" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-3">
-            <label for="phoneInput">Telefon</label>
-            <input form="customerDataForm" type="text" maxlength="45" id="phoneInput" name="phone" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-3">
-            <label for="bank_nameInput">Banca</label>
-            <input form="customerDataForm" type="text" maxlength="45" id="bank_nameInput" name="bank_name" class="form-control form-control-sm">
-        </div>
-        <div class="form-group col-3">
-            <label for="bank_accountInput">Cont</label>
-            <input form="customerDataForm" type="text" maxlength="45" id="bank_accountInput" name="bank_account" class="form-control form-control-sm">
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-3">
-            <label>Furnizor</label>
-            <select form="customerDataForm" name="is_supplier" class="form-control custom-select custom-select-sm">
-                <option value="1">da</option>
-                <option value="0">nu</option>
-            </select>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-12">
-            <label>Notite</label>
-            <textarea form="customerDataForm" class="form-control" rows="3" name="comments"></textarea>
-        </div>
-    </div>
-    <button id="updatePartner" class="btn btn-primary" type="submit" form="customerDataForm">Save</button>
 </div>
 
 <script>
+
     function init_komponent(k) {
+
+        checkUserRights(k.$el, "partners");
+
         let util = k.data.instance.getUtilities();
         let form = $("#customerDataForm")[0];
         form.reset();
@@ -167,5 +177,22 @@
 
                 })
         }
+
+        let node = k.$el.find("#updatePartner");
+        if (!node.hasClass("updateAllow")) {
+            let partnerDetails = $("#partnerDetails");
+            partnerDetails.find("input").each(function () {
+               $(this).attr("disabled", true);
+            });
+            partnerDetails.find("select").each(function () {
+                $(this).attr("disabled", true);
+            });
+            partnerDetails.find("textarea").each(function () {
+                $(this).attr("disabled", true);
+            });
+
+        }
+
     }
+
 </script>

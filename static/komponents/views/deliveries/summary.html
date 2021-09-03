@@ -97,15 +97,15 @@
         <div class="input-group mt-5">
             <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
             <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
-            <button id="editButton" class="btn btn-success btn-edit" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
-            <button class="btn btn-danger" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
+            <button id="editButton" class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+            <button class="btn btn-danger checkDelete" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
         </div>
     </div>
 </form>
 </div>
 
 <script>
-    function exitEditMode(){
+    function exitEditMode() {
         $("#deliverySummary").removeClass("editMode");
     }
 
@@ -138,7 +138,7 @@
         }).send();
     }
 
-    function changeState(src, new_state){
+    function changeState(src, new_state) {
         let instance = $(src).data("instance");
         instance.update({status: new_state}).catch(function (error) {
             komponentor.intent("/common/errormodal").data({
@@ -147,13 +147,10 @@
         });
     }
 
-
     function editMode(instance) {
         $("#deliverySummary").addClass("editMode");
         let form = $("#deliveryForm")[0];
         let util = instance.getUtilities();
-
-
 
         util.captureFormSubmit(form, function (data) {
             if(data.dlv_date === "N/A"){
@@ -263,11 +260,12 @@
     // }
 
     function init_komponent(k){
-        console.log(k);
+
+        checkUserRights(k.$el, "deliveries");
 
         k.data.instance.bindView($("#deliveryForm")).loadFromRemote().then(function (d) {
-            }
-        ).catch(function(data){
+            // ?????
+        }).catch(function(data){
             console.log(data);
             komponentor.intent("/common/errormodal").data({
                 body: "A aparut o eroare:<pre>"+(data.responseText)+"</pre>"
