@@ -55,13 +55,13 @@
                 <div class="btn-group">
 <!--                    let states = ["created", "delivered", "received", "canceled"];-->
                     <% if(attributes.status === "created"){ %>
-                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Creat</button>
+                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle checkUpdate deliveryStatusBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Creat</button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `delivered`)">Livrat</a>
                             <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)">Anulat</a>
                         </div>
                     <% } else if(attributes.status === "delivered") { %>
-                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat</button>
+                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle checkUpdate deliveryStatusBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat</button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `received`)">Primit</a>
                         </div>
@@ -98,6 +98,7 @@
             <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
             <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
             <button id="editButton" class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+            &nbsp;
             <button class="btn btn-danger checkDelete" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
         </div>
     </div>
@@ -105,6 +106,7 @@
 </div>
 
 <script>
+
     function exitEditMode() {
         $("#deliverySummary").removeClass("editMode");
     }
@@ -259,9 +261,13 @@
     //
     // }
 
-    function init_komponent(k){
+    function init_komponent(k) {
 
         checkUserRights(k.$el, "deliveries");
+        k.$el.find(".deliveryStatusBtn").each(function () {
+            if (!$(this).hasClass("updateAllow"))
+                $(this).attr("disabled", true).removeClass("checkUpdate");
+        });
 
         k.data.instance.bindView($("#deliveryForm")).loadFromRemote().then(function (d) {
             // ?????

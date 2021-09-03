@@ -323,7 +323,7 @@
 
         checkUserRights(k.$el, "employees");
         let statusBtn = k.$el.find("#employeeStatusButton");
-        if (!statusBtn.hasClass("allowUpdate"))
+        if (!statusBtn.hasClass("updateAllow"))
             statusBtn.attr("disabled", true).removeClass("checkUpdate");
 
         k.$el.find("#cancelButton").on("click", function (e) {

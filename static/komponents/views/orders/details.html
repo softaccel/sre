@@ -213,7 +213,7 @@
 
         checkUserRights(k.$el, "orders");
         k.$el.find(".orderStageBtn").each(function () {
-            if (!$(this).hasClass("allowUpdate"))
+            if (!$(this).hasClass("updateAllow"))
                 $(this).attr("disabled", true).removeClass("checkUpdate");
         });
 
