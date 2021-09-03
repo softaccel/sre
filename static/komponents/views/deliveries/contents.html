@@ -309,15 +309,9 @@
         let url = apiRoot + "/develivery_items_aggregated?filter=delivery="+k.data.instance.id + "&sort=item";
         // let url = apiRoot + "/deliveries/"+k.data.instance.id+"/deliveries_contents?include=inventory,inventory.order";
         let contentItems = k.$el.find("#deliveryContentsList").apiator({url:url,returninstance:true});
-        console.log("asdasdasdasdasdasd",contentItems);
-        console.log("mnbmnbmnbmnbmbmnbm",k.data.instance.id);
-
         k.$el.find("#startScanBut").on("click",function () {
             komponentor.intent("/views/deliveries/scan").data({data:k.data}).send();
         });
-
-        console.log("][[[[[[[[[[][", k.$el.find(".printButton"));
-
     }
 
 

@@ -20,6 +20,22 @@
                 <br>
                 <button type="submit" form="listToPrintForm" class="btn btn-success">Print</button>
             </div>
+
+            <form id="textAreasForm" class="d-none"></form>
+            <table class="d-none">
+                <tbody id="tableForLabels">
+                    <tr>
+                        <td>
+                            <textarea name="label" form="textAreasForm" class="labelTextArea">
+                                <%= attributes.value %>
+                            </textarea>
+                        </td>
+                    </tr>
+                </tbody>
+                <button type="submit" form="textAreasForm" id="sendAjaxReqBtn" class="btn btn-success d-none"></button>
+            </table>
+
+
             <div class="modal-footer">
                 <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
             </div>
@@ -28,6 +44,57 @@
 </div>
 
 <script>
+    function print_labels(data){
+        let seq_arr = data.seqList.split(",");
+        let str_seq = "item="+data.item+" AND delivery="+data.delivery + " AND (";
+        seq_arr.forEach(item => {
+            let aux_arr = item.split("-");
+            if (aux_arr.length === 1){
+                str_seq += "seqno=" + item+" OR ";
+            } else {
+                str_seq += "(seqno>=" + aux_arr[0]+" AND seqno<=" + aux_arr[1]+") OR ";
+            }
+        });
+        str_seq = str_seq.slice(0,-4);
+        str_seq += ")";
+
+        let query_uri = encodeURIComponent(str_seq);
+
+        let url_labels = "/deliveries_contents/?filter_advanced[orders_meta]=meta_key=%22K.F.E_BelegKopf.BelegNummer%22&filter_advanced[orders_items_meta]=(order_item_id%3D" + data.item + ")%20AND%20(meta_key=%22P.A.P_ZeichnungSpr.Zeichnung%22%20OR%20meta_key=%22P.A.E_BelegPos.Artikel%22)&include=delivery,item,item.order,item.order.orders_meta,item.cat_id,item.orders_items_meta,item.order.orders_items_labels,item.order.doc_id&filter_advanced[deliveries_contents]=" + query_uri;
+
+
+        // let url = "/deliveries_contents/?filter_advanced="+query_uri+"&include=delivery,item,item.order,item.order.orders_meta,item.cat_id,item.orders_items_meta,item.order.orders_items_labels";
+        let instance_labels = $("#tableForLabels").apiator({url: apiRoot + url_labels, resourcetype: "collection", returninstance: true});
+        instance_labels.loadFromRemote().then(function () {
+
+            let temp_arr = [];
+
+            util_labels.captureFormSubmit($form_labels,function (data){
+                $(".labelTextArea[name=label]").map(function (index, value){
+                    temp_arr.push($(value).val());
+                });
+                let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
+
+                let ajx = $.ajax({
+                    url: urlPrint,
+                    data: JSON.stringify({labels: temp_arr}),
+                    type: "POST",
+                    contentType: 'application/json',
+                });
+                instance_labels.items.forEach(function (item) {
+
+                    item.update({label_printed: 1});
+                });
+            });
+
+
+            $("#sendAjaxReqBtn").click();
+        });
+        let $form_labels = $("#textAreasForm");
+        let util_labels = instance_labels.getUtilities();
+    }
+
+
     function init_komponent(k){
         let $modal = k.$el.appendTo("body")
             .filter("#printModal")
@@ -36,149 +103,67 @@
             });
         $modal.modal("show");
 
-        let instance_dig = k.$el.find("#dataForPrinting").apiator({url: apiRoot + "/develivery_items_aggregated?filter=delivery="+k.data.instance.attributes.delivery  + ",item=" + k.data.instance.attributes.item + "&sort=item", resourcetype: "collection", returninstance: true})
+        let instance_dig = k.$el.find("#dataForPrinting").apiator({url: apiRoot + "/develivery_items_aggregated?filter=delivery="+k.data.instance.attributes.delivery  + ",item=" + k.data.instance.attributes.item + "&sort=item", resourcetype: "collection", returninstance: true});
 
         let $form = $("#listToPrintForm");
         let instance = k.data.instance;
         let util = instance.getUtilities();
 
 
+        let instance_label = k.$el.find(".labelTextArea").apiator({url: apiRoot + "/settings/label_template.spaleck/", resourcetype: "item", returninstance: true});
 
         util.captureFormSubmit($form,function (data) {
-            const instance_oil = $("<span></span>").apiator({
-                    resourcetype: "collection",
-                    returninstance: true
-                })
-                .setUrl(apiRoot + "/orders_items_labels?filter=itemId=" + k.data.instance.attributes.item)
-            const p1 = instance_oil.loadFromRemote();
-
-            const instance_dc = $("<br>").apiator({
-                            resourcetype: "collection",
-                            returninstance: true
-                        })
-                    .setUrl(apiRoot + "/deliveries_contents?filter=delivery=" + k.data.instance.attributes.delivery + ",item=" + k.data.instance.attributes.item)
-            const p2 = instance_dc.loadFromRemote();
-
-            Promise.all([p1,p2]).then(function (res_2) {
-
-                let seqs_str = data.seqList;
-
-                let seqs_arr = seqs_str.split(",");
-                const seqs_set = new Set();
-
-                seqs_arr.forEach(el => {
-                    if (el.indexOf("-") >= 0) {
-                        let aux_el = el.split("-");
-                        for (let i = aux_el[0]; i <= aux_el[1]; i++) {
-                            seqs_set.add(i);
-                        }
-                    } else {
-                        seqs_set.add(el);
-                    }
-                });
-
-                let seqs_final_arr = [];
-                let printed_items = [];
-                seqs_set.forEach(el => {
-                    let aux_obj = {};
-                    aux_obj["seq"] = el;
-                    for(let item of instance_dc.items){
-                        if (item.attributes.seqno.toString() === el.toString()) {
-                            aux_obj["barcode"] = item.id;
-                        } else {
-                            aux_obj["barcode"] = 0;
-                        }
-                        if (aux_obj.barcode !== 0) {
-                            seqs_final_arr.push(aux_obj);
-                            printed_items.push(item.id);
-                            break;
-                        }
-                    }
-                });
-
-
-                let label_data = {
-                    title1: instance_oil.items[0].attributes.title.substr(0, 38),
-                    title2: instance_oil.items[0].attributes.title.substr(38, 76),
-                    subtitle: "LA: 10-00346221-0110",
-                    property1: "IN: " + instance_oil.items[0].attributes.belegNum,
-                    property2: "NC: " + instance_oil.items[0].attributes.docnum,
-                    property3: "ZN: " + instance_oil.items[0].attributes.designId,
-                    property4: "TN: " + instance_oil.items[0].attributes.partId,
-                    totalnum: instance_dig.items[0].attributes.totalcnt,
-                    seqs: seqs_final_arr
-                };
-
-                let labels = {labels: [label_data]};
-
-                let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
-                if (urlPrint === null) {
-                    komponentor.intent("/common/errormodal").data({
-                        body: "Setati imprimanta in <a style='cursor:pointer;' class='primary' onclick='komponentor.intent(\"/views/preferences\").send()'>Preferinte</a> inainte de a printa."
-                    }).send();
+            let seq_arr = data.seqList.split(",");
+            let str_seq = "item="+data.item+" AND delivery="+data.delivery + " AND (";
+            seq_arr.forEach(item => {
+                let aux_arr = item.split("-");
+                if (aux_arr.length === 1){
+                    str_seq += "seqno=" + item+" OR ";
                 } else {
-                    let template_inst = $("<div></div>").apiator({returninstance: true, resourcetype: "item"}).setUrl(apiRoot + "/settings/label_template.spaleck");
-                    template_inst.loadFromRemote().then(function () {
+                    str_seq += "(seqno>=" + aux_arr[0]+" AND seqno<=" + aux_arr[1]+") OR ";
+                }
+            });
+            str_seq = str_seq.slice(0,-4);
+            str_seq += ")";
 
-                        let template = template_inst.attributes.value;
+            let query_uri = encodeURIComponent(str_seq);
+
+            let url_labels = "/deliveries_contents/?filter_advanced[orders_meta]=meta_key=%22K.F.E_BelegKopf.BelegNummer%22&filter_advanced[orders_items_meta]=(order_item_id%3D" + data.item + ")%20AND%20(meta_key=%22P.A.P_ZeichnungSpr.Zeichnung%22%20OR%20meta_key=%22P.A.E_BelegPos.Artikel%22)&include=delivery,item,item.order,item.order.orders_meta,item.cat_id,item.orders_items_meta,item.order.orders_items_labels,item.order.doc_id&filter_advanced[deliveries_contents]=" + query_uri;
 
 
-                        template = JSON.parse(template).template;
+            let instance_labels = $("#tableForLabels").apiator({url: apiRoot + url_labels, resourcetype: "collection", returninstance: true});
+            instance_labels.loadFromRemote().then(function () {
 
-                        let template_arr = [];
+                let temp_arr = [];
 
-                        template = template.replace("<title1>", labels.labels[0].title1)
-                            .replace("<title2>", labels.labels[0].title2)
-                            .replace("<subtitle>", labels.labels[0].subtitle)
-                            .replace("<property1>", labels.labels[0].property1)
-                            .replace("<property2>", labels.labels[0].property2)
-                            .replace("<property3>", labels.labels[0].property3)
-                            .replace("<property4>", labels.labels[0].property4)
-                            .replace("<property5>", "SEQ: <seq> / " + labels.labels[0].totalnum);
-                        labels.labels[0].seqs.forEach(item => {
-                            let temp_aux = template;
-                            console.log(temp_aux);
-                            template_arr.push(temp_aux.replace("<seq>", item.seq).replace("<barcode>", item.barcode))
-                        });
-                        let ajx = $.ajax({
-                            url: urlPrint,
-                            data: JSON.stringify({labels: template_arr}),
-                            type: "POST",
-                            contentType: 'application/json',
-                        }).done(function (resp) {
-                            let instances = [];
-                            for(let id of printed_items) {
-                                instances.push($("<p></p>").apiator({returninstance: true, resourcetype: "item"}).setUrl(apiRoot + "/deliveries_contents/" + id));
-                                instances[instances.length-1].loadFromRemote();
-                            }
-                            Promise.all(instances)
-                                .then(function (val) {
-                                    for(let instance of val){
-                                        // aici instance contine doar null. nu e incarcat
-                                        //TODO
-                                        let cpy = {...instance};
-                                        instance.update({label_printed: "1"});
-                                    }
-                                }).catch(function (err) {
-                                console.log("nu mere", err)
-                            });
-                            // .then(function () {
-                            //         let cpy = {...inst_aux};
-                            //         console.log(id+",,,,,,,,,,"+id, inst_aux);
-                            //         console.log(id+",,,,,,,,,,"+id, cpy);
-                            //         inst_aux.update({label_printed: "1"});
-                            //     });
-                            // instance_dc.update()
-                        });
+                util_labels.captureFormSubmit($form_labels,function (data){
+                    $(".labelTextArea[name=label]").map(function (index, value){
+                        temp_arr.push($(value).val());
+                    });
+                    let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
+
+                    let ajx = $.ajax({
+                        url: urlPrint,
+                        data: JSON.stringify({labels: temp_arr}),
+                        type: "POST",
+                        contentType: 'application/json',
+                    }).done(function (xhr) {
+                        $modal.modal("hide");
+                    }).fail(function(data){
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                        }).send();
                     });
 
+                    instance_labels.items.forEach(function (item) {
+                        item.update({label_printed: 1});
+                    });
+                });
 
-                }
-            }).catch(function(data){
-                komponentor.intent("/common/errormodal").data({
-                    body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
-                }).send();
+                $("#sendAjaxReqBtn").click();
             });
+            let $form_labels = $("#textAreasForm");
+            let util_labels = instance_labels.getUtilities();
 
         });
     }
