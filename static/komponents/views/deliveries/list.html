@@ -132,7 +132,7 @@
 
         checkUserRights($(k.$el[2]), "deliveries");
 
-        let url = apiRoot+"/deliveries?sort=id";
+        let url = apiRoot+"/deliveries";
         let instance = k.$el.find("#deliveriesList").apiator({url:url,returninstance:true,addontop:true});
 
         k.$el.find("#newDlvrButt").on("click",function () {
