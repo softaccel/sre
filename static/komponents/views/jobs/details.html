@@ -34,7 +34,7 @@
         </div>
         <div class="row">
             &nbsp;
-            <button class="btn btn-success checkUpdate" type="submit" form="customerDataForm">Save</button>
+            <button class="btn btn-success checkUpdate" id="saveJobsBtn" type="submit" form="customerDataForm">Save</button>
             &nbsp;
             <button class="btn-danger btn checkDelete" id="deleteJob">Sterge</button>
         </div>
@@ -46,6 +46,11 @@
     function init_komponent(k) {
 
         checkUserRights(k.$el, "jobs");
+
+        let saveBtn = k.$el.find("#saveJobsBtn");
+        if (!saveBtn.hasClass("updateAllow")){
+            k.$el.find("#nameInput").attr("disabled", true);
+        }
 
         let util = k.data.instance.getUtilities();
         let form = $("#customerDataForm")[0];
