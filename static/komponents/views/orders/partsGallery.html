@@ -11,7 +11,7 @@
         font-size: 0.9em;
     }
 
-    #orderPartsForm{
+    #orderPartsListFilter{
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
@@ -19,11 +19,11 @@
         margin-bottom: 5px;
         padding: 5px;
     }
-    #orderPartsForm>div{
+    #orderPartsListFilter>div{
         flex: 0 0 auto;
         padding: .75rem;
     }
-    #orderPartsForm:nth-child(1){
+    #orderPartsListFilter:nth-child(1){
         flex: 1 0 60%;
     }
 
@@ -82,38 +82,44 @@
 
 <div>
     <div id="orderPartsMe" class="checkRead">
+        <form id="orderPartsForm">
+            <button type="submit" class="d-none" id="filterSubmitBtn"></button>
+        </form>
         <div id="orderPartsListFilter">
-            <form id="orderPartsForm">
-                <button type="submit" class="d-none" id="filterSubmitBtn"></button>
-                <div class="align-top" style="width: 100px">
-                    <a class="text-white" data-sortfld="partid">Part id
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
-                    </a>
-                    <input type="text" name="partid" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
-                </div>
-                <div class="align-top">
-                    <a class="text-white" data-sortfld="name">Denumire
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
-                    </a>
-                    <input type="text" name="name" class="form-control-sm form-control" form="orderPartsMe" data-operator="~=~">
-                </div>
-                <div>
+            <div class="align-top" style="width: 100px">
+                <a class="text-white" data-sortfld="partid">Part id
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+                </a>
+                <input type="text" name="partid" class="form-control-sm form-control" form="orderPartsForm" data-operator="~=~">
+            </div>
+            <div class="align-top">
+                <a class="text-white" data-sortfld="name">Denumire
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+                </a>
+                <input type="text" name="name" class="form-control-sm form-control" form="orderPartsForm" data-operator="~=~">
+            </div>
+            <div class="align-top">
+                <a class="text-white" data-sortfld="design">Cod desen
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+                </a>
+                <input type="text" name="design" class="form-control-sm form-control" form="orderPartsForm" data-operator="~=~">
+            </div>
+            <div>
 
+            </div>
+            <div>
+                <input type="checkbox" id="viewToggle" checked data-toggle="toggle" data-style="ios" data-size="sm">
+            </div>
+            <div>
+                <div class="float-sm-right">
+                    <button onclick="newOrderPart()" type="button" data-toggle="tooltip" title="Adauga reper" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary checkUpdate">
+                        Adauga reper
+                    </button>
                 </div>
-                <div>
-                    <input type="checkbox" id="viewToggle" checked data-toggle="toggle" data-style="ios" data-size="sm">
-                </div>
-                <div>
-                    <div class="float-sm-right">
-                        <button onclick="newOrderPart()" type="button" data-toggle="tooltip" title="Adauga reper" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary checkUpdate">
-                            Adauga reper
-                        </button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
         <ul class="grid_4" id="orderPartsList"
-            data-filter="#orderPartsMe"
+            data-filter="#orderPartsForm"
             data-sort="#orderPartsListFilter"
             data-paging="#orderPartsPaging"
             data-pagesizeinp="#orderPartsPageSizeInp">
@@ -215,14 +221,20 @@
             type: "orders_items_wmeta",
             resourcetype: "collection"
         }).data("instance");
-        instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_items_wmeta?page[orders_items_wmeta][limit]=1000&page[orders_items_wmeta][limit]=8").loadFromRemote();
 
-        $("#orderPartsListFilter").find("#viewToggle").bootstrapToggle().change(toggleSwitch);
+        instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_items_wmeta?page[orders_items_wmeta][limit]=1000&page[orders_items_wmeta][limit]=8")
+            .loadFromRemote()
+            .then(function () {
+                console.log(instance);
+                $("#orderPartsListFilter").find("#viewToggle").bootstrapToggle().change(toggleSwitch);
 
-        let form = $("#orderPartsForm");
-        form.find("input").on("input",function () {
-            $("#filterSubmitBtn").click();
-        });
+                let submitBtn = $("#orderPartsForm").find("#filterSubmitBtn");
+                $("#orderPartsListFilter").find("input").on("input",function () {
+                    submitBtn.click();
+                });
+            });
+
+
 
     }
 
