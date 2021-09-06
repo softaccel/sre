@@ -77,7 +77,7 @@
 		});
 
 		return obj;
-	};
+	}
 
 	function deepmerge(target, source, optionsArgument)
 	{
@@ -108,7 +108,7 @@
 		}
 
 		function cloneIfNecessary(value, optionsArgument) {
-			var clone = optionsArgument && optionsArgument.clone === true
+			let clone = optionsArgument && optionsArgument.clone === true;
 			return (clone && isMergeableObject(value)) ? deepmerge(emptyTarget(value), value, optionsArgument) : value
 		}
 
@@ -132,9 +132,9 @@
 			return destination
 		}
 
-		var array = Array.isArray(source);
-		var options = optionsArgument || { arrayMerge: defaultArrayMerge };
-		var arrayMerge = options.arrayMerge || defaultArrayMerge;
+		let array = Array.isArray(source);
+		let options = optionsArgument || { arrayMerge: defaultArrayMerge };
+		let arrayMerge = options.arrayMerge || defaultArrayMerge;
 
 		if (array) {
 			return Array.isArray(target) ? arrayMerge(target, source, optionsArgument) : cloneIfNecessary(source, optionsArgument);
@@ -1166,7 +1166,53 @@
 			navtype: "page",
 			type: null,
 			emptyview: null,
-			items: []
+			items: [],
+		};
+
+		_collection.setPageSize = function(val) {
+			if(/^\d+$/.test(val)) {
+				_collection.pageSize = val;
+				return true;
+			}
+
+			return false;
+		};
+		_collection.setOffset = function(val) {
+			if(/^\d+$/.test(val)) {
+				_collection.offset = val;
+				return true;
+			}
+			return false;
+
+		};
+
+		_collection.setUrl = function(url) {
+			if(!url) {
+				return ;
+			}
+			if(url.constructor===String) {
+				this.url = URL(url);
+				this.setPageSize(this.url.parameters["page["+_collection.type+"][limit]"]);
+				this.setOffset(this.url.parameters["page["+_collection.type+"][offset]"]);
+
+				this.updateUrl = Object.assign({},this.url);
+				this.deleteUrl = Object.assign({},this.url);
+				this.insertUrl = Object.assign({},this.url);
+			}
+
+			if(url.hasOwnProperty("url")) {
+				this.url = URL(url.url);
+				this.setOffset(this.url.parameters["page["+_collection.type+"][offset]"]);
+				this.setPageSize(this.url.parameters["page["+_collection.type+"][limit]"]);
+			}
+			if(url.hasOwnProperty("updateUrl"))
+				this.updateUrl = URL(url.updateUrl);
+			if(url.hasOwnProperty("deleteUrl"))
+				this.deleteUrl = URL(url.deleteUrl);
+			if(url.hasOwnProperty("insertUrl"))
+				this.insertUrl = URL(url.insertUrl);
+
+			return this;
 		};
 		opts = parseOptions(opts);
 
@@ -1176,23 +1222,26 @@
 
 		Object.assign(_collection,opts);
 
-		_collection.url = URL(_collection.url);
-		_collection.deleteUrl = URL(_collection.deleteUrl?_collection.deleteUrl:_collection.url);
-		_collection.updateUrl = URL(_collection.updateUrl?_collection.updateUrl:_collection.url);
-		_collection.insertUrl = URL(_collection.insertUrl?_collection.insertUrl:_collection.url);
-
+		_collection.setUrl(_collection.url);
+		// _collection.url = URL(_collection.url);
+		if(_collection.deleteUrl) {
+			_collection.setUrl({deleteUrl:_collection.deleteUrl});
+		}
+		if(_collection.updateUrl) {
+			_collection.setUrl({updateUrl:_collection.updateUrl});
+		}
+		if(_collection.insertUrl) {
+			_collection.setUrl({insertUrl:_collection.insertUrl});
+		}
+		
 		if(_collection.view) {
 			_collection.view.collection = _collection;
 		}
 
-		if(_collection.url && _collection.url.parameters) {
-			if(_collection.url.parameters.hasOwnProperty("page["+_collection.type+"][offset]")) {
-				_collection.offset =  parseInt(_collection.url.parameters["page["+_collection.type+"][offset]"]);
-			}
-			if(_collection.url.parameters.hasOwnProperty("page["+_collection.type+"][limit]")) {
-				_collection.pageSize =  parseInt(_collection.url.parameters["page["+_collection.type+"][limit]"]);
-			}
-		}
+		// if(_collection.url && _collection.url.parameters) {
+		// 	_collection.setOffset(_collection.url.parameters["page["+_collection.type+"][offset]"]);
+		// 	_collection.setPageSize(_collection.url.parameters["page["+_collection.type+"][limit]"]);
+		// }
 
 		if(_collection.total) {
 			_collection.total = _collection.total * 1;
@@ -1286,10 +1335,18 @@
 		 */
 		_collection.load_from_data_source = function () {
 
-
 			return  new Promise(function (resolve,reject) {
 				if(!_collection.url) {
 					throw("No valid URL provided");
+				}
+
+
+				if(typeof _collection.offset!== "undefined" && _collection.offset!==null) {
+					_collection.url.parameters["page["+_collection.type+"][offset]"] = _collection.offset;
+				}
+
+				if(typeof _collection.pageSize!== "undefined" && _collection.pageSize!==null) {
+					_collection.url.parameters["page["+_collection.type+"][limit]"] = _collection.pageSize;
 				}
 
 				storage.read(_collection,_collection.url,{})
@@ -1313,25 +1370,7 @@
 		};
 
 
-		_collection.setUrl = function(url) {
-			if(url.constructor===String) {
-				this.url = URL(url);
-				this.updateUrl = Object.assign({},this.url);
-				this.deleteUrl = Object.assign({},this.url);
-				this.insertUrl = Object.assign({},this.url);
-			}
 
-			if(url.hasOwnProperty("url"))
-				this.url = URL(url.url);
-			if(url.hasOwnProperty("updateUrl"))
-				this.updateUrl = URL(url.updateUrl);
-			if(url.hasOwnProperty("deleteUrl"))
-				this.deleteUrl = URL(url.deleteUrl);
-			if(url.hasOwnProperty("insertUrl"))
-				this.insertUrl = URL(url.insertUrl);
-
-			return this;
-		};
 
 
 		/**
@@ -1403,6 +1442,8 @@
 		_collection.createItem = function(itemData) {
 			return _collection.append(itemData);
 		};
+
+
 
 		_collection.append = function(itemData) {
 			let jsonApiDoc = {data: parseData4InsertUpdate(itemData)};
@@ -2007,6 +2048,9 @@
 		return filterForm;
 	}
 
+	function Paging1() {
+		
+	}
 	/**
 	 *
 	 * @param pagingEl
@@ -2020,26 +2064,35 @@
 			collection: collection,
 			el: $(pagingEl),
 		};
-		_paging.collection.paging = this;
-		let defaultPageSize;
-		if( _paging.collection.url && _paging.collection.url.parameters && _paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"]) {
-			defaultPageSize = _paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"];
+
+		let iniOffset = _paging.collection.offset ? _paging.collection.offset : 0;
+
+		_paging.collection.paging = _paging;
+
+		let defaultPageSize = 20;
+
+		let $pageSizeInp = $(_paging.collection.pagesizeinp);
+		if($pageSizeInp.length) {
+			_paging.collection.setPageSize($pageSizeInp.val());
+			$pageSizeInp.off("change").on("change",function () {
+				if(_paging.collection.setPageSize($pageSizeInp.val())) {
+					_paging.collection.loadFromRemote();
+				}
+
+			});
 		}
-		else {
-			defaultPageSize = defaultPageSize ? defaultPageSize : 20;
+		let pageSize = _paging.collection.pageSize;
+
+		let $offsetInp = $(_paging.collection.offsetinp);
+		if($offsetInp.length) {
+			_paging.collection.setOffset($offsetInp.val());
+			$offsetInp.off("change").on("change",function () {
+				if(_paging.collection.setOffset($offsetInp.val())) {
+					_paging.collection.loadFromRemote();
+				}
+			});
 		}
 
-		let offsetInp = $(_paging.collection.offsetinp).off("keyup").on("keyup",function (e) {
-			if(e.originalEvent.keyCode!==13)
-				return;
-			_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = offsetInp.val();
-			_paging.collection.loadFromRemote();
-		});
-
-		let pageSizeInp = $(_paging.collection.pagesizeinp).off("change").on("change",function () {
-			_paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"] = pageSizeInp.val();
-			_paging.collection.loadFromRemote();
-		});
 
 		let buttons = {
 			page: _paging.el.find("[name=page]").clone(true),
@@ -2057,21 +2110,24 @@
 		_paging.render = function () {
 
 			let pagesToShow = 5;
-			let iniOffset = parseInt(this.collection.offset ? this.collection.offset : 0);
-			this.collection.url.parameters["page["+this.collection.type+"][offset]"] = iniOffset;
-			let total = this.collection.total;
-			let currentPageSize = _paging.collection.items.length;
+
+			let total = _paging.collection.total;
 			_paging.el.empty();
 
-			// get page size from URL query parameter
-			let pageSize = parseInt(_paging.collection.url.parameters["page["+_paging.collection.type+"][limit]"]);
+			iniOffset = _paging.collection.offset;
 
-			// try to guess page size
-			if(!pageSize && total-iniOffset-currentPageSize>0) {
-				pageSize = currentPageSize;
+
+			if(_paging.collection.pageSize) {
+				pageSize = _paging.collection.pageSize;
+			}
+			else if(total-iniOffset-_paging.collection.items.length>0) {
+				pageSize = _paging.collection.items.length;
+			}
+			else {
+				pageSize = defaultPageSize;
 			}
 
-			pageSize = pageSize?pageSize:defaultPageSize;
+
 			// console.log(_self.collection.type,iniOffset,total,pageSize);
 
 			let first = buttons.first.clone(true).attr("title", 0).addClass("disabled").appendTo(_paging.el);
@@ -2079,12 +2135,14 @@
 
 			if(iniOffset>0) {
 				first.on("click", function () {
-					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = 0;
+					// _paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = 0;
+					_paging.collection.setOffset(0);
 					_paging.collection.loadFromRemote();
 				}).removeClass("disabled");
 
 				prev.on("click", function () {
-					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = iniOffset - pageSize;
+					// _paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = iniOffset - pageSize;
+					_paging.collection.setOffset(iniOffset-pageSize);
 					_paging.collection.loadFromRemote();
 				}).removeClass("disabled");
 			}
@@ -2098,7 +2156,8 @@
 			for(let i=lowerLimit;i<upperLimit;i++) {
 
 				let page = buttons.page.clone(true).text(i+1).on("click", function () {
-					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = i*pageSize;
+					_paging.collection.setOffset(i*pageSize);
+					// _paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = i*pageSize;
 					_paging.collection.loadFromRemote();
 				}).attr("title", i*pageSize).appendTo(_paging.el);
 
@@ -2113,16 +2172,19 @@
 			let last = buttons.last.clone(true).attr("title", lastPageOffset).addClass("disabled").appendTo(_paging.el);
 			if(iniOffset + pageSize < total) {
 				next.removeClass("disabled").on("click", function () {
-					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = iniOffset+pageSize;
+					_paging.collection.setOffset(iniOffset+pageSize);
+					// _paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = iniOffset+pageSize;
 					_paging.collection.loadFromRemote();
 				});
 
 				last.removeClass("disabled").on("click", function () {
-					_paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = lastPageOffset;
+					// _paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = lastPageOffset;
+					_paging.collection.setOffset(lastPageOffset);
+
 					_paging.collection.loadFromRemote();
 				});
 			}
-			offsetInp.val(iniOffset);
+			$(_paging.collection.offsetinp).val(iniOffset);
 
 		};
 
@@ -2269,7 +2331,7 @@
 		// Convert it to base 36 (numbers + letters), and grab the first 9 characters
 		// after the decimal.
 		return "uid_" + Math.random().toString(36).substr(2, 9);
-	};
+	}
 
 })($);
 
