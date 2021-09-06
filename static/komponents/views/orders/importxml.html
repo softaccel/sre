@@ -20,8 +20,8 @@
 <!--                        <input type="text" class="form-control">-->
                     </div>
                     <div class="position-relative form-group">
-                        <label for="belegnummer" class="">Referinta Interna Client</label>
-                        <input name="belegnummer" id="belegnummer"  type="text" class="form-control">
+                        <label for="cust_int_ref" class="">Referinta Interna Client</label>
+                        <select name="cust_int_ref" id="cust_int_ref" class="form-control"></select>
                     </div>
                     <div class="position-relative form-group">
                         <label for="multiplied_by" class="">Cantitate</label>
@@ -189,7 +189,13 @@
                 return;
             }
 
-            let $blgNo = $("#belegnummer");
+            let $blgNo = $("#cust_int_ref").empty();
+            for(let fld in order.fields) {
+                $("<option>").text(fld + " - " + order.fields[fld].data)
+                    .val(order.fields[fld].data)
+                .appendTo($blgNo);
+            }
+
             $($blgNo[0].form).data("meta",response);
 
             $("#model").val(order.fields["K.E.E_BelegKopf.BelegInfo"].data);
@@ -225,7 +231,6 @@
             entries.forEach(function (entry) {
                 let $el = $(template(entry)).appendTo($items).data("instance",entry);
                 $el.find("*").data("instance",entry);
-                // console.log(entry);
             });
         }
 
@@ -249,8 +254,7 @@
                         contentType: false,
                         processData: false,
                     })
-                    .done(function(response){
-                        console.log(response);
+                    .done(function(response) {
                         publishItems(response);
                         publishHeader(response);
                         init_partner_select();
@@ -263,15 +267,13 @@
         }
 
         function placeOrder(form) {
-            console.log(orderMeta);
-            // return ;
             let meta = $(form).data("meta");
 
             let order = {
                 attributes: {
                     label: $(form.model).val(),
                     partner_id: $(form.partner_id).val(),
-                    // meta: meta ? JSON.stringify(meta) : null,
+                    cust_int_ref: $(form.cust_int_ref).val(),
                     user_id: userData.sub,
                     calculated_value: $(form.calculated_value).val(),
                     orders_items: [],
@@ -313,19 +315,16 @@
 
             order.attributes.multiplied_by = $("input[name=multiplied_by]").val();
             order.attributes.order_value = total * order.attributes.multiplied_by;
-            console.log(order);
             return orders.createItem(order);
         }
 
         $orderButton.on("click",function (src) {
             placeOrder(src.target.form)
                 .then(function (a) {
-                    console.log(a);
-                    k.data.instance.view.el.children().last().find("td:nth-child(2)").click();
+                    k.data.instance.view.el.children().first().find("td:nth-child(2)").click();
                     modal.modal("hide");
                 })
                 .catch(function (resp) {
-                    console.log(resp);
                     komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + resp.jqXHR.responseText + "</pre>"}).send();
                 })
         });
