@@ -30,7 +30,7 @@
                 <thead class="thead-dark" id="ordersListHeader">
                 <tr>
                     <th class="align-top" style="width: 150px">
-                        <a class="text-white" data-sortfld="docnum">Nr. crt.
+                        <a class="text-white" data-sortfld="doc_id">Nr. crt.
                             <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                         <select id="docNumFilter" name="doc_id" class="form-control-sm form-control" form="ordersListFilter" data-operator="="><option> </option></select>
                     </th>
@@ -182,7 +182,7 @@
 
         checkUserRights(k.$el, "orders");
 
-        let url = apiRoot+ "/orders?page[orders_extended][offset]=0&page[orders_extended][limit]=10&include=doc_id,partner_id&sort=-oid";
+        let url = apiRoot+ "/orders?page[orders_extended][offset]=0&page[orders_extended][limit]=10&include=doc_id,partner_id";
         // let insertUrl = apiRoot+"/orders?page[orders_extended][offset]=0&page[orders_extended][limit]=10";
 
         if (k.data && k.data.instance && k.data.instance.type==="partners") {
