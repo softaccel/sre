@@ -152,8 +152,7 @@
                         "data-dismiss":"modal"
                     },
                     callback: function () {
-                        $(src).data('instance').delete().then(()=>{console.log("ok",arguments)}).catch(function(data){
-                            console.log(data);
+                        $(src).data('instance').delete().then(()=>{console.log("ok",arguments)}).catch(function(data) {
                             komponentor.intent("/common/errormodal").data({
                                 body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
                             }).send();
@@ -207,7 +206,8 @@
             filter: "#ordersListFilter",
             paging: "#ordersListPaging",
             sort: "#ordersListHeader",
-            returninstance: true
+            returninstance: true,
+            addontop: true
             // insertUrl: insertUrl
         });
 
