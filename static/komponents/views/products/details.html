@@ -53,6 +53,16 @@
                 <div class="col-9"><%= attributes.name %></div>
                 <div class="col-9"><input name="name" class="form-control form-control-sm" value="<%= attributes.name %>" type="text"></div>
             </div>
+            <div class="row hide-on-edit">
+                <div class="col-3">Status</div>
+                <div class="col-9">
+                    <button type="button" id="employeeStatusButton" class="btn btn-sm btn-danger dropdown-toggle checkUpdate" name="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= attributes.active === "1" ? "Activ" : "Inactiv" %></button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" id="change_active" style="cursor:pointer;" onclick="changeStatus(this);" value="attributes.active"><%= attributes.active !== "1" ? "Activ" : "Inactiv" %></a>
+                    </div>
+                </div>
+                <div class="col-9"><input name="active" class="form-control form-control-sm" type="number" value="<% attributes.active %>"></div>
+            </div>
             <div class="row">
                 <div class="col-3">Tip</div>
                 <div class="col-9"><%= attributes.type %></div>
@@ -84,19 +94,60 @@
 
             <div class="input-group mt-5">
                 <button class="btn btn-warning btn-save" onclick="" type="submit">Salveaza</button>
-                <button class="btn btn-secondary btn-save" type="button" onclick="cancelEdit()" id="cancelButton">Renunta</button>
+                <button class="btn btn-secondary btn-save" type="button" onclick="$('#productSummary').removeClass('editMode');" id="cancelButtonEditCatalog">Renunta</button>
             </div>
             <div class="row">
+                <% if(attributes.active === "1") { %>
                 &nbsp;
                 <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
                 &nbsp;
                 <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteProduct($(this).data('instance'))" type="button">Sterge</button>
+                <% } else { %>
+                &nbsp;
+                <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button" disabled>Editeaza</button>
+                &nbsp;
+                <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteProduct($(this).data('instance'))" type="button" disabled>Sterge</button>
+                <% } %>
             </div>
         </div>
     </form>
 </div>
 
 <script>
+    function changeStatus(src){
+        let instance = $(src).data().instance;
+
+        komponentor.intent("/common/messagemodal").data({
+            body: "Sigur doriti sa schimbati starea produsului in <strong>" + (instance.attributes.active === "1" ? "inactiv" : "activ") + "</strong>?",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        data = {
+                            active: instance.attributes.active === "1" ? "0" : "1",
+                        };
+                        instance.update(data).catch(function(data){
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
+    }
+
 
     function editMode(instance){
         $("#productSummary").addClass("editMode");
@@ -143,9 +194,7 @@
         }).send();
     }
 
-    function cancelEdit() {
-        $("#productSummary").removeClass("editMode");
-    }
+
 
     function init_komponent(k) {
 
