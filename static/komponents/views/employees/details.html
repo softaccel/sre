@@ -65,7 +65,7 @@
             <div class="row hide-on-edit">
                 <div class="col-3">Status</div>
                 <div class="col-9">
-                    <button type="button" id="employeeStatusButton" class="btn btn-sm btn-danger dropdown-togglecheckUpdate checkUpdate" name="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= attributes.active === "1" ? "Activ" : "Inactiv" %></button>
+                    <button type="button" id="employeeStatusButton" class="btn btn-sm btn-danger dropdown-toggle checkUpdate" name="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= attributes.active === "1" ? "Activ" : "Inactiv" %></button>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" id="change_active" style="cursor:pointer;" onclick="changeStatus(this);" value="attributes.active"><%= attributes.active !== "1" ? "Activ" : "Inactiv" %></a>
                     </div>

@@ -40,10 +40,9 @@
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                     <input type="text" name="name" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">
                                 </th>
-                                <th class="align-top">
+                                <th class="align-top" style="width: 200px">
                                     <a class="text-white" data-sortfld="type">Tip
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                                    <!--                                    <input type="text" name="type" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">-->
                                     <br>
                                     <select id="productTypeFilter" name="type" class="form-control-sm form-control" form="productListFilter" data-operator="=">
                                         <option value="service">Serviciu</option>
@@ -52,7 +51,7 @@
                                     </select>
 
                                 </th>
-                                <th class="align-top">
+                                <th class="align-top" style="width: 200px">
                                     <a class="text-white" data-sortfld="unit">Unitate
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                     <!--                                    <input type="text" name="unit" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">-->
@@ -60,10 +59,21 @@
                                     <select id="productUnitFilter" name="unit" class="form-control-sm form-control" form="productListFilter" data-operator="="><option> </option></select>
 
                                 </th>
-                                <th class="align-top">
+                                <th class="align-top" style="width: 200px">
                                     <a class="text-white" data-sortfld="unit_price">Pret
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                     <input type="text" name="unit_price" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">
+                                </th>
+                                <th class="align-top" style="width: 200px">
+                                    <a class="text-white" data-sortfld="active">Activ
+                                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                                    <br>
+                                    <select id="productActiveFilter" name="active" class="form-control-sm form-control" form="productListFilter" data-operator="=">
+                                        <option value="1">Activ</option>
+                                        <option value="0">Inactiv</option>
+                                        <option value="">Toate</option>
+                                    </select>
+
                                 </th>
                             </tr>
                             </thead>
@@ -76,9 +86,10 @@
                             <tr onclick="openProductModal(this);" style="cursor:pointer;">
                                 <td><%= id %></td>
                                 <td><%= attributes.name %></td>
-                                <td><%= attributes.type %></td>
+                                <td><%= attributes.type === "service" ? "Serviciu" : (attributes.type === "product" ? "Produs" : "Produs Compus") %></td>
                                 <td><%= relationships.unit.id %></td>
                                 <td><%= attributes.unit_price ? attributes.unit_price : "-" %> <%= relationships.currency !== null ? relationships.currency.id : "" %></td>
+                                <td><%= attributes.active === "1" ? "Activ" : "Inactiv" %></td>
                             </tr>
                             </tbody>
                             <tfoot>
@@ -130,7 +141,7 @@
 
         checkUserRights(k.$el, "catalog");
 
-        let instance = $("#productList").apiator(apiRoot+"/catalog?page[catalog][offset]=0&page[catalog][limit]=10").data("instance");
+        let instance = $("#productList").apiator(apiRoot+"/catalog?page[catalog][offset]=0&page[catalog][limit]=10&filter=active=1").data("instance");
 
 
         k.$el.find("#productTypeFilter").select2({placeholder: "", allowClear: true}).val(null).trigger("change");
@@ -206,5 +217,7 @@
         k.$el.find("#newProdButt").on("click", function () {
             komponentor.intent("/common/formmodal").data(formData).send();
         });
+
+        k.$el.find("#productActiveFilter").select2();
     }
 </script>
