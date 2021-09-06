@@ -78,8 +78,8 @@
                             </tr>
                             </thead>
                             <tbody id="productList" data-resourcetype="collection"
+                                   data-type="catalog"
                                    data-pagesizeinp="#productListSizeInp"
-                                   data-offsetinp="#productListOffsetInp"
                                    data-paging="#productListPaging"
                                    data-filter="#productListFilter"
                                    data-sort="#productListHeader">
@@ -102,12 +102,9 @@
                                         <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
                                         <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
                                     </div>
-                                    Pagina <input type="number" name="offset" size="3" value="0" id="productListOffsetInp">
                                     <select id="productListSizeInp">
-                                        <option></option>
-                                        <option>5</option>
                                         <option>10</option>
-                                        <option>25</option>
+                                        <option selected>25</option>
                                         <option>50</option>
                                         <option>75</option>
                                     </select> inregistrari pe pagina
@@ -141,7 +138,7 @@
 
         checkUserRights(k.$el, "catalog");
 
-        let instance = $("#productList").apiator(apiRoot+"/catalog?page[catalog][offset]=0&page[catalog][limit]=10&filter=active=1").data("instance");
+        let instance = $("#productList").apiator(apiRoot+"/catalog?page[catalog][offset]=0&filter=active=1").data("instance");
 
 
         k.$el.find("#productTypeFilter").select2({placeholder: "", allowClear: true}).val(null).trigger("change");
