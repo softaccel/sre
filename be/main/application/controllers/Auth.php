@@ -77,6 +77,7 @@ class Auth extends CI_Controller
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$server_output = curl_exec($ch);
 		curl_close ($ch);
+		log_message("debug",$server_output);
 		$res = json_decode($server_output);
 		if($res->cnt!=="1") {
 			HttpResp::not_authorized();
