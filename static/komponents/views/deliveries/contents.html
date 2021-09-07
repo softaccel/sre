@@ -115,15 +115,15 @@
                 <th width="70"></th>
             </tr>
             </thead>
-            <tbody id="deliveryContentsList" data-paging="#deliveryContentsListPaging" data-type="deliveries" data-resourcetype="collection"
-                   data-offsetinp="#deliveryContentsOffsetInp" data-pagesize="50" data-pagesizeinp="#deliveryContentsPageSizeInp">
+            <tbody id="deliveryContentsList" data-paging="#deliveryContentsListPaging" data-type="develivery_items_aggregated" data-resourcetype="collection"
+                   data-pagesizeinp="#deliveryContentsPageSizeInp">
             <tr class="">
                 <td><button class="btn-success btn">OK</button></td>
                 <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="toggleSelect($(this).parents('tr'))" data-connected="#checkAllAssignedItems"></td>
                 <!--            <td><%= id %></td>-->
-                <td><%= attributes.item %></td> <!-- id din orders_items -->
+                <td><%= relationships.item.id %></td> <!-- id din orders_items -->
                 <td><%= attributes.label %></td> <!-- name din idem si la fel -->
-                <td><%= attributes.delivery %></td> <!-- docnum din documents, relationship prin doc_id din orders -->
+                <td><%= relationships.item.relationships.order.relationships.doc_id.attributes.docnum %></td> <!-- docnum din documents, relationship prin doc_id din orders -->
                 <td><%= attributes.totalcnt %></td> <!-- qty din orders_items -->
                 <td><%= attributes.printed %></td>
                 <td><%= attributes.checkout %></td>
@@ -138,7 +138,6 @@
                 <td></td>
                 <td></td>
                 <td colspan="7">
-
                     <div class="btn-group"  id="deliveryContentsListPaging" data-pagesize="50">
                         <button name="first" class="btn btn-sm btn-outline-secondary" title="0">&lt;&lt;</button>
                         <button name="prev" class="btn btn-sm btn-outline-secondary" title="-20">&lt;</button>
@@ -147,10 +146,8 @@
                         <button name="last" class="btn btn-sm btn-outline-secondary" title="140">&gt;&gt;</button>
                     </div>
                     <select id="deliveryContentsPageSizeInp">
-                        <option></option>
-                        <option>5</option>
-                        <option>10</option>
-                        <option>25</option>
+                        <option selected>10</option>
+                        <option >25</option>
                         <option>50</option>
                     </select> inregistrari pe pagina
                 </td>
@@ -306,7 +303,7 @@
 
         k.$el.find("#cancelAddToDlvrBtn").on("click",()=>{k.$el.find("#addElsToDeliveryCard").hide(400);k.$el.find("#addContentBtn").show();});
 
-        let url = apiRoot + "/develivery_items_aggregated?filter=delivery="+k.data.instance.id + "&sort=item";
+        let url = apiRoot + "/develivery_items_aggregated?filter=delivery="+k.data.instance.id + "&sort=item&include=item,item.order,item.order.doc_id";
         // let url = apiRoot + "/deliveries/"+k.data.instance.id+"/deliveries_contents?include=inventory,inventory.order";
         let contentItems = k.$el.find("#deliveryContentsList").apiator({url:url,returninstance:true});
         k.$el.find("#startScanBut").on("click",function () {

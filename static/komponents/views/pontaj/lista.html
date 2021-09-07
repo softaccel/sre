@@ -154,11 +154,8 @@
                         <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
                         <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
                     </div>
-                    Pagina <input type="number" name="offset" size="3" value="0" id="timeTrackingEntriesOffset">
                     <select id="timeTrackingEntriesLimit">
-                        <option></option>
-                        <option>5</option>
-                        <option>10</option>
+                        <option selected>10</option>
                         <option>25</option>
                         <option>50</option>
                         <option>75</option>
@@ -362,10 +359,10 @@
             switch (data.instance.type) {
                 case "employees":
                     k.$el.find("#timeTrackingTable").addClass("employeeView");
-                    return apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=5&include=employee,order,order.doc_id,operation&filter=employee="+data.instance.id;
+                    return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation&filter=employee="+data.instance.id;
                 case "orders":
                     k.$el.find("#timeTrackingTable").addClass("orderView");
-                    return apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=5&include=employee,order,order.doc_id,operation&filter=order="+data.instance.id;
+                    return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation&filter=order="+data.instance.id;
                 default:
                     console.log(data.instance);
                     throw "Unknown type";
@@ -373,7 +370,7 @@
         }
 
         if(data.emplid) {
-            return apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=5&filter=employee="+data.emplid;
+            return apiRoot + "/timetracking?sort=-start&filter=employee="+data.emplid;
         }
     }
 
@@ -381,7 +378,7 @@
 
         checkUserRights(k.$el, "timetracking");
 
-        let url = apiRoot + "/timetracking?sort=-start&page[tt_expanded][offset]=0&page[tt_expanded][limit]=10&include=employee,order,order.doc_id,operation";
+        let url = apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation";
 
         try {
             url = customUrl(k);
