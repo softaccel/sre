@@ -146,7 +146,7 @@
                 delete employeesInstance.url.parameters.where;
             }
             else {
-                employeesInstance.url.parameters.where = "fname~=~"+sTerm+"||lname~=~"+sTerm+"||card="+sTerm;
+                employeesInstance.url.parameters.filter_advanced = encodeURIComponent("fname like '%"+sTerm+"%' OR card='"+sTerm+"' OR lname like '%"+sTerm+"%'");
             }
             console.log(e,sTerm,employeesInstance.url);
             employeesInstance.loadFromRemote();
