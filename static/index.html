@@ -155,7 +155,7 @@
     const localStorageLabel = "spaleck";
     let env = localStorage.getItem(localStorageLabel+".env");
     if(!env || !env_config[env])
-        env = "production";
+        env = "frominternet";
     console.log(env_config[env]);
 
     const _kPath = "komponents";

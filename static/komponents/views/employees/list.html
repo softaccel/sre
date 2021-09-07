@@ -48,6 +48,7 @@
                 </form>
             </div>
             <ul class="row" id="employeesListUl"
+                data-type="employees"
                 data-resourcetype="collection"
                 data-sort="#employeesListFilter"
                 data-paging="#employeesPaging"
@@ -77,14 +78,10 @@
                 <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
                 <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
             </div>
-            Pagina <input type="number" size="3" value="0" id="employeesOffsetInp">
             <select id="employeesPageSizeInp">
-                <option></option>
-                <option>5</option>
-                <option>10</option>
-                <option>25</option>
-                <option>50</option>
-                <option>75</option>
+                <option selected>12</option>
+                <option>24</option>
+                <option>48</option>
             </select> inregistrari pe pagina
         </div>
     </div>
@@ -121,21 +118,21 @@
 
         checkUserRights(k.$el, "employees");
 
-        let url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=active=1";
-        let dispAllUrl = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname";
+        let url = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=active=1";
+        let dispAllUrl = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname";
 
         if(k.data && k.data.instance && k.data.instance.type==="teams") {
             k.$el.find(".teamsColumn").remove();
             $("#newEmplBtn").remove();
-            url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id + ",active=1";
-            dispAllUrl = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id;
+            url = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id + ",active=1";
+            dispAllUrl = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id;
             // insertUrl = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
         }
         if(k.data && k.data.instance && k.data.instance.type==="jobs") {
             k.$el.find(".teamsColumn").remove();
             $("#newEmplBtn").remove();
-            url = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id+",active=1";
-            dispAllUrl = apiRoot+"/employees/?page[employees][limit]=18&include=team,jobtitle&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id;
+            url = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id+",active=1";
+            dispAllUrl = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id;
         }
 
 

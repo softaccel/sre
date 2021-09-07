@@ -1832,15 +1832,15 @@
 		if (options.hasOwnProperty("filter") && $(options.filter).length && $(options.filter).prop("tagName")==="FORM") {
 			instance.filtering = Filtering(options.filter, instance)
 		}
-
-		// setup edit modal
-		if(options.hasOwnProperty("addeditmodal")  && $(options.addeditmodal).length) {
-			$(options.addeditmodal).on("show.bs.modal", prepareModal);
-		}
-
-		// setup confirm delete
-		if(options.hasOwnProperty("deletemodal") && $(options.deletemodal).length)
-			$(options.deletemodal).on("show.bs.modal",prepareDeleteModal);
+		//
+		// // setup edit modal
+		// if(options.hasOwnProperty("addeditmodal")  && $(options.addeditmodal).length) {
+		// 	$(options.addeditmodal).on("show.bs.modal", prepareModal);
+		// }
+		//
+		// // setup confirm delete
+		// if(options.hasOwnProperty("deletemodal") && $(options.deletemodal).length)
+		// 	$(options.deletemodal).on("show.bs.modal",prepareDeleteModal);
 
 		return instance;
 	}
