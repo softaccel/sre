@@ -118,6 +118,13 @@
                     case 404:
                         $failedLoginFeedback.show().fadeOut(3000).find(".message").empty().text("Username or password not found");
                         break;
+                    case 401:
+                        $failedLoginFeedback.show().fadeOut(3000).find(".message").empty().text("Username or password not found");
+                        break;
+                    default:
+                        $failedLoginFeedback.show().fadeOut(3000).find(".message").empty().html("<pre>"+xhr.responseText+"</pre>");
+
+
                 }
             });
 
