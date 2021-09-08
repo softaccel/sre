@@ -65,7 +65,6 @@
 
         let query_uri = encodeURIComponent(str_seq);
 
-        let url_labels = "/deliveries_contents/?filter_advanced[orders_meta]=meta_key=%22K.F.E_BelegKopf.BelegNummer%22&filter_advanced[orders_items_meta]=(order_item_id%3D" + data.item + ")%20AND%20(meta_key=%22P.A.P_ZeichnungSpr.Zeichnung%22%20OR%20meta_key=%22P.A.E_BelegPos.Artikel%22)&include=delivery,item,item.order,item.order.orders_meta,item.cat_id,item.orders_items_meta,item.order.orders_items_labels,item.order.doc_id&filter_advanced[deliveries_contents]=" + query_uri;
 
 
         // let url = "/deliveries_contents/?filter_advanced="+query_uri+"&include=delivery,item,item.order,item.order.orders_meta,item.cat_id,item.orders_items_meta,item.order.orders_items_labels";
@@ -107,9 +106,9 @@
             });
         $modal.modal("show");
         console.log(k.data.instance);
-        console.log(apiRoot + "/develivery_items_aggregated?filter=delivery="+k.data.instance.relationships.delivery.id  + ",item=" + k.data.instance.relationships.item.id + "&sort=item")
+        console.log(apiRoot + "/delivery_items_aggregated?filter=delivery="+k.data.instance.relationships.delivery.id  + ",item=" + k.data.instance.relationships.item.id + "&sort=item")
         // return;
-        let instance_dig = k.$el.find("#dataForPrinting").apiator({url: apiRoot + "/develivery_items_aggregated?filter=delivery="+k.data.instance.relationships.delivery.id  + ",item=" + k.data.instance.relationships.item.id + "&sort=item", resourcetype: "collection", returninstance: true});
+        let instance_dig = k.$el.find("#dataForPrinting").apiator({url: apiRoot + "/delivery_items_aggregated?filter=delivery="+k.data.instance.relationships.delivery.id  + ",item=" + k.data.instance.relationships.item.id + "&sort=item", resourcetype: "collection", returninstance: true});
 
         let $form = $("#listToPrintForm");
         let instance = k.data.instance;
@@ -134,10 +133,11 @@
 
             let query_uri = encodeURIComponent(str_seq);
 
-            let url_labels = "/deliveries_contents/?filter_advanced[orders_meta]=meta_key=%22K.F.E_BelegKopf.BelegNummer%22&filter_advanced[orders_items_meta]=(order_item_id%3D" + data.item + ")%20AND%20(meta_key=%22P.A.P_ZeichnungSpr.Zeichnung%22%20OR%20meta_key=%22P.A.E_BelegPos.Artikel%22)&include=delivery,item,item.order,item.order.orders_meta,item.cat_id,item.orders_items_meta,item.order.orders_items_labels,item.order.doc_id&filter_advanced[deliveries_contents]=" + query_uri;
-
+            let url_labels = "/deliveries_contents/?filter_advanced[orders_meta]=meta_key=%22K.F.E_BelegKopf.BelegNummer%22&filter_advanced[orders_items_meta]=(order_item_id%3D" + data.item + ")%20AND%20(meta_key=%22P.A.P_ZeichnungSpr.Zeichnung%22%20OR%20meta_key=%22P.A.E_BelegPos.Artikel%22)&include=delivery,item,item.delivery_items_aggregated,item.order,item.order.orders_meta,item.cat_id,item.orders_items_meta,item.order.orders_items_labels,item.order.doc_id&filter_advanced[deliveries_contents]=" + query_uri + "&filter_advanced[delivery_items_aggregated]=delivery=" + data.delivery;
+            console.log("yohoho "+ apiRoot + url_labels)
 
             let instance_labels = $("#tableForLabels").apiator({url: apiRoot + url_labels, resourcetype: "collection", returninstance: true});
+            console.log(instance_labels);
             instance_labels.loadFromRemote().then(function () {
 
                 let temp_arr = [];
