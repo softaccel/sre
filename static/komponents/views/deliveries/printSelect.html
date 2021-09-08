@@ -1,3 +1,7 @@
+<style>
+
+</style>
+
 <div class="modal" id="printModal">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -6,24 +10,24 @@
                     Tiparire etichete
                 </div>
             </div>
-            <form id="listToPrintForm" class="d-none"></form>
             <div class="modal-body bg-light">
+                <form id="listToPrintForm" class="d-none"></form>
+
                 <div id="dataForPrinting">
                     <h5><%= attributes.label %></h5>
                     <h6>De printat:</h6>
                     <div class="alert alert-default-info font-weight-bold">format: "a-b" - se printeaza toate etichetele de la a pana la b<br>     "a,b,c" - se printeaza doar etichetele a, b si c<br>
                         a, b si c sunt numere naturale mai mici decat <%= attributes.totalcnt %></div>
-                    <input type="text" name="delivery" value="<%=attributes.delivery%>" form="listToPrintForm" class="d-none">
-                    <input type="text" name="item" value="<%=attributes.item%>" form="listToPrintForm" class="d-none">
+                    <input type="text" name="delivery" value="<%=relationships.delivery.id%>" form="listToPrintForm" class="d-none">
+                    <input type="text" name="item" value="<%=relationships.item.id%>" form="listToPrintForm" class="d-none">
                     <input type="text" id="toBePrinted" name="seqList" value="1-<%=attributes.totalcnt%>" class="form-control-sm form-control" form="listToPrintForm" placeholder="1-5,7,9" autocomplete="off" pattern="^([0-9-,]+)$">
                 </div>
                 <br>
                 <button type="submit" form="listToPrintForm" class="btn btn-success">Print</button>
-            </div>
 
-            <form id="textAreasForm" class="d-none"></form>
-            <table class="d-none">
-                <tbody id="tableForLabels">
+                <form id="textAreasForm" class="d-none"></form>
+                <table class="d-none">
+                    <tbody id="tableForLabels">
                     <tr>
                         <td>
                             <textarea name="label" form="textAreasForm" class="labelTextArea">
@@ -31,10 +35,10 @@
                             </textarea>
                         </td>
                     </tr>
-                </tbody>
-                <button type="submit" form="textAreasForm" id="sendAjaxReqBtn" class="btn btn-success d-none"></button>
-            </table>
-
+                    </tbody>
+                    <button type="submit" form="textAreasForm" id="sendAjaxReqBtn" class="btn btn-success d-none"></button>
+                </table>
+            </div>
 
             <div class="modal-footer">
                 <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
@@ -44,6 +48,7 @@
 </div>
 
 <script>
+
     function print_labels(data){
         let seq_arr = data.seqList.split(",");
         let str_seq = "item="+data.item+" AND delivery="+data.delivery + " AND (";
@@ -94,7 +99,6 @@
         let util_labels = instance_labels.getUtilities();
     }
 
-
     function init_komponent(k){
         let $modal = k.$el.appendTo("body")
             .filter("#printModal")
@@ -102,8 +106,10 @@
                 k.$el.remove();
             });
         $modal.modal("show");
-
-        let instance_dig = k.$el.find("#dataForPrinting").apiator({url: apiRoot + "/develivery_items_aggregated?filter=delivery="+k.data.instance.attributes.delivery  + ",item=" + k.data.instance.attributes.item + "&sort=item", resourcetype: "collection", returninstance: true});
+        console.log(k.data.instance);
+        console.log(apiRoot + "/develivery_items_aggregated?filter=delivery="+k.data.instance.relationships.delivery.id  + ",item=" + k.data.instance.relationships.item.id + "&sort=item")
+        // return;
+        let instance_dig = k.$el.find("#dataForPrinting").apiator({url: apiRoot + "/develivery_items_aggregated?filter=delivery="+k.data.instance.relationships.delivery.id  + ",item=" + k.data.instance.relationships.item.id + "&sort=item", resourcetype: "collection", returninstance: true});
 
         let $form = $("#listToPrintForm");
         let instance = k.data.instance;
