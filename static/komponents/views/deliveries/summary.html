@@ -141,12 +141,33 @@
     }
 
     function changeState(src, new_state) {
+
         let instance = $(src).data("instance");
-        instance.update({status: new_state}).catch(function (error) {
-            komponentor.intent("/common/errormodal").data({
-                body: "A aparut o eroare:<pre>"+JSON.stringify(error)+"</pre>"
-            }).send();
-        });
+        komponentor.intent("/common/messagemodal").data({
+            body: "Sunteti sigur ca doriti modificaera starii livrarii <strong>"+instance.attributes.label + "</strong>?",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        instance.update({status: new_state}).catch(function (error) {
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+JSON.stringify(error)+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }]
+        }).send();
     }
 
     function editMode(instance) {
