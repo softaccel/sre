@@ -251,9 +251,9 @@
                 data["operation"] = op_cpy.split("-")[0];
                 data["order"] = op_cpy.split("-")[1];
                 data.start = data.start.replace("T", " ");
-                data.start += ":00";
+                data.start = data.start.split(".")[0];
                 data.stop = data.stop.replace("T", " ");
-                data.stop += ":00";
+                data.stop = data.stop.split(".")[0];
 
                 if(data.hourly_rate > 0){
                     aux_instance.createItem(data).then(function () {

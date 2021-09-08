@@ -115,7 +115,7 @@
                 <th width="70"></th>
             </tr>
             </thead>
-            <tbody id="deliveryContentsList" data-paging="#deliveryContentsListPaging" data-type="develivery_items_aggregated" data-resourcetype="collection"
+            <tbody id="deliveryContentsList" data-paging="#deliveryContentsListPaging" data-type="delivery_items_aggregated" data-resourcetype="collection"
                    data-pagesizeinp="#deliveryContentsPageSizeInp">
             <tr class="">
                 <td><button class="btn-success btn">OK</button></td>
@@ -303,7 +303,7 @@
 
         k.$el.find("#cancelAddToDlvrBtn").on("click",()=>{k.$el.find("#addElsToDeliveryCard").hide(400);k.$el.find("#addContentBtn").show();});
 
-        let url = apiRoot + "/develivery_items_aggregated?filter=delivery="+k.data.instance.id + "&sort=item&include=item,item.order,item.order.doc_id";
+        let url = apiRoot + "/delivery_items_aggregated?filter=delivery="+k.data.instance.id + "&sort=item&include=item,item.order,item.order.doc_id";
         // let url = apiRoot + "/deliveries/"+k.data.instance.id+"/deliveries_contents?include=inventory,inventory.order";
         let contentItems = k.$el.find("#deliveryContentsList").apiator({url:url,returninstance:true});
         k.$el.find("#startScanBut").on("click",function () {
