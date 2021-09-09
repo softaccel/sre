@@ -1,13 +1,42 @@
 <style>
-    .badge.ord{
-        background: red;
-    }
-    .badge.ord:after{
-        content:"Comanda";
-        color: white;
-    }
     #deliveriesListHeader a{
         cursor: pointer;
+    }
+
+    .created .state .badge{
+        background: #6C757D;
+        width: 60%;
+        color: white;
+    }
+    .created .state .badge::after{
+        content: "Creat"
+    }
+
+    .canceled .state .badge{
+        background: #6C757D;
+        width: 60%;
+        color: white;
+    }
+    .canceled .state .badge::after{
+        content: "Anulat"
+    }
+
+    .delivered .state .badge{
+        background: #FEC108;
+        width: 60%;
+        color: black;
+    }
+    .delivered .state .badge::after{
+        content: "Livrat"
+    }
+
+    .received .state .badge{
+        background: #2AA744;
+        width: 60%;
+        color: white;
+    }
+    .received .state .badge::after{
+        content: "Primit"
     }
 </style>
 
@@ -39,10 +68,11 @@
                     <br>
                     <select id="deliveriesListStatusSelect" name="status" class="custom-select custom-select-sm" form="deliveriesListForm" data-operator="=">
                         <option value="created">Creat</option>
-                        <option value="loading">Incarcare</option>
-                        <option value="ready">Gata de livrare</option>
+<!--                        <option value="loading">Incarcare</option>-->
+<!--                        <option value="ready">Gata de livrare</option>-->
                         <option value="delivered">Livrat</option>
                         <option value="received">Receptional</option>
+                        <option value="canceled">Anulat</option>
                     </select>
                 </th>
                 <th>
@@ -85,12 +115,10 @@
                    data-paging="#deliveriesListPaging"
                    data-offsetinp="#deliveriesOffsetInp"
                    data-pagesizeinp="#deliveriesPageSizeInp">
-            <tr class="order <%= attributes.status %>" onclick="openDeliveryModal(this)">
-                <td>
-                    <%= id %>
-                </td>
+            <tr class="<%= attributes.status %>" onclick="openDeliveryModal(this)">
+                <td><%= id %></td>
                 <td style="cursor: pointer"><%= attributes.label %></td>
-                <td><%= attributes.status %></td>
+                <td class="state"><span class="badge badge-pill <%= attributes.status %>"> </span></td>
                 <td><%= attributes.dlv_date%></td>
                 <td><%= attributes.lastupdate %></td>
             </tr>

@@ -9,10 +9,19 @@
         content: "OFERTA"
     }
 
-    .ord .state .badge{
-        background: #FCC107;
+    .canceled .state .badge{
+        background: #6C757D;
         width: 60%;
-        color: black;
+        color: white;
+    }
+    .canceled .state .badge::after{
+        content: "ANULAT"
+    }
+
+    .ord .state .badge{
+        background: #17A2B8;
+        width: 60%;
+        color: white;
     }
     .ord .state .badge::after{
         content: "COMANDAT"
@@ -27,31 +36,16 @@
         content: "IN LUCRU"
     }
 
-    .ctc .state .badge{
-        background: #d5c80f;
-        width: 60%;
-        color: white;
-    }
-    .ctc .state .badge::after{
-        content: "CONTROL"
-    }
 
-    .fix .state .badge{
-        background: #c06109;
-        width: 60%;
-        color: white;
-    }
-    .fix .state .badge::after{
-        content: "CORECTII"
-    }
     .ready .state .badge{
-        background: #2AA744;
+        background: #FEC108;
         width: 60%;
-        color: white;
+        color: black;
     }
     .ready .state .badge::after{
         content: "GATA DE LIVRARE"
     }
+
     .dlvd .state .badge{
         background: #2AA744;
         width: 60%;

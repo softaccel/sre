@@ -63,7 +63,7 @@
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ord`)" value="ord">Comandat</a>
                             </div>
                         <% } else if(attributes.state === "ord") { %>
-                            <button type="button" class="btn btn-sm btn-warning dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Comandat</button>
+                            <button type="button" class="btn btn-sm btn-info dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Comandat</button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `proc`)" value="proc">In Lucru</a>
                             </div>
@@ -73,7 +73,7 @@
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ready`)" value="ctc">Gata de Livrare</a>
                             </div>
                         <% } else if(attributes.state === "ready") { %>
-                            <button disabled type="button" class="btn btn-sm btn-success dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gata de Livrare</button>
+                            <button disabled type="button" class="btn btn-sm btn-warning dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gata de Livrare</button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `dlvd`)" value="dlvd">Livrat</a>
                             </div>
