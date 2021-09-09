@@ -295,7 +295,7 @@
                     $(this).addClass("deleteAllow");
                 });
             }
-        }
+        };
 
         let allRights = JSON.parse(localStorage.getItem("rights"));
 
@@ -303,6 +303,17 @@
             checkRights(modules);
             return;
         }
+        if(typeof modules==="undefined") {
+            console.log("undefine modules",el);
+            return;
+        }
+
+        if(typeof modules==="object") {
+            console.log("invalid modules",el);
+            return;
+        }
+
+
 
         modules.forEach(function (module) {
             checkRights(module);

@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Pontaj</h1>
+                    <h1 class="m-0">Raportare pontaj</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6 ">
 
@@ -17,7 +17,7 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
-                    <div is="komponent" data-replace="true" data-url="/views/pontaj/lista"></div>
+                    <div is="komponent" data-replace="true" data-url="/views/pontaj/report"></div>
                 </div>
             </div>
         </div>
@@ -25,10 +25,8 @@
 </div>
 
 <script>
-
     function init_komponent(k) {
         komponentor.loadKomponents(k.$el);
         console.log(komponentor.routing);
     }
-
 </script>

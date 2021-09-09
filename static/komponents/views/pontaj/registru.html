@@ -1,19 +1,20 @@
 <style>
+    #timeTrackingTable .inputs, #timeTrackingTable button.edit{
+        display: none;
+    }
 
-    #timeTrackingEntries tr input,
-    #timeTrackingEntries tr button.edit,
-    #timeTrackingEntries tr select{
-        display: none;
-    }
-    #timeTrackingEntries tr.edit p,
-    #timeTrackingEntries tr.edit button{
-        display: none;
-    }
-    #timeTrackingEntries tr.edit input,
-    #timeTrackingEntries tr.edit button.edit,
-    #timeTrackingEntries tr.edit select{
+    #timeTrackingTable tr.edit .inputs,#timeTrackingTable tr.edit button.edit{
         display: unset;
     }
+
+    #timeTrackingTable tr.edit .values, #timeTrackingTable tr.edit button  {
+        display: none;
+    }
+    #timeTrackingTable tr.edit button.edit{
+        display: unset;
+    }
+
+
     .employeeView .emplCol{
         display: none;
     }
@@ -21,119 +22,229 @@
     .orderView .orderCol{
         display: none;
     }
+    .mytable{
+        width: 100%;
+    }
+
+    .someSelect{
+        list-style: none;
+        padding: 0px;
+        margin: 0px;
+        margin-top: 5px;
+        background: rgba(239, 239, 239, 0.04);
+        max-height: 300px;
+        overflow: scroll;
+    }
+    .someSelect li{
+        border-bottom: dashed 1px silver;
+        cursor: pointer;
+    }
+    .someSelect li:hover{
+        background: #dddddd;
+    }
+    .someSelect a{
+
+    }
 
 </style>
 
 <div>
     <div class="checkRead">
-        <button class="btn btn-primary checkCreate" style="margin-bottom: 8px" id="newTTBtn">Introducere manuala</button>
-        <form id="timeTrackingEntriesFiltering" class="d-none">
-            <button type="submit" name="submit" id="submitBtn"></button>
-        </form>
-        <table class="table table-striped table-hover table-sm" id="timeTrackingTable">
-            <!--        HEADER-->
-            <thead class="thead-dark" id="pontajListHeader">
-            <tr>
-                <th class="emplCol align-top" style="min-width: 150px">
-                    Angajat
-                    <select id="emplNamefilter" name="employee" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
-                </th>
-                <th class="orderCol align-top" style="min-width: 100px">
-                    Comanda
-                    <select id="docNumFilter" name="order" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
-                </th>
-                <th class="align-top" style="min-width: 150px">
-                    Operatie
-                    <select id="operationFilter" name="operation" class="form-control-sm form-control" form="timeTrackingEntriesFiltering" data-operator="="><option> </option></select>
-                </th>
-                <th class="align-top" style="min-width: 300px">
-                    <a class="text-white" data-sortfld="start">Start
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
-                    </a>
-                    <div class="input-group input-group-sm ">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">de la</span>
-                        </div>
-                        <input type="datetime-local" name="start" class="form-control-sm form-control" data-operator=">=" form="timeTrackingEntriesFiltering">
-                    </div>
-                    <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">pana</span>
-                        </div>
-                        <input type="datetime-local" name="start" class="form-control-sm form-control" data-operator="<=" form="timeTrackingEntriesFiltering">
-                    </div>
-                </th>
-                <th class="align-top" style="min-width: 300px">
-                    <a class="text-white" data-sortfld="stop">Stop
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
-                    </a>
-                    <div class="input-group input-group-sm ">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">de la</span>
-                        </div>
-                        <input type="datetime-local" name="stop" class="form-control-sm form-control" data-operator=">=" form="timeTrackingEntriesFiltering">
-                    </div>
-                    <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">pana</span>
-                        </div>
-                        <input type="datetime-local" name="stop" class="form-control-sm form-control" data-operator="<=" form="timeTrackingEntriesFiltering">
-                    </div>
-                </th>
-                <th class="align-top" style="min-width: 150px">
-                    <a class="text-white" data-sortfld="duration">Durata (minute)
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
-                    </a>
-                    <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">min</span>
-                        </div>
-                        <input type="text" name="duration" class="form-control-sm form-control" data-operator=">=" form="timeTrackingEntriesFiltering">
-                    </div>
-                    <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">max</span>
-                        </div>
-                        <input type="text"  name="duration" class="form-control-sm form-control" data-operator="<=" form="timeTrackingEntriesFiltering">
-                    </div>
-                </th>
-                <th width="150px"></th>
-            </tr>
-            </thead>
-            <!--        HEADER STOP-->
+        <div class="alert" style="background: #d6d6d6">
+            <div class="row">
+                <div class="col-8">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Marti, 7 Sep. 2021
+                        </button>
+                        <div class="dropdown-menu" style="min-width: 500px;">
+                            <div class="row">
+                                <div class="col-5">
+                                    <ul style="margin: 0; padding: 4px;list-style: none">
+                                        <li>Astazi</li>
+                                        <li>Ieri</li>
+                                        <li>Saptamana aceasta</li>
+                                        <li>Saptamana trecuta</li>
+                                        <li>Luna aceasta</li>
+                                        <li>Luna trecuta</li>
+                                        <li>Anul acesta</li>
+                                        <li>Anul trecut</li>
+                                    </ul>
+                                </div>
+                                <div class="col-7">
 
-            <!--        CONTENTS-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Angajat
+                        </button>
+                        <div class="dropdown-menu p-3">
+                            <form id="employeeSelectSearch">
+                                <input type="text" name="fullname" data-operator="~=~" placeholder="Nume angajat" onkeyup="this.form.submitBut.click()">
+                                <input type="submit" name="submitBut" class="d-none" autocomplete="false">
+                            </form>
+                            <ul class="someSelect" id="employeeSelect" data-resourcetype="collection" data-filter="#employeeSelectSearch">
+                                <li onclick="performSearch('#timeTrackingEntriesFiltering','employee',$(this).data('emplid'));$('#employeeSelectSearch')[0].fullname.value=$(this).text()" data-emplid="<%= id %>"><%= attributes.fullname%></li>
+                            </ul>
+                            <button class="btn btn-secondary btn-sm" onclick="performSearch('#timeTrackingEntriesFiltering','employee','');$('#employeeSelectSearch')[0].reset()">Sterge selectia</button>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Echipa
+                        </button>
+                        <div class="dropdown-menu p-3">
+                            <form id="teamSelectSearch">
+                                <input type="text" name="name" data-operator="~=~" placeholder="Nume echipa" onkeyup="this.form.submitBut.click()">
+                                <input type="submit" name="submitBut" class="d-none" autocomplete="false">
+                            </form>
+                            <ul class="someSelect" id="teamSelect" data-resourcetype="collection" data-filter="#teamSelectSearch">
+                                <li><a onclick="performSearch('#timeTrackingEntriesFiltering','team',$(this).data('teamid'));$('#teamSelectSearch')[0].name.value=$(this).text()" data-teamid="<%= id %>"><%= attributes.name%></a></li>
+                            </ul>
+                            <button class="btn btn-secondary btn-sm" onclick="performSearch('#timeTrackingEntriesFiltering','team','');$('#teamSelectSearch')[0].reset()">Sterge selectia</button>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Comanda
+                        </button>
+                        <div class="dropdown-menu p-3">
+                            <form id="orderSelectSearch">
+                                <input type="text" name="docnum" data-operator="~=~" placeholder="ID Comanda" onkeyup="this.form.submitBut.click()">
+                                <input type="submit" name="submitBut" class="d-none" autocomplete="false">
+                            </form>
+                            <ul class="someSelect" id="orderSelect" data-resourcetype="collection" data-filter="#orderSelectSearch">
+                                <li><a onclick="performSearch('#timeTrackingEntriesFiltering','order',$(this).data('teamid'));$('#orderSelectSearch')[0].docnum.value=$(this).text()"
+                                       data-teamid="<%= id %>"><%= attributes.docnum%></a></li>
+                            </ul>
+                            <button class="btn btn-secondary btn-sm" onclick="performSearch('#timeTrackingEntriesFiltering','order','');$('#orderSelectSearch')[0].reset()">Sterge selectia</button>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Audit
+                        </button>
+                        <div class="dropdown-menu p-3" style="min-width: 350px">
+                            <ul class="someSelect" id="" data-resourcetype="collection" data-filter="#orderSelectSearch">
+                                <li>Durata mai mare de <input typeof="number" style="width: 40px" value="8"> ore </li>
+                                <li>Comanda nealocata</li>
+                            </ul>
+                            <button class="btn btn-secondary btn-sm" onclick="performSearch('#timeTrackingEntriesFiltering','order','');$('#orderSelectSearch')[0].reset()">Sterge selectia</button>
+                        </div>
+                    </div>
+
+
+<!--                    <div class="btn-group">-->
+<!--                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                            Angajat-->
+<!--                        </button>-->
+<!--                        <div class="dropdown-menu p-3">-->
+<!--                            <form id="employeeSelectSearch">-->
+<!--                                <input type="text" name="fullname" data-operator="~=~" placeholder="Cauta angajati" onkeyup="this.form.submitBut.click()">-->
+<!--                                <input type="submit" name="submitBut" class="d-none" autocomplete="false">-->
+<!--                            </form>-->
+<!--                            <ul class="someSelect" id="employeeSelect" data-resourcetype="collection" data-filter="#employeeSelectSearch">-->
+<!--                                <li><a onclick="performSearch('#timeTrackingEntriesFiltering','employee',$(this).data('emplid'));$('#employeeSelectSearch')[0].fullname.value=$(this).text()" data-emplid="<%= id %>"><%= attributes.fullname%></a></li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+
+                </div>
+                <div class="col" style="text-align: right">
+                    <button class="btn btn-primary checkCreate float-right"  id="newTTBtn"><i class="fa fa-plus-square"></i> Introducere manuala</button>
+                </div>
+
+            </div>
+        </div>
+        <form id="timeTrackingEntriesFiltering" class="d-none">
+<!--            <button type="submit" name="submit" id="submitBtn"></button>-->
+            <input name="order" type="text" data-operator="=">
+            <input name="employee" type="text" data-operator="=">
+            <input name="operation" type="text" data-operator="=">
+            <input name="team" type="text" data-operator="=">
+            <input name="start" type="text" id="startFrom" data-operator=">=">
+            <input name="start" type="text" id="startTo" data-operator="<=">
+        </form>
+        <table class="table" id="timeTrackingTable">
+            <thead class="thead-dark none" id="pontajListHeader">
+                <tr>
+                    <th class="emplCol align-top">
+                        Angajat
+                    </th>
+                    <th class="orderCol align-top">
+                        Comanda
+                    </th>
+                    <th class="align-top" >
+                        Operatie
+                    </th>
+                    <th class="align-top" >
+                        Tarif
+                    </th>
+                    <th class="align-top" >
+                        <a class="text-white" data-sortfld="start">Start
+                            <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+                        </a>
+                    </th>
+                    <th class="align-top" style="min-width: 160px">
+                        <a class="text-white" data-sortfld="duration">Durata (minute)
+                            <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+                        </a>
+
+                    </th>
+                    <th width="150px"></th>
+                </tr>
+            </thead>
             <tbody id="timeTrackingEntries" data-type="timetracking" data-resourcetype="collection" data-paging="#timeTrackingEntriesPaging"
                    data-filter="#timeTrackingEntriesFiltering" data-sort="#pontajListHeader"
                    data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset">
             <tr>
-                <td class="emplCol"><%= relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname %></td>
-                <td>
-                    <p><%= relationships.order.relationships.doc_id.attributes.docnum %></p>
-                </td>
-                <td class="orderCol">
-                    <p><%= relationships.operation.attributes.name %></p>
-                    <select name="order" style="min-width: 200px"></select>
-                    <select name="op" style="min-width: 200px"><option value="<%= relationships.operation.id %>"><%= relationships.operation.attributes.name %></option></select>
-                    <p><%= attributes.hourly_rate %> <%= relationships.currency.id %></p>
-                    <input type="number" name="hourly_rate" value="<%= attributes.hourly_rate %>" style="max-width: 60px">
-                    <select name="currency" style="min-width: 100px">
-                        <option><%= relationships.currency.id %></option>
-                    </select>
-                </td>
-                <td>
-                    <p><%= attributes.start %></p>
-                    <input type="datetime-local" name="start" style="min-width: 200px">
-                </td>
-                <td>
-                    <p><%= attributes.stop %></p>
-                    <input type="datetime-local" name="stop" style="min-width: 200px">
-                </td>
-                <td>
-                    <p><%= attributes.duration %></p>
-                </td>
+                <td class="emplCol">
+                    <%= relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname %> <br>
+                    <% if(relationships.team) { %>
+                    <span class="badge badge-secondary"><%= relationships.team.attributes.name %></span>
+                    <% } %>
 
+                </td>
+                <td style="max-width: 100px">
+                    <div class="values"><%= relationships.order.relationships.doc_id.attributes.docnum %></div>
+                    <div class="inputs">
+                        <select name="order"  style="width: 100%"></select>
+                    </div>
+                </td>
+                <td class="orderCol" style="width: 150px">
+                    <div class="values"><%= relationships.operation.attributes.name %></div>
+                    <div class="inputs">
+                        <select name="op"  style="width: 100%"><option value="<%= relationships.operation.id %>"><%= relationships.operation.attributes.name %></option></select>
+                    </div>
+                </td>
                 <td>
+                    <div class="values"><%= attributes.hourly_rate %> <%= relationships.currency.id %></div>
+                    <div style="white-space: nowrap" class="inputs">
+                        <input type="number" name="hourly_rate" value="<%= attributes.hourly_rate %>" style="max-width: 60px">
+                        <select name="currency">
+                            <option><%= relationships.currency.id %></option>
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <div class="values"><%= attributes.start.split(' ')[0] %></div>
+                    <div class="values" style="min-width: 100px; "><%= attributes.start.split(' ')[1] %> - <%= attributes.stop?attributes.stop.split(' ')[1]:'-' %></div>
+                    <div class="inputs">
+                        <div class="d-inline">De la<br><input type="datetime-local" style="max-width: 220px" class="form-control form-control-sm" id="inputStart" name="start" value="<%= (new Date(attributes.start)).toISOString().slice(0,-1) %>"></div>
+                        <div class="d-inline">Pana la<br><input type="datetime-local" style="max-width: 220px" class="form-control form-control-sm" id="inputStop" name="stop" value="<%= attributes.stop?(new Date(attributes.stop)).toISOString().slice(0,-1):'' %>"></div>
+                    </div>
+                </td>
+                <td style="width: 100px">
+                    <div class="values"><%= attributes.duration %></div>
+                    <div class="inputs">
+                        <input type="number" value="<%= attributes.duration %>" style="max-width: 100px">
+                    </div>
+                </td>
+                <td style="width: 100px">
                     <div class="btn-group" role="group" aria-label="Basic example">
                         <button class="btn btn-secondary btn-sm checkCreate" onclick="duplicateItem(this);"><i class="fa fa-copy" title="Duplicare"></i></button>
                         <button class="btn btn-danger btn-sm checkDelete" onclick="deleteUnit(this);" title="Stergere"><i class="fa fa-trash"></i></button>
@@ -146,7 +257,7 @@
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="6">
+                <td colspan="7">
                     <div class="btn-group"  id="timeTrackingEntriesPaging" data-pagesize="20">
                         <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
                         <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
@@ -164,12 +275,18 @@
             </tr>
             </tfoot>
         </table>
+
     </div>
 </div>
 
 <script>
 
-    timeRegex = /(\d+)\:(\d+)\:(\d+)/;
+    timeRegex = /(\d+):(\d+):(\d+)/;
+    
+    function performSearch(form, field, value) {
+        $($(form)[0][field]).val(value);
+        $(form).submit();
+    }
 
     function cancelEdit(src) {
         $(src).parents('tr').removeClass('edit')
@@ -192,7 +309,7 @@
         let instance = $(src).data("instance");
         console.log(instance);
 
-        if(opSel === null || startVal.length == 0 || stopVal.length == 0){
+        if(opSel === null || startVal.length === 0 || stopVal.length === 0){
             komponentor.intent("/common/messagemodal").data({
                 body: "Completati campurile \"Operatie\", \"Start\" si \"Stop\" pentru a continua.",
                 buttons: [
@@ -272,10 +389,7 @@
             currencySel.val(val.params.data.id);
         });
 
-        let start_val = new Date(instance.attributes.start);
-        let stop_val = new Date(instance.attributes.stop);
-        itemContainer.find("input[name=start]").val(start_val.toISOString().slice(0, -1));
-        itemContainer.find("input[name=stop]").val(stop_val.toISOString().slice(0, -1));
+
         itemContainer.find("input[name=submit]");
     }
 
@@ -378,7 +492,7 @@
 
         checkUserRights(k.$el, "timetracking");
 
-        let url = apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation";
+        let url = apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team";
 
         try {
             url = customUrl(k);
@@ -391,6 +505,17 @@
             returninstance: true
         });
 
+        k.$el.find("#employeeSelect").apiator({returninstance: true})
+            .setUrl(apiRoot+"/employees_names?page[employees_names][limit]=20").loadFromRemote();
+
+        k.$el.find("#teamSelect").apiator({returninstance: true})
+            .setUrl(apiRoot+"/teams?page[teams][limit]=20").loadFromRemote();
+
+        k.$el.find("#orderSelect").apiator({returninstance: true})
+            .setUrl(apiRoot+"/orders_extended?page[orders_extended][limit]=20").loadFromRemote();
+
+
+
         k.$el.find("#newTTBtn").on("click", function () {
             komponentor.intent("/views/pontaj/newTTModal")
                 .data({instance: instance})
@@ -402,7 +527,14 @@
             labelfld: "fullname",
             idfld: "id",
             placeholder: "Nume Angajat"
-        })
+        });
+        k.$el.find("#teamNamefilter").select2wrapper({
+            url: apiRoot + "/teams",
+            labelfld: "fullname",
+            idfld: "id",
+            placeholder: "Nume Angajat"
+        });
+
 
         k.$el.find("#docNumFilter").select2wrapper({
             url: apiRoot + "/orders_extended",
@@ -448,7 +580,7 @@
 
         util.captureFormSubmit(form, function (data) {
             addNewTT(data);
-        })
+        });
 
         function addNewTT(data) {
 
@@ -468,8 +600,8 @@
                 }).send();
                 return;
             }
-            data.start = data.start.replace("T", " ")
-            data.stop = data.stop.replace("T", " ")
+            data.start = data.start.replace("T", " ");
+            data.stop = data.stop.replace("T", " ");
 
             data.operation = data.docnum.split("/")[1];
             data.order = data.docnum.split("/")[0];
@@ -485,7 +617,6 @@
                     }).send();
                 });
 
-            // k.$el.find("#addNewTTBtn").on("click", addNewTT);
 
             k.exec = function (b) {
                 console.log("exec order", k, b);

@@ -59,7 +59,7 @@
                                 <% today_date.setMinutes(0);  %>
                                 <% today_date.setSeconds(0);  %>
                                 <% today_date.setMilliseconds(0);  %>
-                                <div class="col-9"><input type="datetime-local" value="<%= today_date.toISOString().slice(0, -1) %>" name="start" id="datetimeStart" form="newTTForm" class="form-control"></div>
+                                <div class="col-9"><input type="datetime-local" value="<%= (new Date()).toISOString().slice(0,-1) %>" name="start" id="datetimeStart" form="newTTForm" class="form-control"></div>
                             </div>
                             <div class="row hide-till-comm">
                                 <div class="col-3">Stop</div>
@@ -245,7 +245,7 @@
 
 
         util.captureFormSubmit(form, function (data) {
-            if (data.currency && data.hourly_rate && data.start && data.stop && data.employee && data.operation){
+            if (data.currency && data.hourly_rate && data.start && data.employee && data.operation){
                 let op_cpy = data.operation;
                 delete data.operation;
                 data["operation"] = op_cpy.split("-")[0];
