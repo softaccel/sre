@@ -77,7 +77,8 @@
         </div>
     </div>
     <form id="deliveryContentsFilter"></form>
-    <button class="btn btn-secondary mb-3 checkUpdate" id="addContentBtn"><i class="fa fa-truck-loading"></i> Adauga elemente la livrare</button>
+
+    <button class="btn btn-secondary mb-3 checkUpdate hide-not-created" id="addContentBtn"><i class="fa fa-truck-loading"></i> Adauga elemente la livrare</button>
     <div style="max-height: 400px; overflow: scroll">
         <table class="items table table-sm" id="deliveryContentsTable">
             <thead id="deliveriesListHeader">
@@ -127,7 +128,7 @@
                 <td><%= attributes.totalcnt %></td> <!-- qty din orders_items -->
                 <td><%= attributes.printed %></td>
                 <td><%= attributes.checkout %></td>
-                <td>
+                <td class="hide-not-created">
                     <button class="btn-danger checkDelete" onclick="removeFromDelivery(this)"><i class="fa fa-trash"></i></button>
                     <button class="btn-primary checkUpdate" onclick="goToPrint(this)"><i class="fa fa-print"></i></button>
                 </td>
@@ -193,7 +194,11 @@
 
     function init_komponent(k) {
 
+        console.log("yoyoyoyyyo", k.data.instance);
+
         checkUserRights(k.$el, "deliveries");
+
+        k.$el.addClass(k.data.instance.attributes.status);
 
         if(!k.data || !k.data.instance) {
             return;
@@ -243,7 +248,6 @@
                 toAdd.push([cbs[i].value,qtys[i].value,k.data.instance.id]);
             }
 
-            // let promises = [];
             let errors =[];
             let insData = [];
 
@@ -270,26 +274,6 @@
                     }
                 });
 
-            // promises.push(
-                // instance.setUrl({insertUrl:apiRoot + "/deliveries_contents"})
-                //     .createItem(data)
-                //     .catch((resp)=>errors.push(resp.jqXHR.responseJSON)));
-            // console.log("------------////////////////----",promises.length)
-
-            // Promise.all(promises)
-            //     .then(() => instance.loadFromRemote())
-            //     .finally(()=>{
-            //         // k.$el.find("#addElsToDeliveryCard").hide(400);
-            //         // k.$el.find("#addContentBtn").show();
-            //         unassignedItemsInstance.loadFromRemote();
-            //         instance.loadFromRemote()
-            //         if(errors.length) {
-            //             komponentor.intent("/common/errormodal").data({
-            //                 body: "A aparut o eroare:<pre>"+JSON.stringify(errors,null, "\t")+"</pre>"
-            //             }).send();
-            //         }
-            //     });
-
         }
 
         k.$el.find("#addContentBtn").on("click",function (e) {
@@ -304,7 +288,6 @@
         k.$el.find("#cancelAddToDlvrBtn").on("click",()=>{k.$el.find("#addElsToDeliveryCard").hide(400);k.$el.find("#addContentBtn").show();});
 
         let url = apiRoot + "/delivery_items_aggregated?filter=delivery="+k.data.instance.id + "&sort=item&include=item,item.order,item.order.doc_id";
-        // let url = apiRoot + "/deliveries/"+k.data.instance.id+"/deliveries_contents?include=inventory,inventory.order";
         let contentItems = k.$el.find("#deliveryContentsList").apiator({url:url,returninstance:true});
         k.$el.find("#startScanBut").on("click",function () {
             komponentor.intent("/views/deliveries/scan").data({data:k.data}).send();

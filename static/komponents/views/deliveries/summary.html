@@ -33,6 +33,14 @@
     .editMode .hide-on-edit{
         display: none;
     }
+
+    .hide-not-created {
+        display: none;
+    }
+    .created .hide-not-created {
+        display: block;
+    }
+
 </style>
 
 <div>
@@ -61,14 +69,14 @@
                             <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)">Anulat</a>
                         </div>
                     <% } else if(attributes.status === "delivered") { %>
-                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle checkUpdate deliveryStatusBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat</button>
+                        <button type="button" class="btn btn-sm btn-warning dropdown-toggle checkUpdate deliveryStatusBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat</button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `received`)">Primit</a>
                         </div>
                     <% } else if(attributes.status === "received") { %>
                         <button type="button" disabled class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Primit</button>
                     <% } else if(attributes.status === "canceled") { %>
-                        <button type="button" disabled class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anulat</button>
+                        <button type="button" disabled class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anulat</button>
                     <% } %>
                 </div>
             </div>
@@ -94,7 +102,7 @@
             <div class="col-9"><input name="lastupdate" class="form-control form-control-sm" type="text" autocomplete="off"></div>
         </div>
 
-        <div class="input-group mt-5">
+        <div class="input-group mt-5 hide-not-created">
             <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
             <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
             <button id="editButton" class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
@@ -195,93 +203,6 @@
 
     }
 
-    // function prepare_a(state){
-    //     let $changeTo = $("#changeToState");
-    //     let $origDelivery = $("#origDeliv");
-    //     let $editBtn = $("#editButton");
-    //     let states = ["created", "delivered", "received", "canceled"];
-    //     let normalized_states = ["Creat", "Incarcare", "Gata de Livrare", "Livrat", "Primit", "Anulat"];
-    //     let colors = ["orange", "red", "blue", "green", "black", "grey"];
-    //     $origDelivery.css("color", "white");
-    //     let currentState = states.indexOf(state);
-    //
-    //     let nextState;
-    //     let normalizedNext;
-    //
-    //     if(currentState === 0){
-    //         console.log("ceva fain");
-    //         let cpy = $changeTo.clone(true).attr("id", "cancelBtn");
-    //         cpy.attr("val", "canceled");
-    //         cpy.html("Anulati livrarea?");
-    //         cpy.appendTo($("#menuStatus"));
-    //         console.log(cpy);
-    //     }
-    //
-    //     if(currentState >= states.length - 2){
-    //         $origDelivery.attr("disabled", true);
-    //         $changeTo.attr("val", states[currentState]);
-    //         $editBtn.attr("disabled", true);
-    //     } else {
-    //         nextState = states[currentState + 1];
-    //         normalizedNext = normalized_states[currentState + 1];
-    //         $changeTo.html("Schimbati statusul livrarii in \"" + normalizedNext + "\"");
-    //         $changeTo.attr("val", nextState);
-    //         console.log($changeTo);
-    //     }
-    //
-    //     console.log($("#menuStatus"));
-    //     $origDelivery.css("background-color", colors[currentState]);
-    //     $origDelivery.html(normalized_states[currentState]);
-    // }
-    //
-    // function changeState(src){
-    //     console.log(src)
-    //     let instance = $(src).data().instance;
-    //     let $changeTo = $(src);
-    //
-    //     let new_state = $changeTo.attr("val");
-    //     let data = $(src).data().instance.attributes;
-    //
-    //     let states = ["created", "loading", "ready", "delivered", "received", "canceled"];
-    //     let normalized_states = ["Creat", "Incarcare", "Gata de Livrare", "Livrat", "Primit", "Anulat"];
-    //
-    //     komponentor.intent("/common/messagemodal").data({
-    //         body:"Sigur vrei sa modifici starea in <b>" + normalized_states[states.indexOf(new_state)] + "</b>?",
-    //         buttons:[
-    //             {
-    //                 label: "Da",
-    //                 attrs: {
-    //                     "data-dismiss": "modal",
-    //                 },
-    //                 class: "btn btn-danger",
-    //                 callback: function () {
-    //                     instance.update({
-    //                         id: data.id,
-    //                         status: new_state
-    //                     }).then((a) => {
-    //                         console.log(a);
-    //                         prepare_a(new_state);
-    //                     }).catch(function(data){
-    //                         komponentor.intent("/common/errormodal").data({
-    //                             body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
-    //                         }).send();
-    //                     });
-    //                 }
-    //             },
-    //             {
-    //                 label: "Nu",
-    //                 attrs: {
-    //                     "data-dismiss": "modal"
-    //                 },
-    //                 class: "btn btn-secondary"
-    //             }
-    //         ]
-    //     }).send();
-    //
-    //
-    //
-    // }
-
     function init_komponent(k) {
 
         checkUserRights(k.$el, "deliveries");
@@ -289,6 +210,9 @@
             if (!$(this).hasClass("updateAllow"))
                 $(this).attr("disabled", true).removeClass("checkUpdate");
         });
+
+        k.$el.addClass(k.data.instance.attributes.status);
+
 
         k.data.instance.bindView($("#deliveryForm")).loadFromRemote().then(function (d) {
             // ?????
