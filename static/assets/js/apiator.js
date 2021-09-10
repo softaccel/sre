@@ -1713,7 +1713,7 @@
 
 		this.data("instance",instance);
 
-		if(instance.url) {
+		if(instance.url && (typeof instance.dontload==="undefined" || !instance.dontload)) {
 			instance.loadFromRemote()
 				.catch(function(jqxhr){
 					console.log("error",jqxhr)
