@@ -1,10 +1,24 @@
 <style>
 
+    .hide-no-offer{
+        display: none;
+    }
+
+    .offer .hide-no-offer{
+        display: unset;
+    }
+
+    .ord .hide-no-offer{
+        display: unset;
+    }
+
 </style>
 
 <div>
     <div class="checkRead">
-        <button class="btn btn-primary checkUpdate" id="newCostEntryBtn"><i class="fa fa-plus"></i> Adauga</button>
+        <div class="hide-no-offer">
+            <button class="btn btn-primary checkUpdate" id="newCostEntryBtn"><i class="fa fa-plus"></i> Adauga</button>
+        </div>
         <table class="table table-sm table-hover mt-2">
             <thead>
             <tr>
@@ -63,6 +77,8 @@
     function init_komponent(k) {
 
         checkUserRights(k.$el, "orders");
+
+        k.$el.addClass(k.data.instance.attributes.state);
 
         let costsListIntance = $("#orderCostsList").apiator({returninstance:true}).setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_costs");
         costsListIntance.loadFromRemote().then(function () {

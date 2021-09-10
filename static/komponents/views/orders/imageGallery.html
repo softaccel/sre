@@ -10,15 +10,28 @@
         text-align: center;
     }
 
+    .hide-no-offer{
+        display: none;
+    }
+
+    .offer .hide-no-offer{
+        display: unset;
+    }
+
+    .ord .hide-no-offer{
+        display: unset;
+    }
 </style>
 
 <div>
     <div id="imageGalleryKomponent">
         <br>
-        <form id="imageGalleryForm" class="checkUpdate">
-            <input type="file" name="files[]" multiple class="" id="addFiles">
-            <input type="submit" value="Upload" name="upload">
-        </form>
+        <div id="addNewImageOnOfferOrd" class="hide-no-offer">
+            <form id="imageGalleryForm" class="checkUpdate">
+                <input type="file" name="files[]" multiple class="" id="addFiles">
+                <input type="submit" value="Upload" name="upload">
+            </form>
+        </div>
         <div id="gallery" data-resourcetype="collection" class="checkUpdate">
             <% gallery = JSON.parse(attributes.meta_val); %>
             <ul class="mt-4 imageList" style="list-style-type: none;">
@@ -42,6 +55,16 @@
 
         checkUserRights(k.$el, "orders");
 
+        console.log("asdasdasd", k.data.instance);
+        let orderId = k.data.instance.relationships.order.id;
+        console.log(orderId);
+
+
+        let instanceForHide = $("#addNewImageOnOfferOrd").apiator({returninstance: true, resourcetype: "item", url: apiRoot + "/orders/" + orderId});
+        instanceForHide.loadFromRemote().then(function () {
+            console.log(instanceForHide.attributes.state);
+            k.$el.addClass(instanceForHide.attributes.state);
+        });
         // update imageList
         const updateSortable = function (e) {
             let upd = [];

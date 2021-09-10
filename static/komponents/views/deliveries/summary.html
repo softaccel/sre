@@ -103,11 +103,16 @@
         </div>
 
         <div class="input-group mt-5 hide-not-created">
-            <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
-            <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
-            <button id="editButton" class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
-            &nbsp;
-            <button class="btn btn-danger checkDelete" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
+            <div class="row">
+                <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
+                &nbsp;
+                <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
+            </div>
+            <div class="row">
+                <button id="editButton" class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+                &nbsp;
+                <button class="btn btn-danger checkDelete" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
+            </div>
         </div>
     </div>
 </form>

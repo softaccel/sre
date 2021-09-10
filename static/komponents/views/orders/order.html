@@ -46,6 +46,18 @@
         cursor: pointer;
     }
 
+    .hide-no-offer{
+        display: none;
+    }
+
+    .offer .hide-no-offer{
+        display: unset;
+    }
+
+    .ord .hide-no-offer{
+        display: unset;
+    }
+
 </style>
 
 <div class="modal" id="order_details_modal">
@@ -77,7 +89,6 @@
                     <li class="nav-item">
                         <a data-toggle="tab" href="#proprietati" class="nav-link" id="metaTab">Proprietati</a>
                     </li>
-
                 </ul>
             </div>
             <div class="modal-body bg-white">
@@ -106,7 +117,9 @@
 
                     <!--// resurse-->
                     <div class="tab-pane fade checkRead" id="resurse">
-                        <button class="btn btn-primary checkUpdate" id="allocateEmpl"><i class="fa fa-user-plus"></i> Adauga</button>
+                        <div class="hide-no-offer">
+                            <button class="btn btn-primary checkUpdate" id="allocateEmpl"><i class="fa fa-user-plus"></i> Adauga</button>
+                        </div>
                         <hr>
                         <div class="row" id="allocatedEmployees">
                             <div class="col-3 mb-4 ">
@@ -128,7 +141,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
             <div class="modal-footer">
@@ -178,6 +190,9 @@
     function init_komponent(k,d) {
 
         checkUserRights(k.$el, "orders");
+
+        k.$el.addClass(k.data.instance.attributes.state);
+
 
         k.$el.appendTo("body");
 
