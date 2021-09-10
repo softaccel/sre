@@ -32,18 +32,17 @@
             <div id="employeesListFilter">
                 <form id="employeesListForm">
                     <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Optiuni</button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" id="displayActiveEmpl" onclick="event.preventDefault();" href="#">Afisare doar angajati activi</a>
-                                <a class="dropdown-item" id="displayAllEmpl" onclick="event.preventDefault();" href="#">Afisarea tuturor angajatilor</a>
-                            </div>
-                        </div>
-                        <input type="text"  name="search" class="form-control" placeholder="Cautare dupa nume, prenume sau Card ID" oninput="this.form.submitButt.click()">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="submit" name="submitButt">Cauta</button>
-                            <button class="btn btn-outline-secondary" type="reset">Reseteaza</button>
-                        </div>
+                        <button class="d-none" type="submit" name="submitButt">Cauta</button>
+                        <input type="text" name="search" class="form-control" placeholder="Cautare dupa nume, prenume sau Card ID" oninput="this.form.submitButt.click()">
+
+                        <select class="custom-select input-group-prepend" style="max-width: 200px" name="active" onchange="this.form.submitButt.click()">
+                            <option value="">Toti angajatii</option>
+                            <option value="1">Doar angajati activi</option>
+                            <option value="0">Doar angajati inactivi</option>
+                        </select>
+<!--                        <div class="input-group-append">-->
+<!--                            <button class="btn btn-outline-secondary" type="reset">Reseteaza</button>-->
+<!--                        </div>-->
                     </div>
                 </form>
             </div>
@@ -55,8 +54,8 @@
                 data-offsetinp="#employeesOffsetInp"
                 data-pagesizeinp="#employeesPageSizeInp">
 
-                <li onclick="openEmployeeModal(this)" class="col-lg-2 col-md-3 col-sm-4">
-                    <div class="card" style="min-height: 140px">
+                <li onclick="openEmployeeModal(this)" class="col-lg-2 col-md-3 col-sm-4" >
+                    <div class="card" style="min-height: 165px">
                         <div class="card-body text-center" style="cursor: pointer">
                             <div class="d-inline-block mb-3" style="width: 60px">
                                 <i class="fa fa-user d-inline rounded-circle bg-secondary" style="font-size: 15px; padding: 10px; color: white"></i>
@@ -143,14 +142,20 @@
             e.preventDefault();
             let sTerm = e.target.search.value;
             if(sTerm==="") {
-                delete employeesInstance.url.parameters.where;
+                delete employeesInstance.url.parameters.filter_advanced;
             }
             else {
-                employeesInstance.url.parameters.filter_advanced = encodeURIComponent("fname like '%"+sTerm+"%' OR card='"+sTerm+"' OR lname like '%"+sTerm+"%'");
+                employeesInstance.url.parameters.filter_advanced = encodeURIComponent("fname LIKE '%"+sTerm+"%' OR card='"+sTerm+"' OR lname like '%"+sTerm+"%'");
             }
-            console.log(e,sTerm,employeesInstance.url);
-            employeesInstance.loadFromRemote();
 
+            let activeVal = $(e.target.active).val();
+            if(activeVal===""){
+                delete employeesInstance.url.parameters.filter;
+            }
+            else {
+                employeesInstance.url.parameters.filter = "active="+activeVal;
+            }
+            employeesInstance.loadFromRemote();
         });
 
 
