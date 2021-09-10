@@ -147,21 +147,19 @@
 
 
 
+
+
     const localStorageLabel = "spaleck";
-    let env = localStorage.getItem(localStorageLabel+".env");
-    if(!env || !env_config[env])
-        env = "sergiu_devel";
-    console.log(env_config[env]);
+    // let env = localStorage.getItem(localStorageLabel+".env");
+    // if(!env || !env_config[env])
+    //     env = "sergiu_devel";
+    // console.log(env_config[env]);
 
     const _kPath = "komponents";
     const _kExt = ".html";
     const vPath = _kPath+"views/";
-    const backendUrl = env_config[env].backendUrl;
-    const apiRoot = env_config[env].apiRoot;
-    const authUrl = env_config[env].authUrl;
-    const posPrintUrl = env_config[env].posPrintUrl;
-    const fileApiUrl = env_config[env].fileApiUrl;
     let defaultView = "/views/dashboard";
+
 </script>
 <script>
     function logout() {
@@ -193,22 +191,6 @@
         return [localData,userData];
     }
 
-    // let localData,userData;
-    let [localData,userData] = checkAuth();
-
-
-    let url = "/views/app";
-    if(!userData) {
-        url = "/views/login";
-    }
-    autoload = false;
-    $("#page").komponent({url:url,replace:false}).finally(function () {
-        $(".pageOverlay").remove();
-    });
-
-</script>
-<script>
-
     function toggleAll(src) {
         let checked = $(src).prop("checked");
         $($(src).data("connected")).children().each(function (i) {
@@ -228,38 +210,6 @@
         let tmp = $("#orderPartsList").children();
         $($(src).data("connected")).prop("checked",(tmp.length===tmp.filter(".selected").length));
     }
-
-</script>
-
-<style>
-    .checkRead {
-        display: none;
-    }
-    .checkCreate {
-        display: none;
-    }
-    .checkUpdate {
-        display: none;
-    }
-    .checkDelete {
-        display: none;
-    }
-
-    .checkRead.readAllow {
-        display: block;
-    }
-    .checkCreate.createAllow {
-        display: block;
-    }
-    .checkUpdate.updateAllow {
-        display: block;
-    }
-    .checkDelete.deleteAllow {
-        display: block;
-    }
-
-</style>
-<script>
 
     function checkUserRights(el, modules) {
 
@@ -316,6 +266,67 @@
         });
 
     }
+
+    // let localData,userData;
+    let [localData,userData] = checkAuth();
+
+    let url = "/views/app";
+    if(!userData) {
+        url = "/views/login";
+    }
+    autoload = false;
+    let backendUrl, apiRoot, authUrl, fileApiUrl;
+
+    $.get("../config.json")
+        .done(function (data) {
+            backendUrl = data.environments[data.active].backendUrl;
+            apiRoot = data.environments[data.active].dbapiUrl;
+            authUrl = data.environments[data.active].authUrl;
+            fileApiUrl = data.environments[data.active].fileApiUrl;
+
+            $("#page").komponent({url:url,replace:false}).finally(function () {
+                $(".pageOverlay").remove();
+            });
+        });
+
+
+</script>
+<script>
+
+
+</script>
+
+<style>
+    .checkRead {
+        display: none;
+    }
+    .checkCreate {
+        display: none;
+    }
+    .checkUpdate {
+        display: none;
+    }
+    .checkDelete {
+        display: none;
+    }
+
+    .checkRead.readAllow {
+        display: block;
+    }
+    .checkCreate.createAllow {
+        display: block;
+    }
+    .checkUpdate.updateAllow {
+        display: block;
+    }
+    .checkDelete.deleteAllow {
+        display: block;
+    }
+
+</style>
+<script>
+
+
 
 </script>
 

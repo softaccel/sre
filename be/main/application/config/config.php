@@ -23,9 +23,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = '';
-$config['api_root_full'] = "http://172.16.20.15/dbapi/v2/spaleck";
-$config['api_root_full'] = "https://nemo1.softaccel.net/dbapi/v2/spaleck";
+$tmp = @file_get_contents(__DIR__."/../../../../config.json");
+if(!$tmp) {
+	http_response_code(500);
+	die("No config file found");
+}
+$cfg = json_decode($tmp);
+if(json_last_error()) {
+	http_response_code(500);
+	die("Invalid config file");
+}
+//print_r($cfg);
+if(!@$cfg->active) {
+	http_response_code(500);
+	die("No environment selected");
+}
+if(!@$cfg->environments) {
+	http_response_code(500);
+	die("Invalid config file");
+}
+if(!@$cfg->environments->{$cfg->active}) {
+	http_response_code(500);
+	die("Invalid environment selection");
+}
+
+
+$config['base_url'] =  $cfg->environments->{$cfg->active}->baseUrl."/be/main";
+$config['dbapi_url'] = $cfg->environments->{$cfg->active}->dbapiUrl;
 /*
 |--------------------------------------------------------------------------
 | Index File
