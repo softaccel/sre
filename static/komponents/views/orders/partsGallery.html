@@ -78,6 +78,17 @@
     .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 1rem; }
     .toggle.ios .toggle-handle { border-radius: 1rem; }
 
+    .hide-no-offer{
+        display: none;
+    }
+
+    .offer .hide-no-offer{
+        display: unset;
+    }
+
+    .ord .hide-no-offer{
+        display: unset;
+    }
 </style>
 
 <div>
@@ -111,7 +122,7 @@
                 <input type="checkbox" id="viewToggle" checked data-toggle="toggle" data-style="ios" data-size="sm">
             </div>
             <div>
-                <div class="float-sm-right">
+                <div class="float-sm-right hide-no-offer">
                     <button onclick="newOrderPart()" type="button" data-toggle="tooltip" title="Adauga reper" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary checkUpdate">
                         Adauga reper
                     </button>
@@ -221,6 +232,8 @@
             type: "orders_items_wmeta",
             resourcetype: "collection"
         }).data("instance");
+
+        k.$el.addClass(k.data.instance.attributes.state);
 
         instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_items_wmeta?page[orders_items_wmeta][limit]=1000&page[orders_items_wmeta][limit]=8")
             .loadFromRemote()

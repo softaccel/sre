@@ -20,6 +20,17 @@
         display: unset;
     }
 
+    .hide-no-offer{
+        display: none;
+    }
+
+    .offer .hide-no-offer{
+        display: unset;
+    }
+
+    .ord .hide-no-offer{
+        display: unset;
+    }
 </style>
 <div class="row" id="orderDetails">
     <div class="col-6">
@@ -35,8 +46,10 @@
                     <span class="edit" style="min-width: 200px">
                         <input type="text" id="denumChange" class="form-control form-control-sm" value="<%= attributes.label %>">
                     </span>
+                    <div class="hide-no-offer">
+                        <button class="btn btn-secondary float-right btn-sm edit checkUpdate" onclick="editDenumChange(this)"><i class="fa fa-edit"></i></button>
+                    </div>
                     <button class="btn btn-success float-right btn-sm save" onclick="saveDenumChange(this)"><i class="fa fa-save"></i></button>
-                    <button class="btn btn-secondary float-right btn-sm edit checkUpdate" onclick="editDenumChange(this)"><i class="fa fa-edit"></i></button>
                 </td>
             </tr>
             <tr>
@@ -61,11 +74,13 @@
                             <button type="button" class="btn btn-sm btn-secondary dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Oferta</button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ord`)" value="ord">Comandat</a>
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)" value="canceled">Anulat</a>
                             </div>
                         <% } else if(attributes.state === "ord") { %>
                             <button type="button" class="btn btn-sm btn-info dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Comandat</button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `proc`)" value="proc">In Lucru</a>
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)" value="canceled">Anulat</a>
                             </div>
                         <% } else if(attributes.state === "proc") { %>
                             <button type="button" class="btn btn-sm btn-danger dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">In Lucru</button>
@@ -79,6 +94,8 @@
                             </div>
                         <% } else if(attributes.state === "dlvd") { %>
                             <button disabled type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat</button>
+                        <% } else if(attributes.state === "canceled") { %>
+                            <button disabled type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anulat</button>
                         <% } %>
 
                     </div>
@@ -101,8 +118,10 @@
                             <% }  %>
                         </select>
                     </span>
+                    <div class="hide-no-offer">
+                        <button class="btn btn-secondary float-right btn-sm edit checkUpdate" onclick="editTeamAssoc(this)"><i class="fa fa-edit"></i></button>
+                    </div>
                     <button class="btn btn-success float-right btn-sm save" onclick="saveTeamAssoc(this)"><i class="fa fa-save"></i></button>
-                    <button class="btn btn-secondary float-right btn-sm edit checkUpdate" onclick="editTeamAssoc(this)"><i class="fa fa-edit"></i></button>
                 </td>
 
             </tr>
@@ -161,7 +180,7 @@
     }
 
     function editDenumChange(src) {
-        $(src).parent().addClass('editMode');
+        $(src).parent().parent().addClass('editMode');
         // $("#teamAllocation").select2wrapper({url: apiRoot+"/teams",placeholder:"Aloca echipa",labelfld:"name"});
     }
 
@@ -186,7 +205,7 @@
     }
 
     function editTeamAssoc(src) {
-        $(src).parent().addClass('editMode');
+        $(src).parent().parent().addClass('editMode');
         $("#teamAllocation").select2wrapper({url: apiRoot+"/teams",placeholder:"Aloca echipa",labelfld:"name"});
     }
 
@@ -240,6 +259,8 @@
             if (!$(this).hasClass("updateAllow"))
                 $(this).attr("disabled", true).removeClass("checkUpdate");
         });
+
+        k.$el.addClass(k.data.instance.attributes.state);
 
         k.data.instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
             .bindView(k.$el.children()).loadFromRemote().then(function (d) {
