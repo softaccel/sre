@@ -33,11 +33,13 @@
         margin-top: 5px;
         background: rgba(239, 239, 239, 0.04);
         max-height: 300px;
-        overflow: scroll;
+        overflow: auto;
     }
     .someSelect li{
         border-bottom: dashed 1px silver;
         cursor: pointer;
+        padding: 2px 0 2px 10px;
+        margin: 0;
     }
     .someSelect li:hover{
         background: #dddddd;
@@ -50,112 +52,126 @@
 
 <div>
     <div class="checkRead">
-        <div class="alert" style="background: #d6d6d6">
+        <div class="alert" style="background: #efefef">
             <div class="row">
-                <div class="col-8">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Marti, 7 Sep. 2021
-                        </button>
-                        <div class="dropdown-menu" style="min-width: 500px;">
-                            <div class="row">
-                                <div class="col-5">
-                                    <ul style="margin: 0; padding: 4px;list-style: none">
-                                        <li>Astazi</li>
-                                        <li>Ieri</li>
-                                        <li>Saptamana aceasta</li>
-                                        <li>Saptamana trecuta</li>
-                                        <li>Luna aceasta</li>
-                                        <li>Luna trecuta</li>
-                                        <li>Anul acesta</li>
-                                        <li>Anul trecut</li>
-                                    </ul>
-                                </div>
-                                <div class="col-7">
+                <div class="col-9">
 
+                    <div class="btn-group btn-group-sm filtercomponent">
+                        <input type="text" id="dateRange" style="max-width: 200px" value="Data" class="form-control form-control-sm">
+
+                        <div class="btn-group btn-group-sm">
+                            <div class="dropdown-menu" style="min-width: 500px;">
+                                <div class="row">
+                                    <div class="col-5 border-right">
+                                        <ul class="someSelect">
+                                            <li>Astazi</li>
+                                            <li>Ieri</li>
+                                            <li>Saptamana aceasta</li>
+                                            <li>Saptamana trecuta</li>
+                                            <li>Luna aceasta</li>
+                                            <li>Luna trecuta</li>
+                                            <li>Anul acesta</li>
+                                            <li>Anul trecut</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-7">
+                                        <div class="drp-calendar left"><div class="calendar-table"><table class="table-condensed"><thead><tr><th class="prev available"><span></span></th><th colspan="5" class="month">Sep 2021</th><th></th></tr><tr><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th><th>Su</th></tr></thead><tbody><tr><td class="off ends available" data-title="r0c0">30</td><td class="off ends available" data-title="r0c1">31</td><td class="available" data-title="r0c2">1</td><td class="available" data-title="r0c3">2</td><td class="available" data-title="r0c4">3</td><td class="weekend available" data-title="r0c5">4</td><td class="weekend available" data-title="r0c6">5</td></tr><tr><td class="available" data-title="r1c0">6</td><td class="available" data-title="r1c1">7</td><td class="available" data-title="r1c2">8</td><td class="active start-date available" data-title="r1c3">9</td><td class="today in-range available" data-title="r1c4">10</td><td class="weekend in-range available" data-title="r1c5">11</td><td class="weekend in-range available" data-title="r1c6">12</td></tr><tr><td class="in-range available" data-title="r2c0">13</td><td class="in-range available" data-title="r2c1">14</td><td class="in-range available" data-title="r2c2">15</td><td class="in-range available" data-title="r2c3">16</td><td class="in-range available" data-title="r2c4">17</td><td class="weekend in-range available" data-title="r2c5">18</td><td class="weekend in-range available" data-title="r2c6">19</td></tr><tr><td class="in-range available" data-title="r3c0">20</td><td class="in-range available" data-title="r3c1">21</td><td class="in-range available" data-title="r3c2">22</td><td class="in-range available" data-title="r3c3">23</td><td class="in-range available" data-title="r3c4">24</td><td class="weekend active end-date in-range available" data-title="r3c5">25</td><td class="weekend available" data-title="r3c6">26</td></tr><tr><td class="available" data-title="r4c0">27</td><td class="available" data-title="r4c1">28</td><td class="available" data-title="r4c2">29</td><td class="available" data-title="r4c3">30</td><td class="off ends available" data-title="r4c4">1</td><td class="weekend off ends available" data-title="r4c5">2</td><td class="weekend off ends available" data-title="r4c6">3</td></tr><tr><td class="off ends available" data-title="r5c0">4</td><td class="off ends available" data-title="r5c1">5</td><td class="off ends available" data-title="r5c2">6</td><td class="off ends available" data-title="r5c3">7</td><td class="off ends available" data-title="r5c4">8</td><td class="weekend off ends available" data-title="r5c5">9</td><td class="weekend off ends available" data-title="r5c6">10</td></tr></tbody></table></div><div class="calendar-time" style="display: none;"></div></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+<!--                        <button type="button" class="btn btn-outline-dark"><i class="fa fa-caret-left"></i></button>-->
+<!--                        <button type="button" class="btn btn-outline-dark"><i class="fa fa-caret-right"></i></button>-->
                     </div>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Angajat
-                        </button>
-                        <div class="dropdown-menu p-3">
-                            <form id="employeeSelectSearch">
-                                <input type="text" name="fullname" data-operator="~=~" placeholder="Nume angajat" onkeyup="this.form.submitBut.click()">
-                                <input type="submit" name="submitBut" class="d-none" autocomplete="false">
-                            </form>
-                            <ul class="someSelect" id="employeeSelect" data-resourcetype="collection" data-filter="#employeeSelectSearch">
-                                <li onclick="performSearch('#timeTrackingEntriesFiltering','employee',$(this).data('emplid'));$('#employeeSelectSearch')[0].fullname.value=$(this).text()" data-emplid="<%= id %>"><%= attributes.fullname%></li>
-                            </ul>
-                            <button class="btn btn-secondary btn-sm" onclick="performSearch('#timeTrackingEntriesFiltering','employee','');$('#employeeSelectSearch')[0].reset()">Sterge selectia</button>
-                        </div>
-                    </div>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Echipa
-                        </button>
-                        <div class="dropdown-menu p-3">
-                            <form id="teamSelectSearch">
-                                <input type="text" name="name" data-operator="~=~" placeholder="Nume echipa" onkeyup="this.form.submitBut.click()">
-                                <input type="submit" name="submitBut" class="d-none" autocomplete="false">
-                            </form>
-                            <ul class="someSelect" id="teamSelect" data-resourcetype="collection" data-filter="#teamSelectSearch">
-                                <li><a onclick="performSearch('#timeTrackingEntriesFiltering','team',$(this).data('teamid'));$('#teamSelectSearch')[0].name.value=$(this).text()" data-teamid="<%= id %>"><%= attributes.name%></a></li>
-                            </ul>
-                            <button class="btn btn-secondary btn-sm" onclick="performSearch('#timeTrackingEntriesFiltering','team','');$('#teamSelectSearch')[0].reset()">Sterge selectia</button>
-                        </div>
-                    </div>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Comanda
-                        </button>
-                        <div class="dropdown-menu p-3">
-                            <form id="orderSelectSearch">
-                                <input type="text" name="docnum" data-operator="~=~" placeholder="ID Comanda" onkeyup="this.form.submitBut.click()">
-                                <input type="submit" name="submitBut" class="d-none" autocomplete="false">
-                            </form>
-                            <ul class="someSelect" id="orderSelect" data-resourcetype="collection" data-filter="#orderSelectSearch">
-                                <li><a onclick="performSearch('#timeTrackingEntriesFiltering','order',$(this).data('teamid'));$('#orderSelectSearch')[0].docnum.value=$(this).text()"
-                                       data-teamid="<%= id %>"><%= attributes.docnum%></a></li>
-                            </ul>
-                            <button class="btn btn-secondary btn-sm" onclick="performSearch('#timeTrackingEntriesFiltering','order','');$('#orderSelectSearch')[0].reset()">Sterge selectia</button>
-                        </div>
-                    </div>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Audit
-                        </button>
-                        <div class="dropdown-menu p-3" style="min-width: 350px">
-                            <ul class="someSelect" id="" data-resourcetype="collection" data-filter="#orderSelectSearch">
-                                <li>Durata mai mare de <input typeof="number" style="width: 40px" value="8"> ore </li>
-                                <li>Comanda nealocata</li>
-                            </ul>
-                            <button class="btn btn-secondary btn-sm" onclick="performSearch('#timeTrackingEntriesFiltering','order','');$('#orderSelectSearch')[0].reset()">Sterge selectia</button>
-                        </div>
-                    </div>
-
-
-<!--                    <div class="btn-group">-->
-<!--                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                    <div class="btn-group btn-group-sm">-->
+<!--                        <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
 <!--                            Angajat-->
 <!--                        </button>-->
 <!--                        <div class="dropdown-menu p-3">-->
-<!--                            <form id="employeeSelectSearch">-->
-<!--                                <input type="text" name="fullname" data-operator="~=~" placeholder="Cauta angajati" onkeyup="this.form.submitBut.click()">-->
+<!--                            <form >-->
+<!--                                <input type="text" name="fullname" data-operator="~=~" placeholder="Nume angajat" onkeyup="this.form.submitBut.click()">-->
 <!--                                <input type="submit" name="submitBut" class="d-none" autocomplete="false">-->
 <!--                            </form>-->
 <!--                            <ul class="someSelect" id="employeeSelect" data-resourcetype="collection" data-filter="#employeeSelectSearch">-->
-<!--                                <li><a onclick="performSearch('#timeTrackingEntriesFiltering','employee',$(this).data('emplid'));$('#employeeSelectSearch')[0].fullname.value=$(this).text()" data-emplid="<%= id %>"><%= attributes.fullname%></a></li>-->
+<!--                                <li onclick="performSearch(this)" data-emplid="<%= id %>"><%= attributes.fullname%></li>-->
 <!--                            </ul>-->
+<!--                            <button class="btn btn-secondary btn-sm" onclick="performSearch('#timeTrackingEntriesFiltering','employee','');$('#employeeSelectSearch')[0].reset()">Sterge selectia</button>-->
 <!--                        </div>-->
 <!--                    </div>-->
+
+                    <div class="btn-group btn-group-sm filtercomponent">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-filter" style="visibility: hidden"></i>
+                            Angajat
+                            <i class="fa" style="visibility: hidden"></i>
+                        </button>
+                        <div class="dropdown-menu p-3">
+                            <form id="employeeSelectSearch" data-searchfld="employee" data-searchform="#timeTrackingEntriesFiltering">
+                                <input type="text" name="fullname" data-operator="~=~" placeholder="Nume angajat" onkeyup="$(this.form).submit()" autocomplete="false">
+                                <ul class="someSelect" data-resourcetype="collection" data-filter="#employeeSelectSearch">
+                                    <li data-value="<%= id %>" onclick="performSearch(this)"><%= attributes.fullname%></li>
+                                </ul>
+                                <button class="btn btn-secondary btn-sm mt-2" type="reset" onclick="performSearch(this)">Sterge filtru</button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div class="btn-group btn-group-sm filtercomponent">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-filter" style="visibility: hidden"></i>
+                            Echipa
+                            <i class="fa" style="visibility: hidden"></i>
+                        </button>
+
+                        <div class="dropdown-menu p-3">
+                            <form id="teamSelectSearch" data-searchfld="team" data-searchform="#timeTrackingEntriesFiltering">
+                                <input type="text" name="name" data-operator="~=~" placeholder="Nume echipa" onkeyup="$(this.form).submit()" autocomplete="false">
+                                <ul class="someSelect" data-resourcetype="collection" data-filter="#teamSelectSearch">
+                                    <li data-value="<%= id %>" onclick="performSearch(this)"><%= attributes.name%></li>
+                                </ul>
+                                <button class="btn btn-secondary btn-sm mt-2" type="reset" onclick="performSearch(this)">Sterge filtru</button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div class="btn-group btn-group-sm filtercomponent">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-filter" style="visibility: hidden"></i>
+                            Comanda
+                            <i class="fa" style="visibility: hidden"></i>
+                        </button>
+                        <div class="dropdown-menu p-3">
+                            <form id="orderSelectSearch" data-searchfld="order" data-searchform="#timeTrackingEntriesFiltering">
+                                <input type="text" name="docnum" data-operator="~=~" placeholder="ID Comanda" onkeyup="$(this.form).submit()" autocomplete="false">
+                                <ul class="someSelect" data-resourcetype="collection" data-filter="#orderSelectSearch">
+                                    <li data-value="<%= id %>" onclick="performSearch(this)"><%= attributes.docnum%></li>
+                                </ul>
+                                <button class="btn btn-secondary btn-sm mt-2" type="reset" onclick="performSearch(this)">Sterge filtru</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="btn-group btn-group-sm filtercomponent">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-filter" style="visibility: hidden"></i>
+                            Audit
+                            <i class="fa" style="visibility: hidden"></i>
+                        </button>
+                        <div class="dropdown-menu p-3" style="min-width: 350px">
+                            <ul class="someSelect" id="" data-resourcetype="collection" data-filter="#orderSelectSearch">
+                                <li onclick="filterLongerThen($(this).find('input').val())">Durata mai mare de <input typeof="number" style="width: 40px" value="8"> ore </li>
+                                <li onclick="filterUnallocated()">Comanda nealocata</li>
+                            </ul>
+                            <button class="btn btn-secondary btn-sm mt-2" onclick="performSearch('#timeTrackingEntriesFiltering','order','');$('#orderSelectSearch')[0].reset()">Sterge filtru</button>
+                        </div>
+                    </div>
 
 
                 </div>
                 <div class="col" style="text-align: right">
-                    <button class="btn btn-primary checkCreate float-right"  id="newTTBtn"><i class="fa fa-plus-square"></i> Introducere manuala</button>
+                    <button class="btn btn-sm btn-primary checkCreate float-right"  id="newTTBtn"><i class="fa fa-plus-square"></i> Introducere manuala</button>
                 </div>
 
             </div>
@@ -210,7 +226,7 @@
 
                 </td>
                 <td style="max-width: 100px">
-                    <div class="values"><%= relationships.order.relationships.doc_id.attributes.docnum %></div>
+                    <div class="values"><%= relationships.order ? relationships.order.relationships.doc_id.attributes.docnum : "nealocat" %></div>
                     <div class="inputs">
                         <select name="order"  style="width: 100%"></select>
                     </div>
@@ -280,20 +296,48 @@
 </div>
 
 <script>
+function filterUnallocated() {
+    $($("#timeTrackingEntriesFiltering")[0].order).val("__NULL__").form().submit();
+}
 
-    timeRegex = /(\d+):(\d+):(\d+)/;
-    
-    function performSearch(form, field, value) {
-        $($(form)[0][field]).val(value);
-        $(form).submit();
+function filterLongerThen(val) {
+    let instance = $("#timeTrackingEntries").data("instance");
+    instance.url.parameters["filter_advanced"] = encodeURIComponent("TIMESTAMPDIFF(MINUTE,start,stop)>"+val*60)
+    instance.loadFromRemote();
+}
+
+
+function doSearch(src) {
+        console.log("----------------",src);
     }
+    timeRegex = /(\d+):(\d+):(\d+)/;
+
+    function performSearch(src) {
+        let $src = $(src);
+
+        let $frm = $src.parents("form");
+        if($src.attr("type")==="reset") {
+            $($src.parents(".filtercomponent").children("[data-toggle]").children("i")[0]).css("visibility","hidden");
+            return $($($frm.data("searchform"))[0].elements[$frm.data("searchfld")])
+                .val("")
+                .form().submit();
+        }
+
+        $($src.parents(".filtercomponent").children("[data-toggle]").children("i")[0]).css("visibility","unset");
+
+        $frm.find("input[type=text]").val($src.text()).form().submit();
+
+        $($($frm.data("searchform"))[0].elements[$frm.data("searchfld")])
+            .val($src.data("value"))
+            .form().submit();
+    }
+
 
     function cancelEdit(src) {
         $(src).parents('tr').removeClass('edit')
             .find("select[name=op]").select2("destroy");
         $(src).parents('tr').find("select[name=order]").select2("destroy");
         $(src).parents('tr').find("select[name=currency]").select2("destroy");
-
     }
 
     function save(src) {
@@ -490,6 +534,22 @@
 
     function init_komponent(k) {
 
+        $("#dateRange").daterangepicker({autoUpdateInput:false})
+            .on("apply.daterangepicker",function (e) {
+                let[start,stop] = $(e.target).val().split(" - ");
+                start = new Date(start);
+                stop = new Date(stop);
+                stop.setDate(stop.getDate()+1);
+                $("#startFrom").val(start.toISOString());
+                $("#startTo").val(stop.toISOString());
+                $("#timeTrackingEntriesFiltering").submit();
+            })
+            .on("cancel.daterangepicker",function () {
+                $("#startFrom").val("");
+                $("#startTo").val("");
+                $("#timeTrackingEntriesFiltering").submit();
+            });
+
         checkUserRights(k.$el, "timetracking");
 
         let url = apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team";
@@ -505,13 +565,13 @@
             returninstance: true
         });
 
-        k.$el.find("#employeeSelect").apiator({returninstance: true})
+        k.$el.find("#employeeSelectSearch").find("ul").apiator({returninstance: true})
             .setUrl(apiRoot+"/employees_names?page[employees_names][limit]=20").loadFromRemote();
 
-        k.$el.find("#teamSelect").apiator({returninstance: true})
+        k.$el.find("#teamSelectSearch").find("ul").apiator({returninstance: true})
             .setUrl(apiRoot+"/teams?page[teams][limit]=20").loadFromRemote();
 
-        k.$el.find("#orderSelect").apiator({returninstance: true})
+        k.$el.find("#orderSelectSearch").find("ul").apiator({returninstance: true})
             .setUrl(apiRoot+"/orders_extended?page[orders_extended][limit]=20").loadFromRemote();
 
 
@@ -522,57 +582,14 @@
                 .send();
         });
 
-        k.$el.find("#emplNamefilter").select2wrapper({
-            url: apiRoot + "/employees_names",
-            labelfld: "fullname",
-            idfld: "id",
-            placeholder: "Nume Angajat"
-        });
-        k.$el.find("#teamNamefilter").select2wrapper({
-            url: apiRoot + "/teams",
-            labelfld: "fullname",
-            idfld: "id",
-            placeholder: "Nume Angajat"
-        });
 
-
-        k.$el.find("#docNumFilter").select2wrapper({
-            url: apiRoot + "/orders_extended",
-            labelfld: "docnum",
-            idfld: "oid",
-            placeholder: "Doc num"
-        });
-
-        k.$el.find("#operationFilter").select2wrapper({
-            url: apiRoot + "/catalog?filter=type=service",
-            labelfld: "name",
-            idfld: "id",
-            placeholder: "Operatie"
-        });
 
         let submitButton = k.$el.find("#timeTrackingEntriesFiltering").find("#submitBtn");
 
-        $("#emplNamefilter").on("select2:select", function () {
-            submitButton.click();
-        }).on("select2:clear", function () {
-            submitButton.click();
-        });
 
-        $("#docNumFilter").on("select2:select", function () {
-            submitButton.click();
-        }).on("select2:clear", function () {
-            submitButton.click();
-        });
-
-        $("#operationFilter").on("select2:select", function () {
-            submitButton.click();
-        }).on("select2:clear", function () {
-            submitButton.click();
-        });
-
-        $("#timeTrackingTable").find("input").on("change", function () {
-            submitButton.click();
-        });
+        // $("#timeTrackingTable").find("input").on("change", function () {
+        //     submitButton.click();
+        // });
 
 
         let util = instance.getUtilities();
