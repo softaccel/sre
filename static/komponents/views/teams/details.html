@@ -42,7 +42,11 @@
             </div>
             <div class="row">
                 <div class="col-3">Team Leader</div>
-                <div class="col-9"><%= relationships.teamlead ? relationships.teamlead.attributes.fname : '-' %></div>
+                <% if(relationships.teamlead) { %>
+                    <div class="col-9"><a href="#" onclick="event.preventDefault(); goToTeamlead(this);"><%= relationships.teamlead.attributes.fname + " " + relationships.teamlead.attributes.lname%></a></div>
+                <% } else { %>
+                    <div class="col-9">-</div>
+                <% } %>
                 <div class="col-9">
                     <select name="teamlead" id="selectLead">
                         <option value="<%= relationships.teamlead ? relationships.teamlead.id : '' %>"><%= relationships.teamlead ? relationships.teamlead.attributes.fname : '-' %></option>
@@ -64,6 +68,13 @@
 </div>
 
 <script>
+
+    function goToTeamlead(src) {
+        console.log($(src).data().instance.relationships.teamlead);
+
+        komponentor.intent("/views/employees/employee").data({emplId:$(src).data().instance.relationships.teamlead.id})
+            .send();
+    }
 
     function exitEditMode() {
         $("#teamEditDiv").removeClass("editMode");

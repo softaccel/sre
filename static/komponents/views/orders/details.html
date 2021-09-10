@@ -173,8 +173,6 @@
 <script>
 
     function goToPartner(src) {
-        console.log(src);
-        console.log($(src).data().instance.relationships.partner_id);
         komponentor.intent("/views/partners/addPartner").data({instance:$(src).data().instance.relationships.partner_id, title: "ceva"})
             .send();
     }
