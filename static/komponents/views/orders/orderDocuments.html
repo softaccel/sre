@@ -1,0 +1,231 @@
+<style>
+
+</style>
+
+<div>
+    <div id="orderDocumentsList">
+        <ul>
+            <li>
+                <div class="d-flex justify-content-between">
+                    <div>Facturi</div>
+                    <div class="checkUpdate">
+                        <form id="orderDocumentsFacturi">
+                            <input type="file" name="files[]" multiple class="" id="addFiles">
+                            <input type="submit" value="Upload" name="upload">
+                        </form>
+                    </div>
+                </div>
+                <div id="documentsFacturi" data-resourcetype="collection">
+                    <% documents = JSON.parse(attributes.meta_val);%>
+                    <ul>
+                        <% for (let [i,doc] of documents.entries()) { %>
+                        <li data-index="<%= i %>" class="mt-1 mb-1">
+                            <div class="d-flex justify-content-between">
+                                <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
+                            </div>
+                        </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="d-flex justify-content-between">
+                    <div>Avize</div>
+                    <div class="checkUpdate">
+                        <form id="orderDocumentsAvize">
+                            <input type="file" name="files[]" multiple class="" id="addFiles">
+                            <input type="submit" value="Upload" name="upload">
+                        </form>
+                    </div>
+                </div>
+                <div id="documentsAvize" data-resourcetype="collection">
+                    <% documents = JSON.parse(attributes.meta_val);%>
+                    <ul>
+                        <% for (let [i,doc] of documents.entries()) { %>
+                        <li data-index="<%= i %>">
+                            <div class="d-flex justify-content-between">
+                                <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
+                            </div>
+                        </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="d-flex justify-content-between">
+                    <div>Certificate de calitate</div>
+                    <div class="checkUpdate">
+                        <form id="orderDocumentsFacturi">
+                            <input type="file" name="files[]" multiple class="" id="addFiles">
+                            <input type="submit" value="Upload" name="upload">
+                        </form>
+                    </div>
+                </div>
+                <div id="documentsCertificate" data-resourcetype="collection">
+                    <% documents = JSON.parse(attributes.meta_val);%>
+                    <ul>
+                        <% for (let [i,doc] of documents.entries()) { %>
+                        <li data-index="<%= i %>">
+                            <div class="d-flex justify-content-between">
+                                <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
+                            </div>
+                        </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="d-flex justify-content-between">
+                    <div>Fise de urmarire</div>
+                    <div class="checkUpdate">
+                        <form id="orderDocumentsFacturi">
+                            <input type="file" name="files[]" multiple class="" id="addFiles">
+                            <input type="submit" value="Upload" name="upload">
+                        </form>
+                    </div>
+                </div>
+                <div id="documentsFise" data-resourcetype="collection">
+                    <% documents = JSON.parse(attributes.meta_val);%>
+                    <ul>
+                        <% for (let [i,doc] of documents.entries()) { %>
+                        <li data-index="<%= i %>">
+                            <div class="d-flex justify-content-between">
+                                <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
+                            </div>
+                        </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="d-flex justify-content-between">
+                    <div>Altele</div>
+                    <div class="checkUpdate">
+                        <form id="orderDocumentsFacturi">
+                            <input type="file" name="files[]" multiple class="" id="addFiles">
+                            <input type="submit" value="Upload" name="upload">
+                        </form>
+                    </div>
+                </div>
+                <div id="documentsOther" data-resourcetype="collection">
+                    <% documents = JSON.parse(attributes.meta_val);%>
+                    <ul>
+                        <% for (let [i,doc] of documents.entries()) { %>
+                        <li data-index="<%= i %>">
+                            <div class="d-flex justify-content-between">
+                                <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
+                            </div>
+                        </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<script>
+
+    function deleteOrderDocument(src, e) {
+        komponentor.intent("/common/messagemodal").data({
+            body: "Esti sigur ca vrei sa stergi documentul?",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        let instance = $(src).data("instance");
+                        let docList = JSON.parse(instance.attributes.meta_val);
+                        let docIdx = $($(src).parents("li")[0]).data("index");
+                        docList.splice(docIdx, 1);
+                        console.log(docList);
+
+                        instance.update({meta_val:JSON.stringify(docList)})
+                        .catch(function(data) {
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare: <pre>"+data.jqXHR.responseText+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
+        e.stopPropagation();
+    }
+
+    function init_komponent(k) {
+
+        checkUserRights(k.$el, "orders");
+
+        function uploadDocument(instance, form, name) {
+            let formData = new FormData();
+            let $files = form["files[]"];
+            for (var index = 0; index < $files.files.length; index++) {
+                formData.append("files[]", $files.files[index]);
+            }
+            $.ajax({
+                url : fileApiUrl + "/files",
+                type : 'POST',
+                data : formData,
+                headers: { 'Access-Control-Allow-Origin': fileApiUrl.split(".")[0] + "." },
+                processData: false,
+                contentType: false,
+                success : function(data) {
+                    let documentList = instance.items.length ? JSON.parse(instance.items[0].attributes.meta_val) : [];
+
+                    data.data.forEach(function (doc) {
+                        console.log("doc", doc)
+                        documentList.push({
+                            link: fileApiUrl + "/files/" + doc.id,
+                            lbl: doc.attributes.original_name
+                        });
+                    });
+
+                    let p = instance.items.length
+                        ? instance.items[0].update({meta_val:JSON.stringify(documentList)})
+                        : instance.append({meta_key:"documents." + name,meta_val:JSON.stringify(documentList)});
+
+                    p.catch(function(data){
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare: <pre>"+data.jqXHR.responseText+"</pre>"
+                        }).send();
+                    });
+                }
+            });
+        }
+
+        let url = apiRoot + "/orders/" + k.data.instance.id + "/orders_meta/?filter=meta_key=documents.facturi";
+        let facturi = k.$el.find("#documentsFacturi").apiator({url: url, returninstance:true});
+        let avize = k.$el.find("#documentsAvize").apiator({url: url.replace("facturi", "avize"), returninstance:true});
+        let cetificate = k.$el.find("#documentsCertificate").apiator({url: url.replace("facturi", "certificate"), returninstance:true});
+        let fise = k.$el.find("#documentsFise").apiator({url: url.replace("facturi", "fise"), returninstance:true});
+        let altele = k.$el.find("#documentsOther").apiator({url: url.replace("facturi", "other"), returninstance:true});
+
+        console.log("facturi", facturi);
+
+        const util = facturi.getUtilities();
+
+        let formFacturi = k.$el.find("#orderDocumentsFacturi")[0];
+        util.captureFormSubmit(formFacturi, function (data) {
+            uploadDocument(facturi, formFacturi, "facturi");
+        });
+
+    }
+
+</script>
