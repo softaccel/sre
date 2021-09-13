@@ -1,0 +1,99 @@
+<style>
+
+    .hide-no-offer{
+        display: none;
+    }
+
+    .offer .hide-no-offer{
+        display: unset;
+    }
+
+    .ord .hide-no-offer{
+        display: unset;
+    }
+
+</style>
+
+<div>
+    <div class="hide-no-offer">
+        <button class="btn btn-primary checkUpdate" id="allocateEmpl"><i class="fa fa-user-plus"></i> Adauga</button>
+    </div>
+    <hr>
+    <div class="row" id="allocatedEmployees">
+        <div class="col-3 mb-4 ">
+            <div class="employee shadow bg-light-me rounded p-2" >
+                <button class="btn employeeIcon rounded-circle bg-primary text-center float-left p-1 mr-2" style="width: 50px; height: 50px; color: white; font-size: 25px"><i class="fa fa-user"></i></button>
+                <button class="employeeIconDelete btn rounded-circle bg-danger text-center float-left p-1 mr-2" onclick="remove_employee_from_order(this)"
+                        style="width: 50px; height: 50px; color: white; font-size: 25px">
+                    <i class="fa fa-user-minus"></i>
+                </button>
+                <span class="employeeName" onclick="edit_employee_association(this)">
+                    <%= relationships.emplid.attributes.fname+" "+relationships.emplid.attributes.lname %>
+                </span><br>
+                <%= relationships.operation.attributes.name %>
+                <div style="clear: left"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function remove_employee_from_order(src) {
+        let emplid = ($(src).data("instance")).relationships.emplid;
+        komponentor.intent("/common/messagemodal").data({
+            body: "Sigur vrei sa dealoci angajatul <br><strong>"+ emplid.attributes.fname + " " + emplid.attributes.lname + "</strong>",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        $(src).data('instance').delete().then(()=>{console.log("ok",arguments)}).catch(function(data){
+                            console.log(data);
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
+    }
+
+    function edit_employee_association(src) {
+        komponentor.intent("/views/orders/assign_empl").data({instance: $(src).data("instance")}).send();
+    }
+
+    function init_komponent(k) {
+
+        checkUserRights(k.$el, "orders");
+
+        k.$el.addClass(k.data.instance.attributes.state);
+
+        let url = apiRoot+"/orders/"+k.data.instance.id+"/orders_2_employees?include=emplid,operation&page[orders_2_employees][limit]=100";
+        try {
+            let allocatedEmployees = $("#allocatedEmployees")
+                .apiator({url: url, type: "orders_2_employees", resourcetype: "collection"})
+                .data("instance");
+
+            $("#allocateEmpl").on("click",function () {
+                komponentor.intent("/views/orders/assign_empl").data({instance: allocatedEmployees}).send();
+            });
+        }
+        catch (e) {
+            console.log("//////////",e);
+        }
+
+    }
+
+</script>

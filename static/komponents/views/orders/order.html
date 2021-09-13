@@ -46,18 +46,6 @@
         cursor: pointer;
     }
 
-    .hide-no-offer{
-        display: none;
-    }
-
-    .offer .hide-no-offer{
-        display: unset;
-    }
-
-    .ord .hide-no-offer{
-        display: unset;
-    }
-
 </style>
 
 <div class="modal" id="order_details_modal">
@@ -75,10 +63,13 @@
                         <a data-toggle="tab" href="#reperePanel" class="nav-link" id="repereTab">Continut</a>
                     </li>
                     <li class="nav-item">
+                        <a data-toggle="tab" href="#documentePanel" class="nav-link" id="documenteTab">Documente</a>
+                    </li>
+                    <li class="nav-item">
                         <a data-toggle="tab" href="#ordersCostsPanel" class="nav-link" id="orderItemsTab">Elemente de cost</a>
                     </li>
                     <li class="nav-item">
-                        <a data-toggle="tab" href="#resurse" class="nav-link" id="allocResTab">Resurse alocate</a>
+                        <a data-toggle="tab" href="#resursePanel" class="nav-link" id="allocResTab">Resurse alocate</a>
                     </li>
                     <li class="nav-item">
                         <a data-toggle="tab" href="#pontaj" class="nav-link" id="timeTrackTab">Pontaj</a>
@@ -93,54 +84,33 @@
             </div>
             <div class="modal-body bg-white">
                 <div class="tab-content">
-                    <!--// sumar-->
-                    <div class="tab-pane fade" id="sumar" is="komponent" data-url="/views/orders/details" ></div>
 
-                    <!--// sumar-->
+                    <div class="tab-pane fade" id="sumar" is="komponent" data-url="/views/orders/details"></div>
+
                     <div class="tab-pane fade" id="reperePanel">
                         <div is="komponent" data-url="/views/orders/partsGallery" id="repere"></div>
+                    </div>
+
+                    <div class="tab-pane fade" id="documentePanel">
+                        <div is="komponent" data-url="/views/orders/orderDocuments" id="documents"></div>
                     </div>
 
                     <div class="tab-pane fade" id="ordersCostsPanel">
                         <div is="komponent" data-url="/views/orders/orderCosts" id="ordersCosts"></div>
                     </div>
 
-                    <div class="tab-pane fade" id="pontaj" is="komponent" data-url="/views/pontaj/registru">
-                    </div>
+                    <div class="tab-pane fade" id="pontaj" is="komponent" data-url="/views/pontaj/registru"></div>
 
                     <div class="tab-pane fade" id="deliveriesContent" is="komponent" data-url="/views/pontaj/deliveries">
                         Deliveries
                     </div>
 
-                    <div class="tab-pane fade" id="proprietati" is="komponent" data-url="/views/orders/orderDetails">
+                    <div class="tab-pane fade" id="proprietati" is="komponent" data-url="/views/orders/orderDetails"></div>
+
+                    <div class="tab-pane fade" id="resursePanel">
+                        <div is="komponent" data-url="/views/orders/orderEmployees" id="resurse"></div>
                     </div>
 
-                    <!--// resurse-->
-                    <div class="tab-pane fade checkRead" id="resurse">
-                        <div class="hide-no-offer">
-                            <button class="btn btn-primary checkUpdate" id="allocateEmpl"><i class="fa fa-user-plus"></i> Adauga</button>
-                        </div>
-                        <hr>
-                        <div class="row" id="allocatedEmployees">
-                            <div class="col-3 mb-4 ">
-                                <div class="employee shadow bg-light-me rounded p-2" >
-                                    <button class="btn employeeIcon rounded-circle bg-primary text-center float-left p-1 mr-2"
-                                            style="width: 50px; height: 50px; color: white; font-size: 25px">
-                                        <i class="fa fa-user"></i>
-                                    </button>
-                                    <button class="employeeIconDelete btn rounded-circle bg-danger text-center float-left p-1 mr-2" onclick="remove_employee_from_order(this)"
-                                            style="width: 50px; height: 50px; color: white; font-size: 25px">
-                                        <i class="fa fa-user-minus"></i>
-                                    </button>
-                                    <span class="employeeName" onclick="edit_employee_association(this)">
-                                        <%= relationships.emplid.attributes.fname+" "+relationships.emplid.attributes.lname %>
-                                    </span><br>
-                                    <%= relationships.operation.attributes.name %>
-                                    <div style="clear: left"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -152,63 +122,11 @@
 
 <script>
 
-    function remove_employee_from_order(src) {
-        let emplid = ($(src).data("instance")).relationships.emplid;
-        komponentor.intent("/common/messagemodal").data({
-            body: "Sigur vrei sa dealoci angajatul <br><strong>"+ emplid.attributes.fname + " " + emplid.attributes.lname + "</strong>",
-            buttons: [
-                {
-                    label: "Da",
-                    class: "btn-danger",
-                    attrs: {
-                        "data-dismiss":"modal"
-                    },
-                    callback: function () {
-                        $(src).data('instance').delete().then(()=>{console.log("ok",arguments)}).catch(function(data){
-                            console.log(data);
-                            komponentor.intent("/common/errormodal").data({
-                                body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
-                            }).send();
-                        });
-                    }
-                },
-                {
-                    label: "Nu",
-                    class: "btn-secondary",
-                    attrs: {
-                        "data-dismiss":"modal"
-                    }
-                }
-            ]
-        }).send();
-    }
-
-    function edit_employee_association(src) {
-        komponentor.intent("/views/orders/assign_empl").data({instance: $(src).data("instance")}).send();
-    }
-
     function init_komponent(k,d) {
 
         checkUserRights(k.$el, "orders");
 
-        k.$el.addClass(k.data.instance.attributes.state);
-
-
         k.$el.appendTo("body");
-
-        let url = apiRoot+"/orders/"+k.data.instance.id+"/orders_2_employees?include=emplid,operation&page[orders_2_employees][limit]=100";
-        try {
-            let allocatedEmployees = $("#allocatedEmployees")
-                .apiator({url: url, type: "orders_2_employees", resourcetype: "collection"})
-                .data("instance");
-
-            $("#allocateEmpl").on("click",function () {
-                komponentor.intent("/views/orders/assign_empl").data({instance: allocatedEmployees}).send();
-            });
-        }
-        catch (e) {
-            console.log("//////////",e);
-        }
 
         let modal = $(k.$el.filter("#order_details_modal")).modal("show")
             .on("hidden.bs.modal",function () {
@@ -220,10 +138,12 @@
         $("#sumar").komponent({data:k.data});
         $("#pontaj").komponent({data:k.data});
         $("#proprietati").komponent({data:k.data});
-
+        $("#resurse").komponent({data:k.data});
+        $("#documents").komponent({data:k.data});
 
 
         $("#sumarTab").tab("show");
         // console.log($("#comandaid").text(k.data.instance.id).text());
     }
+
 </script>
