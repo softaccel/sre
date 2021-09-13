@@ -43,7 +43,7 @@
                     <% documents = JSON.parse(attributes.meta_val);%>
                     <ul>
                         <% for (let [i,doc] of documents.entries()) { %>
-                        <li data-index="<%= i %>">
+                        <li data-index="<%= i %>" class="mt-1 mb-1">
                             <div class="d-flex justify-content-between">
                                 <a href="<%= doc.link %>"><%= doc.lbl %></a>
                                 <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
@@ -57,7 +57,7 @@
                 <div class="d-flex justify-content-between">
                     <div>Certificate de calitate</div>
                     <div class="checkUpdate">
-                        <form id="orderDocumentsFacturi">
+                        <form id="orderDocumentsCertificate">
                             <input type="file" name="files[]" multiple class="" id="addFiles">
                             <input type="submit" value="Upload" name="upload">
                         </form>
@@ -67,7 +67,7 @@
                     <% documents = JSON.parse(attributes.meta_val);%>
                     <ul>
                         <% for (let [i,doc] of documents.entries()) { %>
-                        <li data-index="<%= i %>">
+                        <li data-index="<%= i %>" class="mt-1 mb-1">
                             <div class="d-flex justify-content-between">
                                 <a href="<%= doc.link %>"><%= doc.lbl %></a>
                                 <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
@@ -81,7 +81,7 @@
                 <div class="d-flex justify-content-between">
                     <div>Fise de urmarire</div>
                     <div class="checkUpdate">
-                        <form id="orderDocumentsFacturi">
+                        <form id="orderDocumentsFise">
                             <input type="file" name="files[]" multiple class="" id="addFiles">
                             <input type="submit" value="Upload" name="upload">
                         </form>
@@ -91,7 +91,7 @@
                     <% documents = JSON.parse(attributes.meta_val);%>
                     <ul>
                         <% for (let [i,doc] of documents.entries()) { %>
-                        <li data-index="<%= i %>">
+                        <li data-index="<%= i %>" class="mt-1 mb-1">
                             <div class="d-flex justify-content-between">
                                 <a href="<%= doc.link %>"><%= doc.lbl %></a>
                                 <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
@@ -105,7 +105,7 @@
                 <div class="d-flex justify-content-between">
                     <div>Altele</div>
                     <div class="checkUpdate">
-                        <form id="orderDocumentsFacturi">
+                        <form id="orderDocumentsOther">
                             <input type="file" name="files[]" multiple class="" id="addFiles">
                             <input type="submit" value="Upload" name="upload">
                         </form>
@@ -115,7 +115,7 @@
                     <% documents = JSON.parse(attributes.meta_val);%>
                     <ul>
                         <% for (let [i,doc] of documents.entries()) { %>
-                        <li data-index="<%= i %>">
+                        <li data-index="<%= i %>" class="mt-1 mb-1">
                             <div class="d-flex justify-content-between">
                                 <a href="<%= doc.link %>"><%= doc.lbl %></a>
                                 <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
@@ -213,7 +213,7 @@
         let url = apiRoot + "/orders/" + k.data.instance.id + "/orders_meta/?filter=meta_key=documents.facturi";
         let facturi = k.$el.find("#documentsFacturi").apiator({url: url, returninstance:true});
         let avize = k.$el.find("#documentsAvize").apiator({url: url.replace("facturi", "avize"), returninstance:true});
-        let cetificate = k.$el.find("#documentsCertificate").apiator({url: url.replace("facturi", "certificate"), returninstance:true});
+        let certificate = k.$el.find("#documentsCertificate").apiator({url: url.replace("facturi", "certificate"), returninstance:true});
         let fise = k.$el.find("#documentsFise").apiator({url: url.replace("facturi", "fise"), returninstance:true});
         let altele = k.$el.find("#documentsOther").apiator({url: url.replace("facturi", "other"), returninstance:true});
 
@@ -224,6 +224,26 @@
         let formFacturi = k.$el.find("#orderDocumentsFacturi")[0];
         util.captureFormSubmit(formFacturi, function (data) {
             uploadDocument(facturi, formFacturi, "facturi");
+        });
+
+        let formAvize = k.$el.find("#orderDocumentsAvize")[0];
+        util.captureFormSubmit(formAvize, function (data) {
+            uploadDocument(avize, formAvize, "avize");
+        });
+
+        let formCertificate = k.$el.find("#orderDocumentsCertificate")[0];
+        util.captureFormSubmit(formCertificate, function (data) {
+            uploadDocument(certificate, formCertificate, "certificate");
+        });
+
+        let formFise = k.$el.find("#orderDocumentsFise")[0];
+        util.captureFormSubmit(formFise, function (data) {
+            uploadDocument(fise, formFise, "fise");
+        });
+
+        let formOther = k.$el.find("#orderDocumentsOther")[0];
+        util.captureFormSubmit(formOther, function (data) {
+            uploadDocument(altele, formOther, "other");
         });
 
     }
