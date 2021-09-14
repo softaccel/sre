@@ -1,5 +1,9 @@
+<style>
+
+</style>
+
 <div class="modal" id="order_form_modal">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Comanda noua</h5>
@@ -21,7 +25,7 @@
                     </div>
                     <div class="position-relative form-group">
                         <label for="cust_int_ref" class="">Referinta Interna Client</label>
-                        <select name="cust_int_ref" id="cust_int_ref" class="form-control"></select>
+                        <input name="cust_int_ref" id="cust_int_ref"  type="text" class="form-control" required>
                     </div>
                     <div class="position-relative form-group">
                         <label for="multiplied_by" class="">Cantitate</label>
@@ -37,7 +41,11 @@
                     </div>
                     <div class="position-relative form-group">
                         <label for="deliverydate" class="">Data estimata a livrarii</label>
-                        <input name="deliverydate" id="deliverydate"  type="date" class="form-control">
+                        <input name="deliverydate" id="deliverydate" type="date" class="form-control">
+                    </div>
+                    <div class="position-relative form-group">
+                        <label for="estimated_effort" class="">Timp executie estimat</label>
+                        <input name="estimated_effort" id="estimated_effort"  type="number" class="form-control" required>
                     </div>
 
                     <div style="max-height: 500px; overflow: scroll;">
@@ -160,6 +168,7 @@
             // let sections = [];
             let order = null;
             orderMeta = [];
+
             for (let i=0;i<sectionIDs.length;i++) {
                 if (response.sections[sectionIDs[i]].SectionKey==="K.F") {
                     bestellung = response.sections[sectionIDs[i]];
@@ -189,29 +198,34 @@
                 return;
             }
 
-            let $blgNo = $("#cust_int_ref").empty();
-            for(let fld in order.fields) {
-                $("<option>").text(fld + " - " + order.fields[fld].data)
-                    .val(order.fields[fld].data)
-                .appendTo($blgNo);
-            }
-
-            $($blgNo[0].form).data("meta",response);
+            let instance = $("<div>").apiator({resourcetype: "collection",returninstance:true});
+            instance.setUrl(apiRoot + "/partners/?filter=name~=~" + encodeURIComponent(order.fields["K.E.Lief_Adresse.PF_AdrRow1"].data)).loadFromRemote().then(function (data) {
+                if (instance.items.length == 1 && instance.items[0].attributes && instance.items[0].attributes.name)
+                    $("#partner_id").empty().append("<option value='" + instance.items[0].id+ "'>"
+                        + instance.items[0].attributes.name + "</option>");
+            });
 
             $("#model").val(order.fields["K.E.E_BelegKopf.BelegInfo"].data);
-            $blgNo.val(bestellung.fields["K.F.E_BelegKopf.BelegNummer"].data);
-            $("#orderdate").val(bestellung.fields["K.F.E_BelegKopf.BelegDatum"].data);
-            $("#deliverydate").val(bestellung.fields["K.F.E_BelegKopf.BelegDatum"].data.replaceAll(".","/"));
+
+            let dateSplit = bestellung.fields["K.F.E_BelegKopf.BelegDatum"].data.split('.');
+            $("#orderdate").val(dateSplit[2] + "-" + dateSplit[1] + "-" + dateSplit[0]);
         }
 
         function publishItems(response) {
 
             let total = 0;
             let entries = [];
+            let targetDateSet = false;
             Object.getOwnPropertyNames(response.sections).forEach(function (sectionId) {
                 let entry = response.sections[sectionId];
 
                 if (entry.SectionKey==="P.A") {
+                    if (!targetDateSet && entry.fields["P.A.E_BelegPos.WunschTermin"]) {
+                        let dateSplit = entry.fields["P.A.E_BelegPos.WunschTermin"].data.split('.');
+                        $("#deliverydate").val(dateSplit[2] + "-" + dateSplit[1] + "-" + dateSplit[0]);
+                        targetDateSet = true;
+                    }
+
                     let entryData = {
                         cod: entry.fields["P.A.E_BelegPos.Artikel"].data,
                         desc: entry.fields["P.A.S_ArtikelSpr.Bezeichnung[1]"].data+" / " +entry.fields["P.A.S_ArtikelSpr.Bezeichnung[2]"].data+" / "
@@ -267,7 +281,7 @@
         }
 
         function placeOrder(form) {
-            let meta = $(form).data("meta");
+            orderMeta.push({meta_key: "estimated_effort", meta_val: $(form.estimated_effort).val()});
 
             let order = {
                 attributes: {
@@ -319,6 +333,17 @@
         }
 
         $orderButton.on("click",function (src) {
+            let suspend = false;
+            $("#orderForm").find("input,textarea,select").filter("[required]").each(function () {
+                if (!$(this).val() || $(this).val() === '' || $(this).val() === null)
+                    suspend = true;
+            });
+
+            if (suspend) {
+                komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>Toate campurile sunt obligatorii.</pre>"}).send();
+                return;
+            }
+
             placeOrder(src.target.form)
                 .then(function (a) {
                     k.data.instance.view.el.children().first().find("td:nth-child(2)").click();
