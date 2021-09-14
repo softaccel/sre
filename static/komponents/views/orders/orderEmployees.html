@@ -16,6 +16,18 @@
         display: unset;
     }
 
+    .ready .employee:hover .employeeIcon{
+        display: inline-block;
+    }
+
+    .dlvd .employee:hover .employeeIcon{
+        display: inline-block;
+    }
+
+    .canceled .employee:hover .employeeIcon{
+        display: inline-block;
+    }
+
 </style>
 
 <div>
@@ -27,10 +39,12 @@
         <div class="col-3 mb-4 ">
             <div class="employee shadow bg-light-me rounded p-2" >
                 <button class="btn employeeIcon rounded-circle bg-primary text-center float-left p-1 mr-2" style="width: 50px; height: 50px; color: white; font-size: 25px"><i class="fa fa-user"></i></button>
-                <button class="employeeIconDelete btn rounded-circle bg-danger text-center float-left p-1 mr-2" onclick="remove_employee_from_order(this)"
-                        style="width: 50px; height: 50px; color: white; font-size: 25px">
-                    <i class="fa fa-user-minus"></i>
-                </button>
+                <div class="hide-no-offer">
+                    <button class="employeeIconDelete btn rounded-circle bg-danger text-center float-left p-1 mr-2" onclick="remove_employee_from_order(this)"
+                            style="width: 50px; height: 50px; color: white; font-size: 25px">
+                        <i class="fa fa-user-minus"></i>
+                    </button>
+                </div>
                 <span class="employeeName" onclick="edit_employee_association(this)">
                     <%= relationships.emplid.attributes.fname+" "+relationships.emplid.attributes.lname %>
                 </span><br>
