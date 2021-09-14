@@ -155,16 +155,25 @@
 
     function init_komponent(k) {
 
-        checkUserRights($(k.$el[2]), "deliveries");
+        checkUserRights(k.$el, "deliveries");
 
-        let url = apiRoot+"/deliveries";
-        let instance = k.$el.find("#deliveriesList").apiator({url:url,returninstance:true,addontop:true});
+        console.log("del del del", k)
 
-        k.$el.find("#newDlvrButt").on("click",function () {
-            komponentor.intent("/views/deliveries/addDelivery")
-                .data({instance:instance})
-                .send();
-        });
+        if(k.data){
+            let instance = k.$el.find("#deliveriesList").apiator({url:k.data,returninstance:true,addontop:true})
+            k.$el.find("#newDlvrButt").remove();
+            console.log("data");
+        } else {
+            let url = apiRoot+"/deliveries";
+            let instance = k.$el.find("#deliveriesList").apiator({url:url,returninstance:true,addontop:true});
+            console.log("nu data");
+
+            k.$el.find("#newDlvrButt").on("click",function () {
+                komponentor.intent("/views/deliveries/addDelivery")
+                    .data({instance:instance})
+                    .send();
+            });
+        }
 
         let filterList = $("#deliveriesListFilter");
         filterList.find("input").on("input",function () {
