@@ -31,6 +31,10 @@
     .ord .hide-no-offer{
         display: unset;
     }
+
+    .proc .hide-no-offer{
+        display: unset;
+    }
 </style>
 <div class="row" id="orderDetails">
     <div class="col-6">
@@ -233,7 +237,10 @@
                         "data-dismiss":"modal"
                     },
                     callback: function () {
-                        instance.update({state: new_state}).catch(function (error) {
+                        let old_state = instance.attributes.state;
+                        instance.update({state: new_state}).then(() => {
+                            console.log($("." + old_state).removeClass(old_state).addClass(new_state));
+                        }).catch(function (error) {
                             komponentor.intent("/common/errormodal").data({
                                 body: "A aparut o eroare:<pre>"+JSON.stringify(error)+"</pre>"
                             }).send();
