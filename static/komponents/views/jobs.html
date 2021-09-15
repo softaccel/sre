@@ -1,4 +1,5 @@
 <style>
+
     .deleteBtn{
         display: none;
     }
@@ -20,7 +21,6 @@
     .jobs.allowEdit .editOnClick{
         display: unset;
     }
-
 
 </style>
 
@@ -51,7 +51,9 @@
 <!--                            <th>Actiuni</th>-->
                         </tr>
                         </thead>
-                        <tbody id="jobsList" data-resourcetype="collection" data-type="jobs">
+                        <tbody id="jobsList" data-paging="#jobsListPaging"
+                               data-pagesizeinp="#jobsPageSizeInp" 
+                               data-resourcetype="collection" data-type="jobs">
 <!--                        <tr class="tr-job" onclick="openJobModal(this)" style="cursor:pointer;">-->
                         <tr class="tr-job" onclick="jobDetailsModal(this)" style="cursor: pointer">
                             <td><%= id %></td>
@@ -60,6 +62,22 @@
                         </tr>
                         </tbody>
                     </table>
+                    <br>
+                    <div>
+                        <div class="btn-group" id="jobsListPaging" data-pagesize="10">
+                            <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+                            <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+                            <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+                            <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+                            <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+                        </div>
+                        <select id="jobsPageSizeInp">
+                            <option selected>10</option>
+                            <option>25</option>
+                            <option>50</option>
+                            <option>75</option>
+                        </select> inregistrari pe pagina
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,7 +119,7 @@
 
         checkUserRights(k.$el, "jobs");
 
-        let instance = $("#jobsList").apiator(apiRoot+"/jobs").data("instance");
+        let instance = $("#jobsList").apiator({url: apiRoot+"/jobs"}).data("instance");
 
         $("#newJobModalButton").on("click", function () {
             komponentor.intent("/views/jobs/addJob")
