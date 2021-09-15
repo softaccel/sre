@@ -241,7 +241,8 @@
                     <div class="values"><%= attributes.hourly_rate %> <%= relationships.currency.id %></div>
                     <div style="white-space: nowrap" class="inputs">
                         <input type="number" name="hourly_rate" value="<%= attributes.hourly_rate %>" style="max-width: 60px">
-                        <select name="currency">
+                        <br>
+                        <select name="currency" style="width: 60px">
                             <option><%= relationships.currency.id %></option>
                         </select>
                     </div>
