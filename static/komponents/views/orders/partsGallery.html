@@ -101,12 +101,18 @@
         <form id="orderPartsForm">
             <button type="submit" class="d-none" id="filterSubmitBtn"></button>
         </form>
-        <div id="orderPartsListFilter">
-            <div class="align-top" style="width: 100px">
-                <a class="text-white" data-sortfld="partid">Part id
+        <div id="orderPartsListFilter" class="d-flex justify-content-between">
+            <div class="align-top" style="max-width: 200px">
+                <a class="text-white" data-sortfld="partid">Cod piesa
                     <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
                 </a>
                 <input type="text" name="partid" class="form-control-sm form-control" form="orderPartsForm" data-operator="~=~">
+            </div>
+            <div class="align-top" style="max-width: 200px">
+                <a class="text-white" data-sortfld="design">Cod desen
+                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+                </a>
+                <input type="text" name="design" class="form-control-sm form-control" form="orderPartsForm" data-operator="~=~">
             </div>
             <div class="align-top">
                 <a class="text-white" data-sortfld="name">Denumire
@@ -114,19 +120,13 @@
                 </a>
                 <input type="text" name="name" class="form-control-sm form-control" form="orderPartsForm" data-operator="~=~">
             </div>
-            <div class="align-top">
-                <a class="text-white" data-sortfld="design">Cod desen
-                    <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
-                </a>
-                <input type="text" name="design" class="form-control-sm form-control" form="orderPartsForm" data-operator="~=~">
-            </div>
             <div>
 
             </div>
-            <div>
+            <div style="margin-top: 20px">
                 <input type="checkbox" id="viewToggle" checked data-toggle="toggle" data-style="ios" data-size="sm">
             </div>
-            <div>
+            <div style="margin-top: 15px">
                 <div class="float-sm-right hide-no-offer">
                     <button onclick="newOrderPart()" type="button" data-toggle="tooltip" title="Adauga reper" data-placement="bottom" class="btn-shadow mr-3 btn btn-primary checkUpdate">
                         Adauga reper
@@ -134,6 +134,7 @@
                 </div>
             </div>
         </div>
+
         <ul class="grid_4" id="orderPartsList"
             data-filter="#orderPartsForm"
             data-sort="#orderPartsListFilter"
@@ -148,7 +149,11 @@
                 <div class="">
                     <img src="<%=tn%>" class="img-thumbnail img-fluid rounded mx-auto d-block" style="max-width: 200px; max-height: 150px">
                 </div>
-                <span class="partid"><%= attributes.partid %></span>
+                <span>
+                    <span class="partid"><%= attributes.partid %></span>
+                     -
+                    <span class="design"><%= attributes.design %></span>
+                </span>
                 <br>
                 <span class="name"><%= attributes.name %></span>
                 <span class="count"><%= attributes.qty %> bucati</span>
@@ -165,12 +170,10 @@
                 <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
             </div>
             <select id="orderPartsPageSizeInp">
-                <option></option>
-                <option>5</option>
-                <option>10</option>
-                <option>25</option>
-                <option>50</option>
-                <option>75</option>
+                <option selected>8</option>
+                <option>16</option>
+                <option>32</option>
+                <option>64</option>
             </select> inregistrari pe pagina
         </div>
 
