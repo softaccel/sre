@@ -25,5 +25,5 @@
       "fileApiUrl": "http://172.16.20.15/FileApi"
     }
   },
-  "active": "sergiu_devel"
+  "active": "local"
 }
