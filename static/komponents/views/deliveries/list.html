@@ -92,7 +92,7 @@
                     </div>
                 </th>
                 <th>
-                    <a data-sortfld="lastupdate">Ultima modificare
+                    <a data-sortfld="lastupdate">Data creari
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                     <div class="input-group input-group-sm ">
                         <div class="input-group-prepend">
@@ -120,7 +120,7 @@
                 <td style="cursor: pointer"><%= attributes.label %></td>
                 <td class="state"><span class="badge badge-pill <%= attributes.status %>"> </span></td>
                 <td><%= attributes.dlv_date%></td>
-                <td><%= attributes.lastupdate %></td>
+                <td><%= attributes.created_on.split(" ")[0] %></td>
             </tr>
             </tbody>
             <tfoot>
@@ -160,12 +160,12 @@
         console.log("del del del", k)
 
         if(k.data){
-            let instance = k.$el.find("#deliveriesList").apiator({url:k.data,returninstance:true,addontop:true})
+            let instance = k.$el.find("#deliveriesList").apiator({url:k.data,returninstance:true})
             k.$el.find("#newDlvrButt").remove();
             console.log("data");
         } else {
-            let url = apiRoot+"/deliveries";
-            let instance = k.$el.find("#deliveriesList").apiator({url:url,returninstance:true,addontop:true});
+            let url = apiRoot+"/deliveries?sort=-created_on";
+            let instance = k.$el.find("#deliveriesList").apiator({url:url,returninstance:true});
             console.log("nu data");
 
             k.$el.find("#newDlvrButt").on("click",function () {

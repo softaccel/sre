@@ -78,11 +78,17 @@
                     body: "Completati toate campurile."
                 }).send();
             } else {
-                instance.createItem(data).then($modal.modal("hide")).catch(function(data){
-                    komponentor.intent("/common/errormodal").data({
-                        body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
-                    }).send();
-                });
+                instance.addontop = true;
+                instance.createItem(data)
+                    .then($modal.modal("hide"))
+                    .catch(function(data){
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                        }).send();
+                    })
+                    .finally(function () {
+                        delete instance.addontop;
+                    });
             }
         });
 
