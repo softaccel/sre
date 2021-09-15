@@ -226,7 +226,7 @@
 
             $("#model").val(order.fields["K.E.E_BelegKopf.BelegInfo"].data);
             $("#orderdate").val(ex[3]+"-"+ex[2]+"-"+ex[1]);
-            $blgNo.val(bestellung.fields["K.F.E_BelegKopf.BelegNummer"].data);
+            // $blgNo.val(bestellung.fields["K.F.E_BelegKopf.BelegNummer"].data);
             $("#deliverydate").val(bestellung.fields["K.F.E_BelegKopf.BelegDatum"].data.replaceAll(".","/"));
         }
 
