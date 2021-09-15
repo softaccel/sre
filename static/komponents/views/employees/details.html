@@ -67,10 +67,10 @@
                 <div class="col-9">
                     <button type="button" id="employeeStatusButton" class="btn btn-sm btn-danger dropdown-toggle checkUpdate" name="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= attributes.active === "1" ? "Activ" : "Inactiv" %></button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" id="change_active" style="cursor:pointer;" onclick="changeStatus(this);" value="attributes.active"><%= attributes.active !== "1" ? "Activ" : "Inactiv" %></a>
+                        <a class="dropdown-item" id="change_active" style="cursor:pointer;" onclick="changeStatus(this);"><%= attributes.active !== "1" ? "Activ" : "Inactiv" %></a>
                     </div>
                 </div>
-                <div class="col-9"><input name="active" class="form-control form-control-sm" type="number" value="<% attributes.active %>"></div>
+<!--                <div class="col-9"><input name="active" class="form-control form-control-sm" type="number" value="<% attributes.active %>"></div>-->
             </div>
             <div class="row">
                 <div class="col-3">Functia</div>
@@ -152,7 +152,7 @@
                 <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
                 <button class="btn btn-secondary btn-save" type="button" id="cancelButton">Renunta</button>
             </div>
-            <div class="row">
+            <div class="row" id="btnForEmpl">
                 &nbsp;
                 <% if(attributes.active === "1") { %>
                 <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
@@ -244,6 +244,7 @@
             }
             // instance is item
             else {
+                data.active = "1";
                 instance.createItem(data).then(function () {
                     $("#cancelButton").click();
                 }).catch(function(data){
@@ -340,6 +341,7 @@
             let instance = k.data.instance;
 
             if (instance.hasOwnProperty("items")) {
+                $("#btnForEmpl").remove();
                 return k;
             }
 
