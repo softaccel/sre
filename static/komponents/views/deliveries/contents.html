@@ -33,9 +33,6 @@
     #unassingedItems tr.selected{
         background: #aeaeae;
     }
-    table.table {
-        font-size: 0.8rem;
-    }
 </style>
 <div>
     <div class="card mb-3" style="background: #f4f4f4; display: none" id="addElsToDeliveryCard">
@@ -49,19 +46,21 @@
                 <label>Elemente</label>
                 <div style="padding: 5px; border-radius: 5px 5px 5px 5px; border: solid silver 1px; background: #fff" class="mb-3">
                     <div style="max-height: 200px; overflow: scroll; ">
-                        <form>
+                        <form id="filterUnassingedItems">
                         <table class="items">
                             <thead>
                             <tr>
                                 <th><input type="checkbox" id="checkAllUnassingedItems" data-connected="#unassingedItems" onclick="toggleAll(this)"></th>
-                                <th>Cod <input type="text" size="10"> </th>
-                                <th>Denumire <input type="text" size="10"> </th>
+                                <th>Nr. desen <input type="text" size="10" oninput="$(this.form).submit()" name="partid" data-operator="~=~"> </th>
+                                <th>Cod element <input type="text" size="10" oninput="$(this.form).submit()" name="partid" data-operator="~=~"> </th>
+                                <th>Denumire <input type="text" size="10" oninput="$(this.form).submit()"  name="name" data-operator="~=~"> </th>
                                 <th>Cantitate</th>
                             </tr>
                             </thead>
-                            <tbody id="unassingedItems" data-resourcetype="collection" data-type="">
+                            <tbody id="unassingedItems" data-resourcetype="collection" data-filter="#filterUnassingedItems">
                             <tr>
                                 <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="toggleSelect($(this).parents('tr'))" data-connected="#checkAllUnassingedItems"></td>
+                                <td><%= attributes.design %></td>
                                 <td><%= attributes.partid %></td>
                                 <td><%=  attributes.name %></td>
                                 <td><input type="number" name="qtys[]" size="4" max="<%=attributes.qty-attributes.dlvd_qty%>" min="0" value="<%=attributes.qty-attributes.dlvd_qty%>" onclick="event.stopPropagation();"> </td>
@@ -71,17 +70,47 @@
                         </form>
                     </div>
                 </div>
-                <button id="addToDlvrBtn" >Adauga elementele selectate</button>
+                <button id="addToDlvrBtn" class="btn btn-sm btn-success">Adauga elementele selectate</button>
+                <button id="cancelAddToDlvrBtn" class="btn btn-sm btn-secondary">Anuleaza</button>
+
             </div>
-            <button id="cancelAddToDlvrBtn" class="btn btn-secondary">Anuleaza</button>
         </div>
     </div>
-    <form id="deliveryContentsFilter"></form>
-
+    <form id="deliveryContentsFilter" class="d-none"><input type="submit"></form>
     <div class="hide-not-created">
-        <button class="btn btn-secondary mb-3 checkUpdate" id="addContentBtn"><i class="fa fa-truck-loading"></i> Adauga elemente la livrare</button>
+        <button class="btn btn-primary btn-sm mb-3 checkUpdate" id="addContentBtn"><i class="fa fa-truck-loading"></i> Adauga elemente la livrare</button>
     </div>
-    <div style="max-height: 400px; overflow: scroll">
+    <div style="max-height: 500px; overflow: auto">
+        <div class="alert alert-default-secondary">
+            <div class="form-row">
+                <div class="col">
+                    <label>Numar desen</label>
+                    <input type="text" name="code" class="form-control form-control-sm" form="deliveryContentsFilter" data-operator="~=~" oninput="$(this.form).submit()">
+                </div>
+                <div class="col">
+                    <label>Denumire piesa</label>
+                    <input type="text" name="label" class="form-control form-control-sm" form="deliveryContentsFilter" data-operator="~=~" oninput="$(this.form).submit()">
+                </div>
+                <div class="col">
+                    <label>Stare etichetare</label>
+                    <select class="custom-select custom-select-sm" onchange="filterByLabelStatus(this)" form="deliveryContentsFilter">
+                        <option value="">Toate</option>
+                        <option value="1">Etichetate</option>
+                        <option value="0">Ne-etichetate</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Stare incarcare</label>
+                    <select class="custom-select custom-select-sm" onchange="filterByCheckoutStatus(this)" form="deliveryContentsFilter">
+                        <option value="">Toate</option>
+                        <option value="1">Scanate</option>
+                        <option value="0">Ne-scanate</option>
+                    </select>
+                </div>
+
+            </div>
+
+        </div>
         <table class="items table table-sm" id="deliveryContentsTable">
             <thead id="deliveriesListHeader">
             <tr>
@@ -90,49 +119,51 @@
                 <th class="align-top">
                     <a data-sortfld="label">Cod piesa
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                    <input type="text" name="label" class="form-control-sm form-control" form="deliveryContentsFilter" data-operator="~=~">
+
                 </th>
                 <th class="align-top">
                     <a data-sortfld="label">Denumire
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                    <input type="text" name="label" class="form-control-sm form-control" form="deliveryContentsFilter" data-operator="~=~">
                 </th>
                 <th class="align-top" style="min-width: 250px">
                     <a data-sortfld="docnum">Comanda
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                    <input type="text" name="label" class="form-control-sm form-control" form="deliveryContentsFilter" data-operator="~=~" size="5">
-
+<!--                    <input type="text" name="label" class="form-control-sm form-control" form="deliveryContentsFilter" data-operator="~=~" oninput="$(this.form).submit()">-->
                 </th>
                 <th class="align-top" style="width: 100px">
-                    <a data-sortfld="label">Bucati Total
+                    <a data-sortfld="label">Bucati
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 </th>
                 <th class="align-top" style="width: 100px">
-                    <a data-sortfld="label">Tiparite
+                    <a data-sortfld="label">Etichetate
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 </th>
                 <th class="align-top" style="width: 100px">
-                    <a data-sortfld="label">Incarcate
+                    <a data-sortfld="label">Scanate
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 </th>
                 <th width="70"></th>
             </tr>
             </thead>
             <tbody id="deliveryContentsList" data-paging="#deliveryContentsListPaging" data-type="delivery_items_aggregated" data-resourcetype="collection"
-                   data-pagesizeinp="#deliveryContentsPageSizeInp">
+                   data-pagesizeinp="#deliveryContentsPageSizeInp" data-filter="#deliveryContentsFilter">
             <tr class="">
                 <td><button class="btn-success btn">OK</button></td>
                 <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="toggleSelect($(this).parents('tr'))" data-connected="#checkAllAssignedItems"></td>
                 <!--            <td><%= id %></td>-->
-                <td><%= relationships.item.id %></td> <!-- id din orders_items -->
+                <td><%= attributes.code %></td> <!-- id din orders_items -->
                 <td><%= attributes.label %></td> <!-- name din idem si la fel -->
-                <td><%= relationships.item.relationships.order.relationships.doc_id.attributes.docnum %></td> <!-- docnum din documents, relationship prin doc_id din orders -->
+                <td><%= relationships.item.relationships? relationships.item.relationships.order.relationships.doc_id.attributes.docnum : "--" %></td> <!-- docnum din documents, relationship prin doc_id din orders -->
                 <td><%= attributes.totalcnt %></td> <!-- qty din orders_items -->
                 <td><%= attributes.printed %></td>
                 <td><%= attributes.checkout %></td>
-                <td class="hide-not-created">
-                    <button class="btn-danger checkDelete" onclick="removeFromDelivery(this)"><i class="fa fa-trash"></i></button>
-                    <button class="btn-primary checkUpdate" onclick="goToPrint(this)"><i class="fa fa-print"></i></button>
+                <td style="min-width: 70px">
+                    <div class="hide-not-created">
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-danger checkDelete" onclick="removeFromDelivery(this)"><i class="fa fa-trash"></i></button>
+                            <button class="btn btn-sm btn-primary checkUpdate" onclick="goToPrint(this)"><i class="fa fa-print"></i></button>
+                        </div>
+                    </div>
                 </td>
             </tr>
             </tbody>
@@ -161,6 +192,45 @@
 </div>
 
 <script>
+
+    function filterByCheckoutStatus(src) {
+        let sel = $(src);
+        switch (sel.val()) {
+            case "":
+                sel.prop("name","");
+                sel.data("operator","=");
+                break;
+            case "1":
+                sel.prop("name","checkout");
+                sel.data("operator",">=");
+                break;
+            case "0":
+                sel.prop("name","notcheckout");
+                sel.data("operator",">");
+        }
+        $(src.form).submit();
+    }
+
+    function filterByLabelStatus(src) {
+        let sel = $(src);
+        switch (sel.val()) {
+            case "":
+                sel.prop("name","");
+                sel.data("operator","=");
+                break;
+            case "1":
+                sel.prop("name","printed");
+                sel.data("operator",">=");
+                break;
+            case "0":
+                sel.prop("name","notprinted");
+                sel.data("operator",">");
+        }
+        $(src.form).submit();
+    }
+
+
+
 
     function removeFromDelivery(src) {
         let instance = $(src).data("instance");
@@ -263,6 +333,7 @@
                     });
                 }
             });
+
             $("<div>").apiator({resourcetype: "collection",returninstance:true})
                 .setUrl(apiRoot + "/deliveries_contents")
                 .createItem(insData)
@@ -289,7 +360,7 @@
 
         k.$el.find("#cancelAddToDlvrBtn").on("click",()=>{k.$el.find("#addElsToDeliveryCard").hide(400);k.$el.find("#addContentBtn").show();});
 
-        let url = apiRoot + "/delivery_items_aggregated?filter=delivery="+k.data.instance.id + "&sort=item&include=item,item.order,item.order.doc_id";
+        let url = apiRoot + "/deliveries/"+k.data.instance.id + "/delivery_items_aggregated?sort=item&include=item,item.orders_items_meta,item.order,item.order.doc_id";
         let contentItems = k.$el.find("#deliveryContentsList").apiator({url:url,returninstance:true});
         k.$el.find("#startScanBut").on("click",function () {
             komponentor.intent("/views/deliveries/scan").data({data:k.data}).send();

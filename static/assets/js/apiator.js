@@ -1629,7 +1629,7 @@
 			if(!this.collection.emptyview)
 				return this;
 
-			this.reset().append(this.collection.emptyview.clone());
+			this.reset().append(this.collection.emptyview);
 
 		};
 
@@ -1690,7 +1690,7 @@
 
 		// console.log("init apiator on ",this,options);
 		if(options.hasOwnProperty("emptyview")) {
-			options.emptyview = $(options.emptyview).clone(true);
+			options.emptyview = $(options.emptyview).remove();
 		}
 
 		// resource type unknown

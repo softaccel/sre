@@ -10,10 +10,10 @@
                 <div class="modal-title">Detalii livrare</div>
                 <ul class="nav nav-pills">
                     <li class="nav-item">
-                        <a data-toggle="tab" href="#deliverySummaryPanel" class="nav-link active">Sumar</a>
+                        <a data-toggle="tab" href="#deliverySummaryPanel" class="nav-link ">Sumar</a>
                     </li>
                     <li class="nav-item">
-                        <a data-toggle="tab" href="#deliveryContentPanel" class="nav-link ">Continut</a>
+                        <a data-toggle="tab" href="#deliveryContentPanel" class="nav-link  active">Continut</a>
                     </li>
                     <li class="nav-item">
                         <a data-toggle="tab" href="#checkoutPanel" class="nav-link">Checkout</a>
@@ -22,9 +22,9 @@
             </div>
             <div class="modal-body ">
                 <div class="tab-content checkRead">
-                    <div class="tab-pane active" role="tabpanel" id="deliverySummaryPanel" is="komponent" data-url="/views/deliveries/summary">
+                    <div class="tab-pane " role="tabpanel" id="deliverySummaryPanel" is="komponent" data-url="/views/deliveries/summary">
                     </div>
-                    <div class="tab-pane" role="tabpanel" id="deliveryContentPanel" is="komponent" data-url="/views/deliveries/contents">
+                    <div class="tab-pane active" role="tabpanel" id="deliveryContentPanel" is="komponent" data-url="/views/deliveries/contents">
                     </div>
                     <div class="tab-pane" role="tabpanel" id="checkoutPanel" is="komponent">
                         <button class="btn btn-primary checkUpdate" id="startScanBut" ><i class="fa fa-barcode"></i> Scaneaza elemente</button>
