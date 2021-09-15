@@ -48,6 +48,9 @@
 
     }
 
+    .included .not-visibile-when-included{
+        display: none;
+    }
 </style>
 
 <div>
@@ -57,8 +60,7 @@
                 <div class="col-9">
 
                     <div class="btn-group btn-group-sm filtercomponent">
-                        <input type="text" id="dateRange" style="max-width: 200px" value="Data" class="form-control form-control-sm">
-
+                        <input type="text" id="dateRange" style="max-width: 200px" class="form-control form-control-sm" value="Interval">
                         <div class="btn-group btn-group-sm">
                             <div class="dropdown-menu" style="min-width: 500px;">
                                 <div class="row">
@@ -80,24 +82,8 @@
                                 </div>
                             </div>
                         </div>
-<!--                        <button type="button" class="btn btn-outline-dark"><i class="fa fa-caret-left"></i></button>-->
-<!--                        <button type="button" class="btn btn-outline-dark"><i class="fa fa-caret-right"></i></button>-->
                     </div>
-<!--                    <div class="btn-group btn-group-sm">-->
-<!--                        <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--                            Angajat-->
-<!--                        </button>-->
-<!--                        <div class="dropdown-menu p-3">-->
-<!--                            <form >-->
-<!--                                <input type="text" name="fullname" data-operator="~=~" placeholder="Nume angajat" onkeyup="this.form.submitBut.click()">-->
-<!--                                <input type="submit" name="submitBut" class="d-none" autocomplete="false">-->
-<!--                            </form>-->
-<!--                            <ul class="someSelect" id="employeeSelect" data-resourcetype="collection" data-filter="#employeeSelectSearch">-->
-<!--                                <li onclick="performSearch(this)" data-emplid="<%= id %>"><%= attributes.fullname%></li>-->
-<!--                            </ul>-->
-<!--                            <button class="btn btn-secondary btn-sm" onclick="performSearch('#timeTrackingEntriesFiltering','employee','');$('#employeeSelectSearch')[0].reset()">Sterge selectia</button>-->
-<!--                        </div>-->
-<!--                    </div>-->
+
 
                     <div class="btn-group btn-group-sm filtercomponent">
                         <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -161,17 +147,16 @@
                         </button>
                         <div class="dropdown-menu p-3" style="min-width: 350px">
                             <ul class="someSelect" id="" data-resourcetype="collection" data-filter="#orderSelectSearch">
-                                <li onclick="filterLongerThen($(this).find('input').val())">Durata mai mare de <input typeof="number" style="width: 40px" value="8"> ore </li>
-                                <li onclick="filterUnallocated()">Comanda nealocata</li>
+                                <li><input type="checkbox" onclick="filterLongerThen(this.checked,$(this).parent().find('input[type=number]').val())"> Durata mai mare de <input type="number" style="width: 40px" value="8"> ore </li>
+                                <li><input type="checkbox" onclick="filterUnallocated(this.checked)"> Comanda nealocata</li>
                             </ul>
-                            <button class="btn btn-secondary btn-sm mt-2" onclick="performSearch('#timeTrackingEntriesFiltering','order','');$('#orderSelectSearch')[0].reset()">Sterge filtru</button>
                         </div>
                     </div>
 
 
                 </div>
                 <div class="col" style="text-align: right">
-                    <button class="btn btn-sm btn-primary checkCreate float-right"  id="newTTBtn"><i class="fa fa-plus-square"></i> Introducere manuala</button>
+                    <button class="btn btn-sm btn-primary checkCreate float-right not-visibile-when-included"  id="newTTBtn"><i class="fa fa-plus-square"></i> Introducere manuala</button>
                 </div>
 
             </div>
@@ -214,14 +199,14 @@
                     <th width="150px"></th>
                 </tr>
             </thead>
-            <tbody id="timeTrackingEntries" data-type="timetracking" data-resourcetype="collection" data-paging="#timeTrackingEntriesPaging"
+            <tbody id="timeTrackingEntries" data-type="timetracking" data-emptyview="#timeTrackingEntriesEmpty" data-resourcetype="collection" data-paging="#timeTrackingEntriesPaging"
                    data-filter="#timeTrackingEntriesFiltering" data-sort="#pontajListHeader"
                    data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset">
             <tr>
                 <td class="emplCol">
                     <%= relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname %> <br>
                     <% if(relationships.team) { %>
-                    <span class="badge badge-secondary"><%= relationships.team.attributes.name %></span>
+                    <span class="badge badge-secondary"><%= relationships.team.attributes ? relationships.team.attributes.name : 0 %></span>
                     <% } %>
 
                 </td>
@@ -256,21 +241,24 @@
                     </div>
                 </td>
                 <td style="width: 100px">
-                    <div class="values"><%= attributes.duration %></div>
+                    <div class="values"><%= attributes.duration ? Math.floor(attributes.duration/60)+":"+attributes.duration%60 : "-"  %></div>
                     <div class="inputs">
                         <input type="number" value="<%= attributes.duration %>" style="max-width: 100px">
                     </div>
                 </td>
                 <td style="width: 100px">
                     <div class="btn-group" role="group" aria-label="Basic example">
-                        <button class="btn btn-secondary btn-sm checkCreate" onclick="duplicateItem(this);"><i class="fa fa-copy" title="Duplicare"></i></button>
-                        <button class="btn btn-danger btn-sm checkDelete" onclick="deleteUnit(this);" title="Stergere"><i class="fa fa-trash"></i></button>
+<!--                        <button class="btn btn-secondary btn-sm checkCreate" onclick="duplicateItem(this);"><i class="fa fa-copy" title="Duplicare"></i></button>-->
                         <button class="btn btn-warning btn-sm checkUpdate" onclick="edit(this)" title="Editare"><i class="fa fa-edit"></i> </button>
+                        <button class="btn btn-danger btn-sm checkDelete" onclick="deleteUnit(this);" title="Stergere"><i class="fa fa-trash"></i></button>
                         <button class="btn btn-primary btn-sm edit" onclick="save(this)" title="Salvare"><i class="fa fa-save"></i> </button>
                         <button class="btn btn-secondary btn-sm edit" onclick="cancelEdit(this)" title="Anulare"><i class="fa fa-window-close"></i> </button>
                     </div>
                 </td>
             </tr>
+            </tbody >
+            <tbody class="d-none">
+            <tr id="timeTrackingEntriesEmpty"><td colspan="7" class="p-3 text-center">Nu exista inregistrari care sa corespunda criteriilor de filtrare</td></tr>
             </tbody>
             <tfoot>
             <tr>
@@ -297,20 +285,32 @@
 </div>
 
 <script>
-function filterUnallocated() {
-    $($("#timeTrackingEntriesFiltering")[0].order).val("__NULL__").form().submit();
-}
+    function filterUnallocated(toggleOn) {
+        if(toggleOn) {
+            $($("#timeTrackingEntriesFiltering")[0].order).val("__NULL__").form().submit();
+        }
+        else {
+            $($("#timeTrackingEntriesFiltering")[0].order).val("").form().submit();
+        }
+    }
 
-function filterLongerThen(val) {
-    let instance = $("#timeTrackingEntries").data("instance");
-    instance.url.parameters["filter_advanced"] = encodeURIComponent("TIMESTAMPDIFF(MINUTE,start,stop)>"+val*60)
-    instance.loadFromRemote();
-}
+    function filterLongerThen(toggleOn,val) {
+        let instance = $("#timeTrackingEntries").data("instance");
+        if(toggleOn) {
+            instance.url.parameters["filter_advanced"] = encodeURIComponent("TIMESTAMPDIFF(MINUTE,start,stop)>"+val*60)
+        }
+        else {
+            delete instance.url.parameters["filter_advanced"];
+        }
+
+        instance.loadFromRemote();
+    }
 
 
-function doSearch(src) {
+    function doSearch(src) {
         console.log("----------------",src);
     }
+
     timeRegex = /(\d+):(\d+):(\d+)/;
 
     function performSearch(src) {
@@ -518,10 +518,10 @@ function doSearch(src) {
             switch (data.instance.type) {
                 case "employees":
                     k.$el.find("#timeTrackingTable").addClass("employeeView");
-                    return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation&filter=employee="+data.instance.id;
+                    return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team&filter=employee="+data.instance.id;
                 case "orders":
                     k.$el.find("#timeTrackingTable").addClass("orderView");
-                    return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation&filter=order="+data.instance.id;
+                    return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team&filter=order="+data.instance.id;
                 default:
                     console.log(data.instance);
                     throw "Unknown type";
@@ -529,18 +529,26 @@ function doSearch(src) {
         }
 
         if(data.emplid) {
-            return apiRoot + "/timetracking?sort=-start&filter=employee="+data.emplid;
+            console.log("Emplid is present");
+            return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team&filter=employee="+data.emplid;
         }
+        if(data.orderid) {
+            console.log("Emplid is present");
+            return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team&filter=order="+data.orderid;
+        }
+
     }
 
     function init_komponent(k) {
-
-        $("#dateRange").daterangepicker({autoUpdateInput:false})
+        $("#dateRange").daterangepicker({showDropdowns:true,startDate:"05/01/2021"})
             .on("apply.daterangepicker",function (e) {
                 let[start,stop] = $(e.target).val().split(" - ");
+                // console.log(e,start,stop);
+                // return;
                 start = new Date(start);
                 stop = new Date(stop);
                 stop.setDate(stop.getDate()+1);
+                console.log(start,stop);
                 $("#startFrom").val(start.toISOString());
                 $("#startTo").val(stop.toISOString());
                 $("#timeTrackingEntriesFiltering").submit();

@@ -17,35 +17,47 @@
                 </form>
 
                 <form name="orderForm" id="orderForm" style="display: none">
-                    <div class="position-relative form-group">
-                        <label for="partner_id" class="">Client</label>
-                        <select name="partner_id" id="partner_id" class="js-example-basic-single" style="width: 100%;" required>
-                        </select>
-<!--                        <input type="text" class="form-control">-->
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label for="partner_id" class="">Client</label>
+                            <select name="partner_id" id="partner_id" class="js-example-basic-single" style="width: 100%;" required>
+                            </select>
+                        </div>
                     </div>
-                    <div class="position-relative form-group">
-                        <label for="cust_int_ref" class="">Referinta Interna Client</label>
-                        <input name="cust_int_ref" id="cust_int_ref"  type="text" class="form-control" required>
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label for="model" class="">Descriere</label>
+                            <input name="model" id="model"  type="text" class="form-control form-control-sm">
+                        </div>
+                        <div class="col form-group">
+                            <label for="cust_int_ref" class="">Referinta Interna Client</label>
+                            <input type="text" name="cust_int_ref" id="cust_int_ref" class="form-control form-control-sm">
+                        </div>
                     </div>
-                    <div class="position-relative form-group">
-                        <label for="multiplied_by" class="">Cantitate</label>
-                        <input name="multiplied_by" id="multiplied_by"  type="number" value="1" class="form-control">
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label for="orderdate" class="">Data comenzii</label>
+                            <input name="orderdate" id="orderdate"  type="date" class="form-control form-control-sm">
+                        </div>
+                        <div class="col form-group">
+                            <label for="deliverydate" class="">Data estimata a livrarii</label>
+                            <input name="deliverydate" id="deliverydate"  type="date" class="form-control form-control-sm">
+                        </div>
                     </div>
-                    <div class="position-relative form-group">
-                        <label for="model" class="">Descriere</label>
-                        <input name="model" id="model"  type="text" class="form-control">
-                    </div>
-                    <div class="position-relative form-group">
-                        <label for="orderdate" class="">Data comenzii</label>
-                        <input name="orderdate" id="orderdate"  type="date" class="form-control">
-                    </div>
-                    <div class="position-relative form-group">
-                        <label for="deliverydate" class="">Data estimata a livrarii</label>
-                        <input name="deliverydate" id="deliverydate" type="date" class="form-control">
-                    </div>
-                    <div class="position-relative form-group">
-                        <label for="estimated_effort" class="">Timp executie estimat</label>
-                        <input name="estimated_effort" id="estimated_effort"  type="number" class="form-control" required>
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label for="multiplied_by" class="">Cantitate</label>
+                            <input name="multiplied_by" id="multiplied_by"  type="number" value="1" class="form-control form-control-sm" required>
+                        </div>
+                        <div class="col form-group">
+                            <label for="estimated_effort" class="">Estimare ore</label>
+                            <input name="estimated_effort" id="estimated_effort"  type="number" value="" class="form-control form-control-sm">
+                        </div>
+<!--                        <div class="col form-group">-->
+<!--                            <label for="estimated_value" class="">Valoare estimata</label>-->
+<!--                            <input name="estimated_value" id="estimated_value"  type="number" value="" class="form-control form-control-sm" required>-->
+<!--                        </div>-->
+
                     </div>
 
                     <div style="max-height: 500px; overflow: scroll;">
@@ -83,10 +95,6 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="position-relative form-group">
-                        <label for="calculated_valueInput" class="">Valoare total estimata</label>
-                        <input name="calculated_value" id="calculated_valueInput"  type="number" class="form-control">
-                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -98,6 +106,14 @@
 </div>
 
 <script>
+    function uuidv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+
     function show(src) {
         // $(src.)
     }
@@ -134,8 +150,12 @@
     }
 
     function init_komponent(k) {
-
+        let valuesMap = {
+            "E": "EUR",
+            "Stk": "buc"
+        };
         let orderMeta;
+
         function init_partner_select() {
             $("select[name=partner_id]").select2wrapper({url: apiRoot+"/partners",labelfld:"name"});
         }
@@ -157,15 +177,12 @@
 
         let orders = k.data.instance;
 
-        let valuesMap = {
-            E: "EUR",
-            Stk: "buc"
-        };
+
 
         function publishHeader(response) {
             let sectionIDs = Object.getOwnPropertyNames(response.sections);
             let bestellung = null;
-            // let sections = [];
+
             let order = null;
             orderMeta = [];
 
@@ -177,10 +194,6 @@
                 if (response.sections[sectionIDs[i]].SectionKey==="K.E") {
                     order = response.sections[sectionIDs[i]];
                 }
-
-                // if(response.sections[sectionIDs[i]].SectionKey==="P.A") {
-                //     sections.push(response.sections[sectionIDs[i]]);
-                // }
 
                 if (response.sections[sectionIDs[i]].SectionKey==="P.A") {
                     continue;
@@ -207,33 +220,48 @@
 
             $("#model").val(order.fields["K.E.E_BelegKopf.BelegInfo"].data);
 
-            let dateSplit = bestellung.fields["K.F.E_BelegKopf.BelegDatum"].data.split('.');
-            $("#orderdate").val(dateSplit[2] + "-" + dateSplit[1] + "-" + dateSplit[0]);
+            let ex = /([0-9]+){1,2}\.([0-9]+){1,2}\.([0-9]+){1,4}/.exec(order.fields["K.E.E_BelegKopf.BelegDatum"].data);
+            let d = new Date(ex[3]+"-"+ex[2]+"-"+ex[1]);
+            console.log(ex,d,ex[3]+"-"+ex[2]+"-"+ex[1]);
+
+            $("#model").val(order.fields["K.E.E_BelegKopf.BelegInfo"].data);
+            $("#orderdate").val(ex[3]+"-"+ex[2]+"-"+ex[1]);
+            $blgNo.val(bestellung.fields["K.F.E_BelegKopf.BelegNummer"].data);
+            $("#deliverydate").val(bestellung.fields["K.F.E_BelegKopf.BelegDatum"].data.replaceAll(".","/"));
         }
 
         function publishItems(response) {
-
             let total = 0;
             let entries = [];
             let targetDateSet = false;
             Object.getOwnPropertyNames(response.sections).forEach(function (sectionId) {
                 let entry = response.sections[sectionId];
 
+
                 if (entry.SectionKey==="P.A") {
-                    if (!targetDateSet && entry.fields["P.A.E_BelegPos.WunschTermin"]) {
-                        let dateSplit = entry.fields["P.A.E_BelegPos.WunschTermin"].data.split('.');
-                        $("#deliverydate").val(dateSplit[2] + "-" + dateSplit[1] + "-" + dateSplit[0]);
-                        targetDateSet = true;
+                    let desc = [];
+                    if(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[1]"].data) {
+                        desc.push(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[1]"].data);
+                    }
+                    if(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[2]"].data) {
+                        desc.push(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[2]"].data);
+                    }
+                    if(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[3]"].data) {
+                        desc.push(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[3]"].data);
+                    }
+                    if(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[4]"].data) {
+                        desc.push(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[4]"].data);
                     }
 
                     let entryData = {
-                        cod: entry.fields["P.A.E_BelegPos.Artikel"].data,
-                        desc: entry.fields["P.A.S_ArtikelSpr.Bezeichnung[1]"].data+" / " +entry.fields["P.A.S_ArtikelSpr.Bezeichnung[2]"].data+" / "
-                            +entry.fields["P.A.S_ArtikelSpr.Bezeichnung[3]"].data+" / " +entry.fields["P.A.S_ArtikelSpr.Bezeichnung[4]"].data,
+                        cod: entry.fields["P.A.P_ZeichnungSpr.Zeichnung"].data,
+                        desc: desc.join(" / "),
                         unit_price: entry.fields["P.A.E_BelegPos.Einzelpreis"].data.replaceAll(".","").replaceAll(",",".")*1,
                         qty: entry.fields["P.A.E_BelegPos.Menge"].data.replaceAll(".","").replaceAll(",",".")*1,
                         curr: entry.fields["P.A.S_PreisEinheitSpr.KurzBez"].data,
-                        unit: entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data,
+                        unit: valuesMap[entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data]
+                                ? valuesMap[entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data]
+                                    :entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data,
                         total: entry.fields["P.A.E_BelegPos.Warenwert"].data.replaceAll(".","").replaceAll(",",".")*1,
                         others: entry
                     };
@@ -243,12 +271,13 @@
             });
 
             entries.forEach(function (entry) {
-                let $el = $(template(entry)).appendTo($items).data("instance",entry);
-                $el.find("*").data("instance",entry);
+                let $el = $(template(entry)).appendTo($items).attr("id",uuidv4()).data("data",entry);
+                $el.find("*").data("data",entry);
             });
         }
 
-        function uploadFile(form) {
+        function uploadFile(src) {
+            let form = src.target.form;
             let files = form.orderfile.files;
             $items.empty();
 
@@ -259,8 +288,7 @@
 
             let fd = new FormData();
             fd.append("file",files[0]);
-            return new Promise(function (resolve, reject) {
-
+            let p = new Promise(function (resolve, reject) {
                 $.ajax({
                         url: backendUrl+"/main/XMLtoJSON",
                         data: fd,
@@ -269,19 +297,37 @@
                         processData: false,
                     })
                     .done(function(response) {
+                        console.log(response);
                         publishItems(response);
                         publishHeader(response);
                         init_partner_select();
-                        resolve();
+                        resolve(response);
                     })
                     .fail(function () {
                         reject();
                     })
             });
+
+
+            p.then(function () {
+                    $($uploadButton.hide()[0].form).hide();
+                    $($orderButton.show()[0].form).show();
+                })
+                .catch(function(data){
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare: <pre>"+data.jqXHR.responseText+"</pre>"
+                    }).send();
+                });
         }
 
-        function placeOrder(form) {
-            orderMeta.push({meta_key: "estimated_effort", meta_val: $(form.estimated_effort).val()});
+        function placeOrder(src) {
+            let form = src.target.form;
+            orderMeta["estimated_effort"]  = $(form.estimated_effort).val();
+            // let meta = $(form).data("meta");
+            let multiplier = $("input[name=multiplied_by]").val();
+            if(!/^d+$/.test(multiplier)) {
+                multiplier = 1;
+            }
 
             let order = {
                 attributes: {
@@ -296,80 +342,61 @@
             };
 
             let total = 0;
+
             $(form).find("input[name=cod]").filter(":checked").each(function () {
-                let instance = $(this).data("instance");
+                let data = $(this).data().data;
+
                 let order_part = {
                     type: "orders_items",
                     attributes:
                         {
-                            unit: valuesMap[instance.unit],
-                            name: instance.desc,
-                            qty: parseInt(instance.qty) * parseInt($("input[name=multiplied_by]").val()),
-                            unit_price: instance.unit_price,
-                            currency: valuesMap[instance.curr],
+                            unit: data.unit,
+                            name: data.desc,
+                            qty: parseInt(data.qty) * multiplier,
+                            unit_price: data.unit_price,
+                            currency: valuesMap[data.curr],
                             orders_items_meta: []
                         },
                 };
-                for (let key in instance.others.fields) {
 
-                    if(instance.others.fields[key].data!=="") {
+                for (let key in data.others.fields) {
+                    if(data.others.fields[key].data!=="") {
                         order_part.attributes.orders_items_meta.push({
                             type: "orders_items_meta",
                             attributes: {
                                 meta_key: key,
-                                meta_val: instance.others.fields[key].data
+                                meta_val: data.others.fields[key].data
                             }
                         });
                     }
                 }
 
                 order.attributes.orders_items.push(order_part);
-                total += instance.qty*instance.unit_price;
+                total += data.qty*data.unit_price;
             });
 
-            order.attributes.multiplied_by = $("input[name=multiplied_by]").val();
+            order.attributes.multiplied_by = multiplier;
             order.attributes.order_value = total * order.attributes.multiplied_by;
-            return orders.createItem(order);
-        }
+            orders.addontop = true;
 
-        $orderButton.on("click",function (src) {
-            let suspend = false;
-            $("#orderForm").find("input,textarea,select").filter("[required]").each(function () {
-                if (!$(this).val() || $(this).val() === '' || $(this).val() === null)
-                    suspend = true;
-            });
-
-            if (suspend) {
-                komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>Toate campurile sunt obligatorii.</pre>"}).send();
-                return;
-            }
-
-            placeOrder(src.target.form)
-                .then(function (a) {
-                    k.data.instance.view.el.children().first().find("td:nth-child(2)").click();
+            orders.createItem(order)
+                .then(function (newOrder) {
+                    console.log(newOrder);
+                    newOrder.views[0].el.click();
+                    // k.data.instance.view.el.children().first().find("td:nth-child(2)").click();
                     modal.modal("hide");
                 })
                 .catch(function (resp) {
                     komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + resp.jqXHR.responseText + "</pre>"}).send();
                 })
-        });
-
-        $uploadButton.on("click",function (src) {
-            uploadFile(src.target.form)
-                .then(function () {
-                    $($uploadButton.hide()[0].form).hide();
-                    $($orderButton.show()[0].form).show();
+                .finally(function () {
+                    delete orders.addontop;
                 })
-                .catch(function(data){
-                    komponentor.intent("/common/errormodal").data({
-                        body: "A aparut o eroare: <pre>"+data.jqXHR.responseText+"</pre>"
-                    }).send();
-                });
-        });
+        }
 
-        k.exec = function (data) {
-            modal.modal("show");
-        };
-        k.exec();
+        $orderButton.on("click",placeOrder);
+        $uploadButton.on("click",uploadFile);
+
+        modal.modal("show");
     }
 </script>
