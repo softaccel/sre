@@ -29,12 +29,13 @@
     },
     "alllocal": {
       "baseUrl": "http://localhost/spaleck",
-      "feDBapiUrl": "http://localhost/dbapi/v2/spaleck",
+      "feDBapiUrl": "/dbapi/v2/spaleck",
       "beDBapiUrl": "http://localhost/dbapi/v2/spaleck",
       "backendUrl": "/spaleck/be",
       "authUrl": "/spaleck/be/main/auth/login",
       "posPrintUrl": "/spaleck/be/main/POS/print",
-      "fileApiUrl": "http://localhost/FileApi"
+      "fileApiUrl": "http://localhost/FileApi",
+      "logLevel": 3
     }
   },
   "active": "alllocal"

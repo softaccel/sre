@@ -248,7 +248,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+$config['log_threshold'] = isset($cfg->environments->{$cfg->active}->logLevel) ? $cfg->environments->{$cfg->active}->logLevel : 0;
 
 /*
 |--------------------------------------------------------------------------
