@@ -49,7 +49,7 @@ if(!@$cfg->environments->{$cfg->active}) {
 
 
 $config['base_url'] =  $cfg->environments->{$cfg->active}->baseUrl."/be/main";
-$config['dbapi_url'] = $cfg->environments->{$cfg->active}->dbapiUrl;
+$config['dbapi_url'] = $cfg->environments->{$cfg->active}->beDBapiUrl;
 /*
 |--------------------------------------------------------------------------
 | Index File

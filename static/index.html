@@ -278,7 +278,7 @@
     $.get("../config.json")
         .done(function (data) {
             backendUrl = data.environments[data.active].backendUrl;
-            apiRoot = data.environments[data.active].dbapiUrl;
+            apiRoot = data.environments[data.active].feDBapiUrl;
             authUrl = data.environments[data.active].authUrl;
             fileApiUrl = data.environments[data.active].fileApiUrl;
 
