@@ -20,8 +20,7 @@
                     <div class="form-row">
                         <div class="col form-group">
                             <label for="partner_id" class="">Client</label>
-                            <select name="partner_id" id="partner_id" class="js-example-basic-single" style="width: 100%;" required>
-                            </select>
+                            <select name="partner_id" id="partner_id" class="js-example-basic-single" style="width: 100%;" required></select>
                         </div>
                     </div>
                     <div class="form-row">
@@ -33,6 +32,11 @@
                             <label for="cust_int_ref" class="">Referinta Interna Client</label>
                             <input type="text" name="cust_int_ref" id="cust_int_ref" class="form-control form-control-sm">
                         </div>
+                        <div class="col-2 form-group">
+                            <label for="multiplied_by" class="">Cantitate</label>
+                            <input name="multiplied_by" id="multiplied_by"  type="number" value="1" class="form-control form-control-sm" required>
+                        </div>
+
                     </div>
                     <div class="form-row">
                         <div class="col form-group">
@@ -46,13 +50,14 @@
                     </div>
                     <div class="form-row">
                         <div class="col form-group">
-                            <label for="multiplied_by" class="">Cantitate</label>
-                            <input name="multiplied_by" id="multiplied_by"  type="number" value="1" class="form-control form-control-sm" required>
-                        </div>
-                        <div class="col form-group">
                             <label for="estimated_effort" class="">Estimare ore</label>
                             <input name="estimated_effort" id="estimated_effort"  type="number" value="" class="form-control form-control-sm">
                         </div>
+                        <div class="col form-group">
+                            <label for="estimated_effort" class="">Echipa responsabila</label>
+                            <select name="team" id="team" class="js-example-basic-single" style="width: 100%;" required></select>
+                        </div>
+
 <!--                        <div class="col form-group">-->
 <!--                            <label for="estimated_value" class="">Valoare estimata</label>-->
 <!--                            <input name="estimated_value" id="estimated_value"  type="number" value="" class="form-control form-control-sm" required>-->
@@ -159,6 +164,12 @@
         function init_partner_select() {
             $("select[name=partner_id]").select2wrapper({url: apiRoot+"/partners",labelfld:"name"});
         }
+
+        function init_team_select() {
+            $("select[name=team]").select2wrapper({url: apiRoot+"/teams",labelfld:"name"});
+        }
+
+
 
         let $items = k.$el.find("[data-name=orderItems]");
         let templateTxt = $items.html().replace(/&lt;/gi, '<').replace(/&gt;/gi, ">");
@@ -301,6 +312,7 @@
                         publishItems(response);
                         publishHeader(response);
                         init_partner_select();
+                        init_team_select();
                         resolve(response);
                     })
                     .fail(function () {
@@ -333,6 +345,7 @@
                 attributes: {
                     label: $(form.model).val(),
                     partner_id: $(form.partner_id).val(),
+                    team: $(form.team).val(),
                     cust_int_ref: $(form.cust_int_ref).val(),
                     user_id: userData.sub,
                     calculated_value: $(form.calculated_value).val(),
