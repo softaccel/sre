@@ -54,3 +54,4 @@ Thumbs.db
 
 be/dbapi
 config/*
+active_env.json
