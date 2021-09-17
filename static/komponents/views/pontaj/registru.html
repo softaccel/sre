@@ -147,8 +147,13 @@
                         </button>
                         <div class="dropdown-menu p-3" style="min-width: 350px">
                             <ul class="someSelect" id="" data-resourcetype="collection" data-filter="#orderSelectSearch">
-                                <li><input type="checkbox" onclick="filterLongerThen(this.checked,$(this).parent().find('input[type=number]').val())"> Durata mai mare de <input type="number" style="width: 40px" value="8"> ore </li>
-                                <li><input type="checkbox" onclick="filterUnallocated(this.checked)"> Comanda nealocata</li>
+                                <li onclick="$('#longerThanCheck')[0].click();">
+                                    <input type="checkbox" id="longerThanCheck" onclick="filterLongerThen(this.checked,$(this).parent().find('input[type=number]').val()); event.stopPropagation();"> Durata mai mare de
+                                    <input type="number" style="width: 40px" value="8"> ore
+                                </li>
+                                <li onclick="$('#unallocatedCheck')[0].click();">
+                                    <input type="checkbox" id="unallocatedCheck" onclick="filterUnallocated(this.checked); event.stopPropagation();"> Comanda nealocata
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -285,9 +290,10 @@
 </div>
 
 <script>
+
     function filterUnallocated(toggleOn) {
         if(toggleOn) {
-            $($("#timeTrackingEntriesFiltering")[0].order).val("__NULL__").form().submit();
+            $($("#timeTrackingEntriesFiltering")[0].order).val("0").form().submit();
         }
         else {
             $($("#timeTrackingEntriesFiltering")[0].order).val("").form().submit();
@@ -305,7 +311,6 @@
 
         instance.loadFromRemote();
     }
-
 
     function doSearch(src) {
         console.log("----------------",src);
