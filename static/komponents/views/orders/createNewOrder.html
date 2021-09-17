@@ -1,3 +1,11 @@
+<style>
+
+</style>
+
+<div>
+
+</div>
+
 <script>
     function init_komponent(k) {
 
@@ -5,30 +13,63 @@
 
         komponentor.intent("/common/formmodal").data({
             callback:function (data) {
-                if (data.partner_id === null || data.model === "" || data.orderdate === "" || data.deliverydate === "") {
-                    komponentor.intent("/common/errormodal").data({
-                        body: "Toate datele trebuie completate."
-                    }).send();
-                    return 1;
+
+                if (data.partner_id === null ||
+                    data.label === "" ||
+                    data.bestellung === "" ||
+                    data.belegnummer === "" ||
+                    data.estimated_delivery === "" ||
+                    data.order_value === "" ||
+                    data.negotiated_value === "" ||
+                    data.estimated_work === "") {
+                        komponentor.intent("/common/errormodal").data({
+                            body: "Toate campurile sunt obligatorii."
+                        }).send();
+                        return 1;
                 }
 
-                data["user_id"] = jsonDec;
-                k.data.instance.createItem(data).then(function () {
-                    k.data.instance.view.el.children().last().find("td:nth-child(2)").click();
+                let orderMeta = [];
+                orderMeta.push({meta_key: "bestellung", meta_val: data.bestellung});
+                orderMeta.push({meta_key: "belegnummer", meta_val: data.belegnummer});
+                orderMeta.push({meta_key: "estimated_delivery", meta_val: data.estimated_delivery});
+                orderMeta.push({meta_key: "negotiated_value", meta_val: data.negotiated_value});
+                orderMeta.push({meta_key: "estimated_work", meta_val: data.estimated_work});
+
+
+                let order = {
+                    attributes: {
+                        label: data.label,
+                        partner_id: data.partner_id,
+                        comments: data.comments,
+                        cust_int_ref: data.bestellung,
+                        user_id: jsonDec,
+                        calculated_value: data.order_value,
+                        orders_items: [],
+                        orders_meta: orderMeta
+                    }
+                };
+
+                k.data.instance.createItem(order).then(function () {
+                    k.data.instance.view.el.children().last().click();
                 }).catch(function(data){
                     komponentor.intent("/common/errormodal").data({
                         body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
                     }).send();
                 });
 
-                k.data.instance.view.el.children().last().fadeIn(500)[0].scrollIntoView();
             },
             title:"Adauga Comanda Noua",
             size: "lg",
             fields:[
                 {type: "select", name: "partner_id", label: "Client", url: "/partners", labelfnc: "name", idfnc: "id"},
-                {type: "text", name: "label", label: "Descriere"},
-                {type: "select", name: "state", label: "Starea Comenzii", options: [{id: "offer", description: "Oferta"}, {id: "ord", description: "Comanda"}], default: {id: "offer", description: "Oferta"}}
+                {type: "text", name: "label", label: "Denumire"},
+                {type: "text", name: "comments", label: "Descriere"},
+                {type: "text", name: "bestellung", label: "Ref. Interna Client 1"},
+                {type: "text", name: "belegnummer", label: "Ref. Interna Client 2"},
+                {type: "date", name: "estimated_delivery", label: "Data estimata livrare"},
+                {type: "number", name: "order_value", label: "Valoare factura"},
+                {type: "number", name: "negotiated_value", label: "Valoare negociata"},
+                {type: "number", name: "estimated_work", label: "Efort estimat (ore)"}
             ],
         }).send();
 
