@@ -210,6 +210,7 @@
     }
 
     function checkUserRights(el, modules) {
+        console.log(modules);
 
         let checkRights = function (module) {
             let rights = allRights[module];
@@ -217,8 +218,10 @@
                 // todo: show not enough rights
                 return;
             }
+            el.find(".module-"+module)
 
             el.find(".checkRead").each(function () {
+                // $(this).removeClass("checkRead");
                 $(this).addClass("readAllow");
             });
 
@@ -275,16 +278,42 @@
     autoload = false;
     let backendUrl, apiRoot, authUrl, fileApiUrl;
 
-    $.get("../config.json")
-        .done(function (data) {
-            backendUrl = data.environments[data.active].backendUrl;
-            apiRoot = data.environments[data.active].feDBapiUrl;
-            authUrl = data.environments[data.active].authUrl;
-            fileApiUrl = data.environments[data.active].fileApiUrl;
 
-            $("#page").komponent({url:url,replace:false}).finally(function () {
-                $(".pageOverlay").remove();
-            });
+    let p1 = new Promise((resolve,reject)=>
+        $.get("../environments.json")
+            .done(function (data) {
+                resolve(data);
+            })
+            .fail(function (data) {
+                reject(data);
+            })
+    );
+    let p2 = new Promise((resolve,reject)=>
+        $.get("../active_env.json")
+            .done(function (data) {
+                resolve(data);
+            })
+            .fail(function (data) {
+                reject(data);
+            })
+    );
+
+
+    Promise.all([p1,p2]).then((values)=>{
+        let environments = values[0];
+        let active = values[1].active;
+        console.log(environments,active);
+        backendUrl = environments[active].backendUrl;
+        apiRoot = environments[active].feDBapiUrl;
+        authUrl = environments[active].authUrl;
+        fileApiUrl = environments[active].fileApiUrl;
+
+        $("#page").komponent({url:url,replace:false}).finally(function () {
+            $(".pageOverlay").remove();
+        });
+    })
+        .catch(()=>{
+            alert("Failed to load configuration");
         });
 
 

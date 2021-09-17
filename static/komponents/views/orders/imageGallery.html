@@ -83,13 +83,13 @@
                 // DO NOT DELETE - needed cause update rebuilds the list
                 setSortable();
             })
-        }
+        };
 
         // add sortable to imageList
         const setSortable = function () {
             $("#imageGalleryKomponent").find("ul")
                 .sortable({ delay:100, update: updateSortable});
-        }
+        };
 
         const galInst = k.$el.find("#gallery")
             .apiator({returninstance:true})

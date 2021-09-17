@@ -23,33 +23,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$tmp = @file_get_contents(__DIR__."/../../../../config.json");
+$tmp = @file_get_contents(__DIR__."/../../../../environments.json");
 if(!$tmp) {
 	http_response_code(500);
-	die("No config file found");
+	die("No environments file found");
 }
-$cfg = json_decode($tmp);
+$envs = json_decode($tmp);
 if(json_last_error()) {
 	http_response_code(500);
-	die("Invalid config file");
+	die("Invalid environments file");
 }
-//print_r($cfg);
-if(!@$cfg->active) {
+
+$tmp = @file_get_contents(__DIR__."/../../../../active_env.json");
+if(!$tmp) {
 	http_response_code(500);
-	die("No environment selected");
+	die("No active env file found");
 }
-if(!@$cfg->environments) {
+$tmp = json_decode($tmp);
+if(json_last_error()) {
 	http_response_code(500);
-	die("Invalid config file");
+	die("Invalid active env file");
 }
-if(!@$cfg->environments->{$cfg->active}) {
+$active = $tmp->active;
+
+
+if(!@$envs->$active) {
 	http_response_code(500);
 	die("Invalid environment selection");
 }
 
 
-$config['base_url'] =  $cfg->environments->{$cfg->active}->baseUrl."/be/main";
-$config['dbapi_url'] = $cfg->environments->{$cfg->active}->beDBapiUrl;
+$config['base_url'] =  $envs->$active->baseUrl."/be/main";
+$config['dbapi_url'] = $envs->$active->beDBapiUrl;
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -248,7 +253,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = isset($cfg->environments->{$cfg->active}->logLevel) ? $cfg->environments->{$cfg->active}->logLevel : 0;
+$config['log_threshold'] = isset($envs->$active->logLevel) ? $envs->$active->logLevel : 0;
 
 /*
 |--------------------------------------------------------------------------

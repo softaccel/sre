@@ -42,7 +42,7 @@
     <div class="sidebar">
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <li class="nav-item">
+                <li class="nav-item module-home">
                     <a href="#" title="" class="nav-link">
                         <i class="metismenu-icon fa fa-home"></i>
                         <p>Home</p>
@@ -55,14 +55,14 @@
                     </a>
                 </li>
 
-                <li class="nav-item ">
+                <li class="nav-item module-livrari">
                     <a href="#/views/deliveries" class="nav-link checkRead">
                         <i class="metismenu-icon fa fa-truck"></i> <p>Livrari</p>
                     </a>
                 </li>
 
 
-                <li class="nav-item" id="pontaj">
+                <li class="nav-item module-timetracking" id="pontaj">
                     <a data-toggle="collapse" href="#pontajMenu" role="button" class="nav-link">
                         <i class="fas fa-clock"></i> <p>Pontaj <i class="fas fa-angle-down right"></i></p>
                     </a>
@@ -81,36 +81,31 @@
                         </li>
                     </ul>
                 </li>
-                <!--                <li>-->
-                <!--                    <a href="#/views/receptii" title="">-->
-                <!--                        <i class="metismenu-icon fa fa-truck"></i> Receptii-->
-                <!--                    </a>-->
-                <!--                </li>-->
-                <li class="nav-header">Administrativ</li>
+
+                <li class="nav-header module-admin">Administrativ</li>
                 <li class="nav-item ">
                     <a href="#/views/partners" class="nav-link checkRead">
                         <i class="fas fa-handshake"></i> <p>Parteneri</p>
                     </a>
                 </li>
-<!--                if($("#personal>ul>li>a.readAllow")===null){$("#personal").addClass("d-none");}-->
-                <li class="nav-item" id="personal">
+                <li class="nav-item module-personel" id="personal">
                     <a data-toggle="collapse" href="#collapseExample" role="button" class="nav-link">
                         <i class="fas fa-user-friends"></i> <p>Personal <i class="fas fa-angle-down right"></i></p>
                     </a>
                     <ul class="collapse nav" id="collapseExample">
-                        <li class="nav-item ">
+                        <li class="nav-item module-employees">
                             <a href="#/views/employees" class="nav-link checkRead">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Angajati</p>
                             </a>
                         </li>
-                        <li class="nav-item ">
+                        <li class="nav-item module-teams">
                             <a href="#/views/teams" class="nav-link checkRead">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Echipe</p>
                             </a>
                         </li>
-                        <li class="nav-item ">
+                        <li class="nav-item module-jobs">
                             <a href="#/views/jobs" class="nav-link checkRead">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Posturi</p>
@@ -118,53 +113,25 @@
                         </li>
                     </ul>
                 </li>
-<!--                <li class="nav-item">-->
-<!--                    <a href="#/views/employees" class="nav-link">-->
-<!--                        <i class="metismenu-icon fa fa-user-friends"></i> <p>Angajati</p>-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                <li class="nav-item">-->
-<!--                    <a href="#/views/teams" class="nav-link">-->
-<!--                        <i class="metismenu-icon fa fa-sitemap"></i> <p>Echipe</p>-->
-<!--                    </a>-->
-<!--                </li>-->
-                <li class="nav-item ">
+
+                <li class="nav-item module-units">
                     <a href="#/views/units" class="nav-link checkRead">
                         <i class="metismenu-icon fa fa-balance-scale"></i> <p>Unitati de masura</p>
                     </a>
                 </li>
-<!--                <li class="nav-item">-->
-<!--                    <a href="#/views/jobs" class="nav-link">-->
-<!--                        <i class="metismenu-icon fa fa-address-card"></i> <p>Posturi</p>-->
-<!--                    </a>-->
-<!--                </li>-->
-                <!--                <li>-->
-                <!--                    <a href="#/views/teams" title="">-->
-                <!--                        <i class="metismenu-icon fa fa-sitemap"></i> Echipe-->
-                <!--                    </a>-->
-                <!--                </li>-->
 
-                <!--                <li>-->
-                <!--                    <a href="#/views/stocks" title="">-->
-                <!--                        <i class="metismenu-icon fa fa-cubes"></i> Stocuri-->
-                <!--                    </a>-->
-                <!--                </li>-->
-                <li class="nav-item ">
+                <li class="nav-item module-catalog">
                     <a href="#/views/products" class="nav-link checkRead">
                         <i class="metismenu-icon fa fa-book"></i> <p>Catalog</p>
                     </a>
                 </li>
-                <li class="nav-header">Aplicatie</li>
-                <li class="nav-item ">
+                <li class="nav-header module-appsettings">Aplicatie</li>
+                <li class="nav-item module-users">
                     <a href="#/views/users" class="nav-link checkRead">
                         <i class="metismenu-icon fa fa-users"></i> <p>Utilizatori</p>
                     </a>
                 </li>
-<!--                <li class="nav-item">-->
-<!--                    <a href="#/views/users" class="nav-link">-->
-<!--                        <i class="metismenu-icon fa fa-sliders-h"></i> <p>Setari</p>-->
-<!--                    </a>-->
-<!--                </li>-->
+
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
@@ -177,6 +144,7 @@
 
         let modules = ["orders","deliveries","timetracking","partners","employees","teams","jobs","units","catalog","users"];
         let nodes = k.$el.find(".checkRead").parent();
+
         $.map(nodes, function (value, index) {
             checkUserRights($(value),modules[index]);
         });

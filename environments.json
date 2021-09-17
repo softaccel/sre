@@ -1,0 +1,35 @@
+{
+  "local": {
+    "baseUrl": "http://localhost/spaleck",
+    "feDBapiUrl": "http://172.16.20.15/dbapi/v2/spaleck",
+    "beDBapiUrl": "http://172.16.20.15/dbapi/v2/spaleck",
+    "backendUrl": "/spaleck/be",
+    "authUrl": "/spaleck/be/main/auth/login",
+    "fileApiUrl": "http://172.16.20.15/FileApi"
+  },
+  "frominternet": {
+    "baseUrl": "http://localhost/spaleck",
+    "feDBapiUrl": "http://localhost/dbapi/v2/spaleck",
+    "beDBapiUrl": "https://nemo1.softaccel.net/dbapi/v2/spaleck",
+    "backendUrl": "/spaleck/be",
+    "authUrl": "/spaleck/be/main/auth/login",
+    "fileApiUrl": "http://172.16.20.15/FileApi"
+  },
+  "sergiu_devel": {
+    "baseUrl": "http://localhost/spaleck",
+    "feDBapiUrl": "http://localhost/dbapi/v2/spaleck",
+    "beDBapiUrl": "http://localhost/dbapi/v2/spaleck",
+    "backendUrl": "/spaleck/be",
+    "authUrl": "/spaleck/be/main/auth/login",
+    "fileApiUrl": "http://172.16.20.15/FileApi"
+  },
+  "alllocal": {
+    "baseUrl": "http://localhost/spaleck",
+    "feDBapiUrl": "/dbapi/v2/spaleck",
+    "beDBapiUrl": "http://localhost/dbapi/v2/spaleck",
+    "backendUrl": "/spaleck/be",
+    "authUrl": "/spaleck/be/main/auth/login",
+    "fileApiUrl": "http://localhost/FileApi",
+    "logLevel": 3
+  }
+}
