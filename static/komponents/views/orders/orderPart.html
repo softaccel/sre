@@ -16,6 +16,9 @@
     #orderPartForm .row>div:nth-child(3) {
         display: none;
     }
+    #orderPartForm>.row:last-of-type{
+        border-bottom: none;
+    }
     #orderPartForm.editMode>div>.row>div:nth-child(2) {
         display: none;
     }
@@ -99,10 +102,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="mt-5">
+                            <div class="row mt-5">
                                 <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
+                                &nbsp;
                                 <button class="btn btn-secondary btn-save" type="button" id="cancelButton">Renunta</button>
                                 <button class="btn btn-success btn-edit checkUpdate" type="button">Editeaza</button>
+                                &nbsp;
                                 <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" type="button">Sterge</button>
                             </div>
                         </form>
@@ -128,6 +133,8 @@
 <script>
 
     function init_komponent(k) {
+
+        checkUserRights(k.$el, "orders");
 
         function editMode() {
             // set form to edit mode

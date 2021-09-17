@@ -1,0 +1,297 @@
+<style>
+
+</style>
+
+<div class="modal" id="order_form_modal">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import repere fizice</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form name="importForm" id="importForm">
+                    <input type="file" name="orderfile">
+                </form>
+
+                <form name="orderForm" id="orderForm" style="display: none">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="multiplied_by" class="">Cantitate</label>
+                            <input name="multiplied_by" id="multiplied_by" type="number" value="1" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+
+                    <div style="max-height: 500px; overflow: scroll;">
+                        <table class="table table-striped table-sm">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox" checked name="toggleall" data-toggle="cod" onclick="toggleCheck(this)"></th>
+                                <th>Cod</th>
+                                <th>Descriere</th>
+                                <th>Cantitate</th>
+                                <th>Pret unitar</th>
+                                <th>Total</th>
+                                <th>Altele</th>
+                            </tr>
+                            </thead>
+                            <tbody data-name="orderItems">
+                            <tr>
+                                <td><input type="checkbox" name="cod" data-toggleall="toggleall" value="<%= cod %>" checked onclick="toggleCheck(this)"></td>
+                                <td><%= cod %></td>
+                                <td><%= desc %></td>
+                                <td><%= qty %> <%= unit %></td>
+                                <td><%= unit_price %><%= curr %></td>
+                                <td><%= total %><%= curr %></td>
+                                <td onmouseover="show(this)">
+                                    <div class="d-none">
+                                        <ul>
+                                            <% for(let i in others.fields) { %>
+                                            <% if (others.fields[i].type=='data') %>
+                                            <li><strong><%= i %> :</strong> <%= others.fields[i].data %></li>
+                                            <% }%>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button data-name="uploadButton" form="importForm" type="button" class="btn-primary btn">Importa XML</button>
+                <button data-name="addOrderParts" form="orderForm" type="button" class="btn btn-success" style="display: none">Adauga selectate</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function uuidv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    function show(src) {
+        // $(src.)
+    }
+
+    function toggleCheck(src) {
+
+        let checked = src.checked;
+
+        // toggleAll checkbox was pressed
+        let toggleTarget = $(src).attr("data-toggle");
+        if(toggleTarget) {
+            $(src.form).find("input[name="+toggleTarget+"]").each(function () {
+                $(this)[0].checked = checked;
+            });
+            return;
+        }
+
+        let toggleAll = src.form[$(src).data("toggleall")];
+        if(!checked) {
+            toggleAll.checked = false;
+            return;
+        }
+
+        let allchecked = true;
+        let inputs = $(src.form).find("input[name="+src.name+"]");
+        for(let i =0;i<inputs.length;i++) {
+            if(!inputs[i].checked) {
+                allchecked = false;
+                break;
+            }
+        }
+        toggleAll.checked = allchecked;
+
+    }
+
+    function init_komponent(k) {
+
+        let valuesMap = {
+            "E": "EUR",
+            "Stk": "buc"
+        };
+
+        let orderMeta;
+
+        let $items = k.$el.find("[data-name=orderItems]");
+        let templateTxt = $items.html().replace(/&lt;/gi, '<').replace(/&gt;/gi, ">");
+        let template;
+        if(templateTxt) {
+            template = _.template(templateTxt);
+        }
+        $items.empty();
+
+        let modal = k.$el.appendTo("body").filter(".modal");
+        modal.on("hidden.bs.modal",function (e) {
+            k.$el.remove();
+        });
+        let $orderButton = k.$el.find("[data-name=addOrderParts]");
+        let $uploadButton = k.$el.find("[data-name=uploadButton]");
+
+        let orders = k.data.instance;
+
+        function publishItems(response) {
+            let total = 0;
+            let entries = [];
+            let targetDateSet = false;
+            Object.getOwnPropertyNames(response.sections).forEach(function (sectionId) {
+                let entry = response.sections[sectionId];
+
+
+                if (entry.SectionKey==="P.A") {
+                    let desc = [];
+                    if(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[1]"].data) {
+                        desc.push(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[1]"].data);
+                    }
+                    if(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[2]"].data) {
+                        desc.push(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[2]"].data);
+                    }
+                    if(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[3]"].data) {
+                        desc.push(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[3]"].data);
+                    }
+                    if(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[4]"].data) {
+                        desc.push(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[4]"].data);
+                    }
+
+                    let entryData = {
+                        cod: entry.fields["P.A.P_ZeichnungSpr.Zeichnung"].data,
+                        desc: desc.join(" / "),
+                        unit_price: entry.fields["P.A.E_BelegPos.Einzelpreis"].data.replaceAll(".","").replaceAll(",",".")*1,
+                        qty: entry.fields["P.A.E_BelegPos.Menge"].data.replaceAll(".","").replaceAll(",",".")*1,
+                        curr: entry.fields["P.A.S_PreisEinheitSpr.KurzBez"].data,
+                        unit: valuesMap[entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data]
+                            ? valuesMap[entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data]
+                            :entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data,
+                        total: entry.fields["P.A.E_BelegPos.Warenwert"].data.replaceAll(".","").replaceAll(",",".")*1,
+                        others: entry
+                    };
+                    entries.push(entryData);
+                    total += entryData.total;
+                }
+            });
+
+            entries.forEach(function (entry) {
+                let $el = $(template(entry)).appendTo($items).attr("id",uuidv4()).data("data",entry);
+                $el.find("*").data("data",entry);
+            });
+        }
+
+        function uploadFile(src) {
+            let form = src.target.form;
+            let files = form.orderfile.files;
+            $items.empty();
+
+            if(files.length<1) {
+                console.log("no files");
+                return;
+            }
+
+            let fd = new FormData();
+            fd.append("file",files[0]);
+            let p = new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: backendUrl+"/main/XMLtoJSON",
+                    data: fd,
+                    type: "post",
+                    contentType: false,
+                    processData: false,
+                })
+                    .done(function(response) {
+                        publishItems(response);
+                        resolve(response);
+                    })
+                    .fail(function () {
+                        reject();
+                    })
+            });
+
+
+            p.then(function () {
+                $($uploadButton.hide()[0].form).hide();
+                $($orderButton.show()[0].form).show();
+            })
+                .catch(function(data){
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare: <pre>"+data.jqXHR.responseText+"</pre>"
+                    }).send();
+                });
+        }
+
+        function placeOrder(src) {
+            let form = src.target.form;
+            let multiplier = $("input[name=multiplied_by]").val();
+            if(!/^d+$/.test(multiplier)) {
+                multiplier = 1;
+            }
+
+            let total = 0;
+            let orderParts = [];
+
+            $(form).find("input[name=cod]").filter(":checked").each(function () {
+                let data = $(this).data().data;
+
+                let order_part = {
+                    unit: data.unit,
+                    name: data.desc,
+                    qty: parseInt(data.qty) * multiplier,
+                    unit_price: data.unit_price,
+                    currency: valuesMap[data.curr],
+                    orders_items_meta: []
+                };
+
+                if (data.others.fields["P.A.E_BelegPos.Artikel"].data!=="") {
+                    order_part.orders_items_meta.push({
+                        type: "orders_items_meta",
+                        attributes: {
+                            meta_key: "P.A.E_BelegPos.Artikel",
+                            meta_val: data.others.fields["P.A.E_BelegPos.Artikel"].data
+                        }
+                    });
+                }
+
+                if (data.others.fields["P.A.P_ZeichnungSpr.Zeichnung"].data!=="") {
+                    order_part.orders_items_meta.push({
+                        type: "orders_items_meta",
+                        attributes: {
+                            meta_key: "P.A.P_ZeichnungSpr.Zeichnung",
+                            meta_val: data.others.fields["P.A.P_ZeichnungSpr.Zeichnung"].data
+                        }
+                    });
+                }
+
+                orderParts.push(order_part);
+                total += data.qty*data.unit_price;
+            });
+
+            let insertCopy = {...orders.insertUrl};
+            insertCopy.path = insertCopy.path.replace("orders_items_wmeta", "orders_items");
+            orders.insertUrl = insertCopy;
+
+            orderParts.forEach(function (part) {
+                orders.createItem(part)
+                    .then(function (newPart) {
+                        console.log(newPart);
+                        modal.modal("hide");
+                    })
+                    .catch(function (resp) {
+                        komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + resp.jqXHR.responseText + "</pre>"}).send();
+                    })
+            });
+
+        }
+
+        $orderButton.on("click", placeOrder);
+        $uploadButton.on("click", uploadFile);
+
+        modal.modal("show");
+    }
+</script>

@@ -18,13 +18,16 @@
 <div>
     <div class="checkRead">
         <div class="card-body">
-            <div class="dropdown checkCreate" id="newOrderButtons">
-                <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="mb-2 mr-2 dropdown-toggle btn btn-primary">Comanda noua</button>
-                <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu">
-                    <button type="button" tabindex="0" class="dropdown-item" onclick="newOrder()">Introducere manuala</button>
-                    <button type="button" tabindex="0" class="dropdown-item" onclick="newOrderFromXML()">Import XML (Spaleck DE)</button>
-                </div>
-            </div>
+<!--            <div class="dropdown checkCreate" id="newOrderButtons">-->
+<!--                <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="mb-2 mr-2 dropdown-toggle btn btn-primary">Comanda noua</button>-->
+<!--                <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu">-->
+<!--                    <button type="button" tabindex="0" class="dropdown-item" onclick="newOrder()">Introducere manuala</button>-->
+<!--                    <button type="button" tabindex="0" class="dropdown-item" onclick="newOrderFromXML()">Import XML (Spaleck DE)</button>-->
+<!--                </div>-->
+<!--            </div>-->
+            <button class="btn btn-primary" onclick="newOrder()">Comanda noua</button>
+            <br>
+            <br>
             <form id="ordersListFilter" class="d-none"><button type="submit" name="submit"></button></form>
             <table class="table table-striped table-hover">
                 <thead class="thead-dark" id="ordersListHeader">
@@ -168,9 +171,9 @@
         }).send();
     }
 
-    function newOrderFromXML() {
-        komponentor.intent("/views/orders/importxml").data({instance:$("#ordersList").data("instance")}).send();
-    }
+    // function newOrderFromXML() {
+    //     komponentor.intent("/views/orders/importxml").data({instance:$("#ordersList").data("instance")}).send();
+    // }
 
     function newOrder() {
         komponentor.intent("/views/orders/createNewOrder").data({instance:$("#ordersList").data("instance")}).send();
