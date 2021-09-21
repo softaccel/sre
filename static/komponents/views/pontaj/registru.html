@@ -149,7 +149,7 @@
                             <ul class="someSelect" id="" data-resourcetype="collection" data-filter="#orderSelectSearch">
                                 <li onclick="$('#longerThanCheck')[0].click();">
                                     <input type="checkbox" id="longerThanCheck" onclick="filterLongerThen(this.checked,$(this).parent().find('input[type=number]').val()); event.stopPropagation();"> Durata mai mare de
-                                    <input type="number" style="width: 40px" value="8"> ore
+                                    <input type="number" style="width: 40px" onclick="event.stopPropagation();" value="8"> ore
                                 </li>
                                 <li onclick="$('#unallocatedCheck')[0].click();">
                                     <input type="checkbox" id="unallocatedCheck" onclick="filterUnallocated(this.checked); event.stopPropagation();"> Comanda nealocata
