@@ -18,16 +18,14 @@
                     komponentor.intent("/common/errormodal").data({
                         body: "Selectarea clientului este obligatorie."
                     }).send();
-
-                    return 1;
+                    return;
                 }
 
                 if (data.label === "") {
                     komponentor.intent("/common/errormodal").data({
                         body: "Denumirea comenzii este obligatorie."
                     }).send();
-
-                    return 1;
+                    return;
                 }
 
                 let orderMeta = [];
@@ -62,6 +60,7 @@
             },
             title:"Adauga Comanda Noua",
             size: "lg",
+            autoClose: false,
             fields:[
                 {type: "select", name: "partner_id", label: "Client", url: "/partners", labelfnc: "name", idfnc: "id"},
                 {type: "text", name: "label", label: "Denumire"},
