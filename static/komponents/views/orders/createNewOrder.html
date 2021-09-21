@@ -14,18 +14,18 @@
         komponentor.intent("/common/formmodal").data({
             callback:function (data) {
                 data = data.data;
-                if (data.partner_id === null ||
-                    data.label === "" ||
-                    data.bestellung === "" ||
-                    data.belegnummer === "" ||
-                    data.estimated_delivery === "" ||
-                    data.order_value === "" ||
-                    data.negotiated_value === "" ||
-                    data.estimated_work === "") {
-                        komponentor.intent("/common/errormodal").data({
-                            body: "Toate campurile sunt obligatorii."
-                        }).send();
-                        return 1;
+                if (data.partner_id === null) {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "Selectarea clientului este obligatorie."
+                    }).send();
+                    return;
+                }
+
+                if (data.label === "") {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "Denumirea comenzii este obligatorie."
+                    }).send();
+                    return;
                 }
 
                 let orderMeta = [];
@@ -60,6 +60,7 @@
             },
             title:"Adauga Comanda Noua",
             size: "lg",
+            autoClose: false,
             fields:[
                 {type: "select", name: "partner_id", label: "Client", url: "/partners", labelfnc: "name", idfnc: "id"},
                 {type: "text", name: "label", label: "Denumire"},
