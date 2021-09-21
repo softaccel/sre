@@ -228,12 +228,14 @@
                     </div>
                 </td>
                 <td>
-                    <div class="values"><%= attributes.hourly_rate %> <%= relationships.currency.id %></div>
+                    <div class="values"><%= attributes.hourly_rate %> <%= relationships.currency?relationships.currency.id:"" %></div>
                     <div style="white-space: nowrap" class="inputs">
                         <input type="number" name="hourly_rate" value="<%= attributes.hourly_rate %>" style="max-width: 60px">
                         <br>
                         <select name="currency" style="width: 60px">
+                            <% if(relationships.currency) { %>
                             <option><%= relationships.currency.id %></option>
+                            <% } %>
                         </select>
                     </div>
                 </td>
