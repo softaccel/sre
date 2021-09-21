@@ -44,7 +44,7 @@
                                     <a class="text-white" data-sortfld="type">Tip
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                     <br>
-                                    <select id="productTypeFilter" name="type" class="form-control-sm form-control" form="productListFilter" data-operator="=">
+                                    <select id="productTypeFilter" style="width: 150px" name="type" class="form-control-sm form-control" form="productListFilter" data-operator="=">
                                         <option value="service">Serviciu</option>
                                         <option value="product">Produs</option>
                                         <option value="product_composed">Produs Compus</option>
@@ -76,7 +76,7 @@
                                     <a class="text-white" data-sortfld="active">Activ
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                     <br>
-                                    <select id="productActiveFilter" name="active" class="form-control-sm form-control" form="productListFilter" data-operator="=">
+                                    <select id="productActiveFilter" style="width: 110px" name="active" class="form-control-sm form-control" form="productListFilter" data-operator="=">
                                         <option value="1">Activ</option>
                                         <option value="0">Inactiv</option>
                                         <option value="">Toate</option>
@@ -230,5 +230,9 @@
         });
 
         k.$el.find("#productActiveFilter").select2();
+        k.$el.find("#productActiveFilter").val("3").trigger('change');
+        k.$el.find("#productTypeFilter").select2({placeholder: '', allowClear: true});
+        k.$el.find("#productTypeFilter").val("3").trigger('change');
+
     }
 </script>
