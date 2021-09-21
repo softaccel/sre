@@ -149,9 +149,9 @@
                 strDeliveries = "(id=null)";
             }
             instanceDeliveries = $("<span>").apiator({resourcetype: "collection", returninstance: true});
-            instanceDeliveries.setUrl(apiRoot + "/deliveries/?filter_advanced=" + encodeURIComponent(strDeliveries)).loadFromRemote().then(function () {
-                $("#livrari").komponent({data:apiRoot + "/deliveries/?filter_advanced=" + encodeURIComponent(strDeliveries)});
-            });
+            $("#livrari").komponent({data:apiRoot + "/deliveries/?filter_advanced=" + encodeURIComponent(strDeliveries)});
+            // instanceDeliveries.setUrl(apiRoot + "/deliveries/?filter_advanced=" + encodeURIComponent(strDeliveries)).loadFromRemote().then(function () {
+            // });
 
         });
 
