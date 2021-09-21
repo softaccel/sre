@@ -31,7 +31,7 @@
                         <table class="table  table-hover table-striped">
                             <thead class="thead-dark" id="productListHeader">
                             <tr>
-                                <th class="align-top" style="width: 100px">
+                                <th class="align-top" style="width: 90px">
                                     <a class="text-white" data-sortfld="id">Nr. crt.
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                 </th>
@@ -40,7 +40,7 @@
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                     <input type="text" name="name" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">
                                 </th>
-                                <th class="align-top" style="width: 200px">
+                                <th class="align-top" style="width: 110px">
                                     <a class="text-white" data-sortfld="type">Tip
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                     <br>
@@ -51,7 +51,15 @@
                                     </select>
 
                                 </th>
-                                <th class="align-top" style="width: 200px">
+                                <th class="align-top" style="width: 130px">
+                                    <a class="text-white" data-sortfld="grouping">Grupaj
+                                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                                    <br>
+                                    <input id="groupingFilter" type="text" name="grouping" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">
+
+                                </th>
+
+                                <th class="align-top" style="width: 110px">
                                     <a class="text-white" data-sortfld="unit">Unitate
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                     <!--                                    <input type="text" name="unit" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">-->
@@ -59,12 +67,12 @@
                                     <select id="productUnitFilter" name="unit" class="form-control-sm form-control" form="productListFilter" data-operator="="><option> </option></select>
 
                                 </th>
-                                <th class="align-top" style="width: 200px">
+                                <th class="align-top" style="width: 110px">
                                     <a class="text-white" data-sortfld="unit_price">Pret
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                     <input type="text" name="unit_price" class="form-control-sm form-control" form="productListFilter" data-operator="~=~">
                                 </th>
-                                <th class="align-top" style="width: 200px">
+                                <th class="align-top" style="width: 110px">
                                     <a class="text-white" data-sortfld="active">Activ
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                     <br>
@@ -87,9 +95,10 @@
                                 <td><%= id %></td>
                                 <td><%= attributes.name %></td>
                                 <td><%= attributes.type === "service" ? "Serviciu" : (attributes.type === "product" ? "Produs" : "Produs Compus") %></td>
+                                <td><%= attributes.grouping %></td>
                                 <td><%= relationships.unit.id %></td>
                                 <td><%= attributes.unit_price ? attributes.unit_price : "-" %> <%= relationships.currency !== null ? relationships.currency.id : "" %></td>
-                                <td><%= attributes.active === "1" ? "Activ" : "Inactiv" %></td>
+                                <td><span class="badge badge-pill badge-<%= attributes.active*1 ? 'success' : 'danger' %> "><%= attributes.active === "1" ? "Activ" : "Inactiv" %></span></td>
                             </tr>
                             </tbody>
                             <tfoot>
@@ -124,7 +133,7 @@
     function openProductModal(src){
         // $(src).data("locked", true);
         komponentor
-            .intent('/views/products/productModal')
+            .intent('/views/catalog/productModal')
             .data({instance:$(src).data('instance')})
             .send()
             .then(function (k) {
@@ -141,7 +150,6 @@
         let instance = $("#productList").apiator(apiRoot+"/catalog?page[catalog][offset]=0&filter=active=1").data("instance");
 
 
-        k.$el.find("#productTypeFilter").select2({placeholder: "", allowClear: true}).val(null).trigger("change");
         k.$el.find("#productUnitFilter").select2wrapper({url: apiRoot+"/units",labelfld:"unit"});
 
 
@@ -160,6 +168,7 @@
         let formData;
         formData = {
             callback: function (data) {
+                data = data.data;
                 if (data.name === "" || data.type === null || data.unit === null) {
                     komponentor.intent("/common/errormodal").data({
                         body: "Denumirea, tipul si unitatea sunt necesare."
@@ -174,7 +183,7 @@
 
                 instance.view.el.children().last().fadeIn(500)[0].scrollIntoView();
             },
-            title:"Adauga Comanda Noua",
+            title:"Adauga reper in catalog",
             fields: [
                 {
                     label: "Denumire",
@@ -186,6 +195,11 @@
                     type: "select",
                     name: "type",
                     options: [{id: "service", description: "Serviciu"}, {id: "product", description: "Produs"}, {id: "product_composed", description: "Produs compus"}],
+                },
+                {
+                    label: "Grupaj",
+                    type: "text",
+                    name: "grouping"
                 },
                 {
                     label: "Unitate",
@@ -209,7 +223,7 @@
                     idfnc: "id"
                 }
             ]
-        }
+        };
 
         k.$el.find("#newProdButt").on("click", function () {
             komponentor.intent("/common/formmodal").data(formData).send();

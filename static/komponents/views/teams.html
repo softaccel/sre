@@ -60,6 +60,7 @@
     function newEmplForm() {
         komponentor.intent("/common/formmodal").data({
             callback:function (data){
+                data = data.data;
                 $("#teamsList").data("instance").createItem(data);
             },
             title:"Adauga Echipa Noua",

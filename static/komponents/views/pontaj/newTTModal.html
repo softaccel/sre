@@ -255,20 +255,14 @@
                 data.stop = data.stop.replace("T", " ");
                 data.stop = data.stop.split(".")[0];
 
-                if(data.hourly_rate > 0){
-                    aux_instance.createItem(data).then(function () {
-                        aux_instance.loadFromRemote();
-                    }).catch(function(data){
-                        komponentor.intent("/common/errormodal").data({
-                            body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
-                        }).send();
-                    });
-                    $modal.modal("hide");
-                } else {
+                aux_instance.createItem(data).then(function () {
+                    aux_instance.loadFromRemote();
+                }).catch(function(data){
                     komponentor.intent("/common/errormodal").data({
-                        body: "Tariful orar trebuie sa fie mai mare ca 0."
+                        body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
                     }).send();
-                }
+                });
+                $modal.modal("hide");
 
 
             } else {

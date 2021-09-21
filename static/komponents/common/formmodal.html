@@ -12,6 +12,7 @@
                 <div class="form-group text">
                     <label></label>
                     <input type="text" class="form-control-sm form-control" autocomplete="off">
+                    <datalist></datalist>
                 </div>
                 <div class="form-group number">
                     <label></label>
@@ -62,11 +63,17 @@
             return;
         }
 
+
         let modal = k.$el.appendTo("body")
             .filter(".modal")
             .on("hidden.bs.modal",function () {
                 k.$el.remove();
             });
+
+
+        k.hide = function() {
+            modal.modal("hide");
+        };
 
         if(modalData.size) {
             modal.find(".modal-dialog").addClass("modal-"+modalData.size);
@@ -95,8 +102,11 @@
                 }
             }
 
-            if(modalData.callback(data) === undefined)
+            modalData.callback({k: k, data: data});
+            if(typeof modalData.autoClose==="undefined" || modalData.autoClose===true) {
                 modal.modal("hide");
+            }
+
         });
 
 
@@ -150,6 +160,16 @@
                 for(let attrName in fld.attrs) {
                     inp.attr(attrName,fld.attrs[attrName]);
                 }
+            }
+
+            if(fld.type==="text" && typeof  fld.options!== "undefined" && fld.options.constructor===Array) {
+                let dl = tpl.find("datalist");
+                dl.attr("id",fld.name+"options");
+                inp.attr("list",fld.name+"options");
+                // inp.removeAttr("autocomplete");
+                fld.options.forEach(function (item) {
+                    $("<option>").val(item).appendTo(dl);
+                })
             }
 
             /*
@@ -242,3 +262,5 @@
         modal.modal();
     }
 </script>
+
+

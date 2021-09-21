@@ -20,6 +20,72 @@
 
 <div>
     <div class="checkRead">
+        <div class="content">
+
+            <div class="row">
+                <div class="col-3">
+                    <!-- small box -->
+                    <div class="small-box bg-gradient-secondary">
+                        <div class="inner" id="orderCostsTotal" data-resourcetype="item">
+                            <h4>Total</h4>
+                            <div>
+                                <h5><%= attributes.total%></h5>
+                            </div>
+                        </div>
+                        <div class="inner" id="orderCostsTotalEmpty" data-resourcetype="item">
+                            <h4>Total</h4>
+                            <div>
+                                <h5>0</h5>
+                            </div>
+                        </div>
+
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h4>Manopera</h4>
+                            <div>
+                                <h5>350 ore / 2500EURO</h5>
+                            </div>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <div class=" col-3">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h4>Materiale</h4>
+                            <div>
+                                <h5>350 ore / 2500EURO</h5>
+                            </div>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <div class=" col-3">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h4>Diverse</h4>
+                            <div>
+                                <h5>350 ore / 2500EURO</h5>
+                            </div>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-person-add"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="hide-no-offer">
             <button class="btn btn-primary checkUpdate" id="newCostEntryBtn"><i class="fa fa-plus"></i> Adauga</button>
         </div>
@@ -27,22 +93,24 @@
             <thead>
             <tr>
                 <th>Denumire</th>
+                <th>Grup</th>
                 <th style="width: 130px">Cantitate</th>
                 <th style="width: 130px">U.M.</th>
                 <th style="width: 130px">Pret unitar</th>
                 <th style="width: 130px">Total</th>
-                <th style="width: 130px">Total cu TVA</th>
+<!--                <th style="width: 130px">Total cu TVA</th>-->
                 <th style="width: 50px"></th>
             </tr>
             </thead>
             <tbody id="orderCostsList" data-resourcetype="collection">
             <tr>
                 <td><%= attributes.name %></td>
+                <td><%= attributes.grouping %></td>
                 <td><%= attributes.qty %></td>
                 <td><%= relationships.unit.id %></td>
                 <td><%= attributes.unit_price %> <%= relationships.currency.id %></td>
                 <td><%= attributes.total %> <%= relationships.currency.id %></td>
-                <td><%= attributes.total_wvat %> <%= relationships.currency.id %></td>
+<!--                <td><%= attributes.total_wvat %> <%= relationships.currency.id %></td>-->
                 <td>
                     <div class="btn-group">
                         <button class="btn btn-sm btn-warning" onclick="editCost(this)"><i class="fa fa-edit"></i></button>
@@ -52,7 +120,7 @@
             </tr>
             </tbody>
 
-            <tfoot id="orderCostsTotal" data-resourcetype="item" class="font-weight-bold">
+            <tfoot id="orderCostsTotal1"  class="font-weight-bold d-none">
             <tr>
                 <td>Total</td>
                 <td colspan="4"></td>
@@ -86,10 +154,14 @@
 
         let costsListIntance = $("#orderCostsList").apiator({returninstance:true}).setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_costs");
         costsListIntance.loadFromRemote().then(function () {
-            if(costsListIntance.items.length)
-                $("#orderCostsTotal").show().apiator({returninstance:true}).setUrl(apiRoot+"/orders_costs_total/"+k.data.instance.id).loadFromRemote();
-            else
-                $("#orderCostsTotal").hide()
+            if(costsListIntance.items.length) {
+                $("#orderCostsTotal").show().apiator({returninstance: true,emptyview: "#orderCostsTotalEmpty" }).setUrl(apiRoot + "/orders_costs_total/" + k.data.instance.id).loadFromRemote();
+                $("#orderCostsTotalEmpty").hide();
+            }
+            else {
+                $("#orderCostsTotal").hide();
+                $("#orderCostsTotalEmpty").show();
+            }
         });
 
         $("#newCostEntryBtn").on("click",function () {
