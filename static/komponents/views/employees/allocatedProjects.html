@@ -60,6 +60,10 @@
 
         if (k.data.emplid) {
             emplid = k.data.emplid;
+        } else {
+            if (k.data.emplId) {
+                emplid = k.data.emplId;
+            }
         }
 
         if (!emplid) {

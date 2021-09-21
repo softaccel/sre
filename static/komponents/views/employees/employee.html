@@ -4,7 +4,6 @@
         font-weight: bold;
     }
 
-
     #detaliiPanel .view button{
         display: none;
         float: right;
@@ -102,6 +101,8 @@
         };
 
         $("#employeeTimetracking").komponent({data:k.data,parent:k});
+
+        console.log("k.data din employee", k.data);
         $("#allocatedProjects").komponent({data:k.data,parent:k});
 
     }
