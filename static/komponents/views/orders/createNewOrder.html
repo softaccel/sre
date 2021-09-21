@@ -14,18 +14,20 @@
         komponentor.intent("/common/formmodal").data({
             callback:function (data) {
                 data = data.data;
-                if (data.partner_id === null ||
-                    data.label === "" ||
-                    data.bestellung === "" ||
-                    data.belegnummer === "" ||
-                    data.estimated_delivery === "" ||
-                    data.order_value === "" ||
-                    data.negotiated_value === "" ||
-                    data.estimated_work === "") {
-                        komponentor.intent("/common/errormodal").data({
-                            body: "Toate campurile sunt obligatorii."
-                        }).send();
-                        return 1;
+                if (data.partner_id === null) {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "Selectarea clientului este obligatorie."
+                    }).send();
+
+                    return 1;
+                }
+
+                if (data.label === "") {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "Denumirea comenzii este obligatorie."
+                    }).send();
+
+                    return 1;
                 }
 
                 let orderMeta = [];
