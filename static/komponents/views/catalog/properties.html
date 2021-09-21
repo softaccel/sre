@@ -73,6 +73,7 @@
     function newProductPartMeta() {
         komponentor.intent("/common/formmodal").data({
             callback:function (data) {
+                data = data.data;
                 $("#productMetaList").data("instance").createItem(data).then().catch(function (data) {
                     komponentor.intent("/common/errormodal").data({
                         body: "A aparut o eroare: <pre>" + data.jqXHR.responseText + "</pre>"

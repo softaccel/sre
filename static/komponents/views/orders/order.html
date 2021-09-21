@@ -69,13 +69,13 @@
                         <a data-toggle="tab" href="#reperePanel" class="nav-link" id="repereTab">Continut</a>
                     </li>
                     <li class="nav-item">
+                        <a data-toggle="tab" href="#ordersCostsPanel" class="nav-link" id="orderItemsTab">Costuri</a>
+                    </li>
+                    <li class="nav-item">
                         <a data-toggle="tab" href="#documentePanel" class="nav-link" id="documenteTab">Documente</a>
                     </li>
                     <li class="nav-item">
-                        <a data-toggle="tab" href="#ordersCostsPanel" class="nav-link" id="orderItemsTab">Elemente de cost</a>
-                    </li>
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#resursePanel" class="nav-link" id="allocResTab">Resurse alocate</a>
+                        <a data-toggle="tab" href="#resursePanel" class="nav-link" id="allocResTab">Resurse</a>
                     </li>
                     <li class="nav-item">
                         <a data-toggle="tab" href="#pontajPanel" class="nav-link" id="timeTrackTab">Pontaj</a>
@@ -83,24 +83,21 @@
                     <li class="nav-item">
                         <a data-toggle="tab" href="#deliveriesPanel" class="nav-link" id="deliveriesTab">Livrari</a>
                     </li>
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#proprietati" class="nav-link" id="metaTab">Proprietati</a>
-                    </li>
+<!--                    <li class="nav-item">-->
+<!--                        <a data-toggle="tab" href="#proprietati" class="nav-link" id="metaTab">Proprietati</a>-->
+<!--                    </li>-->
                 </ul>
             </div>
             <div class="modal-body bg-white">
                 <div class="tab-content">
 
                     <div class="tab-pane fade" id="sumar" is="komponent" data-url="/views/orders/details"></div>
-
                     <div class="tab-pane fade" id="reperePanel">
                         <div is="komponent" data-url="/views/orders/partsGallery" id="repere"></div>
                     </div>
-
                     <div class="tab-pane fade" id="documentePanel">
                         <div is="komponent" data-url="/views/orders/orderDocuments" id="documents"></div>
                     </div>
-
                     <div class="tab-pane fade" id="ordersCostsPanel">
                         <div is="komponent" data-url="/views/orders/orderCosts" id="ordersCosts"></div>
                     </div>

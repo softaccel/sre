@@ -47,6 +47,7 @@
 
         formData = {
             callback: function (data) {
+                data = data.data;
                 data.parent_id = k.data.instance.id;
                 if (data.component_id === null || data.qty === "") {
                     komponentor.intent("/common/errormodal").data({
@@ -64,7 +65,7 @@
 
                 // k.data.instance.view.el.children().last().fadeIn(500)[0].scrollIntoView();
             },
-            title:"Adauga Comanda Noua",
+            title:"Adauga componenta la reteta",
             fields: [
                 {
                     label: "Cantitate",
@@ -80,7 +81,7 @@
                     idfnc: "id"
                 },
             ]
-        }
+        };
 
         k.$el.find("#newComponentButton").on("click", function () {
             komponentor.intent("/common/formmodal").data(formData).send();

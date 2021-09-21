@@ -20,6 +20,7 @@
             ],
             title:"Preferinte",
             callback:function (data) {
+                data = data.data;
                 console.log(data);
                 for(let i in data) {
                     localStorage.setItem(localStorageLabel+"."+i,data[i]);

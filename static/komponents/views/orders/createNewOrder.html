@@ -5,6 +5,7 @@
 
         komponentor.intent("/common/formmodal").data({
             callback:function (data) {
+                data = data.data;
                 if (data.partner_id === null || data.model === "" || data.orderdate === "" || data.deliverydate === "") {
                     komponentor.intent("/common/errormodal").data({
                         body: "Toate datele trebuie completate."
