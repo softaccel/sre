@@ -150,7 +150,10 @@
 <script>
 
     function openDeliveryModal(src) {
-        komponentor.intent("/views/deliveries/deliveryModal").data({instance:$(src).data("instance")}).send();
+        let instance = $(src).data("instance");
+        console.log(instance.url);
+        delete instance.url.parameters.filter_advanced;
+        komponentor.intent("/views/deliveries/deliveryModal").data({instance:instance}).send();
     }
 
     function init_komponent(k) {
@@ -160,7 +163,7 @@
         console.log("del del del", k)
 
         if(k.data){
-            let instance = k.$el.find("#deliveriesList").apiator({url:k.data,returninstance:true})
+            k.$el.find("#deliveriesList").apiator({url:k.data,returninstance:true});
             k.$el.find("#newDlvrButt").remove();
             console.log("data");
         } else {
@@ -179,6 +182,7 @@
         filterList.find("input").on("input",function () {
             $("#deliveriesListFilterBtn").click();
         });
+
         filterList.find("#deliveriesListStatusSelect").select2({placeholder: '', allowClear: true}).on("select2:select",function () {
             $("#deliveriesListFilterBtn").click();
         }).on("select2:clear", function () {
