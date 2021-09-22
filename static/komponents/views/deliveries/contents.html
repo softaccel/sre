@@ -117,40 +117,39 @@
                 <th></th>
                 <th><input type="checkbox" id="checkAllAssignedItems" data-connected="#deliveryContentsList" onclick="toggleAll(this)"></th>
                 <th class="align-top">
-                    <a data-sortfld="label">Cod piesa
+                    <a data-sortfld="code">Numar desen
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-
                 </th>
                 <th class="align-top">
                     <a data-sortfld="label">Denumire
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 </th>
                 <th class="align-top" style="min-width: 250px">
-                    <a data-sortfld="docnum">Comanda
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+<!--                    <a>-->
+                        Comanda
+<!--                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>-->
 <!--                    <input type="text" name="label" class="form-control-sm form-control" form="deliveryContentsFilter" data-operator="~=~" oninput="$(this.form).submit()">-->
                 </th>
                 <th class="align-top" style="width: 100px">
-                    <a data-sortfld="label">Bucati
+                    <a data-sortfld="totalcnt">Bucati
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 </th>
                 <th class="align-top" style="width: 100px">
-                    <a data-sortfld="label">Etichetate
+                    <a data-sortfld="printed">Etichetate
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 </th>
                 <th class="align-top" style="width: 100px">
-                    <a data-sortfld="label">Scanate
+                    <a data-sortfld="checkout">Scanate
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 </th>
                 <th width="70"></th>
             </tr>
             </thead>
             <tbody id="deliveryContentsList" data-paging="#deliveryContentsListPaging" data-type="delivery_items_aggregated" data-resourcetype="collection"
-                   data-pagesizeinp="#deliveryContentsPageSizeInp" data-filter="#deliveryContentsFilter">
+                   data-pagesizeinp="#deliveryContentsPageSizeInp" data-filter="#deliveryContentsFilter" data-sort="#deliveriesListHeader">
             <tr class="">
                 <td><button class="btn-success btn">OK</button></td>
                 <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="toggleSelect($(this).parents('tr'))" data-connected="#checkAllAssignedItems"></td>
-                <!--            <td><%= id %></td>-->
                 <td><%= attributes.code %></td> <!-- id din orders_items -->
                 <td><%= attributes.label %></td> <!-- name din idem si la fel -->
                 <td><%= relationships.item.relationships? relationships.item.relationships.order.relationships.doc_id.attributes.docnum : "--" %></td> <!-- docnum din documents, relationship prin doc_id din orders -->
@@ -228,9 +227,6 @@
         }
         $(src.form).submit();
     }
-
-
-
 
     function removeFromDelivery(src) {
         let instance = $(src).data("instance");
@@ -360,7 +356,7 @@
 
         k.$el.find("#cancelAddToDlvrBtn").on("click",()=>{k.$el.find("#addElsToDeliveryCard").hide(400);k.$el.find("#addContentBtn").show();});
 
-        let url = apiRoot + "/deliveries/"+k.data.instance.id + "/delivery_items_aggregated?sort=item&include=item,item.orders_items_meta,item.order,item.order.doc_id";
+        let url = apiRoot + "/deliveries/"+k.data.instance.id + "/delivery_items_aggregated?include=item,item.orders_items_meta,item.order,item.order.doc_id";
         let contentItems = k.$el.find("#deliveryContentsList").apiator({url:url,returninstance:true});
         k.$el.find("#startScanBut").on("click",function () {
             komponentor.intent("/views/deliveries/scan").data({data:k.data}).send();
