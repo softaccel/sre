@@ -131,40 +131,75 @@
 
         k.$el.appendTo("body");
 
-        let modal = $(k.$el.filter("#order_details_modal")).modal("show")
+        $(k.$el.filter("#order_details_modal"))
+            .modal("show")
             .on("hidden.bs.modal",function () {
                 k.$el.remove();
             });
 
-        let instanceDeliveries;
-        let instanceOtD = $("<span>").apiator({url: apiRoot + "/order_to_delivery/?filter=oid=" + k.data.instance.id, resourcetype: "collection", returninstance: true});
-        instanceOtD.loadFromRemote().then(function () {
-            let strDeliveries = "";
-            instanceOtD.items.forEach(item => {
-                strDeliveries += "(id=" + item.attributes.did + ")||"
+        if(!k.data.instance && !k.data.orderId) {
+            return;
+        }
+
+        if(k.data.instance) {
+            load_order();
+        }
+
+        if(!k.data.instance && k.data.orderId) {
+            k.data.instance = $("<span>").apiator({resourcetype:"item",returninstance:true});
+            k.data.instance.setUrl(apiRoot+"/orders/"+k.data.orderId)
+                .loadFromRemote()
+                .then(function () {
+                    load_order();
+                })
+                .catch(function (resp) {
+                    komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + resp.jqXHR.responseText + "</pre>"}).send();
+                });
+        }
+
+        function load_order() {
+            k.$el.appendTo("body");
+
+            $(k.$el.filter("#order_details_modal"))
+                .modal("show")
+                .on("hidden.bs.modal",function () {
+                    k.$el.remove();
+                });
+            let instanceDeliveries;
+            let instanceOtD = $("<span>").apiator({url: apiRoot + "/order_to_delivery/?filter=oid=" + k.data.instance.id, resourcetype: "collection", returninstance: true});
+            instanceOtD.loadFromRemote().then(function () {
+                let strDeliveries = "";
+                instanceOtD.items.forEach(item => {
+                    strDeliveries += "(id=" + item.attributes.did + ")||"
+                });
+                if (strDeliveries.length >= 1){
+                    strDeliveries = strDeliveries.substr(0, strDeliveries.length - 2);
+                } else {
+                    strDeliveries = "(id=null)";
+                }
+                instanceDeliveries = $("<span>").apiator({resourcetype: "collection", returninstance: true});
+                $("#livrari").komponent({data:apiRoot + "/deliveries/?filter_advanced=" + encodeURIComponent(strDeliveries)});
+                // instanceDeliveries.setUrl(apiRoot + "/deliveries/?filter_advanced=" + encodeURIComponent(strDeliveries)).loadFromRemote().then(function () {
+                // });
+
             });
-            if (strDeliveries.length >= 1){
-                strDeliveries = strDeliveries.substr(0, strDeliveries.length - 2);
-            } else {
-                strDeliveries = "(id=null)";
-            }
-            instanceDeliveries = $("<span>").apiator({resourcetype: "collection", returninstance: true});
-            $("#livrari").komponent({data:apiRoot + "/deliveries/?filter_advanced=" + encodeURIComponent(strDeliveries)});
-            // instanceDeliveries.setUrl(apiRoot + "/deliveries/?filter_advanced=" + encodeURIComponent(strDeliveries)).loadFromRemote().then(function () {
-            // });
 
-        });
-
-        $("#ordersCosts").komponent({data:k.data});
-        $("#repere").komponent({data:k.data});
-        $("#sumar").komponent({data:k.data});
-        $("#pontajPanel").komponent({data:k.data});
-        $("#proprietati").komponent({data:k.data});
-        $("#resurse").komponent({data:k.data});
-        $("#documents").komponent({data:k.data});
+            $("#ordersCosts").komponent({data:k.data});
+            $("#repere").komponent({data:k.data});
+            $("#sumar").komponent({data:k.data});
+            $("#pontajPanel").komponent({data:k.data});
+            $("#proprietati").komponent({data:k.data});
+            $("#resurse").komponent({data:k.data});
+            $("#documents").komponent({data:k.data});
 
 
-        $("#sumarTab").tab("show");
+            $("#sumarTab").tab("show");
+        }
+
+
+
     }
+
+
 
 </script>
