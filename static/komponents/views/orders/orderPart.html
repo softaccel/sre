@@ -90,14 +90,13 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-3">Pret unitar</div>
-                                    <div class="col-1"><%= attributes.unit_price %> <%= attributes.currency %></div>
+                                    <div class="col-1"><%= attributes.unit_price %> <%= attributes.currency ? attributes.currency : relationships.currency.id %></div>
                                     <div class="col-9"><input name="unit_price" class="form-control form-control-sm" type="text"></div>
                                 </div>
                                 <div class="row hide-on-view">
                                     <div class="col-3">Moneda</div>
                                     <div class="col-1"><%= attributes.currency %></div>
                                     <div class="col-9">
-                                        <label></label>
                                         <select id="currencySelect" class="form-control form-control-sm custom-select custom-select-sm" name="currency" style="width: 100%"></select>
                                     </div>
                                 </div>
@@ -151,11 +150,14 @@
                     updateCopy.path = updateCopy.path.replace("orders_items_wmeta", "orders_items");
                     instance.setUrl({updateUrl: updateCopy});
                     instance.type = "orders_items";
+                    if (data.currency === instance.attributes.currency) {
+                        delete data.currency;
+                    }
                     instance.update(data)
                         .then(function () {
                             $('#orderPartForm').removeClass('editMode');
                             instance.type = "orders_items_wmeta";
-                            instance.loadFromRemote();
+                            instance.loadFromRemote().then(() => {
                         })
                         .catch(function (jqxhr) {
                             if (jqxhr.errorThrown==="Conflict") {
@@ -185,17 +187,12 @@
             util.fillForm(form, instance);
 
             let option = document.createElement("option");
-            option.value = instance.attributes.currency;
-            option.text = instance.attributes.currency;
+            option.value = instance.attributes.currency ? instance.attributes.currency : instance.relationships.currency.id;
+            option.text = instance.attributes.currency ? instance.attributes.currency : instance.relationships.currency.id;
 
             $("#orderPartModal").find("#currencySelect").append(option).select2wrapper({
                 url: apiRoot + "/currencies",
-                labelfld: function (item) {
-                    return item.attributes.id;
-                },
-                idfld: function (item) {
-                    return item.attributes.id;
-                },
+                labelfld: "id",
             });
 
         }
