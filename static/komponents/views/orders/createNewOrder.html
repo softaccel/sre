@@ -13,7 +13,10 @@
 
         komponentor.intent("/common/formmodal").data({
             callback:function (data) {
+                let formModal = data.k;
                 data = data.data;
+
+
                 if (data.partner_id === null) {
                     komponentor.intent("/common/errormodal").data({
                         body: "Selectarea clientului este obligatorie."
@@ -49,13 +52,16 @@
                     }
                 };
 
-                k.data.instance.createItem(order).then(function () {
-                    k.data.instance.view.el.children().last().click();
-                }).catch(function(data){
-                    komponentor.intent("/common/errormodal").data({
-                        body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
-                    }).send();
-                });
+                k.data.instance.createItem(order)
+                    .then(function () {
+                        k.data.instance.view.el.children().last().click();
+                        formModal.hide();
+                    })
+                    .catch(function(data){
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                        }).send();
+                    });
 
             },
             title:"Adauga Comanda Noua",

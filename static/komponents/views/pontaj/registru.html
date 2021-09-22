@@ -157,8 +157,6 @@
                             </ul>
                         </div>
                     </div>
-
-
                 </div>
                 <div class="col" style="text-align: right">
                     <button class="btn btn-sm btn-primary checkCreate float-right not-visibile-when-included"  id="newTTBtn"><i class="fa fa-plus-square"></i> Introducere manuala</button>
@@ -209,14 +207,14 @@
                    data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset">
             <tr>
                 <td class="emplCol">
-                    <%= relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname %> <br>
+                    <a onclick="openEmployeeModal(this)" style="cursor: pointer"><%= relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname %></a> <br>
                     <% if(relationships.team) { %>
                     <span class="badge badge-secondary"><%= relationships.team.attributes ? relationships.team.attributes.name : 0 %></span>
                     <% } %>
 
                 </td>
                 <td style="max-width: 100px">
-                    <div class="values"><%= relationships.order ? relationships.order.relationships.doc_id.attributes.docnum : "nealocat" %></div>
+                    <div class="values"><a onclick="openOrderModal(this)" style="cursor: pointer"><%= relationships.order ? relationships.order.relationships.doc_id.attributes.docnum : "nealocat" %></a></div>
                     <div class="inputs">
                         <select name="order"  style="width: 100%"></select>
                     </div>
@@ -292,6 +290,41 @@
 </div>
 
 <script>
+
+    function openOrderModal(src) {
+        if ($(src).data("locked")) {
+            return;
+        }
+        $(src).data("locked",true);
+
+        let orderId = $(src).data("instance").relationships.order.id;
+        komponentor.intent('/views/orders/order')
+            .data({
+                orderId: orderId
+            })
+            .send()
+            .finally(function () {
+                $(src).removeData("locked");
+            })
+    }
+
+    function openEmployeeModal(src) {
+        if ($(src).data("locked")) {
+            return;
+        }
+
+        $(src).data("locked",true);
+
+        let emplId = $(src).data("instance").relationships.employee.id;
+        komponentor.intent('/views/employees/employee')
+            .data({
+                emplId: emplId
+            })
+            .send()
+            .finally(function () {
+                $(src).removeData("locked");
+            })
+    }
 
     function filterUnallocated(toggleOn) {
         if(toggleOn) {
