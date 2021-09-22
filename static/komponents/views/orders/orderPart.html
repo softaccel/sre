@@ -158,6 +158,7 @@
                             $('#orderPartForm').removeClass('editMode');
                             instance.type = "orders_items_wmeta";
                             instance.loadFromRemote().then(() => {
+                            })
                         })
                         .catch(function (jqxhr) {
                             if (jqxhr.errorThrown==="Conflict") {
