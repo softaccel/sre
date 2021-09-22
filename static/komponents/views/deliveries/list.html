@@ -38,11 +38,19 @@
     .received .state .badge::after{
         content: "Primit"
     }
+
+    /*.hideFromOrder {*/
+    /*    display: unset;*/
+    /*}*/
+
+    .fromOrder .hideFromOrder{
+        display: none;
+    }
 </style>
 
 <div>
     <div class="checkRead">
-        <div class="checkCreate" id="newOrderButtons">
+        <div class="checkCreate hideFromOrder" id="newOrderButtons">
             <button type="button" aria-haspopup="true" aria-expanded="false" class="mb-2 mr-2 btn btn-primary" id="newDlvrButt">Livrare noua</button>
         </div>
         <form id="deliveriesListForm" class="d-none"><button type="submit" name="submit" id="deliveriesListFilterBtn"></button></form>
@@ -51,40 +59,44 @@
             <tr>
                 <th class="align-top" style="width: 100px">
                     <a data-sortfld="id">Nr. crt.
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i>
-                        <i class="fa fa-sort-down sort-down" style="display: none"></i>
-                        <i class="fa fa-sort sort-default text-light"></i>
+                        <i class="fa fa-sort-up sort-up hideFromOrder" style="display: none"></i>
+                        <i class="fa fa-sort-down sort-down hideFromOrder" style="display: none"></i>
+                        <i class="fa fa-sort sort-default text-light hideFromOrder"></i>
                     </a>
                 </th>
                 <th class="align-top">
                     <a data-sortfld="label">Denumire
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                    <input type="text" name="label" class="form-control-sm form-control" form="deliveriesListForm" data-operator="~=~">
+                        <i class="fa fa-sort-up sort-up hideFromOrder" style="display: none"></i><i class="fa fa-sort-down sort-down hideFromOrder" style="display: none"></i><i class="fa fa-sort sort-default text-light hideFromOrder"></i>
+                    </a>
+                    <input type="text" name="label" class="form-control-sm form-control hideFromOrder" form="deliveriesListForm" data-operator="~=~">
                 </th>
                 <th class="align-top">
                     <a data-sortfld="status">Status
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+                        <i class="fa fa-sort-up sort-up hideFromOrder" style="display: none"></i><i class="fa fa-sort-down sort-down hideFromOrder" style="display: none"></i><i class="fa fa-sort sort-default text-light hideFromOrder"></i>
                     </a>
                     <br>
-                    <select id="deliveriesListStatusSelect" name="status" class="custom-select custom-select-sm" form="deliveriesListForm" data-operator="=">
-                        <option value="created">Creat</option>
-<!--                        <option value="loading">Incarcare</option>-->
-<!--                        <option value="ready">Gata de livrare</option>-->
-                        <option value="delivered">Livrat</option>
-                        <option value="received">Receptional</option>
-                        <option value="canceled">Anulat</option>
-                    </select>
+                    <div class="hideFromOrder">
+                        <select id="deliveriesListStatusSelect" name="status" class="custom-select custom-select-sm" form="deliveriesListForm" data-operator="=">
+                            <option value="created">Creat</option>
+                            <!--                        <option value="loading">Incarcare</option>-->
+                            <!--                        <option value="ready">Gata de livrare</option>-->
+                            <option value="delivered">Livrat</option>
+                            <option value="received">Receptional</option>
+                            <option value="canceled">Anulat</option>
+                        </select>
+                    </div>
                 </th>
                 <th>
                     <a data-sortfld="dlv_date">Data livrare
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                    <div class="input-group input-group-sm ">
+                        <i class="fa fa-sort-up sort-up hideFromOrder" style="display: none"></i><i class="fa fa-sort-down sort-down hideFromOrder" style="display: none"></i><i class="fa fa-sort sort-default text-light hideFromOrder"></i>
+                    </a>
+                    <div class="input-group input-group-sm hideFromOrder">
                         <div class="input-group-prepend">
                             <span class="input-group-text">de la</span>
                         </div>
                         <input type="date" name="dlv_date" class="form-control-sm form-control" form="deliveriesListForm" data-operator=">">
                     </div>
-                    <div class="input-group input-group-sm">
+                    <div class="input-group input-group-sm hideFromOrder">
                         <div class="input-group-prepend">
                             <span class="input-group-text">pana</span>
                         </div>
@@ -93,14 +105,15 @@
                 </th>
                 <th>
                     <a data-sortfld="lastupdate">Data crearii
-                        <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                    <div class="input-group input-group-sm ">
+                        <i class="fa fa-sort-up sort-up hideFromOrder" style="display: none"></i><i class="fa fa-sort-down sort-down hideFromOrder" style="display: none"></i><i class="fa fa-sort sort-default text-light hideFromOrder"></i>
+                    </a>
+                    <div class="input-group input-group-sm hideFromOrder">
                         <div class="input-group-prepend">
                             <span class="input-group-text">de la</span>
                         </div>
                         <input type="date" name="lastupdate" class="form-control-sm form-control" form="deliveriesListForm" data-operator=">">
                     </div>
-                    <div class="input-group input-group-sm">
+                    <div class="input-group input-group-sm hideFromOrder">
                         <div class="input-group-prepend">
                             <span class="input-group-text">pana</span>
                         </div>
@@ -112,7 +125,7 @@
             <tbody id="deliveriesList" data-type="deliveries" data-resourcetype="collection"
                    data-filter="#deliveriesListForm"
                    data-sort="#deliveriesListFilter"
-                   data-paging="#deliveriesListPaging"
+                       data-paging="#deliveriesListPaging"
                    data-offsetinp="#deliveriesOffsetInp"
                    data-pagesizeinp="#deliveriesPageSizeInp">
             <tr class="<%= attributes.status %>" onclick="openDeliveryModal(this)">
@@ -126,6 +139,7 @@
             <tfoot>
             <tr>
                 <td colspan="6">
+<!--                <td class="hideFromOrder" colspan="6">-->
 
                     <div class="btn-group"  id="deliveriesListPaging" data-pagesize="10">
                         <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
@@ -164,12 +178,12 @@
 
         if(k.data){
             k.$el.find("#deliveriesList").apiator({url:k.data,returninstance:true});
-            k.$el.find("#newDlvrButt").remove();
-            console.log("data");
+            // k.$el.find("#newDlvrButt").remove();
+
+            k.$el.addClass("fromOrder");
         } else {
             let url = apiRoot+"/deliveries?sort=-created_on";
             let instance = k.$el.find("#deliveriesList").apiator({url:url,returninstance:true});
-            console.log("nu data");
 
             k.$el.find("#newDlvrButt").on("click",function () {
                 komponentor.intent("/views/deliveries/addDelivery")
