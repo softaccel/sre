@@ -1770,62 +1770,104 @@
 			instance.paging = Paging(options.paging, instance);
 		}
 
+		function sortNow ($lnk,setDir) {
+			let fld = $lnk.data("sortfld");
+			let oldDir = $lnk.data("sortdir");
+			let $sortUp = $lnk.find(".sort-up");
+			let $sortDown = $lnk.find(".sort-down");
+			let $sortDefault = $lnk.find(".sort-default");
+			let dir;
+			let doNotLoad = false;
+			switch(oldDir) {
+				case "up":
+					dir = "down";
+					break;
+				case "down":
+					dir = null;
+					break;
+				default:
+					dir = "up";
+					break;
+			}
+
+			if(typeof setDir!=="undefined" && ["up","down",null].indexOf(setDir)!==-1) {
+				dir = setDir;
+				doNotLoad = true;
+			}
+
+			let inst = $lnk.data("instance");
+			let sort = inst.url.parameters.hasOwnProperty("sort")?inst.url.parameters.sort:"";
+			let sortArr = [];
+			sort.split(",").forEach(function(item){
+				let res = /^(-*)([a-z0-9\-\_]+)$/.exec(item.trim());
+				if(!res)
+					return;
+				if(res[2]==fld)
+					return;
+				sortArr.push(item);
+			});
+
+			switch (dir) {
+				case "up":
+					sortArr.push("-"+fld);
+					$lnk.data("sortdir","down");
+					$sortUp.hide();
+					$sortDown.show();
+					$sortDefault.hide();
+					break;
+				case "down":
+					$lnk.data("sortdir",null);
+
+					$sortUp.hide();
+					$sortDown.hide();
+					$sortDefault.show();
+					break;
+				default:
+					$lnk.data("sortdir","up");
+					sortArr.push(fld);
+
+					$sortUp.show();
+					$sortDown.hide();
+					$sortDefault.hide();
+			}
+
+			let nxtSort = sortArr.join(",");
+			if(sort!==nxtSort) {
+				inst.url.parameters.sort = nxtSort;
+				// console.log(inst.url);
+				if(!doNotLoad) {
+					inst.loadFromRemote();
+				}
+			}
+		}
+
 		// configure sort
 		if(options.hasOwnProperty("sort") && $(options.sort).length) {
 			let $sort = $(options.sort);
-			$sort.find("[data-sortfld]").each(function(sort) {
-				function sortNow (ev) {
-					let $lnk = $(ev.currentTarget);
-					let fld = $lnk.data("sortfld");
-					let dir = $lnk.data("sortdir");
+			let sortFldsArr = instance.url && instance.url.parameters.sort ? instance.url.parameters.sort.split(",") : [];
 
-					let inst = $(ev.currentTarget).data("instance");
-					let sort = inst.url.parameters.hasOwnProperty("sort")?inst.url.parameters.sort:"";
-					let sortArr = [];
-					sort.split(",").forEach(function(item){
-						let res = /^(-*)([a-z0-9\-\_]+)$/.exec(item.trim());
-						if(!res)
-							return;
-						if(res[2]==fld)
-							return;
-						sortArr.push(item);
-					});
-
-					switch (dir) {
-						case "up":
-							sortArr.push("-"+fld);
-							$lnk.data("sortdir","down");
-							$lnk.find(".sort-up").hide();
-							$lnk.find(".sort-down").show();
-							$lnk.find(".sort-default").hide();
-							break;
-						case "down":
-							$lnk.data("sortdir",null);
-
-							$lnk.find(".sort-up").hide();
-							$lnk.find(".sort-down").hide();
-							$lnk.find(".sort-default").show();
-							break;
-						default:
-							$lnk.data("sortdir","up");
-							sortArr.push(fld);
-
-							$lnk.find(".sort-up").show();
-							$lnk.find(".sort-down").hide();
-							$lnk.find(".sort-default").hide();
-					}
-
-					let nxtSort = sortArr.join(",");
-					if(sort!==nxtSort) {
-						inst.url.parameters.sort = nxtSort;
-						// console.log(inst.url);
-						inst.loadFromRemote();
-					}
+			let sortFlds = {};
+			sortFldsArr.forEach(function (item) {
+				if(item[0]==="-") {
+					sortFlds[item.substr(1)] = "down";
 				}
-				$(this).data("instance",instance)
-					.on("click",sortNow);
+				sortFlds[item.substr(1)] = "up";
 			});
 
+			$sort.find("[data-sortfld]").each(function(sort) {
+				let sortUp = $(this).find(".sort-up").hide();
+				let sortDown = $(this).find(".sort-down").hide();
+				let sortDefault = $(this).find(".sort-default").show();
+
+				$(this).data("instance",instance)
+					.on("click",function (event) {
+						sortNow($(event.target));
+					});
+
+				if(typeof  sortFlds[$(this).data("sortfld")]!=="undefined") {
+					sortNow($(this),sortFlds[$(this).data("sortfld")]);
+				}
+			});
 		}
 
 		// setup filtering
