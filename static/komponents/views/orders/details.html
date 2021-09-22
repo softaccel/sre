@@ -35,9 +35,14 @@
     .proc .hide-no-offer{
         display: unset;
     }
+
+    .doc_id0 .notA000 {
+        display: none;
+    }
+
 </style>
 <div class="row" id="orderDetails">
-    <div class="col-6">
+    <div class="col-6" id="firstColOrdersDetails">
         <table class="order-summary-table">
             <tr>
                 <td>Nr. comanda intern</td>
@@ -51,24 +56,24 @@
                         <input type="text" id="denumChange" class="form-control form-control-sm" value="<%= attributes.label %>">
                     </span>
                     <div class="hide-no-offer">
-                        <button class="btn btn-secondary float-right btn-sm edit checkUpdate" onclick="editDenumChange(this)"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate" onclick="editDenumChange(this)"><i class="fa fa-edit"></i></button>
                     </div>
                     <button class="btn btn-success float-right btn-sm save" onclick="saveDenumChange(this)"><i class="fa fa-save"></i></button>
                 </td>
             </tr>
-            <tr>
+            <tr class="notA000">
                 <td>Client</td>
                 <td><a href="#" onclick="event.preventDefault(); goToPartner(this);"><%= relationships.partner_id.attributes.name %></a></td>
 <!--                <td><a href="#" onclick="komponentor.intent('/views/customers/customer').data({id:0}).send()"><%= relationships.partner_id.attributes.name %></a></td>-->
             </tr>
-            <tr>
+            <tr class="notA000">
                 <td>Referinta interna</td>
                 <td><%= attributes.cust_int_ref %></td>
             </tr>
-            <tr>
+            <tr class="notA000">
                 <td>Stadiu</td>
                 <td>
-                    <div class="btn-group ">
+                    <div class="btn-group">
 <!--                        //     let states = ["offer", "ord", "proc", "ctc", "fix", "ready", "dlvd"];-->
 <!--                        //     let normalized_states = ["Oferta", "Comandat", "In Lucru", "Control", "Corectii", "Gata de Livrare", "Livrat"];-->
 <!--                        //     // let colors = ["orange", "red", "blue", "green", "black", "grey"];-->
@@ -105,7 +110,7 @@
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr class="notA000">
                 <td>Echipa responsabila</td>
                 <td>
                     <span class="display">
@@ -129,13 +134,13 @@
                 </td>
 
             </tr>
-            <tr>
+            <tr class="notA000">
                 <td>Multiplicator</td>
                 <td><%= attributes.multiplied_by %></td>
             </tr>
         </table>
     </div>
-    <div class="col-6">
+    <div class="col-6 notA000">
         <table class="order-summary-table">
             <tbody>
                 <tr>
@@ -258,6 +263,13 @@
     function init_komponent(k) {
 
         checkUserRights(k.$el, "orders");
+
+        k.$el.addClass("doc_id" + k.data.instance.relationships.doc_id.id);
+
+        if (k.data.instance.relationships.doc_id.id === "0") {
+            $("#firstColOrdersDetails").removeClass("col-6").addClass("col-12")
+        }
+
         k.$el.find(".orderStageBtn").each(function () {
             if (!$(this).hasClass("updateAllow"))
                 $(this).attr("disabled", true).removeClass("checkUpdate");

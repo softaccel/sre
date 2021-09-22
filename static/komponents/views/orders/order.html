@@ -52,6 +52,10 @@
         cursor: pointer;
     }
 
+    .doc_id0 .notA000 {
+        display: none;
+    }
+
 </style>
 
 <div class="modal" id="order_details_modal">
@@ -65,13 +69,13 @@
                     <li class="nav-item">
                         <a data-toggle="tab" href="#sumar" class="nav-link" id="sumarTab">Sumar</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item notA000">
                         <a data-toggle="tab" href="#reperePanel" class="nav-link" id="repereTab">Continut</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item notA000">
                         <a data-toggle="tab" href="#ordersCostsPanel" class="nav-link" id="orderItemsTab">Costuri</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item notA000">
                         <a data-toggle="tab" href="#documentePanel" class="nav-link" id="documenteTab">Documente</a>
                     </li>
                     <li class="nav-item">
@@ -80,7 +84,7 @@
                     <li class="nav-item">
                         <a data-toggle="tab" href="#pontajPanel" class="nav-link" id="timeTrackTab">Pontaj</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item notA000">
                         <a data-toggle="tab" href="#deliveriesPanel" class="nav-link" id="deliveriesTab">Livrari</a>
                     </li>
 <!--                    <li class="nav-item">-->
@@ -90,7 +94,6 @@
             </div>
             <div class="modal-body bg-white">
                 <div class="tab-content">
-
                     <div class="tab-pane fade" id="sumar" is="komponent" data-url="/views/orders/details"></div>
                     <div class="tab-pane fade" id="reperePanel">
                         <div is="komponent" data-url="/views/orders/partsGallery" id="repere"></div>
@@ -127,6 +130,10 @@
     function init_komponent(k,d) {
 
         checkUserRights(k.$el, "orders");
+
+        k.$el.addClass("doc_id" + k.data.instance.relationships.doc_id.id);
+
+        console.log("ciuciuletee", k);
 
         k.$el.appendTo("body");
 
