@@ -135,8 +135,8 @@
 
             </tr>
             <tr class="notA000">
-                <td>Multiplicator</td>
-                <td><%= attributes.multiplied_by %></td>
+                <td>Timp estimat (ore)</td>
+                <td id="ordersMetaEstimatedWork"></td>
             </tr>
         </table>
     </div>
@@ -171,7 +171,6 @@
                 <tr>
                     <td>Pret final</td>
                     <td><%= attributes.final_value ?  attributes.final_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %>  </td>
-<!--                    <td><%= relationships.currency %>  </td>-->
                 </tr>
             </tbody>
         </table>
@@ -279,8 +278,9 @@
 
         k.data.instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
             .bindView(k.$el.children()).loadFromRemote().then(function (d) {
-            // prepare_a(k.data.instance.attributes.state);
-            //     console.log(d)
+                let estimated_work_arr = k.data.instance.relationships.orders_meta.map(item => {if (item.attributes.meta_key === "estimated_work") return item.attributes.meta_val});
+                let est_work_specific = estimated_work_arr.find(item => {if (item) return item});
+                $("#ordersMetaEstimatedWork").text(est_work_specific + " h");
             })
             .catch(function(data) {
                 komponentor.intent("/common/errormodal").data({
