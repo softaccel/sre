@@ -2107,7 +2107,7 @@
 			el: $(pagingEl),
 		};
 
-		let iniOffset = _paging.collection.offset ? _paging.collection.offset : 0;
+		let iniOffset = (_paging.collection.offset ? _paging.collection.offset : 0)*1;
 
 		_paging.collection.paging = _paging;
 
@@ -2135,15 +2135,15 @@
 			});
 		}
 
-
 		let buttons = {
-			page: _paging.el.find("[name=page]").clone(true),
-			prev: _paging.el.find("[name=prev]").clone(true),
-			next: _paging.el.find("[name=next]").clone(true),
-			first: _paging.el.find("[name=first]").clone(true),
-			last: _paging.el.find("[name=last]").clone(true),
+			page: _paging.el.find("[name=page]").remove(),
+			prev: _paging.el.find("[name=prev]").remove(true),
+			next: _paging.el.find("[name=next]").remove(true),
+			first: _paging.el.find("[name=first]").remove(true),
+			last: _paging.el.find("[name=last]").remove(true),
 		};
 
+		let $totalCount =  $(_paging.collection.totalrecscount);
 
 		_paging.el.empty();
 
@@ -2154,9 +2154,15 @@
 			let pagesToShow = 5;
 
 			let total = _paging.collection.total;
+			if($totalCount[0].tagName==="INPUT") {
+				$totalCount.val(total);
+			}
+			else {
+				$totalCount.text(total);
+			}
 			_paging.el.empty();
 
-			iniOffset = _paging.collection.offset;
+			iniOffset = _paging.collection.offset*1;
 
 
 			if(_paging.collection.pageSize) {
@@ -2169,8 +2175,10 @@
 				pageSize = defaultPageSize;
 			}
 
-
-			// console.log(_self.collection.type,iniOffset,total,pageSize);
+			pageSize = pageSize*1;
+			if(pageSize>total) {
+				return;
+			}
 
 			let first = buttons.first.clone(true).attr("title", 0).addClass("disabled").appendTo(_paging.el);
 			let prev = buttons.prev.clone(true).attr("title", iniOffset - pageSize).addClass("disabled").appendTo(_paging.el);
@@ -2208,11 +2216,12 @@
 			}
 
 			let nxtOffset = iniOffset + pageSize;
+			console.log(nxtOffset)
 			let next = buttons.next.clone(true).attr("title", nxtOffset).addClass("disabled").appendTo(_paging.el);
 
 			let lastPageOffset = (Math.ceil(total/pageSize)-1)*pageSize;
 			let last = buttons.last.clone(true).attr("title", lastPageOffset).addClass("disabled").appendTo(_paging.el);
-			if(iniOffset + pageSize < total) {
+			if(iniOffset + pageSize <= total) {
 				next.removeClass("disabled").on("click", function () {
 					_paging.collection.setOffset(iniOffset+pageSize);
 					// _paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = iniOffset+pageSize;
