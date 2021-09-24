@@ -46,42 +46,42 @@
     }
 
 </style>
-<div className="row" id="orderDetails">
-    <div className="col-6" id="firstColOrdersDetails">
-        <table className="order-summary-table">
-            <tr>
+<div class="row" id="orderDetails">
+    <div class="col-6" id="firstColOrdersDetails">
+        <table class="order-summary-table">
+            <tr>,
                 <td>Nr. comanda intern</td>
                 <td><%= relationships.doc_id.attributes.docnum %></td>
             </tr>
             <tr>
                 <td>Denumire</td>
                 <td>
-                    <span className="display"><%= attributes.label %></span>
-                    <span className="edit" style="min-width: 200px">
-                        <input type="text" id="denumChange" className="form-control form-control-sm"
-                               value="<%= attributes.label %>">
+                    <span class="display"><%= attributes.label %></span>
+                    <span class="edit" style="min-width: 200px">
+                        <input type="text" id="denumChange" class="form-control form-control-sm" value="<%= attributes.label %>">
                     </span>
-                    <div className="hide-no-offer">
-                        <button className="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
-                                onClick="editDenumChange(this)"><i className="fa fa-edit"></i></button>
+                    <div class="hide-no-offer">
+                        <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate" onClick="editDenumChange(this)">
+                            <i class="fa fa-edit"></i>
+                        </button>
                     </div>
-                    <button className="btn btn-success float-right btn-sm save" onClick="saveDenumChange(this)"><i
-                            className="fa fa-save"></i></button>
+                    <button class="btn btn-success float-right btn-sm save" onClick="saveDenumChange(this)"><i
+                            class="fa fa-save"></i></button>
                 </td>
             </tr>
-            <tr className="notA000">
+            <tr class="notA000">
                 <td>Client</td>
                 <td><a href="#" onClick="event.preventDefault(); goToPartner(this);"><%=
                     relationships.partner_id.attributes.name %></a></td>
             </tr>
-            <tr className="notA000">
+            <tr class="notA000">
                 <td>Referinta interna</td>
                 <td><%= attributes.cust_int_ref %></td>
             </tr>
-            <tr className="notA000">
+            <tr class="notA000">
                 <td>Stadiu</td>
                 <td>
-                    <div className="btn-group">
+                    <div class="btn-group">
                         <% if(attributes.state === "offer") { %>
                         <button type="button" class="btn btn-sm btn-secondary dropdown-toggle checkUpdate orderStageBtn"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Oferta
@@ -132,51 +132,53 @@
                     </div>
                 </td>
             </tr>
-            <tr className="notA000">
+            <tr class="notA000">
                 <td>Echipa responsabila</td>
                 <td>
-                    <span className="display">
+                    <span class="display">
                     <% if(relationships.team) { %>
                         <%= relationships.team.attributes.name %>
                     <% } else { %>
                         nealocat
                     <% }  %>
                     </span>
-                    <span className="edit" style="min-width: 200px">
+                    <span class="edit" style="min-width: 200px">
                         <select id="teamAllocation" style="width: 150px">
                             <% if(relationships.team) { %>
                             <option value="<%= relationships.team.id %>"><%= relationships.team.attributes.name %></option>
                             <% }  %>
                         </select>
                     </span>
-                    <div className="hide-no-offer">
-                        <button className="btn btn-secondary float-right btn-sm edit checkUpdate"
-                                onClick="editTeamAssoc(this)"><i className="fa fa-edit"></i></button>
+                    <div class="hide-no-offer">
+                        <button class="btn btn-secondary float-right btn-sm edit checkUpdate" onClick="editTeamAssoc(this)">
+                            <i class="fa fa-edit"></i>
+                        </button>
                     </div>
-                    <button className="btn btn-success float-right btn-sm save" onClick="saveTeamAssoc(this)"><i
-                            className="fa fa-save"></i></button>
+                    <button class="btn btn-success float-right btn-sm save" onClick="saveTeamAssoc(this)">
+                        <i class="fa fa-save"></i>
+                    </button>
                 </td>
 
             </tr>
-            <tr className="notA000">
+            <tr class="notA000">
                 <td>Timp estimat (ore)</td>
                 <td id="ordersMetaEstimatedWork">
-                    <span id="estTimeText" className="display"></span>
-                    <span className="edit" style="min-width: 200px">
-                        <input type="text" id="estTimeChange" className="form-control form-control-sm" value="">
+                    <span id="estTimeText" class="display"></span>
+                    <span class="edit" style="min-width: 200px">
+                        <input type="text" id="estTimeChange" class="form-control form-control-sm" value="">
                     </span>
-                    <div className="hide-no-offer">
-                        <button className="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
-                                onClick="editEstTimeChange(this)"><i className="fa fa-edit"></i></button>
+                    <div class="hide-no-offer">
+                        <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
+                                onClick="editEstTimeChange(this)"><i class="fa fa-edit"></i></button>
                     </div>
-                    <button className="btn btn-success float-right btn-sm save" onClick="saveEstTimeChange(this)"><i
-                            className="fa fa-save"></i></button>
+                    <button class="btn btn-success float-right btn-sm save" onClick="saveEstTimeChange(this)"><i
+                            class="fa fa-save"></i></button>
                 </td>
             </tr>
         </table>
     </div>
-    <div className="col-6 notA000">
-        <table className="order-summary-table">
+    <div class="col-6 notA000">
+        <table class="order-summary-table">
             <tbody>
             <tr>
                 <td>Data preluare comanda</td>
@@ -197,33 +199,33 @@
             <tr>
                 <td>Pret comanda</td>
                 <td>
-                    <span className="display"><%= attributes.order_value ?  attributes.order_value + " " + (relationships.currency?relationships.currency.id:"-") : "-" %></span>
-                    <span className="edit" style="min-width: 200px">
-                            <input type="text" id="orderValueChange" className="form-control form-control-sm"
+                    <span class="display"><%= attributes.order_value ?  attributes.order_value + " " + (relationships.currency?relationships.currency.id:"-") : "-" %></span>
+                    <span class="edit" style="min-width: 200px">
+                            <input type="text" id="orderValueChange" class="form-control form-control-sm"
                                    value="<%= attributes.order_value %>">
                         </span>
-                    <div className="hide-no-offer">
-                        <button className="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
-                                onClick="editOrderValueChange(this)"><i className="fa fa-edit"></i></button>
+                    <div class="hide-no-offer">
+                        <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
+                                onClick="editOrderValueChange(this)"><i class="fa fa-edit"></i></button>
                     </div>
-                    <button className="btn btn-success float-right btn-sm save" onClick="saveOrderValueChange(this)"><i
-                            className="fa fa-save"></i></button>
+                    <button class="btn btn-success float-right btn-sm save" onClick="saveOrderValueChange(this)"><i
+                            class="fa fa-save"></i></button>
                 </td>
             </tr>
             <tr>
                 <td>Pret calculat</td>
                 <td>
-                    <span className="display"><%= attributes.calculated_value ?  attributes.calculated_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %></span>
-                    <span className="edit" style="min-width: 200px">
-                            <input type="text" id="calculatedPriceChange" className="form-control form-control-sm"
+                    <span class="display"><%= attributes.calculated_value ?  attributes.calculated_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %></span>
+                    <span class="edit" style="min-width: 200px">
+                            <input type="text" id="calculatedPriceChange" class="form-control form-control-sm"
                                    value="<%= attributes.calculated_value %>">
                         </span>
-                    <div className="hide-no-offer">
-                        <button className="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
-                                onClick="editCalcChangeChange(this)"><i className="fa fa-edit"></i></button>
+                    <div class="hide-no-offer">
+                        <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
+                                onClick="editCalcChangeChange(this)"><i class="fa fa-edit"></i></button>
                     </div>
-                    <button className="btn btn-success float-right btn-sm save" onClick="saveCalcChangeChange(this)"><i
-                            className="fa fa-save"></i></button>
+                    <button class="btn btn-success float-right btn-sm save" onClick="saveCalcChangeChange(this)"><i
+                            class="fa fa-save"></i></button>
                 </td>
             </tr>
             <tr>
