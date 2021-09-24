@@ -1,38 +1,43 @@
 <style>
-    .order-summary-table button.save{
+    .order-summary-table button.save {
         display: none;
     }
+
     /*.order-summary-table span.display{}*/
-    .editMode span.display{
+    .editMode span.display {
         display: none;
     }
-    .order-summary-table span.edit{
+
+    .order-summary-table span.edit {
         display: none;
     }
-    .editMode span.edit{
+
+    .editMode span.edit {
         display: inline-block;
         min-width: 150px;
     }
-    .editMode button.edit{
-        display: none;
-    }
-    .editMode button.save{
-        display: unset;
-    }
 
-    .hide-no-offer{
+    .editMode button.edit {
         display: none;
     }
 
-    .offer .hide-no-offer{
+    .editMode button.save {
         display: unset;
     }
 
-    .ord .hide-no-offer{
+    .hide-no-offer {
+        display: none;
+    }
+
+    .offer .hide-no-offer {
         display: unset;
     }
 
-    .proc .hide-no-offer{
+    .ord .hide-no-offer {
+        display: unset;
+    }
+
+    .proc .hide-no-offer {
         display: unset;
     }
 
@@ -41,9 +46,9 @@
     }
 
 </style>
-<div class="row" id="orderDetails">
-    <div class="col-6" id="firstColOrdersDetails">
-        <table class="order-summary-table">
+<div className="row" id="orderDetails">
+    <div className="col-6" id="firstColOrdersDetails">
+        <table className="order-summary-table">
             <tr>
                 <td>Nr. comanda intern</td>
                 <td><%= relationships.doc_id.attributes.docnum %></td>
@@ -51,127 +56,182 @@
             <tr>
                 <td>Denumire</td>
                 <td>
-                    <span class="display"><%= attributes.label %></span>
-                    <span class="edit" style="min-width: 200px">
-                        <input type="text" id="denumChange" class="form-control form-control-sm" value="<%= attributes.label %>">
+                    <span className="display"><%= attributes.label %></span>
+                    <span className="edit" style="min-width: 200px">
+                        <input type="text" id="denumChange" className="form-control form-control-sm"
+                               value="<%= attributes.label %>">
                     </span>
-                    <div class="hide-no-offer">
-                        <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate" onclick="editDenumChange(this)"><i class="fa fa-edit"></i></button>
+                    <div className="hide-no-offer">
+                        <button className="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
+                                onClick="editDenumChange(this)"><i className="fa fa-edit"></i></button>
                     </div>
-                    <button class="btn btn-success float-right btn-sm save" onclick="saveDenumChange(this)"><i class="fa fa-save"></i></button>
+                    <button className="btn btn-success float-right btn-sm save" onClick="saveDenumChange(this)"><i
+                            className="fa fa-save"></i></button>
                 </td>
             </tr>
-            <tr class="notA000">
+            <tr className="notA000">
                 <td>Client</td>
-                <td><a href="#" onclick="event.preventDefault(); goToPartner(this);"><%= relationships.partner_id.attributes.name %></a></td>
-<!--                <td><a href="#" onclick="komponentor.intent('/views/customers/customer').data({id:0}).send()"><%= relationships.partner_id.attributes.name %></a></td>-->
+                <td><a href="#" onClick="event.preventDefault(); goToPartner(this);"><%=
+                    relationships.partner_id.attributes.name %></a></td>
             </tr>
-            <tr class="notA000">
+            <tr className="notA000">
                 <td>Referinta interna</td>
                 <td><%= attributes.cust_int_ref %></td>
             </tr>
-            <tr class="notA000">
+            <tr className="notA000">
                 <td>Stadiu</td>
                 <td>
-                    <div class="btn-group">
-<!--                        //     let states = ["offer", "ord", "proc", "ctc", "fix", "ready", "dlvd"];-->
-<!--                        //     let normalized_states = ["Oferta", "Comandat", "In Lucru", "Control", "Corectii", "Gata de Livrare", "Livrat"];-->
-<!--                        //     // let colors = ["orange", "red", "blue", "green", "black", "grey"];-->
-
-
+                    <div className="btn-group">
                         <% if(attributes.state === "offer") { %>
-                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Oferta</button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ord`)" value="ord">Comandat</a>
-                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)" value="canceled">Anulat</a>
-                            </div>
+                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle checkUpdate orderStageBtn"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Oferta
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ord`)"
+                               value="ord">Comandat</a>
+                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)"
+                               value="canceled">Anulat</a>
+                        </div>
                         <% } else if(attributes.state === "ord") { %>
-                            <button type="button" class="btn btn-sm btn-info dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Comandat</button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `proc`)" value="proc">In Lucru</a>
-                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)" value="canceled">Anulat</a>
-                            </div>
+                        <button type="button" class="btn btn-sm btn-info dropdown-toggle checkUpdate orderStageBtn"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Comandat
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `proc`)"
+                               value="proc">In Lucru</a>
+                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)"
+                               value="canceled">Anulat</a>
+                        </div>
                         <% } else if(attributes.state === "proc") { %>
-                            <button type="button" class="btn btn-sm btn-danger dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">In Lucru</button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ready`)" value="ctc">Gata de Livrare</a>
-                            </div>
+                        <button type="button" class="btn btn-sm btn-danger dropdown-toggle checkUpdate orderStageBtn"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">In Lucru
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ready`)"
+                               value="ctc">Gata de Livrare</a>
+                        </div>
                         <% } else if(attributes.state === "ready") { %>
-                            <button disabled type="button" class="btn btn-sm btn-warning dropdown-toggle checkUpdate orderStageBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gata de Livrare</button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `dlvd`)" value="dlvd">Livrat</a>
-                            </div>
+                        <button disabled type="button"
+                                class="btn btn-sm btn-warning dropdown-toggle checkUpdate orderStageBtn"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gata de Livrare
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `dlvd`)"
+                               value="dlvd">Livrat</a>
+                        </div>
                         <% } else if(attributes.state === "dlvd") { %>
-                            <button disabled type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat</button>
+                        <button disabled type="button" class="btn btn-sm btn-success dropdown-toggle"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat
+                        </button>
                         <% } else if(attributes.state === "canceled") { %>
-                            <button disabled type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anulat</button>
+                        <button disabled type="button" class="btn btn-sm btn-secondary dropdown-toggle"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anulat
+                        </button>
                         <% } %>
 
                     </div>
                 </td>
             </tr>
-            <tr class="notA000">
+            <tr className="notA000">
                 <td>Echipa responsabila</td>
                 <td>
-                    <span class="display">
+                    <span className="display">
                     <% if(relationships.team) { %>
                         <%= relationships.team.attributes.name %>
                     <% } else { %>
                         nealocat
                     <% }  %>
                     </span>
-                    <span class="edit" style="min-width: 200px">
+                    <span className="edit" style="min-width: 200px">
                         <select id="teamAllocation" style="width: 150px">
                             <% if(relationships.team) { %>
                             <option value="<%= relationships.team.id %>"><%= relationships.team.attributes.name %></option>
                             <% }  %>
                         </select>
                     </span>
-                    <div class="hide-no-offer">
-                        <button class="btn btn-secondary float-right btn-sm edit checkUpdate" onclick="editTeamAssoc(this)"><i class="fa fa-edit"></i></button>
+                    <div className="hide-no-offer">
+                        <button className="btn btn-secondary float-right btn-sm edit checkUpdate"
+                                onClick="editTeamAssoc(this)"><i className="fa fa-edit"></i></button>
                     </div>
-                    <button class="btn btn-success float-right btn-sm save" onclick="saveTeamAssoc(this)"><i class="fa fa-save"></i></button>
+                    <button className="btn btn-success float-right btn-sm save" onClick="saveTeamAssoc(this)"><i
+                            className="fa fa-save"></i></button>
                 </td>
 
             </tr>
-            <tr class="notA000">
+            <tr className="notA000">
                 <td>Timp estimat (ore)</td>
-                <td id="ordersMetaEstimatedWork"></td>
+                <td id="ordersMetaEstimatedWork">
+                    <span id="estTimeText" className="display"></span>
+                    <span className="edit" style="min-width: 200px">
+                        <input type="text" id="estTimeChange" className="form-control form-control-sm" value="">
+                    </span>
+                    <div className="hide-no-offer">
+                        <button className="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
+                                onClick="editEstTimeChange(this)"><i className="fa fa-edit"></i></button>
+                    </div>
+                    <button className="btn btn-success float-right btn-sm save" onClick="saveEstTimeChange(this)"><i
+                            className="fa fa-save"></i></button>
+                </td>
             </tr>
         </table>
     </div>
-    <div class="col-6 notA000">
-        <table class="order-summary-table">
+    <div className="col-6 notA000">
+        <table className="order-summary-table">
             <tbody>
-                <tr>
-                    <td>Data preluare comanda</td>
-                    <td><%= attributes.created_on %></td>
-                </tr>
-                <tr>
-                    <td>Date dare in executie</td>
-                    <td><%= attributes.startwork_on?attributes.startwork_on:"-" %></td>
-                </tr>
-                <tr>
-                    <td>Data finalizare</td>
-                    <td><%= attributes.readytodeliver_on?attributes.readytodeliver_on:"-" %></td>
-                </tr>
-                <tr>
-                    <td>Data livrare</td>
-                    <td><%= attributes.closed_on?attributes.closed_on:"-" %></td>
-                </tr>
-                <tr>
-                    <td>Pret comanda</td>
-                    <td><%= attributes.order_value ?  attributes.order_value + " " + (relationships.currency?relationships.currency.id:"-") : "-" %> </td>
-
-                </tr>
-                <tr>
-                    <td>Pret calculat</td>
-                    <td><%= attributes.calculated_value ?  attributes.calculated_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %> </td>
-                </tr>
-                <tr>
-                    <td>Pret final</td>
-                    <td><%= attributes.final_value ?  attributes.final_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %>  </td>
-                </tr>
+            <tr>
+                <td>Data preluare comanda</td>
+                <td><%= attributes.created_on %></td>
+            </tr>
+            <tr>
+                <td>Date dare in executie</td>
+                <td><%= attributes.startwork_on?attributes.startwork_on:"-" %></td>
+            </tr>
+            <tr>
+                <td>Data finalizare</td>
+                <td><%= attributes.readytodeliver_on?attributes.readytodeliver_on:"-" %></td>
+            </tr>
+            <tr>
+                <td>Data livrare</td>
+                <td><%= attributes.closed_on?attributes.closed_on:"-" %></td>
+            </tr>
+            <tr>
+                <td>Pret comanda</td>
+                <td>
+                    <span className="display"><%= attributes.order_value ?  attributes.order_value + " " + (relationships.currency?relationships.currency.id:"-") : "-" %></span>
+                    <span className="edit" style="min-width: 200px">
+                            <input type="text" id="orderValueChange" className="form-control form-control-sm"
+                                   value="<%= attributes.order_value %>">
+                        </span>
+                    <div className="hide-no-offer">
+                        <button className="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
+                                onClick="editOrderValueChange(this)"><i className="fa fa-edit"></i></button>
+                    </div>
+                    <button className="btn btn-success float-right btn-sm save" onClick="saveOrderValueChange(this)"><i
+                            className="fa fa-save"></i></button>
+                </td>
+            </tr>
+            <tr>
+                <td>Pret calculat</td>
+                <td>
+                    <span className="display"><%= attributes.calculated_value ?  attributes.calculated_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %></span>
+                    <span className="edit" style="min-width: 200px">
+                            <input type="text" id="calculatedPriceChange" className="form-control form-control-sm"
+                                   value="<%= attributes.calculated_value %>">
+                        </span>
+                    <div className="hide-no-offer">
+                        <button className="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
+                                onClick="editCalcChangeChange(this)"><i className="fa fa-edit"></i></button>
+                    </div>
+                    <button className="btn btn-success float-right btn-sm save" onClick="saveCalcChangeChange(this)"><i
+                            className="fa fa-save"></i></button>
+                </td>
+            </tr>
+            <tr>
+                <td>Pret final</td>
+                <td><%= attributes.final_value ? attributes.final_value + " " + (relationships.currency ?
+                    relationships.currency.id:"-") : "-" %>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
@@ -180,14 +240,108 @@
 
 <script>
 
+    function updateMetaVal(instance) {
+        let id_est_work_arr = instance.relationships.orders_meta.map(item => {
+            if (item.attributes.meta_key === "estimated_work") return item.id
+        });
+        let estimated_work_arr = instance.relationships.orders_meta.map(item => {
+            if (item.attributes.meta_key === "estimated_work") return item.attributes.meta_val
+        });
+        let est_work_specific = estimated_work_arr.find(item => {
+            if (item) return item
+        });
+        let id_est_work = id_est_work_arr.find(item => {
+            if (item) return item
+        });
+
+        $("#ordersMetaEstimatedWork").attr("name", id_est_work);
+        $("#estTimeText").text(est_work_specific ? est_work_specific + " h" : "-");
+        $("#estTimeChange").val(est_work_specific ? est_work_specific : "");
+    }
+
+    function editOrderValueChange(src) {
+        $(src).parent().parent().addClass('editMode');
+    }
+
+    function saveOrderValueChange(src) {
+        let $order_value;
+        $order_value = $("#orderValueChange");
+
+        $(src).parent().removeClass('editMode');
+        $(src).data("instance").update({order_value: $order_value.val()})
+            .then(function (a) {
+                updateMetaVal($(src).data("instance"));
+            })
+            .catch(function (data) {
+                komponentor.intent("/common/errormodal").data({
+                    body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
+                }).send();
+            });
+    }
+
+    function editCalcChangeChange(src) {
+        $(src).parent().parent().addClass('editMode');
+    }
+
+    function saveCalcChangeChange(src) {
+        let $calcPrice;
+        $calcPrice = $("#calculatedPriceChange");
+
+
+        $(src).parent().removeClass('editMode');
+        $(src).data("instance").update({calculated_value: $calcPrice.val()}).then(function (a) {
+            updateMetaVal($(src).data("instance"));
+        })
+            .catch(function (data) {
+                komponentor.intent("/common/errormodal").data({
+                    body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
+                }).send();
+            });
+    }
+
+    function editEstTimeChange(src) {
+        $(src).parent().parent().addClass('editMode');
+    }
+
+    function saveEstTimeChange(src) {
+        let est_time_id = $("#ordersMetaEstimatedWork").attr("name");
+        console.log("asdasd" + est_time_id);
+
+        let instance = $("<span>").apiator({
+            resourcetype: "item",
+            url: apiRoot + "/orders_meta/" + est_time_id,
+            returninstance: true
+        });
+
+        let new_est_time = $("#estTimeChange").val();
+
+        let data = {meta_val: new_est_time};
+
+        console.log(data);
+
+        instance.update(data)
+            .then(function (data) {
+                $(src).parent().removeClass('editMode');
+            })
+            .catch(function (data) {
+                komponentor.intent("/common/errormodal").data({
+                    body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
+                }).send();
+            })
+
+        console.log("asdasd ", new_est_time);
+    }
+
     function goToPartner(src) {
-        komponentor.intent("/views/partners/addPartner").data({instance:$(src).data().instance.relationships.partner_id, title: "ceva"})
+        komponentor.intent("/views/partners/addPartner").data({
+            instance: $(src).data().instance.relationships.partner_id,
+            title: "ceva"
+        })
             .send();
     }
 
     function editDenumChange(src) {
         $(src).parent().parent().addClass('editMode');
-        // $("#teamAllocation").select2wrapper({url: apiRoot+"/teams",placeholder:"Aloca echipa",labelfld:"name"});
     }
 
     function saveDenumChange(src) {
@@ -196,55 +350,50 @@
 
 
         $(src).parent().removeClass('editMode');
-        // if(old_denum === $denum.val()){
-        //     return;
-        // }
-        $(src).data("instance").update({label: $denum.val()}).then(function (a){
-                console.log("saveDenumChangesaveDenumChangesaveDenumChange", $(src).data("instance"));
-                // prepare_a(a.attributes.state);
-            })
-            .catch(function(data){
+        $(src).data("instance").update({label: $denum.val()}).then(function (a) {
+            updateMetaVal($(src).data("instance"));
+        })
+            .catch(function (data) {
                 komponentor.intent("/common/errormodal").data({
-                    body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                    body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
                 }).send();
             });
     }
 
     function editTeamAssoc(src) {
         $(src).parent().parent().addClass('editMode');
-        $("#teamAllocation").select2wrapper({url: apiRoot+"/teams",placeholder:"Aloca echipa",labelfld:"name"});
+        $("#teamAllocation").select2wrapper({url: apiRoot + "/teams", placeholder: "Aloca echipa", labelfld: "name"});
     }
 
     function saveTeamAssoc(src) {
         $(src).parent().removeClass('editMode');
         let $teamalloc = $("#teamAllocation");
-        $(src).data("instance").update({team: $teamalloc.val()}).then(function (a){
-            console.log(a);
-            // prepare_a(a.attributes.state);
+        $(src).data("instance").update({team: $teamalloc.val()}).then(function (a) {
+            updateMetaVal($(src).data("instance"));
         })
-            .catch(function(data){
+            .catch(function (data) {
                 komponentor.intent("/common/errormodal").data({
-                    body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                    body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
                 }).send();
             });
     }
 
-    function changeState(src, new_state){
+    function changeState(src, new_state) {
         let instance = $(src).data("instance");
 
         komponentor.intent("/common/messagemodal").data({
-            body: "Sunteti sigur ca doriti modificaera starii comenzii <strong>"+instance.attributes.label + "</strong>?",
+            body: "Sunteti sigur ca doriti modificaera starii comenzii <strong>" + instance.attributes.label + "</strong>?",
             buttons: [
                 {
                     label: "Da",
                     class: "btn-danger",
                     attrs: {
-                        "data-dismiss":"modal"
+                        "data-dismiss": "modal"
                     },
                     callback: function () {
                         instance.update({state: new_state}).catch(function (data) {
                             komponentor.intent("/common/errormodal").data({
-                                body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                                body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
                             }).send();
                         });
                     }
@@ -253,7 +402,7 @@
                     label: "Nu",
                     class: "btn-secondary",
                     attrs: {
-                        "data-dismiss":"modal"
+                        "data-dismiss": "modal"
                     }
                 }]
         }).send();
@@ -276,15 +425,16 @@
 
         k.$el.addClass(k.data.instance.attributes.state);
 
-        k.data.instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
+
+        k.data.instance.setUrl(apiRoot + "/orders/" + k.data.instance.id + "?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
             .bindView(k.$el.children()).loadFromRemote().then(function (d) {
-                let estimated_work_arr = k.data.instance.relationships.orders_meta.map(item => {if (item.attributes.meta_key === "estimated_work") return item.attributes.meta_val});
-                let est_work_specific = estimated_work_arr.find(item => {if (item) return item});
-                $("#ordersMetaEstimatedWork").text(est_work_specific + " h");
-            })
-            .catch(function(data) {
+            updateMetaVal(k.data.instance);
+
+        })
+            .catch(function (data) {
+                console.log(data);
                 komponentor.intent("/common/errormodal").data({
-                    body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                    body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
                 }).send();
             });
     }
