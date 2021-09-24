@@ -204,7 +204,7 @@
             </thead>
             <tbody id="timeTrackingEntries" data-type="timetracking" data-emptyview="#timeTrackingEntriesEmpty" data-resourcetype="collection" data-paging="#timeTrackingEntriesPaging"
                    data-filter="#timeTrackingEntriesFiltering" data-sort="#pontajListHeader"
-                   data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset">
+                   data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset" data-totalrecscount="#timeTrackingTotalCount">
             <tr>
                 <td class="emplCol">
                     <a onclick="openEmployeeModal(this)" style="cursor: pointer"><%= relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname %></a> <br>
@@ -280,7 +280,7 @@
                         <option>25</option>
                         <option>50</option>
                         <option>75</option>
-                    </select> inregistrari pe pagina
+                    </select> inregistrari pe pagina. Total <span id="timeTrackingTotalCount"></span>
                 </td>
             </tr>
             </tfoot>
@@ -580,7 +580,7 @@
     }
 
     function init_komponent(k) {
-        $("#dateRange").daterangepicker({showDropdowns:true,startDate:"05/01/2021"})
+        k.$el.find("#dateRange").daterangepicker({showDropdowns:true,startDate:"05/01/2021"})
             .on("apply.daterangepicker",function (e) {
                 let[start,stop] = $(e.target).val().split(" - ");
                 // console.log(e,start,stop);
@@ -609,7 +609,7 @@
             console.log(e)
         }
 
-        let instance = $("#timeTrackingEntries").apiator({
+        let instance = k.$el.find("#timeTrackingEntries").apiator({
             url: url,
             returninstance: true
         });
