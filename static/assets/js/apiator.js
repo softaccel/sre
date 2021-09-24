@@ -2154,11 +2154,13 @@
 			let pagesToShow = 5;
 
 			let total = _paging.collection.total;
-			if($totalCount[0].tagName==="INPUT") {
-				$totalCount.val(total);
-			}
-			else {
-				$totalCount.text(total);
+			if($totalCount.length) {
+				if($totalCount[0].tagName==="INPUT") {
+					$totalCount.val(total);
+				}
+				else {
+					$totalCount.text(total);
+				}
 			}
 			_paging.el.empty();
 

@@ -1,0 +1,63 @@
+<script>
+    function init_komponent(k) {
+        let data = {
+            title: "Fisa comanda",
+            size: "xl",
+            tabs: [
+                {
+                    label: "Sumar",
+                    type: "komponent",
+                    url: "/views/orders/details",
+                    data: k.data,
+                    active: true
+                },
+                {
+                    label: "Continut",
+                    type: "komponent",
+                    url: "/views/orders/partsGallery",
+                    data: k.data
+                },
+                {
+                    label: "Documente",
+                    type: "komponent",
+                    url: "/views/orders/orderDocuments",
+                    data: k.data
+                },
+                {
+                    label: "Costuri",
+                    type: "komponent",
+                    url: "/views/orders/orderCosts",
+                    data: k.data
+                },
+                {
+                    label: "Demo",
+                    content: "Demo"
+                },
+            ]
+        };
+
+        if(k.data.instance) {
+            komponentor.intent("/common/tabbed_modal").send(data);
+            return;
+        }
+
+        if(k.data.orderId) {
+            k.data.instance = $("<span>").apiator({resourcetype:"item",returninstance:true})
+                .setUrl(apiRoot+"/orders/"+k.data.orderId);
+            k.data.instance
+                .loadFromRemote()
+                .then(function () {
+                    komponentor.intent("/common/tabbed_modal").send(data);
+                })
+                .catch(function (resp) {
+                    komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + resp.jqXHR.responseText + "</pre>"}).send();
+                });
+
+            return;
+        }
+
+        komponentor.intent("/common/errormodal").send({body:"Invalid data to initialize <b>altorder</b>"});
+
+
+    }
+</script>
