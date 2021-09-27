@@ -82,6 +82,11 @@
 
     function init_komponent(k) {
 
+        if(Object.keys(k.data).length === 1) {
+            k.data.instance = $("<span>").apiator({returninstance: true, resourcetype: "item", url: apiRoot + "/employees/" + k.data.emplId});//.then(() => {k.data.instance.loadFromRemote();})
+            // k.data.instance = $("<span>").apiator({returninstance: true, resourcetype: "item", url: apiRoot + "/employees/" + k.data.emplId, type: "employees"});//.then(() => {k.data.instance.loadFromRemote();})
+        }
+
         let $modal = k.$el.appendTo("body")
             .filter(".modal")
             .on("hidden.bs.modal",function () {
