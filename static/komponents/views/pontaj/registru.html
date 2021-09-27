@@ -86,7 +86,7 @@
 
 
                     <div class="btn-group btn-group-sm filtercomponent">
-                        <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle employeeRelated" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-filter" style="visibility: hidden"></i>
                             Angajat
                             <i class="fa" style="visibility: hidden"></i>
@@ -104,7 +104,7 @@
                     </div>
 
                     <div class="btn-group btn-group-sm filtercomponent">
-                        <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle employeeRelated" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-filter" style="visibility: hidden"></i>
                             Echipa
                             <i class="fa" style="visibility: hidden"></i>
@@ -580,6 +580,11 @@
     }
 
     function init_komponent(k) {
+
+        if (k.data && k.data.instance.type === "employees") {
+            $(".employeeRelated").remove();
+        }
+
         k.$el.find("#dateRange").daterangepicker({showDropdowns:true,startDate:"05/01/2021"})
             .on("apply.daterangepicker",function (e) {
                 let[start,stop] = $(e.target).val().split(" - ");
