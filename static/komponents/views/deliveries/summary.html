@@ -197,9 +197,10 @@
             instance.update(data)
                 .then( function (a) {
                     $("#deliverySummary").removeClass("editMode");
-                    prepare_a(a.attributes.status);
+                    // prepare_a(a.attributes.status);
                 })
                 .catch(function (data){
+                    console.log(data);
                     komponentor.intent("/common/errormodal").data({
                         body: "A aparut o eroare: <pre>"+(data.jqXHR.responseText)+"</pre>"
                     }).send();
