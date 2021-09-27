@@ -117,7 +117,7 @@
                 <td>
                     <div class="btn-group">
                         <button class="btn btn-sm btn-warning" onclick="editCost(this)"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCost(this)"><i class="fa fa-trash"></i></button>
                     </div>
                 </td>
             </tr>
@@ -145,6 +145,37 @@
 </div>
 
 <script>
+
+    function deleteCost(src) {
+        let instance = $(src).parent().parent().data("instance");
+        komponentor.intent("/common/messagemodal").data({
+            body:"Sigur vrei sa elimini elementul <strong>"+instance.attributes.name+"</strong>?",
+            buttons:[
+                {
+                    label: "Da",
+                    attrs: {
+                        "data-dismiss": "modal",
+                    },
+                    class: "btn btn-danger",
+                    callback: function () {
+                        instance.delete().catch(function(data){
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    attrs: {
+                        "data-dismiss": "modal",
+                    },
+                    class: "btn btn-secondary",
+                }
+            ]
+        }).send();
+    }
+
     function editCost(src) {
         komponentor.intent("/views/orders/costs/newcost").data({instance:$(src).data().instance,cb:()=>{$("#orderCostsTotal").data().instance.loadFromRemote()}}).send();
     }
