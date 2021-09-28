@@ -385,7 +385,7 @@
         let old_state = instance.attributes.state;
 
         komponentor.intent("/common/messagemodal").data({
-            body: "Sunteti sigur ca doriti modificaera starii comenzii <strong>" + instance.attributes.label + "</strong>?",
+            body: "Sunteti sigur ca doriti modificarea starii comenzii <strong>" + instance.attributes.label + "</strong>?",
             buttons: [
                 {
                     label: "Da",
@@ -436,9 +436,8 @@
 
         k.data.instance.setUrl(apiRoot + "/orders/" + k.data.instance.id + "?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
             .bindView(k.$el.children()).loadFromRemote().then(function (d) {
-            updateMetaVal(k.data.instance);
-
-        })
+                updateMetaVal(k.data.instance);
+            })
             .catch(function (data) {
                 console.log(data);
                 komponentor.intent("/common/errormodal").data({
