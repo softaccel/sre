@@ -49,7 +49,7 @@
 <div class="row" id="orderDetails">
     <div class="col-6" id="firstColOrdersDetails">
         <table class="order-summary-table">
-            <tr>,
+            <tr>
                 <td>Nr. comanda intern</td>
                 <td><%= relationships.doc_id.attributes.docnum %></td>
             </tr>
@@ -382,6 +382,7 @@
 
     function changeState(src, new_state) {
         let instance = $(src).data("instance");
+        let old_state = instance.attributes.state;
 
         komponentor.intent("/common/messagemodal").data({
             body: "Sunteti sigur ca doriti modificaera starii comenzii <strong>" + instance.attributes.label + "</strong>?",
@@ -393,9 +394,14 @@
                         "data-dismiss": "modal"
                     },
                     callback: function () {
-                        instance.update({state: new_state}).catch(function (data) {
-                            komponentor.intent("/common/errormodal").data({
-                                body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
+                        instance.update({state: new_state})
+                            .then(function () {
+                                console.log(old_state + " sadasdad " + new_state);
+                                $("#sumar").removeClass(old_state).addClass(new_state);
+                            })
+                            .catch(function (data) {
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
                             }).send();
                         });
                     }
@@ -425,7 +431,7 @@
                 $(this).attr("disabled", true).removeClass("checkUpdate");
         });
 
-        k.$el.addClass(k.data.instance.attributes.state);
+        $("#sumar").addClass(k.data.instance.attributes.state);
 
 
         k.data.instance.setUrl(apiRoot + "/orders/" + k.data.instance.id + "?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
