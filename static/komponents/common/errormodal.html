@@ -17,7 +17,8 @@
 </div>
 <script>
     function init_komponent(k) {
-        let modal = k.$el.appendTo("body")
+        console.log("Show error");
+        let modal = k.$el.filter(".modal").appendTo("body")
             .filter(".modal")
             .modal()
             .on("hidden.bs.modal",function () {

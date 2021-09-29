@@ -35,7 +35,10 @@
                     Scaneaza
                 </div>
                 <div class="modal-body" style="background: url('assets/img/barcode-scan.gif') no-repeat center;min-height: 500px">
-                    <ul id="checkOutList"></ul>
+                    <div style="background-color:rgba(255, 255, 255, 0.7);">
+                        <div id="alertSpace"></div>
+                        <ul id="checkOutList"></ul>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-success" id="checkoutItemsButt">OK</button>
@@ -89,16 +92,19 @@
         console.log("/////",k);
 
         let currentDelivery = k.data.instance;
-        let modal = k.$el.find(".modal").appendTo("body").filter(".modal")
+        let modal = k.$el.appendTo("body").find(".modal")
             .modal("show")
             .on("hidden.bs.modal",function () {
                 k.$el.remove();
                 $(document).scannerDetection(false);
             });
 
+
+
         function localAlert(msg) {
             let alert = $(k.$el.find("#alertTpl")[0]).clone(true).attr("id",null).appendTo(k.$el.find("#alertSpace")).alert();
-            alert.find("[name=message]").html(msg);
+            console.log(alert,msg);
+            alert.find("[name=message]").html(msg).alert('open');
             setTimeout(()=>alert.alert('close'),1500);
         }
 
@@ -151,6 +157,7 @@
             $.get(apiRoot+"/deliveries_contents/"+code+"?include=item")
                 .done(function (data) {
                     let item = data.data;
+                    console.log(item,item.attributes.checkout*1===1);
                     if(item.attributes.checkout*1===1) {
                         localAlert("Elementul scanat este deja livrat ");
                         return;

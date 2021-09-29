@@ -21,15 +21,16 @@
     "beDBapiUrl": "http://localhost/dbapi/v2/spaleck",
     "backendUrl": "/spaleck/be",
     "authUrl": "/spaleck/be/main/auth/login",
-    "fileApiUrl": "http://172.16.20.15/FileApi"
+    "fileApiUrl": "http://172.16.20.15/FileApi",
+    "logLevel": 4
   },
   "alllocal": {
-    "baseUrl": "http://localhost/spaleck",
+    "baseUrl": "/spaleck",
     "feDBapiUrl": "/dbapi/v2/spaleck",
     "beDBapiUrl": "http://localhost/dbapi/v2/spaleck",
     "backendUrl": "/spaleck/be",
     "authUrl": "/spaleck/be/main/auth/login",
-    "fileApiUrl": "http://localhost/FileApi",
+    "fileApiUrl": "/FileApi",
     "logLevel": 3
   }
 }
