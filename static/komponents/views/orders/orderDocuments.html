@@ -2,7 +2,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="orders" data-level="1">
     <div id="orderDocumentsList">
         <ul>
             <li>
@@ -10,7 +10,7 @@
                     <div>Facturi</div>
                     <div class="checkUpdate">
                         <form id="orderDocumentsFacturi">
-                            <input type="file" name="files[]" multiple class="" id="addFiles">
+                            <input type="file" name="files[]" multiple class="">
                             <input type="submit" value="Upload" name="upload">
                         </form>
                     </div>
@@ -34,7 +34,7 @@
                     <div>Avize</div>
                     <div class="checkUpdate">
                         <form id="orderDocumentsAvize">
-                            <input type="file" name="files[]" multiple class="" id="addFiles">
+                            <input type="file" name="files[]" multiple class="">
                             <input type="submit" value="Upload" name="upload">
                         </form>
                     </div>
@@ -58,7 +58,7 @@
                     <div>Certificate de calitate</div>
                     <div class="checkUpdate">
                         <form id="orderDocumentsCertificate">
-                            <input type="file" name="files[]" multiple class="" id="addFiles">
+                            <input type="file" name="files[]" multiple class="">
                             <input type="submit" value="Upload" name="upload">
                         </form>
                     </div>
@@ -82,7 +82,7 @@
                     <div>Fise de urmarire</div>
                     <div class="checkUpdate">
                         <form id="orderDocumentsFise">
-                            <input type="file" name="files[]" multiple class="" id="addFiles">
+                            <input type="file" name="files[]" multiple class="">
                             <input type="submit" value="Upload" name="upload">
                         </form>
                     </div>
@@ -106,7 +106,7 @@
                     <div>Altele</div>
                     <div class="checkUpdate">
                         <form id="orderDocumentsOther">
-                            <input type="file" name="files[]" multiple class="" id="addFiles">
+                            <input type="file" name="files[]" multiple class="">
                             <input type="submit" value="Upload" name="upload">
                         </form>
                     </div>
@@ -170,8 +170,6 @@
     }
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "orders");
 
         function uploadDocument(instance, form, name) {
             let formData = new FormData();

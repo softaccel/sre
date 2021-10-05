@@ -30,7 +30,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="orders" data-level="1">
     <div class="hide-no-offer">
         <button class="btn btn-primary checkUpdate" id="allocateEmpl"><i class="fa fa-user-plus"></i> Adauga</button>
     </div>
@@ -93,8 +93,6 @@
     }
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "orders");
 
         k.$el.addClass(k.data.instance.attributes.state);
 

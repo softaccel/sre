@@ -1,4 +1,5 @@
 <style>
+
     #deliveryContentsTable tr>td:first-child,#deliveryContentsTable tr>th:first-child{
         display: none;
     }
@@ -33,8 +34,10 @@
     #unassingedItems tr.selected{
         background: #aeaeae;
     }
+
 </style>
-<div>
+
+<div class="checkRequired" data-module="deliveries" data-level="1">
     <div class="card mb-3" style="background: #f4f4f4; display: none" id="addElsToDeliveryCard">
         <div class="card-body">
             <div class="form-group">
@@ -262,10 +265,6 @@
 
     function init_komponent(k) {
 
-        console.log("yoyoyoyyyo", k.data.instance);
-
-        checkUserRights(k.$el, "deliveries");
-
         k.$el.addClass(k.data.instance.attributes.status);
 
         if(!k.data || !k.data.instance) {
@@ -349,7 +348,6 @@
             selectContent();
             $(e.target).hide();
         });
-
 
 
         k.$el.find("#addToDlvrBtn").on("click",addToDelivery);

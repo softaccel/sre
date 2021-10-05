@@ -29,7 +29,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="teams" data-level="1">
     <form id="teamEditForm">
         <div class="content" id="teamEditDiv">
             <input type="number" name="tid" value="<%= id %>" style="display:none;">
@@ -144,14 +144,10 @@
 
     function init_komponent(k) {
 
-        checkUserRights(k.$el, "teams");
-
         let teamDiv = $("#teamEditDiv");
         console.log("instasdasdasdasd", k.data.instance)
         k.data.instance.url.parameters.include = "teamlead";
         k.data.instance.bindView("#teamEditDiv").loadFromRemote();
-
-
 
     }
 </script>

@@ -2,45 +2,47 @@
 
 </style>
 
-<div class="container-fluid">
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Unitati de Masura</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6 ">
-                    <div class="breadcrumb float-sm-right">
-                        <button class="btn btn-primary checkCreate" id="newUnitModalButton"><i class="fa fa-plus"></i> Unitate noua</button>
+<div class="checkRequired" data-module="units" data-level="1">
+    <div class="container-fluid">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Unitati de Masura</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6 ">
+                        <div class="breadcrumb float-sm-right">
+                            <button class="btn btn-primary checkCreate" id="newUnitModalButton"><i class="fa fa-plus"></i> Unitate noua</button>
+                        </div>
+                    </div>
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="card">
+                    <div class="card-body checkRead">
+                        <table class="table table-hover table-striped">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>Unitate</th>
+                                <th>Tip</th>
+                                <th style="text-align:center">Actiune</th>
+                            </tr>
+                            </thead>
+                            <tbody id="unitsList" data-resourcetype="collection" data-type="units">
+                            <tr class="tr-unit" onclick="openUnitModal(this)" style="cursor:pointer;">
+                                <td><%= attributes.unit %></td>
+                                <td><%= attributes.type %></td>
+                                <td align="center"><button class="btn-warning btn btn-sm checkDelete" onclick="deleteUnit(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </section>
-    <section class="content">
-        <div class="container-fluid">
-            <div class="card">
-                <div class="card-body checkRead">
-                    <table class="table table-hover table-striped">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th>Unitate</th>
-                            <th>Tip</th>
-                            <th style="text-align:center">Actiune</th>
-                        </tr>
-                        </thead>
-                        <tbody id="unitsList" data-resourcetype="collection" data-type="units">
-                        <tr class="tr-unit" onclick="openUnitModal(this)" style="cursor:pointer;">
-                            <td><%= attributes.unit %></td>
-                            <td><%= attributes.type %></td>
-                            <td align="center"><button class="btn-warning btn btn-sm checkDelete" onclick="deleteUnit(this, event);"><i class="fa fa-trash-alt"></i> Sterge</button></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 </div>
 
 <script>
@@ -92,8 +94,6 @@
     }
 
     function init_komponent(k,c) {
-
-        checkUserRights(k.$el, "units");
 
         let instance = $("#unitsList").apiator(apiRoot+"/units").data("instance");
         $("#newUnitModalButton").on("click", function () {

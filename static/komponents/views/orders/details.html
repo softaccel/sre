@@ -46,95 +46,97 @@
     }
 
 </style>
-<div class="row" id="orderDetails">
-    <div class="col-6" id="firstColOrdersDetails">
-        <table class="order-summary-table">
-            <tr>
-                <td>Nr. comanda intern</td>
-                <td><%= relationships.doc_id.attributes.docnum %></td>
-            </tr>
-            <tr>
-                <td>Denumire</td>
-                <td>
-                    <span class="display"><%= attributes.label %></span>
-                    <span class="edit" style="min-width: 200px">
+
+<div class="checkRequired" data-module="orders" data-level="1">
+    <div class="row" id="orderDetails">
+        <div class="col-6" id="firstColOrdersDetails">
+            <table class="order-summary-table">
+                <tr>
+                    <td>Nr. comanda intern</td>
+                    <td><%= relationships.doc_id.attributes.docnum %></td>
+                </tr>
+                <tr>
+                    <td>Denumire</td>
+                    <td>
+                        <span class="display"><%= attributes.label %></span>
+                        <span class="edit" style="min-width: 200px">
                         <input type="text" id="denumChange" class="form-control form-control-sm" value="<%= attributes.label %>">
                     </span>
-                    <div class="hide-no-offer">
-                        <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate" onClick="editDenumChange(this)">
-                            <i class="fa fa-edit"></i>
-                        </button>
-                    </div>
-                    <button class="btn btn-success float-right btn-sm save" onClick="saveDenumChange(this)"><i
-                            class="fa fa-save"></i></button>
-                </td>
-            </tr>
-            <tr class="notA000">
-                <td>Client</td>
-                <td><a href="#" onClick="event.preventDefault(); goToPartner(this);"><%=
-                    relationships.partner_id.attributes.name %></a></td>
-            </tr>
-            <tr class="notA000">
-                <td>Referinta interna</td>
-                <td><%= attributes.cust_int_ref %></td>
-            </tr>
-            <tr class="notA000">
-                <td>Stadiu</td>
-                <td>
-                    <div class="btn-group">
-                        <% if(attributes.state === "offer") { %>
-                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle checkUpdate orderStageBtn"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Oferta
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ord`)"
-                               value="ord">Comandat</a>
-                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)"
-                               value="canceled">Anulat</a>
+                        <div class="hide-no-offer">
+                            <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate" onClick="editDenumChange(this)">
+                                <i class="fa fa-edit"></i>
+                            </button>
                         </div>
-                        <% } else if(attributes.state === "ord") { %>
-                        <button type="button" class="btn btn-sm btn-info dropdown-toggle checkUpdate orderStageBtn"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Comandat
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `proc`)"
-                               value="proc">In Lucru</a>
-                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)"
-                               value="canceled">Anulat</a>
-                        </div>
-                        <% } else if(attributes.state === "proc") { %>
-                        <button type="button" class="btn btn-sm btn-danger dropdown-toggle checkUpdate orderStageBtn"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">In Lucru
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ready`)"
-                               value="ctc">Gata de Livrare</a>
-                        </div>
-                        <% } else if(attributes.state === "ready") { %>
-                        <button disabled type="button"
-                                class="btn btn-sm btn-warning dropdown-toggle checkUpdate orderStageBtn"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gata de Livrare
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `dlvd`)"
-                               value="dlvd">Livrat</a>
-                        </div>
-                        <% } else if(attributes.state === "dlvd") { %>
-                        <button disabled type="button" class="btn btn-sm btn-success dropdown-toggle"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat
-                        </button>
-                        <% } else if(attributes.state === "canceled") { %>
-                        <button disabled type="button" class="btn btn-sm btn-secondary dropdown-toggle"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anulat
-                        </button>
-                        <% } %>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveDenumChange(this)"><i
+                                class="fa fa-save"></i></button>
+                    </td>
+                </tr>
+                <tr class="notA000">
+                    <td>Client</td>
+                    <td><a href="#" onClick="event.preventDefault(); goToPartner(this);"><%=
+                        relationships.partner_id.attributes.name %></a></td>
+                </tr>
+                <tr class="notA000">
+                    <td>Referinta interna</td>
+                    <td><%= attributes.cust_int_ref %></td>
+                </tr>
+                <tr class="notA000">
+                    <td>Stadiu</td>
+                    <td>
+                        <div class="btn-group">
+                            <% if(attributes.state === "offer") { %>
+                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle checkUpdate orderStageBtn"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Oferta
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ord`)"
+                                   value="ord">Comandat</a>
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)"
+                                   value="canceled">Anulat</a>
+                            </div>
+                            <% } else if(attributes.state === "ord") { %>
+                            <button type="button" class="btn btn-sm btn-info dropdown-toggle checkUpdate orderStageBtn"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Comandat
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `proc`)"
+                                   value="proc">In Lucru</a>
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)"
+                                   value="canceled">Anulat</a>
+                            </div>
+                            <% } else if(attributes.state === "proc") { %>
+                            <button type="button" class="btn btn-sm btn-danger dropdown-toggle checkUpdate orderStageBtn"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">In Lucru
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ready`)"
+                                   value="ctc">Gata de Livrare</a>
+                            </div>
+                            <% } else if(attributes.state === "ready") { %>
+                            <button disabled type="button"
+                                    class="btn btn-sm btn-warning dropdown-toggle checkUpdate orderStageBtn"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gata de Livrare
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `dlvd`)"
+                                   value="dlvd">Livrat</a>
+                            </div>
+                            <% } else if(attributes.state === "dlvd") { %>
+                            <button disabled type="button" class="btn btn-sm btn-success dropdown-toggle"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat
+                            </button>
+                            <% } else if(attributes.state === "canceled") { %>
+                            <button disabled type="button" class="btn btn-sm btn-secondary dropdown-toggle"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anulat
+                            </button>
+                            <% } %>
 
-                    </div>
-                </td>
-            </tr>
-            <tr class="notA000">
-                <td>Echipa responsabila</td>
-                <td>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="notA000">
+                    <td>Echipa responsabila</td>
+                    <td>
                     <span class="display">
                     <% if(relationships.team) { %>
                         <%= relationships.team.attributes.name %>
@@ -142,103 +144,103 @@
                         nealocat
                     <% }  %>
                     </span>
-                    <span class="edit" style="min-width: 200px">
+                        <span class="edit" style="min-width: 200px">
                         <select id="teamAllocation" style="width: 150px">
                             <% if(relationships.team) { %>
                             <option value="<%= relationships.team.id %>"><%= relationships.team.attributes.name %></option>
                             <% }  %>
                         </select>
                     </span>
-                    <div class="hide-no-offer">
-                        <button class="btn btn-secondary float-right btn-sm edit checkUpdate" onClick="editTeamAssoc(this)">
-                            <i class="fa fa-edit"></i>
+                        <div class="hide-no-offer">
+                            <button class="btn btn-secondary float-right btn-sm edit checkUpdate" onClick="editTeamAssoc(this)">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveTeamAssoc(this)">
+                            <i class="fa fa-save"></i>
                         </button>
-                    </div>
-                    <button class="btn btn-success float-right btn-sm save" onClick="saveTeamAssoc(this)">
-                        <i class="fa fa-save"></i>
-                    </button>
-                </td>
+                    </td>
 
-            </tr>
-            <tr class="notA000">
-                <td>Timp estimat (ore)</td>
-                <td id="ordersMetaEstimatedWork">
-                    <span id="estTimeText" class="display"></span>
-                    <span class="edit" style="min-width: 200px">
+                </tr>
+                <tr class="notA000">
+                    <td>Timp estimat (ore)</td>
+                    <td id="ordersMetaEstimatedWork">
+                        <span id="estTimeText" class="display"></span>
+                        <span class="edit" style="min-width: 200px">
                         <input type="text" id="estTimeChange" class="form-control form-control-sm" value="">
                     </span>
-                    <div class="hide-no-offer">
-                        <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
-                                onClick="editEstTimeChange(this)"><i class="fa fa-edit"></i></button>
-                    </div>
-                    <button class="btn btn-success float-right btn-sm save" onClick="saveEstTimeChange(this)"><i
-                            class="fa fa-save"></i></button>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="col-6 notA000">
-        <table class="order-summary-table">
-            <tbody>
-            <tr>
-                <td>Data preluare comanda</td>
-                <td><%= attributes.created_on %></td>
-            </tr>
-            <tr>
-                <td>Date dare in executie</td>
-                <td><%= attributes.startwork_on?attributes.startwork_on:"-" %></td>
-            </tr>
-            <tr>
-                <td>Data finalizare</td>
-                <td><%= attributes.readytodeliver_on?attributes.readytodeliver_on:"-" %></td>
-            </tr>
-            <tr>
-                <td>Data livrare</td>
-                <td><%= attributes.closed_on?attributes.closed_on:"-" %></td>
-            </tr>
-            <tr>
-                <td>Pret comanda</td>
-                <td>
-                    <span class="display"><%= attributes.order_value ?  attributes.order_value + " " + (relationships.currency?relationships.currency.id:"-") : "-" %></span>
-                    <span class="edit" style="min-width: 200px">
+                        <div class="hide-no-offer">
+                            <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
+                                    onClick="editEstTimeChange(this)"><i class="fa fa-edit"></i></button>
+                        </div>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveEstTimeChange(this)"><i
+                                class="fa fa-save"></i></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-6 notA000">
+            <table class="order-summary-table">
+                <tbody>
+                <tr>
+                    <td>Data preluare comanda</td>
+                    <td><%= attributes.created_on %></td>
+                </tr>
+                <tr>
+                    <td>Date dare in executie</td>
+                    <td><%= attributes.startwork_on?attributes.startwork_on:"-" %></td>
+                </tr>
+                <tr>
+                    <td>Data finalizare</td>
+                    <td><%= attributes.readytodeliver_on?attributes.readytodeliver_on:"-" %></td>
+                </tr>
+                <tr>
+                    <td>Data livrare</td>
+                    <td><%= attributes.closed_on?attributes.closed_on:"-" %></td>
+                </tr>
+                <tr>
+                    <td>Pret comanda</td>
+                    <td>
+                        <span class="display"><%= attributes.order_value ?  attributes.order_value + " " + (relationships.currency?relationships.currency.id:"-") : "-" %></span>
+                        <span class="edit" style="min-width: 200px">
                             <input type="text" id="orderValueChange" class="form-control form-control-sm"
                                    value="<%= attributes.order_value %>">
                         </span>
-                    <div class="hide-no-offer">
-                        <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
-                                onClick="editOrderValueChange(this)"><i class="fa fa-edit"></i></button>
-                    </div>
-                    <button class="btn btn-success float-right btn-sm save" onClick="saveOrderValueChange(this)"><i
-                            class="fa fa-save"></i></button>
-                </td>
-            </tr>
-            <tr>
-                <td>Pret calculat</td>
-                <td>
-                    <span class="display"><%= attributes.calculated_value ?  attributes.calculated_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %></span>
-                    <span class="edit" style="min-width: 200px">
+                        <div class="hide-no-offer">
+                            <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
+                                    onClick="editOrderValueChange(this)"><i class="fa fa-edit"></i></button>
+                        </div>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveOrderValueChange(this)"><i
+                                class="fa fa-save"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Pret calculat</td>
+                    <td>
+                        <span class="display"><%= attributes.calculated_value ?  attributes.calculated_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %></span>
+                        <span class="edit" style="min-width: 200px">
                             <input type="text" id="calculatedPriceChange" class="form-control form-control-sm"
                                    value="<%= attributes.calculated_value %>">
                         </span>
-                    <div class="hide-no-offer">
-                        <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
-                                onClick="editCalcChangeChange(this)"><i class="fa fa-edit"></i></button>
-                    </div>
-                    <button class="btn btn-success float-right btn-sm save" onClick="saveCalcChangeChange(this)"><i
-                            class="fa fa-save"></i></button>
-                </td>
-            </tr>
-            <tr>
-                <td>Pret final</td>
-                <td><%= attributes.final_value ? attributes.final_value + " " + (relationships.currency ?
-                    relationships.currency.id:"-") : "-" %>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                        <div class="hide-no-offer">
+                            <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
+                                    onClick="editCalcChangeChange(this)"><i class="fa fa-edit"></i></button>
+                        </div>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveCalcChangeChange(this)"><i
+                                class="fa fa-save"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Pret final</td>
+                    <td><%= attributes.final_value ? attributes.final_value + " " + (relationships.currency ?
+                        relationships.currency.id:"-") : "-" %>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
 
 <script>
 
@@ -418,8 +420,6 @@
 
     function init_komponent(k) {
 
-        checkUserRights(k.$el, "orders");
-
         k.$el.addClass("doc_id" + k.data.instance.relationships.doc_id.id);
 
         if (k.data.instance.relationships.doc_id.id === "0") {
@@ -445,4 +445,5 @@
                 }).send();
             });
     }
+
 </script>

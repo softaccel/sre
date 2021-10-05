@@ -2,7 +2,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="userRights" data-level="3">
     <div class="checkUpdate">
         <table class="table table-striped table-hover" style="table-layout: fixed" >
             <thead class="thead-dark">
@@ -55,8 +55,6 @@
 <script>
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "users");
 
         let instance = $("#userRightsList").apiator({resourcetype: "collection", returninstance: true});
 

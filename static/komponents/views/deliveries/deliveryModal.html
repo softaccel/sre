@@ -3,6 +3,7 @@
         display: none;
     }
 </style>
+
 <div class="modal fade">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
@@ -16,7 +17,7 @@
                         <a data-toggle="tab" href="#deliveryContentPanel" class="nav-link  active">Continut</a>
                     </li>
                     <li class="nav-item">
-<!--                        <a data-toggle="tab" href="#checkoutPanel" class="nav-link">Checkout</a>-->
+                        <!--                        <a data-toggle="tab" href="#checkoutPanel" class="nav-link">Checkout</a>-->
                         <a id="startScanBut" class="nav-link" style="cursor: pointer">Scaneaza</a>
                     </li>
                 </ul>
@@ -38,10 +39,9 @@
         </div>
     </div>
 </div>
+
 <script>
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "deliveries");
 
         let $modal =  k.$el.appendTo("body").filter(".modal").modal().on("hidden.bs.modal",function (event) {
             k.$el.remove();

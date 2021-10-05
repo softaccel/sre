@@ -27,7 +27,7 @@
     }
 </style>
 
-<div>
+<div class="checkRequired" data-module="orders" data-level="1">
     <div id="imageGalleryKomponent">
         <br>
         <div id="addNewImageOnOfferOrd" class="hide-no-offer">
@@ -57,12 +57,7 @@
 
     function init_komponent(k) {
 
-        checkUserRights(k.$el, "orders");
-
-        console.log("asdasdasd", k.data.instance);
         let orderId = k.data.instance.relationships.order.id;
-        console.log(orderId);
-
 
         let instanceForHide = $("#addNewImageOnOfferOrd").apiator({returninstance: true, resourcetype: "item", url: apiRoot + "/orders/" + orderId});
         instanceForHide.loadFromRemote().then(function () {

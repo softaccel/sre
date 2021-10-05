@@ -2,7 +2,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="jobs" data-level="1">
     <div data-resourcetype="item" data-type="item">
         <form id="customerDataForm"></form>
         <div class="alert alert-success d-none" role="alert" id="insertJobSuccessAlert">
@@ -44,8 +44,6 @@
 <script>
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "jobs");
 
         let saveBtn = k.$el.find("#saveJobsBtn");
         if (!saveBtn.hasClass("updateAllow")){

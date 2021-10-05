@@ -15,7 +15,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="orders" data-level="1">
     <div class="checkRead">
         <div class="card-body">
 <!--            <div class="dropdown checkCreate" id="newOrderButtons">-->
@@ -182,8 +182,6 @@
     }
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "orders");
 
         let url = apiRoot+ "/orders?page[orders_extended][offset]=0&page[orders_extended][limit]=10&include=doc_id,partner_id&sort=-created_on";
         // let insertUrl = apiRoot+"/orders?page[orders_extended][offset]=0&page[orders_extended][limit]=10";

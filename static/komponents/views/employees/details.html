@@ -39,7 +39,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="employees" data-level="1">
     <form id="employeeForm">
         <div class="content" id="employeeSummary">
             <div class="row hide-on-edit">
@@ -322,7 +322,6 @@
 
     function init_komponent(k) {
 
-        checkUserRights(k.$el, "employees");
         let statusBtn = k.$el.find("#employeeStatusButton");
         if (!statusBtn.hasClass("updateAllow"))
             statusBtn.attr("disabled", true).removeClass("checkUpdate");
