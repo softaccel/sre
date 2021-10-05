@@ -130,6 +130,8 @@
         $renderedKomponent = $renderedKomponent.remove();
         dummy.remove();
 
+        console.log("$renderedKomponent", $renderedKomponent)
+
         let userId = (userData && userData.sub) ? userData.sub : null;
         let userLvl = (userData && userData.level) ? userData.level : null;
         let allRights = localStorage.getItem("rights") ? JSON.parse(localStorage.getItem("rights")) : null;

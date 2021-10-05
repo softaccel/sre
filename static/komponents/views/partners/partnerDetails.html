@@ -1,0 +1,133 @@
+<style>
+
+</style>
+<!-- @todo: finalizare sectiune parteneri-->
+
+<div class="row">
+    <form id="customerDataForm" class="d-none"></form>
+    <div class="col-6">
+        <div class="row">
+          <div class="col-3">Denumire</div>
+          <div class="col-9"><%= attributes.name %></div>
+          <div class="col-9">
+              <input form="customerDataForm" type="text" maxlength="155" id="nameInput" name="name" class="form-control form-control-sm" required="" placeholder="ABOGAR S.R.L." value="<%= attributes.name %>">
+          </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Cod fiscal</div>
+            <div class="col-9"><%= attributes.cod_fiscal %></div>
+            <div class="col-9">
+                <input form="customerDataForm" type="text" maxlength="20" id="cod_fiscalInput" data-sync="cod_fiscal" name="cod_fiscal" class="form-control form-control-sm" required="" placeholder="RO2483866" value="<%= attributes.cod_fiscal %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Reg Com</div>
+            <div class="col-9"><%= attributes.reg_com %></div>
+            <div class="col-9">
+                <input form="customerDataForm" type="text" maxlength="40" id="reg_comInput" data-sync="reg_com" name="reg_com" class="form-control form-control-sm" required="" placeholder="" value="<%= attributes.reg_com %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Email</div>
+            <div class="col-9"><%= attributes.email %></div>
+            <div class="col-9">
+                <input form="customerDataForm" type="text" maxlength="100" id="emailInput" data-sync="email" name="email" class="form-control form-control-sm" value="<%= attributes.email %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Telefon</div>
+            <div class="col-9"><%= attributes.phone %></div>
+            <div class="col-9">
+                <input form="customerDataForm" type="text" maxlength="15" id="phoneInput" data-sync="phone" name="phone" class="form-control form-control-sm" value="<%= attributes.phone %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Banca</div>
+            <div class="col-9"><%= attributes.cod_fiscal %></div>
+            <div class="col-9">
+                <input form="customerDataForm" type="text" maxlength="45" id="bank_nameInput" data-sync="bank_name" name="bank_name" class="form-control form-control-sm" value="<%= attributes.bank_name %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Cont</div>
+            <div class="col-9"><%= attributes.bank_account %></div>
+            <div class="col-9">
+                <input form="customerDataForm" type="text" maxlength="45" id="bank_accountInput" data-sync="bank_account" name="bank_account" class="form-control form-control-sm" value="<%= attributes.bank_account %>">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+
+        <div class="row">
+            <div class="col-3">Adresa 1</div>
+            <div class="col-9"><%= attributes.address1 %></div>
+            <div class="col-9">
+                <input form="customerDataForm" type="text" maxlength="20" id="address1Input" data-sync="address1" name="address1" class="form-control form-control-sm" value="<%= attributes.address1 %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Adresa 2</div>
+            <div class="col-9"><%= attributes.address2 %></div>
+            <div class="col-9">
+                <input form="customerDataForm" type="text" maxlength="20" id="address2Input" data-sync="address2" name="address2" class="form-control form-control-sm" value="<%= attributes.address2 %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Localitate</div>
+            <div class="col-9"><%= attributes.city %></div>
+            <div class="col-9">
+                <input form="customerDataForm" type="text" maxlength="20" id="cityInput" data-sync="city" name="city" class="form-control form-control-sm" value="<%= attributes.city %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Judet</div>
+            <div class="col-9"><%= attributes.county %></div>
+            <div class="col-9">
+                <input form="customerDataForm" type="text" maxlength="20" id="countyInput" data-sync="county" name="county" class="form-control form-control-sm" value="<%= attributes.county %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Tara</div>
+            <div class="col-9"><%= attributes.country %></div>
+            <div class="col-9">
+                <input form="customerDataForm" type="text" maxlength="20" id="countryInput" data-sync="country" name="country" class="form-control form-control-sm" value="<%= attributes.country %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">Furnizor</div>
+            <div class="col-9"><%= attributes.is_supplier === "1" ? "Da" : "Nu" %></div>
+            <div class="col-9">
+                <select form="customerDataForm" name="is_supplier" class="form-control custom-select custom-select-sm">
+                    <option value="1">da</option>
+                    <option value="0">nu</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-12">
+            <label>Notite</label>
+            <textarea form="customerDataForm" class="form-control" rows="3" name="comments"></textarea>
+        </div>
+    </div>
+    <div class="row" id="btnForPartner">
+        &nbsp;
+        <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+        &nbsp;
+        <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
+    </div>
+</div>
+
+
+<script>
+
+    function init_komponent(k) {
+        checkUserRights(k.$el, "partners");
+        console.log(k);
+
+        let instance = k.data.instance;
+
+        // instance.bindView(k.$el)
+    }
+
+</script>
