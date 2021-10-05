@@ -116,6 +116,7 @@
 
 </script>
 <script>
+
     function logout() {
         userData = null;
         localData.jwt  = null;
@@ -163,65 +164,6 @@
         }
         let tmp = $("#orderPartsList").children();
         $($(src).data("connected")).prop("checked",(tmp.length===tmp.filter(".selected").length));
-    }
-
-    function checkUserRights(el, modules) {
-        console.log(modules);
-
-        let checkRights = function (module) {
-            let rights = allRights[module];
-            if (rights.indexOf("r") === -1) {
-                // todo: show not enough rights
-                return;
-            }
-            el.find(".module-"+module)
-
-            el.find(".checkRead").each(function () {
-                // $(this).removeClass("checkRead");
-                $(this).addClass("readAllow");
-            });
-
-            if (rights.indexOf("c") !== -1) {
-                el.find(".checkCreate").each(function () {
-                    $(this).addClass("createAllow");
-                });
-            }
-
-            if (rights.indexOf("u") !== -1) {
-                el.find(".checkUpdate").each(function () {
-                    $(this).addClass("updateAllow");
-                });
-            }
-
-            if (rights.indexOf("d") !== -1) {
-                el.find(".checkDelete").each(function () {
-                    $(this).addClass("deleteAllow");
-                });
-            }
-        };
-
-        let allRights = JSON.parse(localStorage.getItem("rights"));
-
-        if (typeof modules === "string") {
-            checkRights(modules);
-            return;
-        }
-        if(typeof modules==="undefined") {
-            console.log("undefine modules",el);
-            return;
-        }
-
-        if(typeof modules==="object") {
-            console.log("invalid modules",el);
-            return;
-        }
-
-
-
-        modules.forEach(function (module) {
-            checkRights(module);
-        });
-
     }
 
     // let localData,userData;
@@ -274,26 +216,21 @@
             alert("Failed to load configuration");
         });
 
-
-</script>
-<script>
-
-
 </script>
 
 <style>
-    .checkRead {
-        display: none;
-    }
-    .checkCreate {
-        display: none;
-    }
-    .checkUpdate {
-        display: none;
-    }
-    .checkDelete {
-        display: none;
-    }
+    /*.checkRead {*/
+    /*    display: none;*/
+    /*}*/
+    /*.checkCreate {*/
+    /*    display: none;*/
+    /*}*/
+    /*.checkUpdate {*/
+    /*    display: none;*/
+    /*}*/
+    /*.checkDelete {*/
+    /*    display: none;*/
+    /*}*/
 
     .checkRead.readAllow {
         display: block;
@@ -309,11 +246,6 @@
     }
 
 </style>
-<script>
-
-
-
-</script>
 
 </body>
 </html>

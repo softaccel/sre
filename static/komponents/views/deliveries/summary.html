@@ -43,79 +43,79 @@
 
 </style>
 
-<div>
-<form id="deliveryForm">
-    <div class="content" id="deliverySummary">
-        <div class="row hide-on-edit">
-            <div class="col-3">Nr. Crt.</div>
-            <div class="col-9"><%= id %></div>
-            <div class="col-9"><input name="id" class="form-control form-control-sm" type="text" value="<%= id %>"></div>
-        </div>
+<div class="checkRequired" data-module="deliveries" data-level="1">
+    <form id="deliveryForm">
+        <div class="content" id="deliverySummary">
+            <div class="row hide-on-edit">
+                <div class="col-3">Nr. Crt.</div>
+                <div class="col-9"><%= id %></div>
+                <div class="col-9"><input name="id" class="form-control form-control-sm" type="text" value="<%= id %>"></div>
+            </div>
 
-        <div class="row">
-            <div class="col-3">Denumire</div>
-            <div class="col-9"><%= attributes.label %></div>
-            <div class="col-9"><input name="label" class="form-control form-control-sm" type="text" autocomplete="off" value="<%= attributes.label %>"></div>
-        </div>
-        <div class="row hide-on-edit">
-            <div class="col-3">Status</div>
-            <div class="col-9">
-                <div class="btn-group">
-<!--                    let states = ["created", "delivered", "received", "canceled"];-->
-                    <% if(attributes.status === "created"){ %>
-                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle checkUpdate deliveryStatusBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Creat</button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `delivered`)">Livrat</a>
-                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)">Anulat</a>
-                        </div>
-                    <% } else if(attributes.status === "delivered") { %>
-                        <button type="button" class="btn btn-sm btn-warning dropdown-toggle checkUpdate deliveryStatusBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat</button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `received`)">Primit</a>
-                        </div>
-                    <% } else if(attributes.status === "received") { %>
-                        <button type="button" disabled class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Primit</button>
-                    <% } else if(attributes.status === "canceled") { %>
-                        <button type="button" disabled class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anulat</button>
-                    <% } %>
+            <div class="row">
+                <div class="col-3">Denumire</div>
+                <div class="col-9"><%= attributes.label %></div>
+                <div class="col-9"><input name="label" class="form-control form-control-sm" type="text" autocomplete="off" value="<%= attributes.label %>"></div>
+            </div>
+            <div class="row hide-on-edit">
+                <div class="col-3">Status</div>
+                <div class="col-9">
+                    <div class="btn-group">
+    <!--                    let states = ["created", "delivered", "received", "canceled"];-->
+                        <% if(attributes.status === "created"){ %>
+                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle checkUpdate deliveryStatusBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Creat</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `delivered`)">Livrat</a>
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)">Anulat</a>
+                            </div>
+                        <% } else if(attributes.status === "delivered") { %>
+                            <button type="button" class="btn btn-sm btn-warning dropdown-toggle checkUpdate deliveryStatusBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `received`)">Primit</a>
+                            </div>
+                        <% } else if(attributes.status === "received") { %>
+                            <button type="button" disabled class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Primit</button>
+                        <% } else if(attributes.status === "canceled") { %>
+                            <button type="button" disabled class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anulat</button>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="col-9">
+                    <select name="status" class="custom-select custom-select-sm" id="typeInput" required="">
+                        <option value="<%= attributes.status %>" id="origValStatus"><%= attributes.status %></option>
+    <!--                    <option value="created">Creat</option>-->
+    <!--                    <option value="loading">Incarcare</option>-->
+    <!--                    <option value="ready">Pregatit</option>-->
+    <!--                    <option value="delivered">Trimis</option>-->
+    <!--                    <option value="received">Receptionat</option>-->
+                    </select>
                 </div>
             </div>
-            <div class="col-9">
-                <select name="status" class="custom-select custom-select-sm" id="typeInput" required="">
-                    <option value="<%= attributes.status %>" id="origValStatus"><%= attributes.status %></option>
-<!--                    <option value="created">Creat</option>-->
-<!--                    <option value="loading">Incarcare</option>-->
-<!--                    <option value="ready">Pregatit</option>-->
-<!--                    <option value="delivered">Trimis</option>-->
-<!--                    <option value="received">Receptionat</option>-->
-                </select>
+            <div class="row">
+                <div class="col-3">Data Livrarii</div>
+                <div class="col-9"><%= attributes.dlv_date === null ? "N/A" : attributes.dlv_date %></div>
+                <div class="col-9"><input name="dlv_date" class="form-control form-control-sm" type="date" autocomplete="off" value="<%= attributes.dlv_date === null ? 'N/A' : attributes.dlv_date %>"></div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-3">Data Livrarii</div>
-            <div class="col-9"><%= attributes.dlv_date === null ? "N/A" : attributes.dlv_date %></div>
-            <div class="col-9"><input name="dlv_date" class="form-control form-control-sm" type="date" autocomplete="off" value="<%= attributes.dlv_date === null ? 'N/A' : attributes.dlv_date %>"></div>
-        </div>
-        <div class="row hide-on-edit">
-            <div class="col-3">Ultimul Update</div>
-            <div class="col-9"><%= attributes.lastupdate %></div>
-            <div class="col-9"><input name="lastupdate" class="form-control form-control-sm" type="text" autocomplete="off"></div>
-        </div>
+            <div class="row hide-on-edit">
+                <div class="col-3">Ultimul Update</div>
+                <div class="col-9"><%= attributes.lastupdate %></div>
+                <div class="col-9"><input name="lastupdate" class="form-control form-control-sm" type="text" autocomplete="off"></div>
+            </div>
 
-        <div class="input-group mt-5 hide-not-created">
-            <div class="row">
-                <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
-                &nbsp;
-                <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
-            </div>
-            <div class="row">
-                <button id="editButton" class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
-                &nbsp;
-                <button class="btn btn-danger checkDelete" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
+            <div class="input-group mt-5 hide-not-created">
+                <div class="row">
+                    <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
+                    &nbsp;
+                    <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
+                </div>
+                <div class="row">
+                    <button id="editButton" class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+                    &nbsp;
+                    <button class="btn btn-danger checkDelete" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
+                </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
 </div>
 
 <script>
@@ -211,7 +211,6 @@
 
     function init_komponent(k) {
 
-        checkUserRights(k.$el, "deliveries");
         k.$el.find(".deliveryStatusBtn").each(function () {
             if (!$(this).hasClass("updateAllow"))
                 $(this).attr("disabled", true).removeClass("checkUpdate");

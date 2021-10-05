@@ -2,7 +2,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="units" data-level="1">
     <div data-resourcetype="item" data-type="item">
         <form id="customerDataForm"></form>
         <div class="alert alert-success d-none" role="alert" id="insertUnitSuccessAlert">
@@ -39,8 +39,6 @@
 <script>
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "units");
 
         let util = k.data.instance.getUtilities();
         let form = $("#customerDataForm")[0];

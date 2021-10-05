@@ -41,7 +41,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="orders" data-level="1">
     <div id="orderMeta" class="checkRead">
         <form id="orderMetaFilter" class="d-none"> <button type="submit" name="submit" id="submitButton"></button> </form>
         <table class="table table-striped table-hover" style="table-layout: fixed">
@@ -160,8 +160,6 @@
     }
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "orders");
 
         $("#orderMetaList").apiator({
             type: "orders_meta",

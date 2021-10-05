@@ -23,11 +23,9 @@
         return res;
     })();
 
-
     window.onhashchange = function (el) {
         window.location.reload();
     };
-
 
     /**
      *
@@ -104,7 +102,6 @@
         });
     }
 
-
     String.prototype.hashCode = function()
     {
         var hash = 0, i, chr;
@@ -123,8 +120,8 @@
      * @param options
      * @returns {Promise<unknown>}
      */
-    function renderKomponent(k,data)
-    {
+    function renderKomponent(k,data) {
+
         let dummy = $("<div>").appendTo("body");
         // let tpl = _.template(data);
         // let rights = JSON.parse(localStorage.getItem("rights"));
@@ -133,32 +130,199 @@
         $renderedKomponent = $renderedKomponent.remove();
         dummy.remove();
 
-        let initFunc = typeof init_komponent==="function" ? init_komponent : new Function();
-        delete init_komponent;
+        let userId = (userData && userData.sub) ? userData.sub : null;
+        let userLvl = (userData && userData.level) ? userData.level : null;
+        let allRights = localStorage.getItem("rights") ? JSON.parse(localStorage.getItem("rights")) : null;
 
-        if(k.$el && $renderedKomponent.length) {
-            if(k.replace) {
-                let id = k.$el.attr("id");
-                k.$el.replaceWith($renderedKomponent);
-                k.$el = $renderedKomponent;
-                // k.$el.attr("id",id);
+        let checkRights = function (module) {
+            let rights = allRights[module];
+            if (rights.indexOf("r") === -1) {
+                // todo: show not enough rights
+                return;
             }
-            else {
-                k.$el.append($renderedKomponent);
+            $renderedKomponent.find(".module-"+module)
+
+            $renderedKomponent.find(".checkRead").each(function () {
+                $(this).addClass("readAllow");
+            });
+
+            if (rights.indexOf("c") !== -1) {
+                $renderedKomponent.find(".checkCreate").each(function () {
+                    $(this).addClass("createAllow");
+                });
             }
+
+            if (rights.indexOf("u") !== -1) {
+                $renderedKomponent.find(".checkUpdate").each(function () {
+                    $(this).addClass("updateAllow");
+                });
+            }
+
+            if (rights.indexOf("d") !== -1) {
+                $renderedKomponent.find(".checkDelete").each(function () {
+                    $(this).addClass("deleteAllow");
+                });
+            }
+        };
+
+        let getUserRights = function () {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: apiRoot + "/users/" + userId + "/users_meta/?filter=meta_key=~rights.",
+                    type: "GET",
+                    success: function (data) {
+                        let rights = {};
+                        data.data.forEach(function (item) {
+                            rights[item.attributes.meta_key.slice(7)] = JSON.parse(item.attributes.meta_val);
+                        });
+                        localStorage.setItem("rights", JSON.stringify(rights));
+                        resolve();
+                    },
+                    error: function (err) {
+                        //todo: handle error
+                        reject("getUserRights/reject: " + err.toString());
+                    }
+                });
+            });
         }
 
-        if(!k.$el) {
-            k.$el = $renderedKomponent;
+        let getExpiryTime = function () {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: apiRoot + "/settings/?filter=key=data_expiry_time",
+                    type: "GET",
+                    success: function(data) {
+                        let expiryTime = data.data[0].attributes.value;
+                        let dateNow = new Date();
+                        dateNow.setHours(dateNow.getHours() + parseInt(expiryTime));
+                        localStorage.setItem("dataExpires", dateNow.toISOString());
+                        resolve();
+                    },
+                    error: function(err) {
+                        //todo: handle error
+                        reject("getExpiryTime/reject: " + err.toString());
+                    }
+                });
+            })
         }
 
-        k.$el.data("komponent",k).attr("is","komponent");
-
-        let moduleName = initFunc(k);
-        let modules = JSON.parse(localStorage.getItem("modules"));
-        if(modules && modules[moduleName]) {
-            k.$el.addClass(modules[moduleName].join(" "));
+        let getActiveModules = function () {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: apiRoot + "/settings/?filter=key=~module.",
+                    type: "GET",
+                    success: function (data) {
+                        let modules = [];
+                        data.data.forEach(function (item) {
+                            if (item.attributes.value === "1")
+                                modules.push(item.attributes.key.slice(7));
+                        });
+                        localStorage.setItem("activeModules", JSON.stringify(modules));
+                        resolve();
+                    },
+                    error: function (err) {
+                        //todo: handle error
+                        reject("getActiveModules/reject: " + err.toString());
+                    }
+                });
+            });
         }
+
+        let getAll = function () {
+            return new Promise(((resolve, reject) => {
+                if (userId === null)
+                    resolve();
+
+                let expiryTime = new Date(localStorage.getItem("dataExpires"));
+                if (expiryTime === null || expiryTime < new Date() ||
+                    allRights === null ||
+                    allRights === [] ||
+                    localStorage.getItem("activeModules") === null ||
+                    localStorage.getItem("activeModules") === "" ||
+                    localStorage.getItem("dataExpires") === null ||
+                    localStorage.getItem("dataExpires") === "") {
+
+                    getUserRights()
+                    .then(function () {
+                        return getExpiryTime();
+                    }).then(function () {
+                        return getActiveModules();
+                    }).then(function () {
+                        resolve();
+                    }).catch(function (error) {
+                        reject("getAll/rejected: ", error.toString());
+                    });
+                } else {
+                    resolve();
+                }
+            }));
+        }
+
+        let checkAccess = function () {
+            return new Promise((resolve, reject) => {
+                if (userId === null)
+                    resolve(true);
+
+                let allowInit = false;
+                let checkCount = 0;
+                $renderedKomponent.filter(".checkRequired").each(function () {
+                    let moduleName = $(this).data("module");
+                    let levelIdx = $(this).data("level");
+
+                    if (userLvl >= levelIdx) {
+                        allowInit = true;
+                        checkRights(moduleName);
+                    }
+                    checkCount++;
+                });
+
+                if (allowInit || !checkCount) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            });
+        }
+
+        let initKomponent = function () {
+            return new Promise(((resolve, reject) => {
+                let initFunc = typeof init_komponent==="function" ? init_komponent : new Function();
+                delete init_komponent;
+
+                if(k.$el && $renderedKomponent.length) {
+                    if(k.replace) {
+                        let id = k.$el.attr("id");
+                        k.$el.replaceWith($renderedKomponent);
+                        k.$el = $renderedKomponent;
+                        // k.$el.attr("id",id);
+                    }
+                    else {
+                        k.$el.append($renderedKomponent);
+                    }
+                }
+
+                if(!k.$el) {
+                    k.$el = $renderedKomponent;
+                }
+
+                k.$el.data("komponent",k).attr("is","komponent");
+
+                let moduleName = initFunc(k);
+                let modules = JSON.parse(localStorage.getItem("modules"));
+                if(modules && modules[moduleName]) {
+                    k.$el.addClass(modules[moduleName].join(" "));
+                }
+            }))
+        }
+
+        getAll().then(function (result) {
+            return checkAccess();
+        }).then(function (result) {
+            return result ? initKomponent() : '';
+        }).catch(function (reject) {
+            console.log("renderKomponent/reject: ", reject.toString());
+        });
+
     }
 
     /**
@@ -166,8 +330,8 @@
      * @returns {Promise<unknown>}
      * @param opts
      */
-    komponentor.fetchKomponent = function(options)
-    {
+    komponentor.fetchKomponent = function(options) {
+
         return new Promise((resolve,reject)=>{
 
             if(!options.url) {
@@ -202,8 +366,8 @@
      * @param container
      * @returns {Promise<unknown[]>}
      */
-    function loadKomponents(container)
-    {
+    function loadKomponents(container) {
+
         let promises = [];
         $(container).find("[is=komponent]").each(function () {
             promises.push($(this).komponent());
@@ -211,7 +375,6 @@
 
         return Promise.all(promises);
     }
-
 
     /**
      * default behaviour is to autoload komponents
@@ -231,8 +394,7 @@
      * @param options
      * @returns {{data: data, options: (function(*): obj), send: (function(): Promise<unknown>), url: (function(*): obj)}}
      */
-    komponentor.intent = function (url)
-    {
+    komponentor.intent = function (url) {
 
         let init_data = {data:{}};
         let _data = {};
@@ -266,9 +428,8 @@
         return  obj;
     };
 
+    komponentor.sendIntent = function(options) {
 
-    komponentor.sendIntent = function(options)
-    {
         komponentor.fetchKomponent(options)
             .then(  function (c) {
                 if(!c)
@@ -284,8 +445,8 @@
             });
     };
 
-    komponentor.loadKomponents = function(container)
-    {
+    komponentor.loadKomponents = function(container) {
+
         return loadKomponents(container);
     }
 

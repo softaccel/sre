@@ -48,7 +48,7 @@
     }
 </style>
 
-<div>
+<div class="checkRequired" data-module="deliveries" data-level="1">
     <div class="checkRead">
         <div class="checkCreate hideFromOrder" id="newOrderButtons">
             <button type="button" aria-haspopup="true" aria-expanded="false" class="mb-2 mr-2 btn btn-primary" id="newDlvrButt">Livrare noua</button>
@@ -171,10 +171,6 @@
     }
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "deliveries");
-
-        console.log("del del del", k)
 
         if(k.data){
             k.$el.find("#deliveriesList").apiator({url:k.data,returninstance:true});

@@ -40,7 +40,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="catalog" data-level="1">
     <form id="productFormSubmit">
         <div class="content" id="productSummary">
             <div class="row hide-on-edit">
@@ -120,6 +120,7 @@
 </div>
 
 <script>
+
     function changeStatus(src){
         let instance = $(src).data().instance;
 
@@ -153,7 +154,6 @@
             ]
         }).send();
     }
-
 
     function editMode(instance){
         $("#productSummary").addClass("editMode");
@@ -200,12 +200,7 @@
         }).send();
     }
 
-
-
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "catalog");
-
         let instance = k.data.instance;
         instance.bindView($("#productSummary")).loadFromRemote();
     }

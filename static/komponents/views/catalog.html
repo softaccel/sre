@@ -6,7 +6,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="catalog" data-level="1">
     <div class="container-fluid">
         <section class="content-header">
             <div class="container-fluid">
@@ -144,8 +144,6 @@
     }
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "catalog");
 
         let instance = $("#productList").apiator(apiRoot+"/catalog?page[catalog][offset]=0&filter=active=1").data("instance");
 

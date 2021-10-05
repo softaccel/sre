@@ -58,63 +58,65 @@
 
 </style>
 
-<div class="modal" id="order_details_modal">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header" style="display: flex; align-items: center">
-                <div class="modal-title">
-                    Fisa comanda
+<div class="checkRequired" data-module="orders" data-level="1">
+    <div class="modal" id="order_details_modal">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header" style="display: flex; align-items: center">
+                    <div class="modal-title">
+                        Fisa comanda
+                    </div>
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a data-toggle="tab" href="#sumar" class="nav-link" id="sumarTab">Sumar</a>
+                        </li>
+                        <li class="nav-item notA000">
+                            <a data-toggle="tab" href="#reperePanel" class="nav-link" id="repereTab">Continut</a>
+                        </li>
+                        <li class="nav-item notA000">
+                            <a data-toggle="tab" href="#ordersCostsPanel" class="nav-link" id="orderItemsTab">Costuri</a>
+                        </li>
+                        <li class="nav-item notA000">
+                            <a data-toggle="tab" href="#documentePanel" class="nav-link" id="documenteTab">Documente</a>
+                        </li>
+                        <li class="nav-item">
+                            <a data-toggle="tab" href="#resursePanel" class="nav-link" id="allocResTab">Resurse</a>
+                        </li>
+                        <li class="nav-item">
+                            <a data-toggle="tab" href="#pontajPanel" class="nav-link" id="timeTrackTab">Pontaj</a>
+                        </li>
+                        <li class="nav-item notA000">
+                            <a data-toggle="tab" href="#deliveriesPanel" class="nav-link" id="deliveriesTab">Livrari</a>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="nav nav-pills">
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#sumar" class="nav-link" id="sumarTab">Sumar</a>
-                    </li>
-                    <li class="nav-item notA000">
-                        <a data-toggle="tab" href="#reperePanel" class="nav-link" id="repereTab">Continut</a>
-                    </li>
-                    <li class="nav-item notA000">
-                        <a data-toggle="tab" href="#ordersCostsPanel" class="nav-link" id="orderItemsTab">Costuri</a>
-                    </li>
-                    <li class="nav-item notA000">
-                        <a data-toggle="tab" href="#documentePanel" class="nav-link" id="documenteTab">Documente</a>
-                    </li>
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#resursePanel" class="nav-link" id="allocResTab">Resurse</a>
-                    </li>
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#pontajPanel" class="nav-link" id="timeTrackTab">Pontaj</a>
-                    </li>
-                    <li class="nav-item notA000">
-                        <a data-toggle="tab" href="#deliveriesPanel" class="nav-link" id="deliveriesTab">Livrari</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="modal-body bg-white">
-                <div class="tab-content">
-                    <div class="tab-pane fade" id="sumar" is="komponent" data-url="/views/orders/details"></div>
-                    <div class="tab-pane fade" id="reperePanel">
-                        <div is="komponent" data-url="/views/orders/partsGallery" id="repere"></div>
-                    </div>
-                    <div class="tab-pane fade" id="documentePanel">
-                        <div is="komponent" data-url="/views/orders/orderDocuments" id="documents"></div>
-                    </div>
-                    <div class="tab-pane fade" id="ordersCostsPanel">
-                        <div is="komponent" data-url="/views/orders/orderCosts" id="ordersCosts"></div>
-                    </div>
-                    <div class="tab-pane fade included" id="pontajPanel" is="komponent" data-url="/views/pontaj/registru"></div>
-                    <div class="tab-pane fade" id="deliveriesPanel">
-                        <div is="komponent" data-url="/views/deliveries/list" id="livrari"></div>
-                    </div>
-                    <div class="tab-pane fade" id="proprietati" is="komponent" data-url="/views/orders/orderDetails"></div>
+                <div class="modal-body bg-white">
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="sumar" is="komponent" data-url="/views/orders/details"></div>
+                        <div class="tab-pane fade" id="reperePanel">
+                            <div is="komponent" data-url="/views/orders/partsGallery" id="repere"></div>
+                        </div>
+                        <div class="tab-pane fade" id="documentePanel">
+                            <div is="komponent" data-url="/views/orders/orderDocuments" id="documents"></div>
+                        </div>
+                        <div class="tab-pane fade" id="ordersCostsPanel">
+                            <div is="komponent" data-url="/views/orders/orderCosts" id="ordersCosts"></div>
+                        </div>
+                        <div class="tab-pane fade included" id="pontajPanel" is="komponent" data-url="/views/pontaj/registru"></div>
+                        <div class="tab-pane fade" id="deliveriesPanel">
+                            <div is="komponent" data-url="/views/deliveries/list" id="livrari"></div>
+                        </div>
+                        <div class="tab-pane fade" id="proprietati" is="komponent" data-url="/views/orders/orderDetails"></div>
 
-                    <div class="tab-pane fade" id="resursePanel">
-                        <div is="komponent" data-url="/views/orders/orderEmployees" id="resurse"></div>
-                    </div>
+                        <div class="tab-pane fade" id="resursePanel">
+                            <div is="komponent" data-url="/views/orders/orderEmployees" id="resurse"></div>
+                        </div>
 
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
+                </div>
             </div>
         </div>
     </div>
@@ -124,11 +126,7 @@
 
     function init_komponent(k,d) {
 
-        checkUserRights(k.$el, "orders");
-
         k.$el.addClass("doc_id" + k.data.instance.relationships.doc_id.id);
-
-        console.log("ciuciuletee", k);
 
         k.$el.appendTo("body");
 

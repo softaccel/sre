@@ -89,8 +89,6 @@
 
     function init_komponent(k) {
 
-        console.log("/////",k);
-
         let currentDelivery = k.data.instance;
         let modal = k.$el.appendTo("body").find(".modal")
             .modal("show")
@@ -98,8 +96,6 @@
                 k.$el.remove();
                 $(document).scannerDetection(false);
             });
-
-
 
         function localAlert(msg) {
             let alert = $(k.$el.find("#alertTpl")[0]).clone(true).attr("id",null).appendTo(k.$el.find("#alertSpace")).alert();
