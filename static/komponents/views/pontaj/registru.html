@@ -207,7 +207,7 @@
                    data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset" data-totalrecscount="#timeTrackingTotalCount">
             <tr>
                 <td class="emplCol">
-                    <a onclick="openEmployeeModal(this)" style="cursor: pointer"><%= relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname %></a> <br>
+                    <a onclick="openRelatedEmployeeModal(this)" style="cursor: pointer"><%= relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname %></a> <br>
                     <% if(relationships.team) { %>
                     <span class="badge badge-secondary"><%= relationships.team.attributes ? relationships.team.attributes.name : 0 %></span>
                     <% } %>
@@ -308,7 +308,7 @@
             })
     }
 
-    function openEmployeeModal(src) {
+    function openRelatedEmployeeModal(src) {
         if ($(src).data("locked")) {
             return;
         }

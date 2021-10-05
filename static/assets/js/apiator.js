@@ -427,8 +427,8 @@
 		let _item = {
 			id: null,
 			type: null,
-			attributes: null,
-			relationships: null,
+			attributes: {},
+			relationships: {},
 			views: [],
 			collection: null,
 			url: null,

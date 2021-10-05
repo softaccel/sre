@@ -294,6 +294,7 @@
 
         $(src).parent().removeClass('editMode');
         $(src).data("instance").update({calculated_value: $calcPrice.val()}).then(function (a) {
+            console.log(a);
             updateMetaVal($(src).data("instance"));
         })
             .catch(function (data) {
@@ -314,6 +315,7 @@
         let instance = $("<span>").apiator({
             resourcetype: "item",
             url: apiRoot + "/orders_meta/" + est_time_id,
+            id: est_time_id,
             returninstance: true
         });
 
