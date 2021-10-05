@@ -58,8 +58,8 @@
 
 </style>
 
-<div class="checkRequired" data-module="orders" data-level="1">
-    <div class="modal" id="order_details_modal">
+<div class="checkRequired modal" data-module="orders" data-level="1">
+    <div class="" id="order_details_modal">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header" style="display: flex; align-items: center">
@@ -130,7 +130,7 @@
 
         k.$el.appendTo("body");
 
-        $(k.$el.filter("#order_details_modal"))
+        $(k.$el.filter(".modal"))
             .modal("show")
             .on("hidden.bs.modal",function () {
                 k.$el.remove();
