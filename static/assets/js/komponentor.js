@@ -133,6 +133,8 @@
         $renderedKomponent = $renderedKomponent.remove();
         dummy.remove();
 
+        console.log("$renderedKomponent", $renderedKomponent)
+
         let initFunc = typeof init_komponent==="function" ? init_komponent : new Function();
         delete init_komponent;
 

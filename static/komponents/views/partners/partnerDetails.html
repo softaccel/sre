@@ -1,6 +1,7 @@
 <style>
 
 </style>
+<!-- @todo: finalizare sectiune parteneri-->
 
 <div class="row">
     <form id="customerDataForm" class="d-none"></form>
@@ -114,17 +115,19 @@
         <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
         &nbsp;
         <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
-        <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button" disabled>Editeaza</button>
-        &nbsp;
-        <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button" disabled>Sterge</button>
     </div>
 </div>
 
+
 <script>
 
-  function init_komponent(k) {
-      checkUserRights(k.$el, "partners");
+    function init_komponent(k) {
+        checkUserRights(k.$el, "partners");
+        console.log(k);
 
-  }
+        let instance = k.data.instance;
+
+        // instance.bindView(k.$el)
+    }
 
 </script>

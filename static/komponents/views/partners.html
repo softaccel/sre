@@ -94,7 +94,7 @@
 
     function openPartnerModal(src) {
         $(src).data("locked",true);
-        komponentor.intent('/views/partners/partnerDetails')
+        komponentor.intent('/views/partners/partner')
             .data({instance:$(src).data('instance')})
             .send()
             .then(function (k) {
