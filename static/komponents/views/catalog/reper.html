@@ -1,3 +1,7 @@
+<style>
+
+</style>
+
 <div class="modal" id="reperFormModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -48,7 +52,9 @@
         </div>
     </div>
 </div>
+
 <script>
+
     function init_komponent(k) {
         let modal = $("#reperFormModal").remove().appendTo("body");
         k.exec = function (data) {
@@ -56,5 +62,6 @@
         };
         k.exec();
     }
+
 </script>
 

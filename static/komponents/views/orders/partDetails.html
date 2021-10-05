@@ -41,7 +41,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="orders" data-level="1">
     <div id="orderPartDetails">
         <form id="orderPartDetailsFilter" class="d-none"> <button type="submit" name="submit" id="submitButton"></button> </form>
         <table class="table table-striped table-hover" style="table-layout: fixed">
@@ -158,8 +158,6 @@
     }
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "orders");
 
         console.log("@@@@@@@@@@@@@@@@",k.$el,k.data.instance.attributes.state)
         k.$el.addClass(k.data.instance.attributes.state);

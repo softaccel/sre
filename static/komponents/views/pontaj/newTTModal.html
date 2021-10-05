@@ -29,6 +29,7 @@
         display: none;
     }
 </style>
+
 <div class="modal" id="newTTModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -117,7 +118,6 @@
         // console.log(date.toISOString().slice(0, -1))
 
         $selectAng.select2wrapper({placeholder: null, url:apiRoot+"/employees_names", labelfld: "fullname"});
-
 
         $selectAng.on("select2:select", function (e){
             $selectComm.empty();

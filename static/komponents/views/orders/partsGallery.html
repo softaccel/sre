@@ -96,7 +96,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="orders" data-level="1">
     <div id="orderPartsMe" class="checkRead">
         <form id="orderPartsForm">
             <button type="submit" class="d-none" id="filterSubmitBtn"></button>
@@ -239,8 +239,6 @@
     }
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "orders")
 
         let instance = $("#orderPartsList").apiator({
             type: "orders_items_wmeta",

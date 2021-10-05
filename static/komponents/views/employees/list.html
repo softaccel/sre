@@ -23,7 +23,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="employees" data-level="1">
     <div class="checkRead">
         <div class="card-body">
             <div>
@@ -114,8 +114,6 @@
     }
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "employees");
 
         let url = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=active=1";
         let dispAllUrl = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname";

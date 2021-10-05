@@ -23,7 +23,6 @@
 
 <script>
     function init_komponent(k) {
-
         let options = k.data;
         if(Object.keys(options).length===0) {
             komponentor.intent("/common/errormodal").send({body:"Invalid data to initialize <b>tabbed_modal</b>"});

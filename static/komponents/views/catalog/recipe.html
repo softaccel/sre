@@ -6,14 +6,15 @@
 
 </style>
 
-<div class="container-fluid">
-    <div id="newComponent">
-        <button type="button" aria-haspopup="true" aria-expanded="false" class="mb-2 mr-2 btn btn-primary checkUpdate" id="newComponentButton">Componenta noua</button>
-    </div>
+<div class="checkRequired" data-module="catalog" data-level="1">
+    <div class="container-fluid">
+        <div id="newComponent">
+            <button type="button" aria-haspopup="true" aria-expanded="false" class="mb-2 mr-2 btn btn-primary checkUpdate" id="newComponentButton">Componenta noua</button>
+        </div>
 
-    <div class="recipeTable">
-        <table class="table table-hover table-striped">
-            <thead class="thead-dark" id="productListHeader">
+        <div class="recipeTable">
+            <table class="table table-hover table-striped">
+                <thead class="thead-dark" id="productListHeader">
                 <tr>
                     <th class="align-top" style="width: 100px">Nr. crt.</th>
                     <th class="align-top">Nume</th>
@@ -21,8 +22,8 @@
                     <th class="align-top">Unitate</th>
                     <th class="align-top">Pret</th>
                 </tr>
-            </thead>
-            <tbody id="recipeList" data-resourcetype="collection">
+                </thead>
+                <tbody id="recipeList" data-resourcetype="collection">
                 <tr>
                     <td><%= id %></td>
                     <td><%= attributes.name %></td>
@@ -30,16 +31,15 @@
                     <td><%= attributes.unit %></td>
                     <td><%= attributes.unit_price ? attributes.unit_price : "-" %> <%= attributes.currency !== null ? attributes.currency : "" %></td>
                 </tr>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "catalog");
 
         let instance_recipes = $("#recipeList").apiator({url: apiRoot + "/recipes_expanded?filter=parent_id=" + k.data.instance.id, returninstance: true});
         let formData;

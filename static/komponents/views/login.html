@@ -82,24 +82,9 @@
                     return $("#failedLoginFeedback").empty().show().text("Server error: invalid token. Please contact administrator");
                 }
 
-                $.ajax({
-                    url: apiRoot + "/users/" + form.login.value + "/users_meta/",
-                    type: "GET",
-                    success: function(data) {
-                        let rights = {};
-                        data.data.forEach(function (item) {
-                            rights[item.attributes.meta_key.slice(7)] = JSON.parse(item.attributes.meta_val);
-                        });
-                        localStorage.setItem("rights", JSON.stringify(rights));
-
-                        let origin = (new URL(window.location.href)).searchParams.get("origin");
-                        if(origin) window.location.href = origin;
-                        else window.location.href = defaultAuthOkRedirect;
-                    },
-                    error: function(err) {
-                        $("#failedLoginFeedback").empty().show().text("Server error: could not retrieve user rights. Please contact administrator");
-                    }
-                });
+                let origin = (new URL(window.location.href)).searchParams.get("origin");
+                if(origin) window.location.href = origin;
+                else window.location.href = defaultAuthOkRedirect;
 
             })
             .fail(function (xhr) {

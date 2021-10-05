@@ -142,12 +142,12 @@
 <script>
     function init_komponent(k) {
 
-        let modules = ["orders","deliveries","timetracking","partners","employees","teams","jobs","units","catalog","users"];
-        let nodes = k.$el.find(".checkRead").parent();
-
-        $.map(nodes, function (value, index) {
-            checkUserRights($(value),modules[index]);
-        });
+        // let modules = ["orders","deliveries","timetracking","partners","employees","teams","jobs","units","catalog","users"];
+        // let nodes = k.$el.find(".checkRead").parent();
+        //
+        // $.map(nodes, function (value, index) {
+        //     checkUserRights($(value),modules[index]);
+        // });
 
         if ($("#personal>ul>li>a.readAllow").length===0) {
             $("#personal").addClass("d-none");

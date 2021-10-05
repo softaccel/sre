@@ -2,7 +2,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="partners" data-level="1">
     <div data-resourcetype="item" data-type="item" class="checkRead" id="partnerDetails">
         <form id="customerDataForm"></form>
         <div class="alert alert-success d-none" role="alert" id="insertPartnerSuccessAlert">
@@ -99,8 +99,6 @@
 <script>
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "partners");
 
         let util = k.data.instance.getUtilities();
         let form = $("#customerDataForm")[0];

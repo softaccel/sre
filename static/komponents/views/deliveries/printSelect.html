@@ -49,54 +49,54 @@
 
 <script>
 
-    function print_labels(data){
-        let seq_arr = data.seqList.split(",");
-        let str_seq = "item="+data.item+" AND delivery="+data.delivery + " AND (";
-        seq_arr.forEach(item => {
-            let aux_arr = item.split("-");
-            if (aux_arr.length === 1){
-                str_seq += "seqno=" + item+" OR ";
-            } else {
-                str_seq += "(seqno>=" + aux_arr[0]+" AND seqno<=" + aux_arr[1]+") OR ";
-            }
-        });
-        str_seq = str_seq.slice(0,-4);
-        str_seq += ")";
-
-        let query_uri = encodeURIComponent(str_seq);
-
-
-
-        // let url = "/deliveries_contents/?filter_advanced="+query_uri+"&include=delivery,item,item.order,item.order.orders_meta,item.cat_id,item.orders_items_meta,item.order.orders_items_labels";
-        let instance_labels = $("#tableForLabels").apiator({url: apiRoot + url_labels, resourcetype: "collection", returninstance: true});
-        instance_labels.loadFromRemote().then(function () {
-
-            let temp_arr = [];
-
-            util_labels.captureFormSubmit($form_labels,function (data){
-                $(".labelTextArea[name=label]").map(function (index, value){
-                    temp_arr.push($(value).val());
-                });
-                let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
-
-                let ajx = $.ajax({
-                    url: urlPrint,
-                    data: JSON.stringify({labels: temp_arr}),
-                    type: "POST",
-                    contentType: 'application/json',
-                });
-                instance_labels.items.forEach(function (item) {
-
-                    item.update({label_printed: 1});
-                });
-            });
-
-
-            $("#sendAjaxReqBtn").click();
-        });
-        let $form_labels = $("#textAreasForm");
-        let util_labels = instance_labels.getUtilities();
-    }
+    // function print_labels(data){
+    //     let seq_arr = data.seqList.split(",");
+    //     let str_seq = "item="+data.item+" AND delivery="+data.delivery + " AND (";
+    //     seq_arr.forEach(item => {
+    //         let aux_arr = item.split("-");
+    //         if (aux_arr.length === 1){
+    //             str_seq += "seqno=" + item+" OR ";
+    //         } else {
+    //             str_seq += "(seqno>=" + aux_arr[0]+" AND seqno<=" + aux_arr[1]+") OR ";
+    //         }
+    //     });
+    //     str_seq = str_seq.slice(0,-4);
+    //     str_seq += ")";
+    //
+    //     let query_uri = encodeURIComponent(str_seq);
+    //
+    //
+    //
+    //     // let url = "/deliveries_contents/?filter_advanced="+query_uri+"&include=delivery,item,item.order,item.order.orders_meta,item.cat_id,item.orders_items_meta,item.order.orders_items_labels";
+    //     let instance_labels = $("#tableForLabels").apiator({url: apiRoot + url_labels, resourcetype: "collection", returninstance: true});
+    //     instance_labels.loadFromRemote().then(function () {
+    //
+    //         let temp_arr = [];
+    //
+    //         util_labels.captureFormSubmit($form_labels,function (data){
+    //             $(".labelTextArea[name=label]").map(function (index, value){
+    //                 temp_arr.push($(value).val());
+    //             });
+    //             let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
+    //
+    //             let ajx = $.ajax({
+    //                 url: urlPrint,
+    //                 data: JSON.stringify({labels: temp_arr}),
+    //                 type: "POST",
+    //                 contentType: 'application/json',
+    //             });
+    //             instance_labels.items.forEach(function (item) {
+    //
+    //                 item.update({label_printed: 1});
+    //             });
+    //         });
+    //
+    //
+    //         $("#sendAjaxReqBtn").click();
+    //     });
+    //     let $form_labels = $("#textAreasForm");
+    //     let util_labels = instance_labels.getUtilities();
+    // }
 
     function init_komponent(k){
         let $modal = k.$el.appendTo("body")
@@ -118,6 +118,7 @@
         let instance_label = k.$el.find(".labelTextArea").apiator({url: apiRoot + "/settings/label_template.spaleck/", resourcetype: "item", returninstance: true});
 
         util.captureFormSubmit($form,function (data) {
+            console.log("printing.....")
             let seq_arr = data.seqList.split(",");
             let str_seq = "item="+data.item+" AND delivery="+data.delivery + " AND (";
             seq_arr.forEach(item => {
@@ -134,7 +135,7 @@
             let query_uri = encodeURIComponent(str_seq);
 
             let url_labels = "/deliveries_contents/?filter_advanced[orders_meta]=meta_key=%22K.F.E_BelegKopf.BelegNummer%22&filter_advanced[orders_items_meta]=(order_item_id%3D" + data.item + ")%20AND%20(meta_key=%22P.A.P_ZeichnungSpr.Zeichnung%22%20OR%20meta_key=%22P.A.E_BelegPos.Artikel%22)&include=delivery,item,item.delivery_items_aggregated,item.order,item.order.orders_meta,item.cat_id,item.orders_items_meta,item.order.orders_items_labels,item.order.doc_id&filter_advanced[deliveries_contents]=" + query_uri + "&filter_advanced[delivery_items_aggregated]=delivery=" + data.delivery;
-            console.log("yohoho "+ apiRoot + url_labels)
+            console.log("yohoho "+ apiRoot + url_labels);
 
             let instance_labels = $("#tableForLabels").apiator({url: apiRoot + url_labels, resourcetype: "collection", returninstance: true});
             console.log(instance_labels);
@@ -155,9 +156,11 @@
                         contentType: 'application/json',
                     }).done(function (xhr) {
                         $modal.modal("hide");
-                    }).fail(function(data){
+                    }).fail(function(jqXHR){
+                        let errMsg = jqXHR.status===404 ? "Imprimanta nu este configurata corect." : jqXHR.responseText;
+
                         komponentor.intent("/common/errormodal").data({
-                            body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                            body: "A aparut o eroare:<pre>"+errMsg+"</pre>"
                         }).send();
                     });
 

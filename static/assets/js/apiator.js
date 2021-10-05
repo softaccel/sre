@@ -24,7 +24,7 @@
 
 		// retrieve self URL
 		if(data.hasOwnProperty("links") && data.links && data.links.hasOwnProperty("self"))
-			obj.url = data.links.self;
+			obj.url = URL(data.links.self);
 
 		// fill info
 		let jsonApiItem = data.hasOwnProperty("data")?data.data:data;
@@ -762,7 +762,7 @@
 						}
 
 
-						console.log("update " + relName);
+						// console.log("update " + relName);
 					}
 					// if(this.relationships[rel])
 				}, this);
@@ -798,7 +798,7 @@
 		};
 
 		_item.remove = function() {
-			console.log("removing");
+			// console.log("removing");
 			for(let i=_item.views.length-1 ; i>=0 ; i--) {
 				_item.views[i].remove();
 			}
@@ -806,7 +806,7 @@
 			if(!_item.collection) {
 				return;
 			}
-			console.log(_item,_item.collection,_item.collection.children);
+			// console.log(_item,_item.collection,_item.collection.children);
 			for(i=0;i<_item.collection.items.length;i++) {
 				if(_item.collection.items[i].id===_item.id) {
 					_item.collection.items.splice(i,1);
@@ -825,7 +825,7 @@
 
 
 				function onDeleteFail(resp) {
-					console.log("fail",resp);
+					// console.log("fail",resp);
 					reject(resp);
 				}
 
@@ -838,8 +838,7 @@
 						}
 
 					)
-					.catch(onDeleteFail)
-					.finally(()=>{console.log("finaly",arguments)});
+					.catch(reject);
 			});
 
 		};
@@ -906,7 +905,7 @@
 						$(form.elements[relName]).val(vals);
 					}
 					else {
-						console.log("set ",relName,instance.relationships[relName]);
+						// console.log("set ",relName,instance.relationships[relName]);
 						$(form.elements[relName]).val(instance.relationships[relName].id);
 					}
 
@@ -1340,6 +1339,7 @@
 					throw("No valid URL provided");
 				}
 
+				console.log(_collection.url);
 
 				if(typeof _collection.offset!== "undefined" && _collection.offset!==null) {
 					_collection.url.parameters["page["+_collection.type+"][offset]"] = _collection.offset;
@@ -1678,6 +1678,10 @@
 		// already defined =>return
 		if (this.data("instance") !== undefined) {
 			let instance = this.data("instance");
+
+			if(options.url) {
+				options.url = URL(options.url);
+			}
 
 			Object.assign(instance,parseOptions(options));
 
@@ -2182,21 +2186,21 @@
 				return;
 			}
 
-			let first = buttons.first.clone(true).attr("title", 0).addClass("disabled").appendTo(_paging.el);
-			let prev = buttons.prev.clone(true).attr("title", iniOffset - pageSize).addClass("disabled").appendTo(_paging.el);
+			let first = buttons.first.clone(true).attr("title", 0);
+			let prev = buttons.prev.clone(true).attr("title", iniOffset - pageSize);
 
 			if(iniOffset>0) {
 				first.on("click", function () {
 					// _paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = 0;
 					_paging.collection.setOffset(0);
 					_paging.collection.loadFromRemote();
-				}).removeClass("disabled");
+				}).appendTo(_paging.el);
 
 				prev.on("click", function () {
 					// _paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = iniOffset - pageSize;
 					_paging.collection.setOffset(iniOffset-pageSize);
 					_paging.collection.loadFromRemote();
-				}).removeClass("disabled");
+				}).appendTo(_paging.el);
 			}
 
 			let lowerLimit = iniOffset / pageSize - Math.floor(pagesToShow/2);
@@ -2218,19 +2222,18 @@
 			}
 
 			let nxtOffset = iniOffset + pageSize;
-			console.log(nxtOffset)
-			let next = buttons.next.clone(true).attr("title", nxtOffset).addClass("disabled").appendTo(_paging.el);
+			let next = buttons.next.clone(true).attr("title", nxtOffset);
 
 			let lastPageOffset = (Math.ceil(total/pageSize)-1)*pageSize;
-			let last = buttons.last.clone(true).attr("title", lastPageOffset).addClass("disabled").appendTo(_paging.el);
+			let last = buttons.last.clone(true).attr("title", lastPageOffset);
 			if(iniOffset + pageSize <= total) {
-				next.removeClass("disabled").on("click", function () {
+				next.appendTo(_paging.el).on("click", function () {
 					_paging.collection.setOffset(iniOffset+pageSize);
 					// _paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = iniOffset+pageSize;
 					_paging.collection.loadFromRemote();
 				});
 
-				last.removeClass("disabled").on("click", function () {
+				last.appendTo(_paging.el).on("click", function () {
 					// _paging.collection.url.parameters["page["+_paging.collection.type+"][offset]"] = lastPageOffset;
 					_paging.collection.setOffset(lastPageOffset);
 

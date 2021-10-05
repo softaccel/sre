@@ -21,7 +21,7 @@
 
 </style>
 
-<div>
+<div class="checkRequired" data-module="orders" data-level="1">
     <div class="checkRead">
         <div class="content">
 
@@ -191,9 +191,6 @@
     }
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "orders");
-        // k.$el.find("*").data("komponent",k);
 
         k.$el.addClass(k.data.instance.attributes.state);
 

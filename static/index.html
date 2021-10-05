@@ -102,50 +102,6 @@
      *
      * Evident "denumire_environment" trebuie sa se regaseasca in env_config de mai jos
      */
-    let env_config = {
-        "staging": {
-            backendUrl: '/spaleck/be',
-            apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
-            authUrl: '/spaleck/be/main/auth/login',
-            posPrintUrl: '/spaleck/be/main/POS/print',
-            fileApiUrl: 'http://172.16.20.15/FileApi',
-
-        },
-        "devel": {
-            backendUrl: '/spaleck/be',
-            apiRoot: 'http://172.16.20.15/dbapi/v2/spaleck',
-            authUrl: '/spaleck/be/main/auth/login',
-            posPrintUrl: '/spaleck/be/main/POS/print',
-            fileApiUrl: 'http://172.16.20.15/FileApi',
-
-        },
-        "production": {
-            backendUrl: '/spaleck/be',
-            apiRoot: '/dbapi/v2/spaleck',
-            authUrl: '/spaleck/be/main/auth/login',
-            fileApiUrl: '/FileApi',
-
-        },
-        "sergiu_devel": {
-            backendUrl: '/spaleck/be',
-            apiRoot: 'http://localhost/dbapi/v2/spaleck',
-            authUrl: '/spaleck/be/main/auth/login',
-            posPrintUrl: '/spaleck/be/main/POS/print',
-            fileApiUrl: 'http://nemo1.softaccel.net/FileApi',
-
-        },
-        "frominternet": {
-            backendUrl: '/spaleck/be',
-            apiRoot: 'https://nemo1.softaccel.net/dbapi/v2/spaleck',
-            authUrl: '/spaleck/be/main/auth/login',
-            posPrintUrl: '/spaleck/be/main/POS/print',
-            fileApiUrl: 'http://172.16.20.15/FileApi',
-        }
-    };
-
-
-
-
 
     const localStorageLabel = "spaleck";
     // let env = localStorage.getItem(localStorageLabel+".env");
@@ -160,6 +116,7 @@
 
 </script>
 <script>
+
     function logout() {
         userData = null;
         localData.jwt  = null;
@@ -209,72 +166,11 @@
         $($(src).data("connected")).prop("checked",(tmp.length===tmp.filter(".selected").length));
     }
 
-    function checkUserRights(el, modules) {
-        console.log(modules);
-
-        let checkRights = function (module) {
-            let rights = allRights[module];
-            if (rights.indexOf("r") === -1) {
-                // todo: show not enough rights
-                return;
-            }
-            el.find(".module-"+module)
-
-            el.find(".checkRead").each(function () {
-                // $(this).removeClass("checkRead");
-                $(this).addClass("readAllow");
-            });
-
-            if (rights.indexOf("c") !== -1) {
-                el.find(".checkCreate").each(function () {
-                    $(this).addClass("createAllow");
-                });
-            }
-
-            if (rights.indexOf("u") !== -1) {
-                el.find(".checkUpdate").each(function () {
-                    $(this).addClass("updateAllow");
-                });
-            }
-
-            if (rights.indexOf("d") !== -1) {
-                el.find(".checkDelete").each(function () {
-                    $(this).addClass("deleteAllow");
-                });
-            }
-        };
-
-        let allRights = JSON.parse(localStorage.getItem("rights"));
-
-        if (typeof modules === "string") {
-            checkRights(modules);
-            return;
-        }
-        if(typeof modules==="undefined") {
-            console.log("undefine modules",el);
-            return;
-        }
-
-        if(typeof modules==="object") {
-            console.log("invalid modules",el);
-            return;
-        }
-
-
-
-        modules.forEach(function (module) {
-            checkRights(module);
-        });
-
-    }
-
     // let localData,userData;
     let [localData,userData] = checkAuth();
 
-    let url = "/views/app";
-    if(!userData) {
-        url = "/views/login";
-    }
+
+
     autoload = false;
     let backendUrl, apiRoot, authUrl, fileApiUrl;
 
@@ -308,6 +204,10 @@
         authUrl = environments[active].authUrl;
         fileApiUrl = environments[active].fileApiUrl;
 
+        let url = "/views/app";
+        if(!userData) {
+            url = "/views/login";
+        }
         $("#page").komponent({url:url,replace:false}).finally(function () {
             $(".pageOverlay").remove();
         });
@@ -316,26 +216,21 @@
             alert("Failed to load configuration");
         });
 
-
-</script>
-<script>
-
-
 </script>
 
 <style>
-    .checkRead {
-        display: none;
-    }
-    .checkCreate {
-        display: none;
-    }
-    .checkUpdate {
-        display: none;
-    }
-    .checkDelete {
-        display: none;
-    }
+    /*.checkRead {*/
+    /*    display: none;*/
+    /*}*/
+    /*.checkCreate {*/
+    /*    display: none;*/
+    /*}*/
+    /*.checkUpdate {*/
+    /*    display: none;*/
+    /*}*/
+    /*.checkDelete {*/
+    /*    display: none;*/
+    /*}*/
 
     .checkRead.readAllow {
         display: block;
@@ -351,11 +246,6 @@
     }
 
 </style>
-<script>
-
-
-
-</script>
 
 </body>
 </html>

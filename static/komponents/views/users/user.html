@@ -48,85 +48,87 @@
 
 </style>
 
-<div class="modal" id="userModal">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">
-                    Utilizator
+<div class="checkRequired" data-module="users" data-level="1">
+    <div class="modal" id="userModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        Utilizator
+                    </div>
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a data-toggle="tab" href="#userSummary" class="nav-link" id="userSummeryTab">Sumar</a>
+                        </li>
+                        <li class="nav-item checkUpdate">
+                            <a data-toggle="tab" href="#userRightsPanel" class="nav-link" id="userRightsTab">Drepturi de access</a>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="nav nav-pills">
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#userSummary" class="nav-link" id="userSummeryTab">Sumar</a>
-                    </li>
-                    <li class="nav-item checkUpdate">
-                        <a data-toggle="tab" href="#userRightsPanel" class="nav-link" id="userRightsTab">Drepturi de access</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="modal-body bg-light">
-                <div class="tab-content">
-                    <div class="tab-pane fade" id="userSummary">
-                        <form id="userDetailsForm">
-                            <div id="userDetails">
-                                <div class="row hide-on-edit">
-                                    <div class="col-3">login</div>
-                                    <div class="col-9"><%= attributes.userid %></div>
-                                    <div class="col-9"><input name="userid" class="form-control form-control-sm" type="text"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Nume</div>
-                                    <div class="col-9"><%= attributes.lname %></div>
-                                    <div class="col-9"><input name="lname" class="form-control form-control-sm" type="text"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Prenume</div>
-                                    <div class="col-9"><%= attributes.fname %></div>
-                                    <div class="col-9"><input name="fname" class="form-control form-control-sm" type="text"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Email</div>
-                                    <div class="col-1"><%= attributes.email %></div>
-                                    <div class="col-9"><input name="email" class="form-control form-control-sm" type="text"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Status</div>
-                                    <div class="col-1"><%= attributes.active %></div>
-                                    <div class="col-9">
-                                        <label></label>
-                                        <select id="userStatusSelect" class="form-control form-control-sm custom-select custom-select-sm" name="active" style="width: 100%">
-                                            <option value="0">Inactiv</option>
-                                            <option value="1">Activ</option>
-                                        </select>
+                <div class="modal-body bg-light">
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="userSummary">
+                            <form id="userDetailsForm">
+                                <div id="userDetails">
+                                    <div class="row hide-on-edit">
+                                        <div class="col-3">login</div>
+                                        <div class="col-9"><%= attributes.userid %></div>
+                                        <div class="col-9"><input name="userid" class="form-control form-control-sm" type="text"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">Nume</div>
+                                        <div class="col-9"><%= attributes.lname %></div>
+                                        <div class="col-9"><input name="lname" class="form-control form-control-sm" type="text"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">Prenume</div>
+                                        <div class="col-9"><%= attributes.fname %></div>
+                                        <div class="col-9"><input name="fname" class="form-control form-control-sm" type="text"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">Email</div>
+                                        <div class="col-1"><%= attributes.email %></div>
+                                        <div class="col-9"><input name="email" class="form-control form-control-sm" type="text"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">Status</div>
+                                        <div class="col-1"><%= attributes.active %></div>
+                                        <div class="col-9">
+                                            <label></label>
+                                            <select id="userStatusSelect" class="form-control form-control-sm custom-select custom-select-sm" name="active" style="width: 100%">
+                                                <option value="0">Inactiv</option>
+                                                <option value="1">Activ</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row hide-on-view">
+                                        <div class="col-3">Parola</div>
+                                        <div class="col-1"></div>
+                                        <div class="col-9"><input name="password" class="form-control form-control-sm" type="text"></div>
                                     </div>
                                 </div>
-                                <div class="row hide-on-view">
-                                    <div class="col-3">Parola</div>
-                                    <div class="col-1"></div>
-                                    <div class="col-9"><input name="password" class="form-control form-control-sm" type="text"></div>
+                                <div class="mt-5">
+                                    <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
+                                    <button class="btn btn-secondary btn-save" type="button" id="cancelButton">Renunta</button>
+                                    <div class="row">
+                                        &nbsp;
+                                        <button class="btn btn-success btn-edit checkUpdate" type="button">Editeaza</button>
+                                        &nbsp;
+                                        <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" type="button">Sterge</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="mt-5">
-                                <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
-                                <button class="btn btn-secondary btn-save" type="button" id="cancelButton">Renunta</button>
-                                <div class="row">
-                                    &nbsp;
-                                    <button class="btn btn-success btn-edit checkUpdate" type="button">Editeaza</button>
-                                    &nbsp;
-                                    <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" type="button">Sterge</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                            </form>
+                        </div>
 
-                    <div class="tab-pane fade" id="userRightsPanel">
-                        <div is="komponent" data-url="/views/users/userRights" id="userRights"></div>
-                    </div>
+                        <div class="tab-pane fade" id="userRightsPanel">
+                            <div is="komponent" data-url="/views/users/userRights" id="userRights"></div>
+                        </div>
 
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
+                </div>
             </div>
         </div>
     </div>
@@ -135,8 +137,6 @@
 <script>
 
     function init_komponent(k) {
-
-        checkUserRights(k.$el, "users");
 
         function editMode() {
             $('#userDetailsForm').addClass('editMode');

@@ -57,7 +57,7 @@ class Auth extends CI_Controller
 
 		curl_setopt($ch, CURLOPT_URL,$url);
 		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode([
+		$reqParams = [
 			[
 				"name"=>"uid",
 				"dir"=>"in",
@@ -72,31 +72,31 @@ class Auth extends CI_Controller
 				"name"=>"cnt",
 				"dir"=>"out"
 			]
-		]));
+		];
+		curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($reqParams));
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$server_output = curl_exec($ch);
 		curl_close ($ch);
-		log_message("debug",$server_output);
 		$res = json_decode($server_output);
 		if($res->cnt!=="1") {
+			log_message("debug",$server_output);
+			log_message("debug",$url);
+			log_message("debug",json_encode($reqParams));
 			HttpResp::not_authorized();
 		}
 
 		// add include rights
-		$data = json_decode(file_get_contents($this->config->item("dbapi_url")."/users/$login?include="));
+		$data = json_decode(file_get_contents($this->config->item("dbapi_url")."/users/$login"));
 
 		$record = $data->data;
 
-//		$grps = [];
-//		foreach ($record->relationships->groups->data as $grp) {
-//			$grps[] = $grp->id;
-//		}
+
 		$this->load->config("jwt");
 		$jwtPayload = [
 			"sub"=>$login,
 			"unm"=>$record->attributes->fname,
-//			"grps"=>$grps,
+			"level"=>$record->attributes->level,
 			"exp"=>time()+$this->config->item("jwt_exp")
 		];
 
