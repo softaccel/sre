@@ -238,6 +238,7 @@
                 let expiryTime = new Date(localStorage.getItem("dataExpires"));
                 if (expiryTime === null || expiryTime < new Date() ||
                     allRights === null ||
+                    allRights === {} ||
                     allRights === [] ||
                     localStorage.getItem("activeModules") === null ||
                     localStorage.getItem("activeModules") === "" ||
