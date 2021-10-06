@@ -120,8 +120,6 @@
             "Stk": "buc"
         };
 
-        let orderMeta;
-
         let $items = k.$el.find("[data-name=orderItems]");
         let templateTxt = $items.html().replace(/&lt;/gi, '<').replace(/&gt;/gi, ">");
         let template;
@@ -136,8 +134,6 @@
         });
         let $orderButton = k.$el.find("[data-name=addOrderParts]");
         let $uploadButton = k.$el.find("[data-name=uploadButton]");
-
-        let orders = k.data.instance;
 
         function publishItems(response) {
             let total = 0;
@@ -272,19 +268,40 @@
                 total += data.qty*data.unit_price;
             });
 
-            let insertCopy = {...orders.insertUrl};
-            insertCopy.path = insertCopy.path.replace("orders_items_wmeta", "orders_items");
-            orders.insertUrl = insertCopy;
+            let reqData = {
+                data: []
+            };
 
-            orderParts.forEach(function (part) {
-                orders.createItem(part)
-                    .then(function (newPart) {
-                        console.log(newPart);
-                        modal.modal("hide");
-                    })
-                    .catch(function (resp) {
-                        komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + resp.jqXHR.responseText + "</pre>"}).send();
-                    })
+            for (let part of orderParts) {
+                let reqPart = {attributes: {}, relationships: {}};
+                let reqMeta = {orders_items_meta : {data: []}};
+                for (let partMeta of part.orders_items_meta) {
+                    reqMeta.orders_items_meta.data.push(partMeta);
+                }
+                reqPart.relationships = reqMeta;
+                delete part.orders_items_meta;
+                reqPart.attributes = {...part};
+                reqData.data.push(reqPart);
+            }
+
+            let reqUrl = "";
+            with (k.data.instance.insertUrl) {
+                reqUrl = protocol + "://" + fqdn + "/" + path.replace("orders_items_wmeta", "orders_items");
+            }
+
+            $.ajax({
+                url : reqUrl,
+                type : 'POST',
+                data : JSON.stringify(reqData),
+                processData: false,
+                contentType: "application/vnd.api+json",
+                success : function(data) {
+                    k.data.instance.loadFromRemote();
+                    modal.modal("hide");
+                },
+                fail: function (data) {
+                    console.log(data);
+                }
             });
 
         }
