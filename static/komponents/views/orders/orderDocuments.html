@@ -146,7 +146,6 @@
                         let docList = JSON.parse(instance.attributes.meta_val);
                         let docIdx = $($(src).parents("li")[0]).data("index");
                         docList.splice(docIdx, 1);
-                        console.log(docList);
 
                         instance.update({meta_val:JSON.stringify(docList)})
                         .catch(function(data) {
@@ -187,7 +186,6 @@
                     let documentList = instance.items.length ? JSON.parse(instance.items[0].attributes.meta_val) : [];
 
                     data.data.forEach(function (doc) {
-                        console.log("doc", doc)
                         documentList.push({
                             link: fileApiUrl + "/files/" + doc.id,
                             lbl: doc.attributes.original_name
@@ -213,8 +211,6 @@
         let certificate = k.$el.find("#documentsCertificate").apiator({url: url.replace("facturi", "certificate"), returninstance:true});
         let fise = k.$el.find("#documentsFise").apiator({url: url.replace("facturi", "fise"), returninstance:true});
         let altele = k.$el.find("#documentsOther").apiator({url: url.replace("facturi", "other"), returninstance:true});
-
-        console.log("facturi", facturi);
 
         const util = facturi.getUtilities();
 

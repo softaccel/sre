@@ -6,8 +6,8 @@
 
 </style>
 
-<div class="checkRequired" data-module="teams" data-level="1">
-    <div class="modal">
+<div class="checkRequired modal" data-module="teams" data-level="1">
+    <div class="">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -55,6 +55,7 @@
         let $modal =  k.$el.appendTo("body").filter(".modal").modal().on("hidden.bs.modal",function (event) {
             k.$el.remove();
         });
+
         k.data.instance.bindView($modal.find('.modal-title')).loadFromRemote();
 
         $("#teamMembersList").komponent({data: k.data});
