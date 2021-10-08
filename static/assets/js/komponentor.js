@@ -119,7 +119,7 @@
      */
     function renderKomponent(k,data) {
 
-        console.log("88888888888888888",k);
+        // console.log("88888888888888888",k);
         let dummy = $("<div>").appendTo("body");
 
         // let tpl = _.template(data);

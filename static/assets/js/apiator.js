@@ -1664,20 +1664,19 @@
 		if(typeof opts==="string") {
 			opts = {
 				url: opts,
-				dataBindings: {}
 			}
 		}
 
 		// extract data attributes from html element and assign them to
-		let options = Object.assign({}, this.data());
+		let options = Object.assign({dataBindings: {}}, this.data());
 
 		// assign options passed as
 		Object.assign(options, parseOptions(opts));
 
-		// already defined =>return
-		for (const [key, value] of this.data()) {
-			if (typeof value==="object") {
-				options.dataBindings[key] = value;
+		let midata = this.data();
+		for (let key in midata) {
+			if (typeof midata[key]==="object" && key!=="instance") {
+				options.dataBindings[key] = midata[key];
 			}
 		}
 
