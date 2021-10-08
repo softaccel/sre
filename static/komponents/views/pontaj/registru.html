@@ -302,7 +302,6 @@
         komponentor.intent('/views/orders/order')
             .data({
                 orderId: orderId,
-                source: "pontaj"
             })
             .send()
             .finally(function () {
@@ -590,8 +589,6 @@
         k.$el.find("#dateRange").daterangepicker({showDropdowns:true,startDate:"05/01/2021"})
             .on("apply.daterangepicker",function (e) {
                 let[start,stop] = $(e.target).val().split(" - ");
-                // console.log(e,start,stop);
-                // return;
                 start = new Date(start);
                 stop = new Date(stop);
                 stop.setDate(stop.getDate()+1);
