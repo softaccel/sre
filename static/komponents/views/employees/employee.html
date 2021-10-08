@@ -50,7 +50,7 @@
                     <li class="nav-item">
                         <a data-toggle="tab" href="#detaliiPanel" class="nav-link active">Sumar</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="pontajTabFromEmployee">
                         <a data-toggle="tab" href="#pontajPanel" class="nav-link">Pontaj</a>
                     </li>
                     <li class="nav-item">
@@ -82,6 +82,8 @@
 
     function init_komponent(k) {
 
+        console.log(k.data)
+
         let $modal = k.$el.appendTo("body")
             .filter(".modal")
             .on("hidden.bs.modal",function () {
@@ -100,7 +102,14 @@
             $modal.modal("hide");
         };
 
-        $("#employeeTimetracking").komponent({data:k.data,parent:k});
+        if (k.data.source && (k.data.source === "pontaj" || k.data.source === "teamlead")){
+            $("#pontajTabFromEmployee").remove();
+        } else {
+            if (k.data.emplId) {
+                console.log("emplid");
+            }
+            $("#employeeTimetracking").komponent({data:k.data,parent:k});
+        }
 
         console.log("k.data din employee", k.data);
         $("#allocatedProjects").komponent({data:k.data,parent:k});
