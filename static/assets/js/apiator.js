@@ -237,6 +237,7 @@
 			return options;
 		}
 
+		console.log(options);
 		throw ["Invalid options",options];
 	}
 
@@ -547,7 +548,6 @@
 		_item.bindView = function(view) {
 
 			view = ItemView(view);
-			// console.log("55555555555555555",view);
 
 			let bound = false;
 			_item.views.forEach(function (v) {
@@ -562,6 +562,7 @@
 			}
 			view.item = _item;
 			_item.views.push(view);
+			view.render();
 			return this;
 		};
 

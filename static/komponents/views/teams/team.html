@@ -55,12 +55,14 @@
         let $modal =  k.$el.appendTo("body").filter(".modal").modal().on("hidden.bs.modal",function (event) {
             k.$el.remove();
         });
+        console.log("2222222222222222",k);
 
         k.data.instance.bindView($modal.find('.modal-title')).loadFromRemote();
 
         $("#teamMembersList").komponent({data: k.data});
         $("#editTeam").komponent({data: k.data});
         $("#teamOrders").komponent({data: k.data});
+
     }
 
 </script>

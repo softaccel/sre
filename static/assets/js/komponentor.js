@@ -23,7 +23,7 @@
         return res;
     })();
 
-    window.onhashchange = function (el) {
+    window.onhashchange = function () {
         window.location.reload();
     };
 
@@ -65,10 +65,8 @@
     };
 
     /**
-     * creates a Komponent
-     * @param $el
-     * @param parent
-     * @returns {null|{parent: *, $el: *}}
+     * @param options
+     * @returns {Promise<unknown>}
      * @constructor
      */
     function Komponent(options) {
@@ -104,7 +102,7 @@
 
     String.prototype.hashCode = function()
     {
-        var hash = 0, i, chr;
+        let hash = 0, i, chr;
         if (this.length === 0) return hash;
         for (i = 0; i < this.length; i++) {
             chr   = this.charCodeAt(i);
@@ -116,9 +114,8 @@
 
     /**
      *
+     * @param k
      * @param data
-     * @param options
-     * @returns {Promise<unknown>}
      */
     function renderKomponent(k,data) {
 
@@ -130,17 +127,19 @@
         $renderedKomponent = $renderedKomponent.remove();
         dummy.remove();
 
+        console.log("$renderedKomponent", $renderedKomponent);
+
         let userId = (userData && userData.sub) ? userData.sub : null;
         let userLvl = (userData && userData.level) ? userData.level : null;
         let allRights = localStorage.getItem("rights") ? JSON.parse(localStorage.getItem("rights")) : null;
 
-        let checkRights = function (module) {
+        function checkRights (module) {
             let rights = allRights[module];
             if (rights.indexOf("r") === -1) {
                 // todo: show not enough rights
                 return;
             }
-            $renderedKomponent.find(".module-"+module)
+            $renderedKomponent.find(".module-"+module);
 
             $renderedKomponent.find(".checkRead").each(function () {
                 $(this).addClass("readAllow");
@@ -163,9 +162,9 @@
                     $(this).addClass("deleteAllow");
                 });
             }
-        };
+        }
 
-        let getUserRights = function () {
+        function getUserRights () {
             return new Promise((resolve, reject) => {
                 $.ajax({
                     url: apiRoot + "/users/" + userId + "/users_meta/?filter=meta_key=~rights.",
@@ -186,7 +185,7 @@
             });
         }
 
-        let getExpiryTime = function () {
+        function getExpiryTime () {
             return new Promise((resolve, reject) => {
                 $.ajax({
                     url: apiRoot + "/settings/?filter=key=data_expiry_time",
@@ -206,7 +205,7 @@
             })
         }
 
-        let getActiveModules = function () {
+        function getActiveModules () {
             return new Promise((resolve, reject) => {
                 $.ajax({
                     url: apiRoot + "/settings/?filter=key=~module.",
@@ -228,20 +227,21 @@
             });
         }
 
-        let getAll = function () {
+        function getAll () {
             return new Promise(((resolve, reject) => {
                 if (userId === null)
                     resolve();
 
                 let expiryTime = new Date(localStorage.getItem("dataExpires"));
-                if (expiryTime === null || expiryTime < new Date() ||
-                    allRights === null ||
-                    allRights === {} ||
-                    allRights === [] ||
-                    localStorage.getItem("activeModules") === null ||
-                    localStorage.getItem("activeModules") === "" ||
-                    localStorage.getItem("dataExpires") === null ||
-                    localStorage.getItem("dataExpires") === "") {
+                if (expiryTime === null ||
+                        expiryTime < new Date() ||
+                        allRights === null ||
+                        (typeof allRights==="object" && allRights.constructor===Object && Object.getOwnPropertyNames(allRights).length===0) ||
+                        (typeof allRights==="object" && allRights.constructor===Array && allRights.length===0) ||
+                        localStorage.getItem("activeModules") === null ||
+                        localStorage.getItem("activeModules") === "" ||
+                        localStorage.getItem("dataExpires") === null ||
+                        localStorage.getItem("dataExpires") === "") {
 
                     getUserRights()
                     .then(function () {
@@ -259,7 +259,7 @@
             }));
         }
 
-        let checkAccess = function () {
+        function checkAccess() {
             return new Promise((resolve, reject) => {
                 if (userId === null)
                     resolve(true);
@@ -285,7 +285,7 @@
             });
         }
 
-        let initKomponent = function () {
+        function initKomponent () {
             return new Promise(((resolve, reject) => {
                 let initFunc = typeof init_komponent==="function" ? init_komponent : new Function();
                 delete init_komponent;

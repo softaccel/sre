@@ -126,8 +126,6 @@
 
     function init_komponent(k,d) {
 
-        k.$el.addClass("doc_id" + k.data.instance.relationships.doc_id.id);
-
         k.$el.appendTo("body");
 
         $(k.$el.filter(".modal"))
@@ -136,6 +134,8 @@
                 k.$el.remove();
             });
 
+
+
         if(!k.data.instance && !k.data.orderId) {
             return;
         }
@@ -143,6 +143,7 @@
         if(k.data.instance) {
             load_order();
         }
+
 
         if(!k.data.instance && k.data.orderId) {
             k.data.instance = $("<span>").apiator({resourcetype:"item",returninstance:true});
@@ -157,6 +158,9 @@
         }
 
         function load_order() {
+
+            k.$el.addClass("doc_id" + k.data.instance.relationships.doc_id.id);
+
             k.$el.appendTo("body");
 
             $(k.$el.filter("#order_details_modal"))
