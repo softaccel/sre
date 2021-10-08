@@ -3,7 +3,6 @@
         display: none;
     }
 
-    /*.order-summary-table span.display{}*/
     .editMode span.display {
         display: none;
     }
@@ -164,11 +163,13 @@
                 </tr>
                 <tr class="notA000">
                     <td>Timp estimat (ore)</td>
-                    <td id="ordersMetaEstimatedWork">
-                        <span id="estTimeText" class="display"></span>
+                    <% let id_est_work = relationships.orders_meta.map(function(item) { if (item.attributes.meta_key === "estimated_work") {return item.id;}}).find(function(item) {if (item) {return item;}}); %>
+                    <% let est_work_specific = relationships.orders_meta.map(function(item) { if (item.attributes.meta_key === "estimated_work") {return item.attributes.meta_val;}}).find(function(item) {if (item) {return item;}}); %>
+                    <td id="ordersMetaEstimatedWork" name="<%= id_est_work %>">
+                        <span id="estTimeText" class="display"><%= est_work_specific ? est_work_specific + " h" : "-" %></span>
                         <span class="edit" style="min-width: 200px">
-                        <input type="text" id="estTimeChange" class="form-control form-control-sm" value="">
-                    </span>
+                            <input type="text" id="estTimeChange" class="form-control form-control-sm" value="<%= est_work_specific ? est_work_specific : '' %>">
+                        </span>
                         <div class="hide-no-offer">
                             <button class="btn btn-secondary notA000 float-right btn-sm edit checkUpdate"
                                     onClick="editEstTimeChange(this)"><i class="fa fa-edit"></i></button>
@@ -244,24 +245,8 @@
 
 <script>
 
-    function updateMetaVal(instance) {
-        let id_est_work_arr = instance.relationships.orders_meta.map(item => {
-            if (item.attributes.meta_key === "estimated_work") return item.id
-        });
-        let estimated_work_arr = instance.relationships.orders_meta.map(item => {
-            if (item.attributes.meta_key === "estimated_work") return item.attributes.meta_val
-        });
-        let est_work_specific = estimated_work_arr.find(item => {
-            if (item) return item
-        });
-        let id_est_work = id_est_work_arr.find(item => {
-            if (item) return item
-        });
-
-        $("#ordersMetaEstimatedWork").attr("name", id_est_work);
-        $("#estTimeText").text(est_work_specific ? est_work_specific + " h" : "-");
-        $("#estTimeChange").val(est_work_specific ? est_work_specific : "");
-    }
+    // function updateMetaVal(instance) {
+    // }
 
     function editOrderValueChange(src) {
         $(src).parent().parent().addClass('editMode');
@@ -274,7 +259,7 @@
         $(src).parent().removeClass('editMode');
         $(src).data("instance").update({order_value: $order_value.val()})
             .then(function (a) {
-                updateMetaVal($(src).data("instance"));
+                // updateMetaVal($(src).data("instance"));
             })
             .catch(function (data) {
                 komponentor.intent("/common/errormodal").data({
@@ -294,8 +279,8 @@
 
         $(src).parent().removeClass('editMode');
         $(src).data("instance").update({calculated_value: $calcPrice.val()}).then(function (a) {
-            console.log(a);
-            updateMetaVal($(src).data("instance"));
+            // console.log(a);
+            // updateMetaVal($(src).data("instance"));
         })
             .catch(function (data) {
                 komponentor.intent("/common/errormodal").data({
@@ -310,7 +295,7 @@
 
     function saveEstTimeChange(src) {
         let est_time_id = $("#ordersMetaEstimatedWork").attr("name");
-        console.log("asdasd" + est_time_id);
+        // console.log("asdasd" + est_time_id);
 
         let instance = $("<span>").apiator({
             resourcetype: "item",
@@ -323,7 +308,7 @@
 
         let data = {meta_val: new_est_time};
 
-        console.log(data);
+        // console.log(data);
 
         instance.update(data)
             .then(function (data) {
@@ -335,7 +320,7 @@
                 }).send();
             })
 
-        console.log("asdasd ", new_est_time);
+        // console.log("asdasd ", new_est_time);
     }
 
     function goToPartner(src) {
@@ -357,7 +342,7 @@
 
         $(src).parent().removeClass('editMode');
         $(src).data("instance").update({label: $denum.val()}).then(function (a) {
-            updateMetaVal($(src).data("instance"));
+            // updateMetaVal($(src).data("instance"));
         })
             .catch(function (data) {
                 komponentor.intent("/common/errormodal").data({
@@ -375,7 +360,7 @@
         $(src).parent().removeClass('editMode');
         let $teamalloc = $("#teamAllocation");
         $(src).data("instance").update({team: $teamalloc.val()}).then(function (a) {
-            updateMetaVal($(src).data("instance"));
+            // updateMetaVal($(src).data("instance"));
         })
             .catch(function (data) {
                 komponentor.intent("/common/errormodal").data({
@@ -400,7 +385,7 @@
                     callback: function () {
                         instance.update({state: new_state})
                             .then(function () {
-                                console.log(old_state + " sadasdad " + new_state);
+                                // console.log(old_state + " sadasdad " + new_state);
                                 $("#sumar").removeClass(old_state).addClass(new_state);
                             })
                             .catch(function (data) {
@@ -438,10 +423,10 @@
 
         k.data.instance.setUrl(apiRoot + "/orders/" + k.data.instance.id + "?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
             .bindView(k.$el.children()).loadFromRemote().then(function (d) {
-                updateMetaVal(k.data.instance);
+                // updateMetaVal(k.data.instance);
             })
             .catch(function (data) {
-                console.log(data);
+                // console.log(data);
                 komponentor.intent("/common/errormodal").data({
                     body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
                 }).send();

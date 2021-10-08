@@ -250,7 +250,7 @@
         instance.setUrl(apiRoot+"/orders/"+k.data.instance.id+"/orders_items_wmeta?page[orders_items_wmeta][limit]=1000&page[orders_items_wmeta][limit]=8")
             .loadFromRemote()
             .then(function () {
-                console.log(instance);
+                // console.log(instance);
                 $("#orderPartsListFilter").find("#viewToggle").bootstrapToggle().change(toggleSwitch);
 
                 let submitBtn = $("#orderPartsForm").find("#filterSubmitBtn");
