@@ -50,7 +50,7 @@
                     <li class="nav-item">
                         <a data-toggle="tab" href="#detaliiPanel" class="nav-link active">Sumar</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="pontajTabFromEmployee">
                         <a data-toggle="tab" href="#pontajPanel" class="nav-link">Pontaj</a>
                     </li>
                     <li class="nav-item">
@@ -82,10 +82,10 @@
 
     function init_komponent(k) {
 
-        if(Object.keys(k.data).length === 1) {
-            k.data.instance = $("<span>").apiator({returninstance: true, resourcetype: "item", url: apiRoot + "/employees/" + k.data.emplId});//.then(() => {k.data.instance.loadFromRemote();})
-            // k.data.instance = $("<span>").apiator({returninstance: true, resourcetype: "item", url: apiRoot + "/employees/" + k.data.emplId, type: "employees"});//.then(() => {k.data.instance.loadFromRemote();})
-        }
+        // if(Object.keys(k.data).length === 1) {
+        //     k.data.instance = $("<span>").apiator({returninstance: true, resourcetype: "item", url: apiRoot + "/employees/" + k.data.emplId});//.then(() => {k.data.instance.loadFromRemote();})
+        //     // k.data.instance = $("<span>").apiator({returninstance: true, resourcetype: "item", url: apiRoot + "/employees/" + k.data.emplId, type: "employees"});//.then(() => {k.data.instance.loadFromRemote();})
+        // }
 
         let $modal = k.$el.appendTo("body")
             .filter(".modal")
@@ -105,6 +105,7 @@
             $modal.modal("hide");
         };
 
+        console.log(k.data.source, k.data.source === "pontaj", k.data.source === "teamlead", k.data.source && (k.data.source === "pontaj" || k.data.source === "teamlead"))
         if (k.data.source && (k.data.source === "pontaj" || k.data.source === "teamlead")){
             $("#pontajTabFromEmployee").remove();
         } else {
