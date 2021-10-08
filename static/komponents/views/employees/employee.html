@@ -82,11 +82,6 @@
 
     function init_komponent(k) {
 
-        // if(Object.keys(k.data).length === 1) {
-        //     k.data.instance = $("<span>").apiator({returninstance: true, resourcetype: "item", url: apiRoot + "/employees/" + k.data.emplId});//.then(() => {k.data.instance.loadFromRemote();})
-        //     // k.data.instance = $("<span>").apiator({returninstance: true, resourcetype: "item", url: apiRoot + "/employees/" + k.data.emplId, type: "employees"});//.then(() => {k.data.instance.loadFromRemote();})
-        // }
-
         let $modal = k.$el.appendTo("body")
             .filter(".modal")
             .on("hidden.bs.modal",function () {
@@ -105,17 +100,19 @@
             $modal.modal("hide");
         };
 
-        console.log(k.data.source, k.data.source === "pontaj", k.data.source === "teamlead", k.data.source && (k.data.source === "pontaj" || k.data.source === "teamlead"))
-        if (k.data.source && (k.data.source === "pontaj" || k.data.source === "teamlead")){
-            $("#pontajTabFromEmployee").remove();
+        let dataToPass
+        if (k.data.emplId) {
+            let instance = $("<span>").apiator({url: apiRoot + "/employees/" + k.data.emplId, returninstance: true, resourcetype: "item"});
+            instance.loadFromRemote().then(function() {
+                dataToPass = {instance: instance};
+                $("#employeeTimetracking").komponent({data: dataToPass, parent: k});
+            });
         } else {
-            if (k.data.emplId) {
-                console.log("emplid");
-            }
-            $("#employeeTimetracking").komponent({data:k.data,parent:k});
+            dataToPass = k.data;
+            console.log("dataToPass ", dataToPass);
+            $("#employeeTimetracking").komponent({data: dataToPass, parent: k});
         }
 
-        console.log("k.data din employee", k.data);
         $("#allocatedProjects").komponent({data:k.data,parent:k});
 
     }
