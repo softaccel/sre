@@ -119,11 +119,14 @@
      */
     function renderKomponent(k,data) {
 
+        console.log("88888888888888888",k);
         let dummy = $("<div>").appendTo("body");
+
         // let tpl = _.template(data);
         // let rights = JSON.parse(localStorage.getItem("rights"));
         // let $renderedKomponent = $(tpl(rights)).appendTo(dummy);
         let $renderedKomponent = $(data).appendTo(dummy);
+
         $renderedKomponent = $renderedKomponent.remove();
         dummy.remove();
 
@@ -287,6 +290,8 @@
 
         function initKomponent () {
             return new Promise(((resolve, reject) => {
+
+
                 let initFunc = typeof init_komponent==="function" ? init_komponent : new Function();
                 delete init_komponent;
 
@@ -306,7 +311,10 @@
                     k.$el = $renderedKomponent;
                 }
 
-                k.$el.data("komponent",k).attr("is","komponent");
+                k.$el.data("komponent",k)
+                    .attr("is","komponent")
+                    .find("*").data("komponent",k);
+
 
                 let moduleName = initFunc(k);
                 let modules = JSON.parse(localStorage.getItem("modules"));

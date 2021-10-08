@@ -594,7 +594,6 @@
 			obj.url = URL(obj.url);
 
 			// dispatch event
-			obj.dispatch('load',{type:'load',src:obj,data:data,xhr:xhr});
 			return this;
 		};
 
@@ -618,7 +617,6 @@
 
 			Object.assign(obj,data);
 
-			obj.dispatch('load',{type:'load',src:obj,data:data});
 			return this;
 		};
 
@@ -1008,6 +1006,8 @@
 				.attr("id", _itemview.id)
 				.data("view",_itemview)
 				.data("instance",_itemview.item);
+
+
 			el.find("*").data("instance",_itemview.item);
 			return el;
 		}
@@ -1302,7 +1302,6 @@
 			data.forEach(function (item) {
 				_collection.loadItem(item);
 			});
-			// dispatch dataReceived event
 		};
 
 		_collection.clear = function() {
@@ -1339,7 +1338,6 @@
 				if(!_collection.url) {
 					throw("No valid URL provided");
 				}
-
 
 				if(typeof _collection.offset!== "undefined" && _collection.offset!==null) {
 					_collection.url.parameters["page["+_collection.type+"][offset]"] = _collection.offset;
@@ -1665,7 +1663,8 @@
 
 		if(typeof opts==="string") {
 			opts = {
-				url: opts
+				url: opts,
+				dataBindings: {}
 			}
 		}
 
@@ -1676,6 +1675,12 @@
 		Object.assign(options, parseOptions(opts));
 
 		// already defined =>return
+		for (const [key, value] of this.data()) {
+			if (typeof value==="object") {
+				options.dataBindings[key] = value;
+			}
+		}
+
 		if (this.data("instance") !== undefined) {
 			let instance = this.data("instance");
 

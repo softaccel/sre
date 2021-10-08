@@ -186,10 +186,18 @@
                 // });
 
             });
+            k.updateMe = function (msg) {
+                console.log(msg)
+            }
+            let childKomponents = [];
+
 
             $("#ordersCosts").komponent({data:k.data});
             $("#repere").komponent({data:k.data});
-            $("#sumar").komponent({data:k.data});
+            $("#sumar").komponent({data:k.data,parent:k}).then(function (newK){
+                childKomponents.push(newK);
+            });
+
             $("#pontajPanel").komponent({data:k.data});
             $("#proprietati").komponent({data:k.data});
             $("#resurse").komponent({data:k.data});
