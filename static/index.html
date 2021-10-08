@@ -197,12 +197,12 @@
 
     Promise.all([p1,p2])
         .then((values)=>{
-            console.log(values);
+            // console.log(values);
             let environments,active;
             [environments,active] = values;
             active = active.active;
-            console.log(environments,active);
-            console.log(environments,active);
+            // console.log(environments,active);
+            // console.log(environments,active);
             backendUrl = environments[active].backendUrl;
             apiRoot = environments[active].feDBapiUrl;
             authUrl = environments[active].authUrl;

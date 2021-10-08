@@ -127,7 +127,7 @@
         $renderedKomponent = $renderedKomponent.remove();
         dummy.remove();
 
-        console.log("$renderedKomponent", $renderedKomponent);
+        // console.log("$renderedKomponent", $renderedKomponent);
 
         let userId = (userData && userData.sub) ? userData.sub : null;
         let userLvl = (userData && userData.level) ? userData.level : null;

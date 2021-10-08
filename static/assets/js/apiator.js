@@ -237,7 +237,6 @@
 			return options;
 		}
 
-		console.log(options);
 		throw ["Invalid options",options];
 	}
 
@@ -548,6 +547,7 @@
 		_item.bindView = function(view) {
 
 			view = ItemView(view);
+			// console.log("55555555555555555",view);
 
 			let bound = false;
 			_item.views.forEach(function (v) {
@@ -562,7 +562,6 @@
 			}
 			view.item = _item;
 			_item.views.push(view);
-			view.render();
 			return this;
 		};
 
@@ -763,7 +762,7 @@
 						}
 
 
-						// console.log("update " + relName);
+						console.log("update " + relName);
 					}
 					// if(this.relationships[rel])
 				}, this);
@@ -799,7 +798,7 @@
 		};
 
 		_item.remove = function() {
-			// console.log("removing");
+			console.log("removing");
 			for(let i=_item.views.length-1 ; i>=0 ; i--) {
 				_item.views[i].remove();
 			}
@@ -807,7 +806,7 @@
 			if(!_item.collection) {
 				return;
 			}
-			// console.log(_item,_item.collection,_item.collection.children);
+			console.log(_item,_item.collection,_item.collection.children);
 			for(i=0;i<_item.collection.items.length;i++) {
 				if(_item.collection.items[i].id===_item.id) {
 					_item.collection.items.splice(i,1);
@@ -826,7 +825,7 @@
 
 
 				function onDeleteFail(resp) {
-					// console.log("fail",resp);
+					console.log("fail",resp);
 					reject(resp);
 				}
 
@@ -839,7 +838,8 @@
 						}
 
 					)
-					.catch(reject);
+					.catch(reject)
+					// .finally(()=>{console.log("finaly",arguments)});
 			});
 
 		};
@@ -906,7 +906,7 @@
 						$(form.elements[relName]).val(vals);
 					}
 					else {
-						// console.log("set ",relName,instance.relationships[relName]);
+						console.log("set ",relName,instance.relationships[relName]);
 						$(form.elements[relName]).val(instance.relationships[relName].id);
 					}
 
@@ -1233,7 +1233,7 @@
 		if(_collection.insertUrl) {
 			_collection.setUrl({insertUrl:_collection.insertUrl});
 		}
-		
+
 		if(_collection.view) {
 			_collection.view.collection = _collection;
 		}
@@ -1340,7 +1340,6 @@
 					throw("No valid URL provided");
 				}
 
-				console.log(_collection.url);
 
 				if(typeof _collection.offset!== "undefined" && _collection.offset!==null) {
 					_collection.url.parameters["page["+_collection.type+"][offset]"] = _collection.offset;
@@ -2095,9 +2094,6 @@
 		return filterForm;
 	}
 
-	function Paging1() {
-		
-	}
 	/**
 	 *
 	 * @param pagingEl
