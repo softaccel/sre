@@ -50,7 +50,7 @@
                     <li class="nav-item">
                         <a data-toggle="tab" href="#detaliiPanel" class="nav-link active">Sumar</a>
                     </li>
-                    <li class="nav-item" id="pontajTabFromEmployee">
+                    <li class="nav-item">
                         <a data-toggle="tab" href="#pontajPanel" class="nav-link">Pontaj</a>
                     </li>
                     <li class="nav-item">
@@ -82,7 +82,10 @@
 
     function init_komponent(k) {
 
-        console.log(k.data)
+        if(Object.keys(k.data).length === 1) {
+            k.data.instance = $("<span>").apiator({returninstance: true, resourcetype: "item", url: apiRoot + "/employees/" + k.data.emplId});//.then(() => {k.data.instance.loadFromRemote();})
+            // k.data.instance = $("<span>").apiator({returninstance: true, resourcetype: "item", url: apiRoot + "/employees/" + k.data.emplId, type: "employees"});//.then(() => {k.data.instance.loadFromRemote();})
+        }
 
         let $modal = k.$el.appendTo("body")
             .filter(".modal")

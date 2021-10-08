@@ -583,7 +583,7 @@
 
     function init_komponent(k) {
 
-        if (k.data && k.data.instance.type === "employees") {
+        if (k.data && k.data.instance && k.data.instance.type === "employees") {
             $(".employeeRelated").remove();
         }
 
