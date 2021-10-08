@@ -51,6 +51,11 @@
     .included .not-visibile-when-included{
         display: none;
     }
+
+    .clickableItem:hover{
+        text-decoration: underline;
+    }
+
 </style>
 
 <div class="checkRequired" data-module="timetracking" data-level="1">
@@ -207,14 +212,14 @@
                    data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset" data-totalrecscount="#timeTrackingTotalCount">
             <tr>
                 <td class="emplCol">
-                    <a onclick="openRelatedEmployeeModal(this)" style="cursor: pointer"><%= relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname %></a> <br>
+                    <a onclick="openRelatedEmployeeModal(this)" class="clickableItem" style="cursor: pointer"><%= relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname %></a> <br>
                     <% if(relationships.team) { %>
                     <span class="badge badge-secondary"><%= relationships.team.attributes ? relationships.team.attributes.name : 0 %></span>
                     <% } %>
 
                 </td>
                 <td style="max-width: 100px">
-                    <div class="values"><a onclick="openOrderModal(this)" style="cursor: pointer"><%= relationships.order ? relationships.order.relationships.doc_id.attributes.docnum : "nealocat" %></a></div>
+                    <div class="values"><a class="clickableItem" onclick="openOrderModal(this)" style="cursor: pointer"><%= relationships.order ? relationships.order.relationships.doc_id.attributes.docnum : "nealocat" %></a></div>
                     <div class="inputs">
                         <select name="order"  style="width: 100%"></select>
                     </div>
