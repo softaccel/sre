@@ -301,7 +301,8 @@
         let orderId = $(src).data("instance").relationships.order.id;
         komponentor.intent('/views/orders/order')
             .data({
-                orderId: orderId
+                orderId: orderId,
+                source: "pontaj"
             })
             .send()
             .finally(function () {
@@ -319,7 +320,8 @@
         let emplId = $(src).data("instance").relationships.employee.id;
         komponentor.intent('/views/employees/employee')
             .data({
-                emplId: emplId
+                emplId: emplId,
+                source: "pontaj"
             })
             .send()
             .finally(function () {
@@ -581,7 +583,7 @@
 
     function init_komponent(k) {
 
-        if (k.data && k.data.instance.type === "employees") {
+        if (k.data && k.data.instance && k.data.instance.type === "employees") {
             $(".employeeRelated").remove();
         }
 

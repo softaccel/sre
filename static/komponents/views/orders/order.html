@@ -82,7 +82,7 @@
                         <li class="nav-item">
                             <a data-toggle="tab" href="#resursePanel" class="nav-link" id="allocResTab">Resurse</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" id="pontajTabFromOrder">
                             <a data-toggle="tab" href="#pontajPanel" class="nav-link" id="timeTrackTab">Pontaj</a>
                         </li>
                         <li class="nav-item notA000">
@@ -125,6 +125,8 @@
 <script>
 
     function init_komponent(k,d) {
+
+        let source = k.data.source ? k.data.source : "orders";
 
         k.$el.appendTo("body");
 
@@ -191,18 +193,21 @@
             }
             let childKomponents = [];
 
+            console.log(k);
 
             $("#ordersCosts").komponent({data:k.data});
             $("#repere").komponent({data:k.data});
             $("#sumar").komponent({data:k.data,parent:k}).then(function (newK){
                 childKomponents.push(newK);
             });
-
-            $("#pontajPanel").komponent({data:k.data});
+            if (source !== "pontaj") {
+                $("#pontajPanel").komponent({data:k.data});
+            } else {
+                $("#pontajTabFromOrder").remove();
+            }
             $("#proprietati").komponent({data:k.data});
             $("#resurse").komponent({data:k.data});
             $("#documents").komponent({data:k.data});
-
 
             $("#sumarTab").tab("show");
         }

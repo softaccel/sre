@@ -70,9 +70,9 @@
 <script>
 
     function goToTeamlead(src) {
-        console.log($(src).data().instance.relationships.teamlead);
+        console.log("go to team lead", $(src).data().instance.relationships.teamlead);
 
-        komponentor.intent("/views/employees/employee").data({emplId:$(src).data().instance.relationships.teamlead.id})
+        komponentor.intent("/views/employees/employee").data({emplId:$(src).data().instance.relationships.teamlead.id, source: "teamlead"})
             .send();
     }
 
