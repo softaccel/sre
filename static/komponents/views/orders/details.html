@@ -421,7 +421,6 @@
     }
 
     function init_komponent(k) {
-
         k.$el.addClass("doc_id" + k.data.instance.relationships.doc_id.id);
 
         if (k.data.instance.relationships.doc_id.id === "0") {
@@ -435,6 +434,7 @@
 
         $("#sumar").addClass(k.data.instance.attributes.state);
 
+        // k.$el.parent().find("*").data("komponent",k);
 
         k.data.instance.setUrl(apiRoot + "/orders/" + k.data.instance.id + "?include=doc_id,partner_id,team,orders_meta&page[orders_meta][limit]=100")
             .bindView(k.$el.children()).loadFromRemote().then(function (d) {
