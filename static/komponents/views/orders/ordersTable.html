@@ -139,7 +139,9 @@
     function orderDetailsModal(src) {
         komponentor.intent('/views/orders/order')
             .send({instance:$(src).data('instance')})
-            .then((k)=>{console.log('#######',k)})
+            .then((k)=>{
+                // console.log('#######',k);
+            })
     }
 
     function deleteOrder(event) {
@@ -297,7 +299,7 @@
         });
 
         k.exec = function (b) {
-            console.log("exec order",k,b);
+            // console.log("exec order",k,b);
         }
 
         let instance_lastissued = $("<span></span>").apiator({resourcetype: "collection", returninstance: true});
