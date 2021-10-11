@@ -136,9 +136,17 @@
                     },
                     callback: function () {
                         instance.delete().catch(function(data){
-                            komponentor.intent("/common/errormodal").data({
-                                body: "A aparut o eroare: <pre>"+(data.jqXHR.responseText)+"</pre>"
-                            }).send();
+
+                            console.log("asdasdasd", data.jqXHR.responseText)
+                            if (data.jqXHR.responseText.includes("Error Number: 1451")) {
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "Livrarea <b>nu</b> poate fi stearsa. Pentru a o sterge, aceasta trebuie sa nu contina elemente."
+                                }).send();
+                            } else {
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "A aparut o eroare: <pre>"+(data.jqXHR.responseText)+"</pre>"
+                                }).send();
+                            }
                         });
                     }
                 },
