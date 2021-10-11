@@ -3,6 +3,8 @@
 </style>
 
 <div class="checkRequired" data-module="orders" data-level="1">
+    <button class="btn btn-primary checkCreate" style="margin-left: 1rem" onclick="downloadSelected()" id="downBtn">Descarca</button>
+    <br>
     <div id="orderDocumentsList">
         <ul>
             <li>
@@ -21,7 +23,10 @@
                         <% for (let [i,doc] of documents.entries()) { %>
                         <li data-index="<%= i %>" class="mt-1 mb-1">
                             <div class="d-flex justify-content-between">
-                                <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                <div>
+                                    <input type="checkbox" class="downChk">
+                                    <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                </div>
                                 <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
                             </div>
                         </li>
@@ -45,7 +50,10 @@
                         <% for (let [i,doc] of documents.entries()) { %>
                         <li data-index="<%= i %>" class="mt-1 mb-1">
                             <div class="d-flex justify-content-between">
-                                <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                <div>
+                                    <input type="checkbox" class="downChk">
+                                    <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                </div>
                                 <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
                             </div>
                         </li>
@@ -69,7 +77,10 @@
                         <% for (let [i,doc] of documents.entries()) { %>
                         <li data-index="<%= i %>" class="mt-1 mb-1">
                             <div class="d-flex justify-content-between">
-                                <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                <div>
+                                    <input type="checkbox" class="downChk">
+                                    <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                </div>
                                 <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
                             </div>
                         </li>
@@ -93,7 +104,10 @@
                         <% for (let [i,doc] of documents.entries()) { %>
                         <li data-index="<%= i %>" class="mt-1 mb-1">
                             <div class="d-flex justify-content-between">
-                                <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                <div>
+                                    <input type="checkbox" class="downChk">
+                                    <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                </div>
                                 <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
                             </div>
                         </li>
@@ -117,7 +131,10 @@
                         <% for (let [i,doc] of documents.entries()) { %>
                         <li data-index="<%= i %>" class="mt-1 mb-1">
                             <div class="d-flex justify-content-between">
-                                <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                <div>
+                                    <input type="checkbox" class="downChk">
+                                    <a href="<%= doc.link %>"><%= doc.lbl %></a>
+                                </div>
                                 <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderDocument(this, event);"><i class="fa fa-trash-alt"></i></button>
                             </div>
                         </li>
@@ -167,6 +184,10 @@
         e.stopPropagation();
     }
 
+    function downloadSelected() {
+
+    }
+
     function init_komponent(k) {
 
         function uploadDocument(instance, form, name) {
@@ -205,6 +226,45 @@
             });
         }
 
+        function downloadSelected() {
+            let requestFiles = [];
+
+            $("#orderDocumentsList").each(function () {
+                $(this).find("#documentsFacturi").find(".downChk:checked").each(function (){
+                    let url = $($(this).siblings("a")[0]).attr("href");
+                    requestFiles.push(url.slice(url.indexOf("files/") + 6));
+                });
+                $(this).find("#documentsAvize").find(".downChk:checked").each(function (){
+                    let url = $($(this).siblings("a")[0]).attr("href");
+                    requestFiles.push(url.slice(url.indexOf("files/") + 6));
+                });
+                $(this).find("#documentsCertificate").find(".downChk:checked").each(function (){
+                    let url = $($(this).siblings("a")[0]).attr("href");
+                    requestFiles.push(url.slice(url.indexOf("files/") + 6));
+                });
+                $(this).find("#documentsFise").find(".downChk:checked").each(function (){
+                    let url = $($(this).siblings("a")[0]).attr("href");
+                    requestFiles.push(url.slice(url.indexOf("files/") + 6));
+                });
+                $(this).find("#documentsOther").find(".downChk:checked").each(function (){
+                    let url = $($(this).siblings("a")[0]).attr("href");
+                    requestFiles.push(url.slice(url.indexOf("files/") + 6));
+                });
+            });
+
+            if (requestFiles.length === 0) {
+                komponentor.intent("/common/errormodal").data({
+                    body: "Trebuie selectat macar un fisier!"
+                }).send();
+                return;
+            }
+
+            let b = $("<a>").appendTo("body").prop("href",fileApiUrl + "/zip/" + encodeURIComponent(JSON.stringify({files: requestFiles})));
+            b[0].click();
+            b.remove();
+
+        }
+
         let url = apiRoot + "/orders/" + k.data.instance.id + "/orders_meta/?filter=meta_key=documents.facturi";
         let facturi = k.$el.find("#documentsFacturi").apiator({url: url, returninstance:true});
         let avize = k.$el.find("#documentsAvize").apiator({url: url.replace("facturi", "avize"), returninstance:true});
@@ -237,6 +297,10 @@
         let formOther = k.$el.find("#orderDocumentsOther")[0];
         util.captureFormSubmit(formOther, function (data) {
             uploadDocument(altele, formOther, "other");
+        });
+
+        k.$el.find("#downBtn").on("click", function () {
+            downloadSelected();
         });
 
     }
