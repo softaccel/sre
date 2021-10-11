@@ -588,24 +588,24 @@
     function init_komponent(k) {
 
         if (k.data && k.data.instance && k.data.instance.type === "employees") {
-            $(".employeeRelated").remove();
+            k.$el.find(".employeeRelated").remove();
         }
 
         k.$el.find("#dateRange").daterangepicker({showDropdowns:true,startDate:"05/01/2021"})
             .on("apply.daterangepicker",function (e) {
-                let[start,stop] = $(e.target).val().split(" - ");
+                let[start,stop] = k.$el.find(e.target).val().split(" - ");
                 start = new Date(start);
                 stop = new Date(stop);
                 stop.setDate(stop.getDate()+1);
                 console.log(start,stop);
-                $("#startFrom").val(start.toISOString());
-                $("#startTo").val(stop.toISOString());
-                $("#timeTrackingEntriesFiltering").submit();
+                k.$el.find("#startFrom").val(start.toISOString());
+                k.$el.find("#startTo").val(stop.toISOString());
+                k.$el.find("#timeTrackingEntriesFiltering").submit();
             })
             .on("cancel.daterangepicker",function () {
-                $("#startFrom").val("");
-                $("#startTo").val("");
-                $("#timeTrackingEntriesFiltering").submit();
+                k.$el.find("#startFrom").val("");
+                k.$el.find("#startTo").val("");
+                k.$el.find("#timeTrackingEntriesFiltering").submit();
             });
 
         let url = apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team";
@@ -649,7 +649,7 @@
 
 
         let util = instance.getUtilities();
-        let form = $("#newTTForm")[0];
+        let form = k.$el.find("#newTTForm")[0];
 
         util.captureFormSubmit(form, function (data) {
             addNewTT(data);
@@ -681,7 +681,7 @@
 
             delete data.docnum;
             instance.createItem(data).then(function () {
-                $("[name=newTT]").toggle();
+                k.$el.find("[name=newTT]").toggle();
                 instance.loadFromRemote();
             })
                 .catch(function (data) {
