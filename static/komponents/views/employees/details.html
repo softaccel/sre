@@ -89,7 +89,7 @@
             <div class="row">
                 <div class="col-3">Data nasterii</div>
                 <div class="col-9"><%= attributes.bdate %></div>
-                <div class="col-9"><input name="bdate" class="form-control form-control-sm" type="date" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
+                <div class="col-9"><input required name="bdate" class="form-control form-control-sm" type="date" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
             </div>
             <div class="row">
                 <div class="col-3">CNP</div>
@@ -222,7 +222,6 @@
             if(!data.card || data.card==="") {
                 delete data.card;
             }
-            console.log("/////////////////",data);
 
             if(data.id!=="") {
                 instance.update(data)
@@ -239,7 +238,6 @@
                                 body: "A aparut o eroare: <pre>"+(jqxhr.jqXHR.responseText)+"</pre>"
                             }).send();
                         }
-                        console.log(jqxhr);
                     });
             }
             // instance is item
@@ -286,7 +284,6 @@
     function deleteEmployee(instance) {
 
         let bodyQuery = "Esti sigur ca vrei sa stergi acest angajat?";
-        console.log("wedem",instance);
         let bodyData = "<br><strong>" + instance.attributes.fname + ' - ' + instance.attributes.lname + "</strong>";
 
         komponentor.intent("/common/messagemodal").data({
@@ -299,7 +296,7 @@
                         "data-dismiss":"modal"
                     },
                     callback: function () {
-                        instance.delete().then(() => { console.log("ok", arguments) })
+                        instance.delete()
                             .catch( function(data) {
                                 komponentor.intent("/common/errormodal").data({
                                     body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
@@ -334,13 +331,13 @@
             k.parent.hideModal();
         });
 
-        console.log(k.data.instance);
 
         if(k.data.instance) {
             let instance = k.data.instance;
 
             if (instance.hasOwnProperty("items")) {
                 $("#btnForEmpl").remove();
+                editMode(instance);
                 return k;
             }
 
