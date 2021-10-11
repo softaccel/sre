@@ -312,6 +312,7 @@
 
         instance.update(data)
             .then(function (data) {
+                $("#estTimeText").text(new_est_time + " h");
                 $(src).parent().removeClass('editMode');
             })
             .catch(function (data) {
