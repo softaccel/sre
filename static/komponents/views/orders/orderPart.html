@@ -49,8 +49,8 @@
 
 </style>
 
-<div class="checkRequired" data-module="orders" data-level="1">
-    <div class="modal" id="orderPartModal">
+<div class="checkRequired modal" data-module="orders" data-level="1">
+    <div class="" id="orderPartModal">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -198,7 +198,6 @@
 
         }
 
-        //
         function deleteOrderPart() {
 
             let bodyQuery = "Esti sigur ca vrei sa stergi parte din comanda?";
@@ -241,7 +240,7 @@
         if(!k.data || !k.data.instance) {
             return;
         }
-        //
+
         let instance = k.data.instance;
         let $modal = k.$el.appendTo("body")
             .filter(".modal")
@@ -270,7 +269,6 @@
 
         $("#imageGallery").komponent({data:k.data});
         $("#partDetails").komponent({data:k.data});
-
 
     }
 

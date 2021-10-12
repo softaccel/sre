@@ -64,6 +64,7 @@
             console.log(instanceForHide.attributes.state);
             k.$el.addClass(instanceForHide.attributes.state);
         });
+
         // update imageList
         const updateSortable = function (e) {
             let upd = [];
@@ -108,9 +109,10 @@
         const util = galInst.getUtilities();
 
         util.captureFormSubmit(form, function (data) {
+            console.log("capturedSubmit")
             let formData = new FormData();
             let $files = form["files[]"];
-            for (var index = 0; index < $files.files.length; index++) {
+            for (let index = 0; index < $files.files.length; index++) {
                 formData.append("files[]", $files.files[index]);
             }
             $.ajax({
