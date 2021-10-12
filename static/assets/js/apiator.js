@@ -941,10 +941,9 @@
 	/**
 	 *
 	 * @param params
-	 * @param item
 	 * @returns {{template: null, container: null, item: null, el: null}}
 	 */
-	function ItemView(params,item)
+	function ItemView(params)
 	{
 		// params is actually an existing ItemView
 		if(params.isView) {
@@ -952,7 +951,6 @@
 		}
 
 		// params is actually a jquery object or an html node
-		// console.log("llllllllllllll",params);
 		if(params.length || params.nodeName) {
 			let $el = $(params);
 			if($el.data("view")) {
@@ -1008,6 +1006,12 @@
 				.data("instance",_itemview.item);
 
 
+			// console.log("create element",_itemview.item);
+			for(let key in _itemview.item.dataBindings) {
+				// console.log(key)
+				el.data(key,_itemview.item.dataBindings[key]);
+				el.find("*").data(key,_itemview.item.dataBindings[key]);
+			}
 			el.find("*").data("instance",_itemview.item);
 			return el;
 		}
@@ -1030,6 +1034,7 @@
 				return this.el;
 			}
 
+
 			if(!_itemview.el) {
 				delete renderedEl;
 				console.log("Invalid item view element");
@@ -1040,6 +1045,7 @@
 
 			this.el.remove();
 			this.el = renderedEl;
+
 			return this.el;
 		};
 
@@ -1484,7 +1490,7 @@
 
 			let opts = {
 				type: _collection.type,
-				collection: _collection,
+				collection: _collection
 			};
 
 			if(itemData.id) {
@@ -1498,6 +1504,7 @@
 
 			let newItem = Item(opts)
 				.bindView(ItemView({
+					dataBindings: _collection.view.dataBindings,
 					template: _collection.template,
 					container: _collection.view
 				}))
@@ -1656,6 +1663,7 @@
 	 */
 	$.fn.apiator = function (opts)
 	{
+
 		if(!this.length) {
 			throw "Invalid element for apiator";
 			// return console.log("Invalid element", opts, this);
@@ -1673,12 +1681,6 @@
 		// assign options passed as
 		Object.assign(options, parseOptions(opts));
 
-		let midata = this.data();
-		for (let key in midata) {
-			if (typeof midata[key]==="object" && key!=="instance") {
-				options.dataBindings[key] = midata[key];
-			}
-		}
 
 		if (this.data("instance") !== undefined) {
 			let instance = this.data("instance");
@@ -1705,6 +1707,16 @@
 		if (!options.hasOwnProperty("resourcetype"))
 			throw new Error("Invalid resource type for APIATOR.JS (should be item or collection). " +
 				"Please define a valid resource on element "+this.attr("id"));
+
+
+		let boundData = this.data();
+
+		for (let key in boundData) {
+			console.log(key,typeof boundData[key]);
+			if (typeof boundData[key]==="object" && key!=="instance") {
+				options.dataBindings[key] = boundData[key];
+			}
+		}
 
 		let instance;
 		switch ( options.resourcetype) {
@@ -1766,10 +1778,12 @@
 		options.template = _.template(templateTxt);
 
 		options.view = CollectionView({
+			dataBindings: options.dataBindings,
 			el: this,
 			itemsContainer: options.hasOwnProperty("container") ? $(options.container) : this,
 			allowempty: options.disableempty!==true
 		});
+		delete options.dataBindings;
 
 		let instance = Collection(options);
 
@@ -2393,10 +2407,10 @@
 })($);
 
 
-
-$(document).ready(function () {
-	$("[data-apiator]").each(function () {
-		if(!$(this).data("instance"))
-			$(this).apiator();
-	});
-});
+//
+// $(document).ready(function () {
+// 	$("[data-apiator]").each(function () {
+// 		if(!$(this).data("instance"))
+// 			$(this).apiator();
+// 	});
+// });

@@ -90,8 +90,8 @@
 
             komponentor
                 .fetchKomponent(kmp)
-                .then(function (data) {
-                    let init_result = renderKomponent(kmp,data);
+                .then(function (html) {
+                    let init_result = renderKomponent(kmp,html);
                     resolve(kmp,init_result);
                 })
                 .catch(function (msgObj) {
@@ -115,17 +115,17 @@
     /**
      *
      * @param k
-     * @param data
+     * @param html
      */
-    function renderKomponent(k,data) {
+    function renderKomponent(k,html) {
 
-        // console.log("88888888888888888",k);
+        console.log("88888888888888888",k);
         let dummy = $("<div>").appendTo("body");
 
         // let tpl = _.template(data);
         // let rights = JSON.parse(localStorage.getItem("rights"));
         // let $renderedKomponent = $(tpl(rights)).appendTo(dummy);
-        let $renderedKomponent = $(data).appendTo(dummy);
+        let $renderedKomponent = $(html).appendTo(dummy);
 
         $renderedKomponent = $renderedKomponent.remove();
         dummy.remove();
@@ -232,13 +232,12 @@
 
         function getAll () {
             return new Promise(((resolve, reject) => {
-                if (userId === null)
-                    resolve();
+                if (userId === null) {
+                    return resolve();
+                }
 
                 let expiryTime = new Date(localStorage.getItem("dataExpires"));
-                if (expiryTime === null ||
-                        expiryTime < new Date() ||
-                        allRights === null ||
+                if (expiryTime === null || expiryTime < new Date() || allRights === null ||
                         (typeof allRights==="object" && allRights.constructor===Object && Object.getOwnPropertyNames(allRights).length===0) ||
                         (typeof allRights==="object" && allRights.constructor===Array && allRights.length===0) ||
                         localStorage.getItem("activeModules") === null ||
@@ -247,18 +246,18 @@
                         localStorage.getItem("dataExpires") === "") {
 
                     getUserRights()
-                    .then(function () {
-                        return getExpiryTime();
-                    }).then(function () {
-                        return getActiveModules();
-                    }).then(function () {
-                        resolve();
-                    }).catch(function (error) {
-                        reject("getAll/rejected: ", error.toString());
-                    });
-                } else {
-                    resolve();
+                        .then(function () {
+                            return getExpiryTime();
+                        }).then(function () {
+                            return getActiveModules();
+                        }).then(function () {
+                            resolve();
+                        }).catch(function (error) {
+                            reject("getAll/rejected: ", error.toString());
+                        });
+                    return;
                 }
+                resolve();
             }));
         }
 
@@ -289,9 +288,7 @@
         }
 
         function initKomponent () {
-            return new Promise(((resolve, reject) => {
-
-
+            return new Promise(function(resolve) {
                 let initFunc = typeof init_komponent==="function" ? init_komponent : new Function();
                 delete init_komponent;
 
@@ -311,26 +308,38 @@
                     k.$el = $renderedKomponent;
                 }
 
+
                 k.$el.data("komponent",k)
                     .attr("is","komponent")
                     .find("*").data("komponent",k);
 
 
+                console.log("initKomponent",k);
+
+
                 let moduleName = initFunc(k);
+
+
                 let modules = JSON.parse(localStorage.getItem("modules"));
                 if(modules && modules[moduleName]) {
                     k.$el.addClass(modules[moduleName].join(" "));
                 }
-            }))
+
+                resolve(true);
+            });
         }
 
-        getAll().then(function (result) {
-            return checkAccess();
-        }).then(function (result) {
-            return result ? initKomponent() : '';
-        }).catch(function (reject) {
-            console.log("renderKomponent/reject: ", reject.toString());
-        });
+        getAll()
+            .then(function () {
+                return checkAccess();
+            }).then(function (result) {
+                console.log("---result----",result);
+                if(result) {
+                    return initKomponent();
+                }
+            }).catch(function (reject) {
+                console.log("renderKomponent/reject: ", reject.toString());
+            });
 
     }
 
