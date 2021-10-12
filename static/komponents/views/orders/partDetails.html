@@ -73,10 +73,13 @@
                     <textarea id="metaEdit" name="meta_val" rows="2" cols="35"></textarea>
                 </td>
                 <td class="float-sm-right">
-                    <button class="btn btn-warning btn-sm checkUpdate" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+                    <div class="row">
+                        <button class="btn btn-warning btn-sm checkUpdate" onclick="edit(this)"><i class="fa fa-edit"></i></button>
+                        &nbsp;
+                        <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderPartMeta(this, event);"><i class="fa fa-trash-alt"></i></button>
+                    </div>
                     <button class="btn btn-primary btn-sm edit" onclick="save(this)"><i class="fa fa-save"></i></button>
                     <button class="btn btn-secondary btn-sm edit" onclick="cancelEdit(this)"><i class="fa fa-arrow-left"></i></button>
-                    <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderPartMeta(this, event);"><i class="fa fa-trash-alt"></i></button>
                 </td>
             </tr>
 
