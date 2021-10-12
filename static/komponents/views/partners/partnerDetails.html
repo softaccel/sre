@@ -149,7 +149,7 @@
             <div class="col">
 
                 <button class="btn btn-warning btn-edit checkUpdate" onclick="$(this).parents('.partnerDetails').addClass('editMode')" type="button">Editeaza</button>
-                <button class="btn btn-success btn-save checkUpdate" onclick="console.log($(this).data())" type="button">Salveaza</button>
+                <button class="btn btn-success btn-save checkUpdate" onclick="$(this).data().komponent.test()" type="button">Salveaza</button>
                 &nbsp;
                 <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
             </div>
@@ -164,6 +164,8 @@
     function init_komponent(k) {
         console.log("------------",k);
         // checkUserRights(k.$el, "partners");
+
+
         k.test = function () {
             alert("It works");
         };

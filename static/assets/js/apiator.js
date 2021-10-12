@@ -975,6 +975,7 @@
 		}
 
 		let _itemview = {
+			dataBindings: null,
 			template: null,
 			container: null,
 			collectionView: null,
@@ -985,7 +986,16 @@
 		};
 
 		params = parseOptions(params);
+
 		Object.assign(_itemview,params);
+
+
+		if(_itemview.el !== null) {
+			_itemview.dataBindings = getBoundObjects(_itemview.el);
+		}
+
+		let a = {}
+
 		let tmp = {};
 		Object.assign(tmp,_itemview);
 
@@ -1005,13 +1015,13 @@
 				.data("view",_itemview)
 				.data("instance",_itemview.item);
 
+			_itemview.dataBindings = _itemview.dataBindings ? _itemview.dataBindings : _itemview.item.collection.view.dataBindings;
 
-			// console.log("create element",_itemview.item);
-			for(let key in _itemview.item.dataBindings) {
-				// console.log(key)
-				el.data(key,_itemview.item.dataBindings[key]);
-				el.find("*").data(key,_itemview.item.dataBindings[key]);
+			for(let key in _itemview.dataBindings) {
+				el.data(key,_itemview.dataBindings[key]);
+				el.find("*").data(key,_itemview.dataBindings[key]);
 			}
+
 			el.find("*").data("instance",_itemview.item);
 			return el;
 		}
@@ -1063,7 +1073,6 @@
 			});
 
 		};
-
 		return _itemview;
 	}
 
@@ -1504,7 +1513,6 @@
 
 			let newItem = Item(opts)
 				.bindView(ItemView({
-					dataBindings: _collection.view.dataBindings,
 					template: _collection.template,
 					container: _collection.view
 				}))
@@ -1568,11 +1576,15 @@
 			allowempty: true
 		};
 
+
+
 		let eventTypes = ['reset','render'];
 
 		Object.assign(_collectionView,EventsEmitter(eventTypes));
 
 		Object.assign(_collectionView,parseOptions(options));
+
+		_collectionView.dataBindings = getBoundObjects(_collectionView.el);
 
 		/**
 		 *
@@ -1709,14 +1721,6 @@
 				"Please define a valid resource on element "+this.attr("id"));
 
 
-		let boundData = this.data();
-
-		for (let key in boundData) {
-			console.log(key,typeof boundData[key]);
-			if (typeof boundData[key]==="object" && key!=="instance") {
-				options.dataBindings[key] = boundData[key];
-			}
-		}
 
 		let instance;
 		switch ( options.resourcetype) {
@@ -1735,8 +1739,8 @@
 
 		if(instance.url && (typeof instance.dontload==="undefined" || !instance.dontload)) {
 			instance.loadFromRemote()
-				.catch(function(jqxhr){
-					console.log("error",jqxhr)
+				.catch(function(error){
+					console.log("error",error)
 				})
 			// .finally(()=>{
 			// 	// console.log(instance,"instance loaded from server")
@@ -1746,6 +1750,21 @@
 		// console.log(instance);
 		return (options.hasOwnProperty("returninstance") && opts.returninstance)?instance:this;
 	};
+
+	function getBoundObjects(el) {
+		let db = {};
+		if($(el).length===0) {
+			return db;
+		}
+
+		let boundData = $(el).data();
+		for (let key in boundData) {
+			if (typeof boundData[key]==="object" && key!=="instance") {
+				db[key] = boundData[key];
+			}
+		}
+		return db;
+	}
 
 	/**
 	 *
@@ -1777,13 +1796,15 @@
 			.replace(/&amp;/gi, "&");
 		options.template = _.template(templateTxt);
 
-		options.view = CollectionView({
-			dataBindings: options.dataBindings,
+
+		let collectionConfig = {
 			el: this,
 			itemsContainer: options.hasOwnProperty("container") ? $(options.container) : this,
 			allowempty: options.disableempty!==true
-		});
-		delete options.dataBindings;
+		};
+
+
+		options.view = CollectionView(collectionConfig);
 
 		let instance = Collection(options);
 

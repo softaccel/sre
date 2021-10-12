@@ -118,13 +118,8 @@
      * @param html
      */
     function renderKomponent(k,html) {
-
-        console.log("88888888888888888",k);
         let dummy = $("<div>").appendTo("body");
 
-        // let tpl = _.template(data);
-        // let rights = JSON.parse(localStorage.getItem("rights"));
-        // let $renderedKomponent = $(tpl(rights)).appendTo(dummy);
         let $renderedKomponent = $(html).appendTo(dummy);
 
         $renderedKomponent = $renderedKomponent.remove();
@@ -333,7 +328,6 @@
             .then(function () {
                 return checkAccess();
             }).then(function (result) {
-                console.log("---result----",result);
                 if(result) {
                     return initKomponent();
                 }
