@@ -1,7 +1,7 @@
 <style>
 
     .partnerDetails .col-6  div.row{
-        border-bottom: solid grey 1px;
+        border-bottom: solid #E6E6E6 1px;
     }
     .partnerDetails .col-6 div.row div{
         padding: 5px;
@@ -9,7 +9,7 @@
     }
     .partnerDetails .col-6 div.row>div:nth-child(1) {
         font-weight: bold;
-        background: silver;
+        background: #E6E6E6;
     }
     .partnerDetails .col-6 div.row>div:nth-child(3) {
         display: none;
@@ -39,6 +39,13 @@
 <div class="container partnerDetails">
     <div class="row">
         <div class="col-6">
+            <div class="row d-none">
+                <div class="col-3">ID</div>
+                <div class="col-9"><%= id %></div>
+                <div class="col-9">
+                    <input form="customerDataForm" type="text" maxlength="155" id="idInput" name="id" class="form-control form-control-sm" required="" placeholder="ABOGAR S.R.L." value="<%= id %>">
+                </div>
+            </div>
             <div class="row">
                 <div class="col-3">Denumire</div>
                 <div class="col-9"><%= attributes.name %></div>
@@ -130,9 +137,14 @@
                 <div class="col-3">Furnizor</div>
                 <div class="col-9"><%= attributes.is_supplier === "1" ? "Da" : "Nu" %></div>
                 <div class="col-9">
-                    <select form="customerDataForm" name="is_supplier" class="form-control custom-select custom-select-sm">
-                        <option value="1">da</option>
-                        <option value="0">nu</option>
+                    <select id="isSupplierSelect" form="customerDataForm" name="is_supplier" class="form-control custom-select custom-select-sm">
+                        <% if(attributes.is_supplier === "1") { %>
+                            <option value="1">Da</option>
+                            <option value="0">Nu</option>
+                        <% } else { %>
+                            <option value="0">Nu</option>
+                            <option value="1">Da</option>
+                        <% } %>
                     </select>
                 </div>
             </div>
@@ -141,15 +153,16 @@
     <div class="row">
         <div class="col-12">
             <label>Notite</label>
-            <textarea form="customerDataForm" class="form-control" rows="3" name="comments"></textarea>
+            <textarea form="customerDataForm" id="commentsForPartners" onblur="saveComment(this);" class="form-control" rows="3" name="comments"><%= attributes.comments %></textarea>
         </div>
     </div>
+    <br>
     <div class="row">
         <div class="row" id="btnForPartner">
             <div class="col">
 
                 <button class="btn btn-warning btn-edit checkUpdate" onclick="$(this).parents('.partnerDetails').addClass('editMode')" type="button">Editeaza</button>
-                <button class="btn btn-success btn-save checkUpdate" onclick="$(this).data().komponent.test()" type="button">Salveaza</button>
+                <button class="btn btn-success btn-save checkUpdate" onclick="console.log($(this).data())" type="button">Salveaza</button>
                 &nbsp;
                 <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
             </div>
@@ -161,11 +174,41 @@
 
 <script>
 
+    function saveComment(src) {
+        let instance = $(src).data().instance;
+
+        instance.update({comments:src.value}).catch(function (data) {
+            komponentor.intent("/common/errormodal").data({
+                body: "A aparut o eroare: <pre>"+data.jqXHR.responseText+"</pre>"
+            }).send();
+        });
+    }
+
+    function enterEditMode(src) {
+        $(src).parents('.partnerDetails').addClass('editMode')
+        let instance = $(src).data().instance;
+
+        let form = $("#customerDataForm")[0];
+        let util = instance.getUtilities();
+
+        util.captureFormSubmit(form,function (data) {
+            console.log("///////////////////////////////",data,instance);
+            instance.update(data)
+                .then(function () {
+                    $('#employeeSummary').removeClass('editMode');
+                })
+                .catch(function (jqxhr) {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare: <pre>"+(jqxhr.jqXHR.responseText)+"</pre>"
+                    }).send();
+                });
+
+        });
+    }
+
     function init_komponent(k) {
         console.log("------------",k);
         // checkUserRights(k.$el, "partners");
-
-
         k.test = function () {
             alert("It works");
         };
@@ -175,7 +218,9 @@
             throw "Partner Instance not defined";
         }
 
-        k.data.instance.bindView(k.$el).loadFromRemote();
+        k.data.instance.bindView(k.$el).loadFromRemote().then(function () {
+
+        });
         // console.log(instance);
 
         // instance.bindView(k.$el)
