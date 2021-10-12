@@ -136,9 +136,17 @@
                     },
                     callback: function () {
                         instance.delete().catch(function(data){
-                            komponentor.intent("/common/errormodal").data({
-                                body: "A aparut o eroare: <pre>"+(data.jqXHR.responseText)+"</pre>"
-                            }).send();
+
+                            console.log("asdasdasd", data.jqXHR.responseText)
+                            if (data.jqXHR.responseText.includes("Error Number: 1451")) {
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "Livrarea <b>nu</b> poate fi stearsa. Pentru a o sterge, aceasta trebuie sa nu contina elemente."
+                                }).send();
+                            } else {
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "A aparut o eroare: <pre>"+(data.jqXHR.responseText)+"</pre>"
+                                }).send();
+                            }
                         });
                     }
                 },
@@ -153,9 +161,7 @@
         }).send();
     }
 
-    function changeState(src, new_state) {
-
-        let instance = $(src).data("instance");
+    function instanceUpdateState(instance, new_state) {
         komponentor.intent("/common/messagemodal").data({
             body: "Sunteti sigur ca doriti modificaera starii livrarii <strong>"+instance.attributes.label + "</strong>?",
             buttons: [
@@ -181,6 +187,27 @@
                     }
                 }]
         }).send();
+    }
+
+    function changeState(src, new_state) {
+
+        let instance = $(src).data("instance");
+
+        if (new_state === "delivered") {
+            let notdlvd_instance = $("<span>").apiator({url: apiRoot + "/deliveries_contents_notdlvd?filter=delivery=" + instance.id, resourcetype: "collection", returninstance: true});
+            notdlvd_instance.loadFromRemote().then(() => {
+                console.log(notdlvd_instance.items.length);
+                if (notdlvd_instance.items.length) {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "Elementele trebuie scanate inainte de livrarea comenzii."
+                    }).send();
+                    return;
+                }
+                instanceUpdateState(instance, new_state);
+            });
+        } else {
+            instanceUpdateState(instance, new_state);
+        }
     }
 
     function editMode(instance) {

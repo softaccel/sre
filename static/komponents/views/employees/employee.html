@@ -50,7 +50,7 @@
                     <li class="nav-item">
                         <a data-toggle="tab" href="#detaliiPanel" class="nav-link active">Sumar</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="pontajTabFromEmployee">
                         <a data-toggle="tab" href="#pontajPanel" class="nav-link">Pontaj</a>
                     </li>
                     <li class="nav-item">
@@ -100,9 +100,19 @@
             $modal.modal("hide");
         };
 
-        $("#employeeTimetracking").komponent({data:k.data,parent:k});
+        let dataToPass
+        if (k.data.emplId) {
+            let instance = $("<span>").apiator({url: apiRoot + "/employees/" + k.data.emplId, returninstance: true, resourcetype: "item"});
+            instance.loadFromRemote().then(function() {
+                dataToPass = {instance: instance};
+                $("#employeeTimetracking").komponent({data: dataToPass, parent: k});
+            });
+        } else {
+            dataToPass = k.data;
+            console.log("dataToPass ", dataToPass);
+            $("#employeeTimetracking").komponent({data: dataToPass, parent: k});
+        }
 
-        console.log("k.data din employee", k.data);
         $("#allocatedProjects").komponent({data:k.data,parent:k});
 
     }

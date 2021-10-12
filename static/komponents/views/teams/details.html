@@ -20,10 +20,10 @@
         border-bottom: silver solid 1px;
     }
 
-    .btn-warning, .btn-secondary, .editMode .btn-success, .editMode .btn-danger{
+    .dont-hide-on-edit, .editMode .hide-on-edit{
         display: none;
     }
-    .editMode .btn-warning,.editMode .btn-secondary {
+    .editMode .dont-hide-on-edit {
         display: inline-block;
     }
 
@@ -54,9 +54,9 @@
                 </div>
             </div>
             <div class="mt-5" >
-                <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
-                <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
-                <div class="row">
+                <button class="btn btn-warning dont-hide-on-edit btn-save" type="submit">Salveaza</button>
+                <button class="btn btn-secondary dont-hide-on-edit btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
+                <div class="row hide-on-edit">
                     &nbsp;
                     <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
                     &nbsp;
@@ -70,9 +70,9 @@
 <script>
 
     function goToTeamlead(src) {
-        console.log($(src).data().instance.relationships.teamlead);
+        console.log("go to team lead", $(src).data().instance.relationships.teamlead);
 
-        komponentor.intent("/views/employees/employee").data({emplId:$(src).data().instance.relationships.teamlead.id})
+        komponentor.intent("/views/employees/employee").data({emplId:$(src).data().instance.relationships.teamlead.id, source: "teamlead"})
             .send();
     }
 

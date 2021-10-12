@@ -27,7 +27,10 @@
     <div class="checkRead">
         <div class="card-body">
             <div>
-                <button class="btn btn-primary checkCreate" style="margin-left: 1rem" onclick="addNewEmployee()" id="newEmplBtn">Angajat Nou</button>
+                <button class="btn btn-primary checkCreate" onclick="addNewEmployee();" style="margin-left: 1rem" id="newEmplBtn">Angajat Nou</button>
+            </div>
+            <div>
+                <button class="btn btn-primary checkUpdate" onclick="addEmplToTeam(this);" style="margin-left: 1rem" id="addEmployeeToTeam">Adauga Membru</button>
             </div>
             <div id="employeesListFilter">
                 <form id="employeesListForm">
@@ -53,6 +56,7 @@
                 data-paging="#employeesPaging"
                 data-offsetinp="#employeesOffsetInp"
                 data-pagesizeinp="#employeesPageSizeInp">
+
 
                 <li onclick="openEmployeeModal(this)" class="col-lg-2 col-md-3 col-sm-4" >
                     <div class="card" style="min-height: 165px">
@@ -113,24 +117,54 @@
             })
     }
 
+    function addEmplToTeam (src) {
+        let team_id = $(src).attr("name").split("-")[1];
+        let formModalData = {
+            title: "Membru nou",
+            fields: [
+                {
+                    label: "Angajat",
+                    type: "select",
+                    name: "employee",
+                    url: "/employees_names?filter_advanced=team"+ encodeURIComponent(" != " + team_id + " OR team IS NULL"),
+                    labelfnc: "fullname",
+                    idfnc: "id"
+                }
+            ],
+            callback: function (data) {
+                let instance = $("<span>").apiator({url: apiRoot + "/employees/" + data.data.employee, type: "employees", id: data.data.employee, returninstance: true, resourcetype: "item"});
+                instance.update({team: team_id}).then((data) => {
+                    $("#employeesListUl").data('instance').loadFromRemote();
+                });
+            }
+        };
+
+        komponentor.intent("/common/formmodal").data(formModalData).send();
+    }
+
     function init_komponent(k) {
 
         let url = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=active=1";
         let dispAllUrl = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname";
 
         if(k.data && k.data.instance && k.data.instance.type==="teams") {
+            k.$el.find("#addEmployeeToTeam").attr("name", "team-" + k.data.instance.attributes.tid)
+            k.$el.find("#newEmplBtn").remove();
             k.$el.find(".teamsColumn").remove();
-            $("#newEmplBtn").remove();
             url = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id + ",active=1";
             dispAllUrl = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id;
-            // insertUrl = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
         }
-        if(k.data && k.data.instance && k.data.instance.type==="jobs") {
+        else if(k.data && k.data.instance && k.data.instance.type==="jobs") {
             k.$el.find(".teamsColumn").remove();
-            $("#newEmplBtn").remove();
+            k.$el.find("#newEmplBtn").remove();
+            k.$el.find("#addEmployeeToTeam").remove();
             url = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id+",active=1";
             dispAllUrl = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id;
         }
+        else {
+            k.$el.find("#addEmployeeToTeam").remove();
+        }
+
 
 
         let employeesInstance = $("#employeesListUl").apiator({returninstance:true}).setUrl(url);

@@ -104,15 +104,15 @@
             </div>
             <div class="row">
                 <% if(attributes.active === "1") { %>
-                &nbsp;
-                <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
-                &nbsp;
-                <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteProduct($(this).data('instance'))" type="button">Sterge</button>
+                    &nbsp;
+                    <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+                    &nbsp;
+                    <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteProduct($(this).data('instance'))" type="button">Sterge</button>
                 <% } else { %>
-                &nbsp;
-                <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button" disabled>Editeaza</button>
-                &nbsp;
-                <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteProduct($(this).data('instance'))" type="button" disabled>Sterge</button>
+                    &nbsp;
+                    <button class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button" disabled>Editeaza</button>
+                    &nbsp;
+                    <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteProduct($(this).data('instance'))" type="button" disabled>Sterge</button>
                 <% } %>
             </div>
         </div>

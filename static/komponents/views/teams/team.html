@@ -7,42 +7,40 @@
 </style>
 
 <div class="checkRequired modal" data-module="teams" data-level="1">
-    <div class="">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <span id="teamName" class="ml-2"><%=attributes.name%></span>
-                    </div>
-                    <ul class="nav nav-pills">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span id="teamName" class="ml-2"><%=attributes.name%></span>
+                </div>
+                <ul class="nav nav-pills">
 
-                        <li class="nav-item">
-                            <a data-toggle="tab" href="#teamEditPanel" class="nav-link active">Echipa</a>
-                        </li>
-                        <li class="nav-item">
-                            <a data-toggle="tab" href="#teamMembersPanel" class="nav-link ">Membrii echipei</a>
-                        </li>
-                        <li class="nav-item">
-                            <a data-toggle="tab" href="#tab2Content" class="nav-link">Comenzi</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="modal-body bg-light">
-                    <div class="tab-content">
-                        <div class="tab-pane " role="tabpanel" id="teamMembersPanel">
-                            <div is="komponent" id="teamMembersList" data-url="/views/employees/list"></div>
-                        </div>
-                        <div class="tab-pane" id="tab2Content" data-resourcetype="collection" role="tabpanel">
-                            <div is="komponent" id="teamOrders" data-url="/views/orders/ordersTable"></div>
-                        </div>
-                        <div class="tab-pane active" role="tabpanel" id="teamEditPanel">
-                            <div is="komponent" id="editTeam" data-url="/views/teams/details"></div>
-                        </div>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#teamEditPanel" class="nav-link active">Echipa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#teamMembersPanel" class="nav-link ">Membrii echipei</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#tab2Content" class="nav-link">Comenzi</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-body bg-light">
+                <div class="tab-content">
+                    <div class="tab-pane " role="tabpanel" id="teamMembersPanel">
+                        <div is="komponent" id="teamMembersList" data-url="/views/employees/list"></div>
+                    </div>
+                    <div class="tab-pane" id="tab2Content" data-resourcetype="collection" role="tabpanel">
+                        <div is="komponent" id="teamOrders" data-url="/views/orders/ordersTable"></div>
+                    </div>
+                    <div class="tab-pane active" role="tabpanel" id="teamEditPanel">
+                        <div is="komponent" id="editTeam" data-url="/views/teams/details"></div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>
             </div>
         </div>
     </div>
