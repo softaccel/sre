@@ -243,7 +243,7 @@
                     },
                     class: "btn btn-danger",
                     callback: function () {
-                        instance.setUrl({deleteUrl: apiRoot+"/deliveries_contents/?filter=item="+instance.relationships.item.id + ",delivery=" + instance.relationships.delivery.id});
+                        instance.setUrl({deleteUrl: apiRoot+"/deliveries_contents/?filter=item="+instance.relationships.item.id + ",delivery=" + instance.re    lationships.delivery.id});
                         instance.delete();
 
                     }

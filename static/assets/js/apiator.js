@@ -1352,7 +1352,7 @@
 					{
 						_collection.clear();
 						_collection.receiveRemoteData(res.data);
-						resolve.call(_collection);
+						resolve(_collection);
 					})
 					.catch(function(jqXHR, textStatus, errorThrown)
 					{

@@ -89,28 +89,9 @@
                                 <i class="fas fa-chart-pie mr-1"></i>
                                 Sales
                             </h3>
-                            <div class="card-tools">
-                                <ul class="nav nav-pills ml-auto">
-                                    <li class="nav-item">
-                                        <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
-                                    </li>
-                                </ul>
-                            </div>
                         </div><!-- /.card-header -->
                         <div class="card-body">
-                            <div class="tab-content p-0">
-                                <!-- Morris chart - Sales -->
-                                <div class="chart tab-pane active" id="revenue-chart"
-                                     style="position: relative; height: 300px;">
-                                    <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
-                                </div>
-                                <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-                                    <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
-                                </div>
-                            </div>
+                            <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
                         </div><!-- /.card-body -->
                     </div>
                     <!-- /.card -->
@@ -595,10 +576,66 @@
     </section>
     <!-- /.content -->
 </div>
-
 <script>
     function init_komponent(k) {
-        k.$el.find("#testApp").apiator({resourcetype:"item",url:apiRoot+"/orders/46"})
+        // k.$el.find("#testApp").apiator({resourcetype:"item",url:apiRoot+"/orders/46"});
+
+        $("<span>").apiator({returninstance:true,resourcetype: "collection"}).setUrl(apiRoot+"/orders_states_cnt").loadFromRemote()
+            .then(function (collection) {
+                let data = [];
+                let backgroundColor = [];
+                let labels = [];
+
+                let orderColors = {
+                    offer: "#6f6f6f",
+                    proc: "#DC3545",
+                    ord: "#17A2B8",
+                    ready: "#FEC108",
+                    dlvd: "#2AA744",
+                    canceled: "#6C757D",
+                };
+                let orderStateLabels = {
+                    offer: "Oferta",
+                    proc: "In lucru",
+                    ord: "Comandat",
+                    ready: "Gata de livrare",
+                    dlvd: "Livrat",
+                    canceled: "Anulat",
+                };
+
+                let dlvrColors = {
+                    created: "secondary",
+                    delivered: "warning",
+                    received: "success",
+                    canceled: "secondary",
+                };
+
+
+                collection.items.forEach(function (item) {
+                    labels.push(orderStateLabels[item.id]);
+                    data.push(item.attributes.cnt);
+                    backgroundColor.push(orderColors[item.id]);
+                });
+                data = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'My First Dataset',
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        hoverOffset: 4
+                    }]
+                };
+
+                new Chart(
+                    document.getElementById('revenue-chart-canvas'),
+                    {
+                        type: 'doughnut',
+                        data: data,
+                    }
+                );
+
+
+            });
     }
 </script>
 
