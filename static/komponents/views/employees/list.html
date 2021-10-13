@@ -21,6 +21,14 @@
         padding: 5px;
     }
 
+    .deallocateBtn{
+        display: none;
+    }
+    .teamView .employeeCard:hover .deallocateBtn{
+        display: unset;
+        float: bottom;
+    }
+
 </style>
 
 <div class="checkRequired" data-module="employees" data-level="1">
@@ -58,8 +66,8 @@
                 data-pagesizeinp="#employeesPageSizeInp">
 
 
-                <li onclick="openEmployeeModal(this)" class="col-lg-2 col-md-3 col-sm-4" >
-                    <div class="card" style="min-height: 165px">
+                <li onclick="openEmployeeModal(this)" class="col-lg-2 col-md-3 col-sm-4">
+                    <div class="card employeeCard" style="min-height: 165px">
                         <div class="card-body text-center" style="cursor: pointer">
                             <div class="d-inline-block mb-3" style="width: 60px">
                                 <i class="fa fa-user d-inline rounded-circle bg-secondary" style="font-size: 15px; padding: 10px; color: white"></i>
@@ -68,6 +76,9 @@
                             <strong><%=attributes.fname%> <%=attributes.lname%></strong>
                             <br>
                             <span class="font-weight-normal"><%=relationships.jobtitle.attributes.name%></span>
+                            <div class="">
+                                <button class="btn btn-sm btn-danger deallocateBtn" onclick="removeEmplFromTeam(event)"><i class="fa fa-trash"></i> Dealoca</button>
+                            </div>
                         </div>
                     </div>
                 </li>
@@ -96,6 +107,39 @@
         komponentor.intent('/views/employees/newemployee').data(
             {instance:$("#employeesListUl").data('instance')}
         ).send();
+    }
+    function removeEmplFromTeam(e) {
+        e.cancelBubble = true;
+        let instance = $(e.target).data().instance;
+        komponentor.intent("/common/messagemodal").data({
+            body: "Esti sigur ca vrei sa dealoci angajatul <br><strong>"+instance.attributes.fname +
+                instance.attributes.lname + "</strong> de la echipa",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        instance.update({team:null}).then(function () {
+                            instance.collection.loadFromRemote();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
+
+
+
+
     }
 
     /**
@@ -126,7 +170,7 @@
                     label: "Angajat",
                     type: "select",
                     name: "employee",
-                    url: "/employees_names?filter_advanced=team"+ encodeURIComponent(" != " + team_id + " OR team IS NULL"),
+                    url: "/employees_names",
                     labelfnc: "fullname",
                     idfnc: "id"
                 }
@@ -148,9 +192,11 @@
         let dispAllUrl = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname";
 
         if(k.data && k.data.instance && k.data.instance.type==="teams") {
-            k.$el.find("#addEmployeeToTeam").attr("name", "team-" + k.data.instance.attributes.tid)
+            k.$el.addClass("teamView");
+            k.$el.find("#addEmployeeToTeam").attr("name", "team-" + k.data.instance.attributes.tid);
             k.$el.find("#newEmplBtn").remove();
             k.$el.find(".teamsColumn").remove();
+            k.teamId = k.data.instance.attributes.tid
             url = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id + ",active=1";
             dispAllUrl = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id;
         }

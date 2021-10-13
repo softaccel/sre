@@ -164,6 +164,7 @@
 
         function getUserRights () {
             return new Promise((resolve, reject) => {
+                console.log(apiRoot,"*************")
                 $.ajax({
                     url: apiRoot + "/users/" + userId + "/users_meta/?filter=meta_key=~rights.",
                     type: "GET",

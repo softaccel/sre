@@ -59,7 +59,11 @@
                                 <td><%= attributes.name %></td>
                                 <td><%= attributes.address1 %></td>
                                 <td><%= attributes.cod_fiscal %></td>
-                                <td align="center"><button class="btn-primary btn btn-sm checkDelete" onclick="deletePartner(this,event)"><i class="fa fa-trash-alt"></i> Sterge</button></td>
+                                <td align="center">
+                                    <% if(id*1!==0) { %>
+                                    <button class="btn-danger btn btn-sm checkDelete" onclick="deletePartner(this,event)"><i class="fa fa-trash-alt"></i> Sterge</button>
+                                    <% } %>
+                                </td>
                             </tr>
                             </tbody>
                             <tbody class="d-none">

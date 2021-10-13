@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap">
 
 <!--    <link href="adminlte.min.css" rel="stylesheet">-->
 
@@ -34,10 +35,9 @@
     <!--    <link href="assets/css/selectize.bootstrap3.css" rel="stylesheet">-->
     <link href="assets/css/select2.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
     <link href="assets/css/bootstrap4-toggle.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/chart.js"></script>
 
     <style>
         body {
@@ -91,10 +91,10 @@
 <script src="assets/js/jquery.scannerdetection.js"></script>
 <script src="assets/js/select2.min.js"></script>
 <script src="assets/js/select2wrapper.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.js"></script>
+<script src="assets/js/bootstrap4-toggle.js"></script>
 <script src="assets/js/label_printer.js"></script>
-<script type="text/javascript" src="assets/js/moment.min.js"></script>
-<script type="text/javascript" src="assets/js/daterangepicker.js"></script>
+<script src="assets/js/moment.min.js"></script>
+<script src="assets/js/daterangepicker.js"></script>
 
 <script>
     /**
@@ -198,12 +198,9 @@
 
     Promise.all([p1,p2])
         .then((values)=>{
-            // console.log(values);
             let environments,active;
             [environments,active] = values;
             active = active.active;
-            // console.log(environments,active);
-            // console.log(environments,active);
             backendUrl = environments[active].backendUrl;
             apiRoot = environments[active].feDBapiUrl;
             authUrl = environments[active].authUrl;
