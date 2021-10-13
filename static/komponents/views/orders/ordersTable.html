@@ -185,8 +185,7 @@
 
     function init_komponent(k) {
 
-        let url = apiRoot+ "/orders?page[orders_extended][offset]=0&page[orders_extended][limit]=10&include=doc_id,partner_id&sort=-created_on";
-        // let insertUrl = apiRoot+"/orders?page[orders_extended][offset]=0&page[orders_extended][limit]=10";
+        let url = apiRoot+ "/orders?include=doc_id,partner_id&sort=-created_on";
 
         if (k.data && k.data.instance && k.data.instance.type==="partners") {
             k.$el.find(".customerColumn").remove();
