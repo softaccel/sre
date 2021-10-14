@@ -243,17 +243,41 @@
                     </div>
                 </td>
                 <td>
-                    <div class="values"><%= attributes.start.split(' ')[0] %></div>
-                    <div class="values" style="min-width: 100px; "><%= attributes.start.split(' ')[1] %> - <%= attributes.stop?attributes.stop.split(' ')[1]:'-' %></div>
+                    <%
+                    let startD = attributes.start.split(' ');
+                    let startT = startD[1].substr(0,5);
+                    startD = startD[0];
+
+                    let stopD = attributes.stop ? attributes.stop.split(' ') : null;
+                    let stopT = stopD ? stopD[1].substr(0,5) : null;
+                    stopD = stopD ? stopD[0] : null;
+                    %>
+                    <div class="values badge badge-dark"><%= startD %></div>
+                    <div class="values" style="min-width: 100px; "><%= startT %> - <%= stopT %></div>
+<!--                    <div class="inputs">-->
+<!--                        <div class="d-inline">De la<br><input type="datetime-local" style="max-width: 220px" class="form-control form-control-sm" id="inputStart" name="start" value="<%= (new Date(attributes.start)).toISOString().slice(0,-1) %>"></div>-->
+<!--                        <div class="d-inline">Pana la<br><input type="datetime-local" style="max-width: 220px" class="form-control form-control-sm" id="inputStop" name="stop" value="<%= attributes.stop?(new Date(attributes.stop)).toISOString().slice(0,-1):'' %>"></div>-->
+<!--                    </div>-->
                     <div class="inputs">
-                        <div class="d-inline">De la<br><input type="datetime-local" style="max-width: 220px" class="form-control form-control-sm" id="inputStart" name="start" value="<%= (new Date(attributes.start)).toISOString().slice(0,-1) %>"></div>
-                        <div class="d-inline">Pana la<br><input type="datetime-local" style="max-width: 220px" class="form-control form-control-sm" id="inputStop" name="stop" value="<%= attributes.stop?(new Date(attributes.stop)).toISOString().slice(0,-1):'' %>"></div>
+                        <div class="form-row">
+                            <div class="col">
+                                <input type="text" name="startDate" value="<%= startD %>" size="5" class="form-control form-control-sm text-center">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-6">
+                                <input type="time" name="startTime" value="<%= startT %>" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-6">
+                                <input type="time" name="stopTime" value="<%= stopT %>" class="form-control form-control-sm">
+                            </div>
+                        </div>
                     </div>
                 </td>
                 <td style="width: 100px">
                     <div class="values"><%= attributes.duration ? Math.floor(attributes.duration/60)+":"+attributes.duration%60 : "-"  %></div>
                     <div class="inputs">
-                        <input type="number" value="<%= attributes.duration %>" style="max-width: 100px">
+                        <input type="text" name="duration" pattern="[0-9]{1,3}(:([0-9]{1,2}))?" value="<%= attributes.duration ? Math.floor(attributes.duration/60)+':'+attributes.duration%60 : ''  %>" style="max-width: 100px" onkeyup="updateStopTime(this)">
                     </div>
                 </td>
                 <td style="width: 100px">
@@ -295,6 +319,22 @@
 </div>
 
 <script>
+
+    function updateStopTime(src) {
+        let x = /^([0-9]{1,3})(:([0-9]{1,2}))?$/.exec(src.value);
+        if(x===null)
+            return;
+
+        let minutes = (x[2]===undefined) ? x[1] : x[1]*60+x[3]*1;
+
+        let startT = $(src).parents("tr").find("input[name=startTime]");
+        let startD = $(src).parents("tr").find("input[name=startDate]");
+        let t = new Date();
+        t.setTime(Date.parse(startD.val()+" "+startT.val()));
+        t.setTime(t.getTime()+minutes*60000);
+        let time = (t.getHours()+"").padStart(2,"0")+":"+(t.getMinutes()+"").padStart(2,"0");
+        $(src).parents("tr").find("input[name=stopTime]").val(time);
+    }
 
     function openOrderModal(src) {
 
@@ -392,15 +432,29 @@
         let orderSel = itemContainer.find("select[name=order]").val();
         let opSel = itemContainer.find("select[name=op]").val();
 
-        let startVal = itemContainer.find("input[name=start]").val();
-        let stopVal = itemContainer.find("input[name=stop]").val();
+        let startDate = itemContainer.find("input[name=startDate]").val();
+        let startTime = itemContainer.find("input[name=startTime]").val();
+        let stopTime = itemContainer.find("input[name=stopTime]").val();
         let hourly_rate = itemContainer.find("input[name=hourly_rate]").val();
         let currency = itemContainer.find("select[name=currency]").val();
 
-        let instance = $(src).data("instance");
-        console.log(instance);
+        let startTS = startDate+" " +startTime+":00";
+        let stopTS = null;
+        if(stopTime) {
+            if (Date.parse(startDate + " " + startTime) > Date.parse(startDate + " " + stopTime)) {
+                let m = new Date();
+                m.setTime(Date.parse(startDate));
+                m.setDate(m.getDate() + 1);
+                stopTS = m.getFullYear() + "-" + (m.getMonth() + 1) + "-" + m.getDate() + " " + stopTime + ":00";
+            } else {
+                stopTS = startDate + " " + stopTime + ":00";
+            }
+        }
 
-        if(opSel === null || startVal.length === 0 || stopVal.length === 0){
+        let instance = $(src).data("instance");
+
+
+        if(opSel === null || startTime.length === 0){
             komponentor.intent("/common/messagemodal").data({
                 body: "Completati campurile \"Operatie\", \"Start\" si \"Stop\" pentru a continua.",
                 buttons: [
@@ -419,13 +473,12 @@
         let data = {
             order: orderSel,
             operation: opSel,
-            start: startVal.replace("T", " ").split(".")[0],
-            stop: stopVal.replace("T", " ").split(".")[0],
+            start: startTS,
+            stop: stopTS,
             currency: currency,
             hourly_rate: hourly_rate
         };
 
-        console.log(data);
 
         instance.update(data).catch(function (e) {
             komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + e.jqXHR.responseText + "</pre>"}).send();
@@ -442,8 +495,10 @@
         if(opSel.hasClass("select2")) opSel.select2("destroy");
         if(orderSel.hasClass("select2")) orderSel.select2("destroy");
 
-        orderSel.empty().append("<option value='"+instance.relationships.order.id + "'>"
-            +instance.relationships.order.relationships.doc_id.attributes.docnum + "</option>");
+        if(instance.relationships.order) {
+            orderSel.empty().append("<option value='" + instance.relationships.order.id + "'>"
+                + instance.relationships.order.relationships.doc_id.attributes.docnum + "</option>");
+        }
 
         opSel.select2wrapper({
             // url: apiRoot+"/employees/"+instance.attributes.employee+"/emplToOrdAssoc?filter=status=ord",
