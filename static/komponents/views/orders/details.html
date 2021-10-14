@@ -188,12 +188,16 @@
                     <td><%= attributes.created_on %></td>
                 </tr>
                 <tr>
-                    <td>Date dare in executie</td>
+                    <td>Data dare in executie</td>
                     <td><%= attributes.startwork_on?attributes.startwork_on:"-" %></td>
                 </tr>
                 <tr>
                     <td>Data finalizare</td>
                     <td><%= attributes.readytodeliver_on?attributes.readytodeliver_on:"-" %></td>
+                </tr>
+                <tr>
+                    <td>Data estimata livrare</td>
+                    <td><%= attributes.closed_on?attributes.closed_on:"-" %></td>
                 </tr>
                 <tr>
                     <td>Data livrare</td>
