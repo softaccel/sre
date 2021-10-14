@@ -41,5 +41,15 @@
     "authUrl": "/spaleck/be/main/auth/login",
     "fileApiUrl": "http://192.168.10.160/FileApi",
     "logLevel": 3
+  },
+  "spaleck@incbx": {
+    "baseUrl": "/spaleck",
+    "feDBapiUrl": "http://10.1.1.10/dbapi/v2/spaleck",
+    "beDBapiUrl": "http://10.1.1.10/dbapi/v2/spaleck",
+    "backendUrl": "/spaleck/be",
+    "authUrl": "/spaleck/be/main/auth/login",
+    "fileApiUrl": "http://10.1.1.10/FileApi",
+    "logLevel": 3
   }
+
 }

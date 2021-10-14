@@ -115,6 +115,7 @@
         $("#selectLead").select2wrapper({
             url: apiRoot+"/teams/" + instance.id+"/employees",
             labelfld: function (item) {
+                console.log(item)
                 return item.attributes.fname + " " + item.attributes.lname;
             },
             idfld: function (item) {
