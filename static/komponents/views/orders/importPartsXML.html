@@ -191,6 +191,13 @@
                 return;
             }
 
+            if (files[0].type !== "text/xml") {
+                komponentor.intent("/common/errormodal").data({
+                    body: "Fisierul selectat trebuie sa fie in format XML."
+                }).send();
+                return;
+            }
+
             let fd = new FormData();
             fd.append("file",files[0]);
             let p = new Promise(function (resolve, reject) {

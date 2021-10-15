@@ -76,7 +76,7 @@
                 <div class="col-3">Functia</div>
                 <div class="col-9"><%= relationships.jobtitle.attributes.name %></div>
                 <div class="col-9">
-                    <select class="form-control" name="jobtitle" data-source="<%= apiRoot+'/jobs' %>" data-type="operations" data-labelfld="name"  data-searchfld="name" data-searchop="~=~"></select>
+                    <select class="form-control" required name="jobtitle" data-source="<%= apiRoot+'/jobs' %>" data-type="operations" data-labelfld="name"  data-searchfld="name" data-searchop="~=~"></select>
                 </div>
             </div>
             <div class="row">
@@ -89,7 +89,7 @@
             <div class="row">
                 <div class="col-3">Data nasterii</div>
                 <div class="col-9"><%= attributes.bdate %></div>
-                <div class="col-9"><input required name="bdate" class="form-control form-control-sm" type="date" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
+                <div class="col-9"><input name="bdate" class="form-control form-control-sm" type="date" onkeyup="if(event.keyCode==13) saveEmployee(this);"></div>
             </div>
             <div class="row">
                 <div class="col-3">CNP</div>
@@ -158,7 +158,7 @@
                 <% if(attributes.active === "1") { %>
                     <button class="btn btn-warning btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
                     &nbsp;
-                    <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
+                    <button class="btn btn-danger btn-delete checkDelete hide-on-edit" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
                 <% } else { %>
                     <button class="btn btn-warning btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button" disabled>Editeaza</button>
                     &nbsp;

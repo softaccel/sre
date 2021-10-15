@@ -108,7 +108,7 @@
                     &nbsp;
                     <button class="btn btn-warning btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
                     &nbsp;
-                    <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteProduct($(this).data('instance'))" type="button">Sterge</button>
+                    <button class="btn btn-danger btn-delete checkDelete hide-on-edit" data-dismiss="modal" onclick="deleteProduct($(this).data('instance'))" type="button">Sterge</button>
                 <% } else { %>
                     &nbsp;
                     <button class="btn btn-warning btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button" disabled>Editeaza</button>
@@ -167,6 +167,8 @@
         let form = $("#productFormSubmit")[0];
 
         util.captureFormSubmit(form, function (data) {
+            data.unit_price = parseFloat(data.unit_price);
+            console.log(data);
             instance.update(data);
         });
     }

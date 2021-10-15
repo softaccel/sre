@@ -36,7 +36,17 @@
             <table class="order-summary-table">
                 <tr>
                     <td>Nr. comanda intern</td>
-                    <td><%= relationships.doc_id.attributes.docnum %></td>
+                    <td>
+                        <span class="display"><%= relationships.doc_id.attributes.docnum %></span>
+                        <span class="edit" style="min-width: 200px">
+                        <input type="text" id="docnumChange" class="form-control form-control-sm" value="<%= relationships.doc_id.attributes.docnum %>">
+                    </span>
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editDocnumChange(this)">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveDocnumChange(this)"><i
+                                class="fa fa-save"></i></button>
+                    </td>
                 </tr>
                 <tr>
                     <td>Denumire</td>
@@ -45,11 +55,9 @@
                         <span class="edit" style="min-width: 200px">
                         <input type="text" id="denumChange" class="form-control form-control-sm" value="<%= attributes.label %>">
                     </span>
-                        <div>
-                            <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editDenumChange(this)">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                        </div>
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editDenumChange(this)">
+                            <i class="fa fa-edit"></i>
+                        </button>
                         <button class="btn btn-success float-right btn-sm save" onClick="saveDenumChange(this)"><i
                                 class="fa fa-save"></i></button>
                     </td>
@@ -145,11 +153,9 @@
                             <% }  %>
                         </select>
                     </span>
-                        <div>
-                            <button class="btn btn-warning float-right btn-sm edit checkUpdate" onClick="editTeamAssoc(this)">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                        </div>
+                        <button class="btn btn-warning float-right btn-sm edit checkUpdate" onClick="editTeamAssoc(this)">
+                            <i class="fa fa-edit"></i>
+                        </button>
                         <button class="btn btn-success float-right btn-sm save" onClick="saveTeamAssoc(this)">
                             <i class="fa fa-save"></i>
                         </button>
@@ -165,10 +171,8 @@
                         <span class="edit" style="min-width: 200px">
                             <input type="text" id="estTimeChange" class="form-control form-control-sm" value="<%= est_work_specific ? est_work_specific : '' %>">
                         </span>
-                        <div>
-                            <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
-                                    onClick="editEstTimeChange(this)"><i class="fa fa-edit"></i></button>
-                        </div>
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
+                                onClick="editEstTimeChange(this)"><i class="fa fa-edit"></i></button>
                         <button class="btn btn-success float-right btn-sm save" onClick="saveEstTimeChange(this)"><i
                                 class="fa fa-save"></i></button>
                     </td>
@@ -206,10 +210,8 @@
                             <input type="text" id="orderValueChange" class="form-control form-control-sm"
                                    value="<%= attributes.order_value %>">
                         </span>
-                        <div>
-                            <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
-                                    onClick="editOrderValueChange(this)"><i class="fa fa-edit"></i></button>
-                        </div>
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
+                                onClick="editOrderValueChange(this)"><i class="fa fa-edit"></i></button>
                         <button class="btn btn-success float-right btn-sm save" onClick="saveOrderValueChange(this)"><i
                                 class="fa fa-save"></i></button>
                     </td>
@@ -222,10 +224,8 @@
                             <input type="text" id="calculatedPriceChange" class="form-control form-control-sm"
                                    value="<%= attributes.calculated_value %>">
                         </span>
-                        <div>
-                            <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
-                                    onClick="editCalcChangeChange(this)"><i class="fa fa-edit"></i></button>
-                        </div>
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
+                                onClick="editCalcChangeChange(this)"><i class="fa fa-edit"></i></button>
                         <button class="btn btn-success float-right btn-sm save" onClick="saveCalcChangeChange(this)"><i
                                 class="fa fa-save"></i></button>
                     </td>
@@ -339,7 +339,6 @@
         let $denum;
         $denum = $("#denumChange");
 
-
         $(src).parent().removeClass('editMode');
         $(src).data("instance").update({label: $denum.val()}).then(function (a) {
             // updateMetaVal($(src).data("instance"));
@@ -349,6 +348,31 @@
                     body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
                 }).send();
             });
+    }
+
+    function editDocnumChange(src) {
+        $(src).parent().parent().addClass('editMode');
+    }
+
+    function saveDocnumChange(src) {
+        let $docnum;
+        $docnum = $("#docnumChange");
+
+        console.log("instance", $(src).data("instance"));
+
+        let instance =  $(src).data("instance");
+        let tmpint = $("<span>").apiator({returninstance: true, resourcetype:"item"});
+        tmpint.setUrl(apiRoot+"/documents/"+instance.relationships.doc_id.id);
+        tmpint.id  = instance.relationships.doc_id.id;
+        tmpint.update({docnum: $docnum.val()}).then(function () {
+            $(src).parent().removeClass('editMode');
+            return $(src).data("instance").loadFromRemote();
+        })
+        .catch(function (data) {
+            komponentor.intent("/common/errormodal").data({
+                body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
+            }).send();
+        });
     }
 
     function editTeamAssoc(src) {
