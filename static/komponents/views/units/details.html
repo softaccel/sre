@@ -32,7 +32,11 @@
                 <div class="invalid-feedback"></div>
             </div>
         </div>
-        <button id="updateUnit" class="btn btn-primary checkUpdate" type="submit" form="customerDataForm">Save</button>
+        <div class="row">
+            <button id="updateUnit" class="btn btn-warning checkUpdate" type="submit" form="customerDataForm">Save</button>
+            &nbsp;
+            <button class="btn-danger btn checkDelete" id="deleteUnit">Sterge</button>
+        </div>
     </div>
 </div>
 
@@ -53,6 +57,7 @@
         });
 
         if (k.data.instance.hasOwnProperty("items")) {
+            k.$el.find("#deleteUnit").remove();
             return;
         }
         form.unit.disabled = true;
@@ -111,5 +116,44 @@
                     }
                 })
         }
+
+
+        function deleteUnit(){
+            let instance = k.data.instance;
+
+            komponentor.intent("/common/messagemodal").data({
+                body: "Esti sigur ca vrei sa stergi unitatea <br><strong>"+ instance.attributes.unit   + "</strong>",
+                buttons: [
+                    {
+                        label: "Da",
+                        class: "btn-danger",
+                        attrs: {
+                            "data-dismiss":"modal"
+                        },
+                        callback: function () {
+                            instance.delete()
+                                .then(function () {
+                                    $("#unitModal").modal("hide");
+                                })
+                                .catch(function(data){
+                                console.log(data);
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                                }).send();
+                            });
+                        }
+                    },
+                    {
+                        label: "Nu",
+                        class: "btn-secondary",
+                        attrs: {
+                            "data-dismiss":"modal"
+                        }
+                    }
+                ]
+            }).send();
+        }
+
+        k.$el.find("#deleteUnit").on('click', deleteUnit);
     }
 </script>

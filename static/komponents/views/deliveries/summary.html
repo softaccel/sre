@@ -24,7 +24,7 @@
     .btn.btn-save{
         display: none;
     }
-    .editMode .btn.btn-edit{
+    .editMode .btn.btn-edit, .editMode .btn.btn-delete{
         display: none;
     }
     .editMode .btn.btn-save{
@@ -103,15 +103,15 @@
             </div>
 
             <div class="input-group mt-5 hide-not-created">
-                <div class="row">
-                    <button class="btn btn-warning btn-save" type="submit">Salveaza</button>
+                <div class="row" style="margin-top: 25px">
+                    <button class="btn btn-success btn-save" type="submit">Salveaza</button>
                     &nbsp;
                     <button class="btn btn-secondary btn-save" type="button" id="cancelButton" onclick="exitEditMode();">Renunta</button>
                 </div>
                 <div class="row">
-                    <button id="editButton" class="btn btn-success btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+                    <button id="editButton" class="btn btn-warning btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
                     &nbsp;
-                    <button class="btn btn-danger checkDelete" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
+                    <button class="btn btn-danger btn-delete checkDelete" onclick="deleteEntry($(this).data('instance'))" data-dismiss="modal" type="button">Sterge</button>
                 </div>
             </div>
         </div>
