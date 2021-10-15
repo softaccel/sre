@@ -23,22 +23,6 @@
         white-space: nowrap;
     }
 
-    .hide-no-offer{
-        display: none;
-    }
-
-    .offer .hide-no-offer{
-        display: unset;
-    }
-
-    .ord .hide-no-offer{
-        display: unset;
-    }
-
-    .proc .hide-no-offer{
-        display: unset;
-    }
-
 </style>
 
 <div class="checkRequired" data-module="orders" data-level="1">
@@ -55,7 +39,7 @@
                     <a class="text-white">Valoare</a>
                 </th>
                 <th style="width: 100px">
-                    <div class="float-sm-right hide-no-offer">
+                    <div class="float-sm-right">
                         <button onclick="newOrderPartMeta()" type="button" data-toggle="tooltip" title="Adauga proprietate" data-placement="top" class="float-sm-right btn btn-primary btn-sm checkUpdate">
                             &nbsp;+&nbsp;
                         </button>
@@ -75,7 +59,7 @@
                 <td class="float-sm-right ">
                     <button class="btn btn-primary btn-sm edit" onclick="save(this)"><i class="fa fa-save"></i></button>
                     <button class="btn btn-secondary btn-sm edit" onclick="cancelEdit(this)"><i class="fa fa-arrow-left"></i></button>
-                    <div class="row hide-no-offer">
+                    <div class="row">
                         <button class="btn btn-warning btn-sm checkUpdate" onclick="edit(this)"><i class="fa fa-edit"></i></button>
                         <button class="btn btn-danger btn-sm checkDelete" onclick="deleteOrderPartMeta(this, event);"><i class="fa fa-trash-alt"></i></button>
                     </div>
