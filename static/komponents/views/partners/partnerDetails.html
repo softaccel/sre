@@ -24,10 +24,10 @@
     .partnerDetails.editMode .btn-edit,.partnerDetails.editMode .btn-delete{
         display: none;
     }
-    .partnerDetails.editMode .btn-save{
+    .partnerDetails.editMode .btn-save, .partnerDetails.editMode .btn-cancel{
         display: unset;
     }
-    .partnerDetails .btn-save{
+    .partnerDetails .btn-save, .partnerDetails .btn-cancel{
         display: none;
     }
 
@@ -161,10 +161,11 @@
         <div class="row" id="btnForPartner">
             <div class="col">
 
-                <button class="btn btn-warning btn-edit checkUpdate" onclick="$(this).parents('.partnerDetails').addClass('editMode')" type="button">Editeaza</button>
-                <button class="btn btn-success btn-save checkUpdate" onclick="console.log($(this).data())" type="button">Salveaza</button>
+                <button class="btn btn-warning btn-edit checkUpdate" onclick="enterEditMode(this);" type="button">Editeaza</button>
+                <button class="btn btn-success btn-save checkUpdate" onclick="console.log($(this).data())" form="customerDataForm" type="submit">Salveaza</button>
                 &nbsp;
                 <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
+                <button class="btn btn-secondary btn-cancel" onclick="$(this).parents('.partnerDetails').removeClass('editMode');" type="button">Renunta</button>
             </div>
             &nbsp;
         </div>
@@ -195,7 +196,7 @@
             console.log("///////////////////////////////",data,instance);
             instance.update(data)
                 .then(function () {
-                    $('#employeeSummary').removeClass('editMode');
+                    $(src).parents('.partnerDetails').removeClass('editMode');
                 })
                 .catch(function (jqxhr) {
                     komponentor.intent("/common/errormodal").data({
@@ -208,7 +209,6 @@
 
     function init_komponent(k) {
         console.log("------------",k);
-        // checkUserRights(k.$el, "partners");
         k.test = function () {
             alert("It works");
         };
@@ -219,7 +219,7 @@
         }
 
         k.data.instance.bindView(k.$el).loadFromRemote().then(function () {
-
+            // checkUserRights(k.$el, "partners");
         });
         // console.log(instance);
 
