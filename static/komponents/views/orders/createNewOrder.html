@@ -17,7 +17,6 @@
                 let formModal = data.k;
                 data = data.data;
 
-
                 if (data.partner_id === null) {
                     komponentor.intent("/common/errormodal").data({
                         body: "Selectarea clientului este obligatorie."
@@ -36,7 +35,6 @@
                 orderMeta.push({meta_key: "bestellung", meta_val: data.bestellung});
                 orderMeta.push({meta_key: "belegnummer", meta_val: data.belegnummer});
                 orderMeta.push({meta_key: "estimated_delivery", meta_val: data.estimated_delivery});
-                orderMeta.push({meta_key: "negotiated_value", meta_val: data.negotiated_value});
                 orderMeta.push({meta_key: "estimated_work", meta_val: data.estimated_work});
 
 
@@ -50,6 +48,10 @@
                         calculated_value: data.order_value,
                         orders_items: [],
                         orders_meta: orderMeta
+
+                    },
+                    relationships: {
+                        doc_id: data.docnum
                     }
                 };
 
@@ -69,6 +71,7 @@
             size: "lg",
             autoClose: false,
             fields:[
+                {type: "text", name: "docnum", label: "Nr. comanda intern"},
                 {type: "select", name: "partner_id", label: "Client", url: "/partners", labelfnc: "name", idfnc: "id"},
                 {type: "text", name: "label", label: "Denumire"},
                 {type: "text", name: "comments", label: "Descriere"},
@@ -76,7 +79,6 @@
                 {type: "text", name: "belegnummer", label: "Bestellung"},
                 {type: "date", name: "estimated_delivery", label: "Data estimata livrare"},
                 {type: "number", name: "order_value", label: "Valoare factura"},
-                {type: "number", name: "negotiated_value", label: "Valoare negociata"},
                 {type: "number", name: "estimated_work", label: "Efort estimat (ore)"}
             ],
         }).send();

@@ -173,6 +173,10 @@
                     }).send();
                     return 1;
                 }
+
+                if (data.unit_price === "" || data.unit_price === null)
+                    data.unit_price = 0.00;
+
                 instance.createItem(data).catch(function(data){
                     komponentor.intent("/common/errormodal").data({
                         body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
@@ -182,6 +186,7 @@
                 instance.view.el.children().last().fadeIn(500)[0].scrollIntoView();
             },
             title:"Adauga reper in catalog",
+            autoClose: false,
             fields: [
                 {
                     label: "Denumire",

@@ -223,7 +223,7 @@
                 delete employeesInstance.url.parameters.filter_advanced;
             }
             else {
-                employeesInstance.url.parameters.filter_advanced = encodeURIComponent("fname LIKE '%"+sTerm+"%' OR card='"+sTerm+"' OR lname like '%"+sTerm+"%'");
+                employeesInstance.url.parameters.filter_advanced = encodeURIComponent("fname LIKE '%"+sTerm+"%' OR card LIKE'"+sTerm+"%' OR lname like '%"+sTerm+"%'");
             }
 
             let activeVal = $(e.target.active).val();
