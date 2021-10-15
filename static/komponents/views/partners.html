@@ -94,6 +94,9 @@
 <script>
 
     function openPartnerModal(src) {
+        if ($(src).data('instance').id*1 === 0){
+            return;
+        }
         $(src).data("locked",true);
         komponentor.intent('/views/partners/partner')
             .data({instance:$(src).data('instance')})

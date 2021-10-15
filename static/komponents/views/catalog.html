@@ -91,6 +91,8 @@
                                    data-paging="#productListPaging"
                                    data-filter="#productListFilter"
                                    data-sort="#productListHeader">
+
+
                             <tr onclick="openProductModal(this);" style="cursor:pointer;">
                                 <td><%= id %></td>
                                 <td><%= attributes.name %></td>
@@ -131,6 +133,10 @@
 <script>
 
     function openProductModal(src){
+
+        if ($(src).data("instance").id*1 === 0) {
+            return;
+        }
         // $(src).data("locked", true);
         komponentor
             .intent('/views/catalog/productModal')

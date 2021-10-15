@@ -582,7 +582,7 @@
     function deleteUnit(src) {
 
         komponentor.intent("/common/messagemodal").data({
-            body: "Esti sigur ca vrei sa stergi pontajul lui <br><strong>" + $(src).data("instance").relationships.employee.attributes.fname + " " + $(src).data("instance").relationships.employee.attributes.lname + "</strong> de <strong>" + $(src).data("instance").attributes.duration + "ore?</strong>",
+            body: "Esti sigur ca vrei sa stergi pontajul lui <br><strong>" + $(src).data("instance").relationships.employee.attributes.fname + " " + $(src).data("instance").relationships.employee.attributes.lname + "</strong> de <strong>" + $(src).data("instance").attributes.duration + " minute?</strong>",
             buttons: [
                 {
                     label: "Da",
@@ -610,6 +610,7 @@
     }
 
     function duplicateItem(src) {
+
         let itemInstance = $(src).data("instance");
         komponentor.intent("/common/messagemodal").data({
             body: "Esti sigur ca vrei sa creezi o dublura pontajului lui <br><strong>" + itemInstance.relationships.employee.attributes.fname + " " + $(src).data("instance").relationships.employee.attributes.lname + "</strong> de <strong>" + $(src).data("instance").attributes.duration + "ore?</strong>",
@@ -684,6 +685,7 @@
 
         if (k.data && k.data.instance && k.data.instance.type === "employees") {
             k.$el.find(".employeeRelated").remove();
+            k.$el.find("#newTTBtn").remove();
         }
 
         k.$el.find("#dateRange").daterangepicker({showDropdowns:true,startDate:"05/01/2021"})

@@ -92,7 +92,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-3">Status</div>
-                                        <div class="col-1"><%= attributes.active %></div>
+                                        <div class="col-1"><%= attributes.active*1 === 1 ? "Activ" : "Inactiv" %></div>
                                         <div class="col-9">
                                             <label></label>
                                             <select id="userStatusSelect" class="form-control form-control-sm custom-select custom-select-sm" name="active" style="width: 100%">
