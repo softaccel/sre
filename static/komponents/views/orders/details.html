@@ -24,22 +24,6 @@
         display: unset;
     }
 
-    .hide-no-offer {
-        display: none;
-    }
-
-    .offer .hide-no-offer {
-        display: unset;
-    }
-
-    .ord .hide-no-offer {
-        display: unset;
-    }
-
-    .proc .hide-no-offer {
-        display: unset;
-    }
-
     .doc_id0 .notA000 {
         display: none;
     }
@@ -61,7 +45,7 @@
                         <span class="edit" style="min-width: 200px">
                         <input type="text" id="denumChange" class="form-control form-control-sm" value="<%= attributes.label %>">
                     </span>
-                        <div class="hide-no-offer">
+                        <div>
                             <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editDenumChange(this)">
                                 <i class="fa fa-edit"></i>
                             </button>
@@ -90,7 +74,7 @@
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ord`)"
                                    value="ord">Comandat</a>
-                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)"
+                                <a class="dropdown-item" style="cursor:pointer; color: red" onclick="changeState(this, `canceled`)"
                                    value="canceled">Anulat</a>
                             </div>
                             <% } else if(attributes.state === "ord") { %>
@@ -100,7 +84,9 @@
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `proc`)"
                                    value="proc">In Lucru</a>
-                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `canceled`)"
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `offer`)"
+                                   value="proc">Oferta</a>
+                                <a class="dropdown-item" style="cursor:pointer; color: red" onclick="changeState(this, `canceled`)"
                                    value="canceled">Anulat</a>
                             </div>
                             <% } else if(attributes.state === "proc") { %>
@@ -110,22 +96,31 @@
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ready`)"
                                    value="ctc">Gata de Livrare</a>
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ord`)"
+                                   value="ord">Comandat</a>
                             </div>
                             <% } else if(attributes.state === "ready") { %>
-                            <button disabled type="button"
+                            <button type="button"
                                     class="btn btn-sm btn-warning dropdown-toggle checkUpdate orderStageBtn"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gata de Livrare
                             </button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `dlvd`)"
                                    value="dlvd">Livrat</a>
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `proc`)"
+                                   value="proc">In Lucru</a>
                             </div>
                             <% } else if(attributes.state === "dlvd") { %>
-                            <button disabled type="button" class="btn btn-sm btn-success dropdown-toggle"
+                            <button type="button" class="btn btn-sm btn-success dropdown-toggle"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat
                             </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ready`)"
+                                   value="ctc">Gata de Livrare</a>
+                            </div>
+
                             <% } else if(attributes.state === "canceled") { %>
-                            <button disabled type="button" class="btn btn-sm btn-secondary dropdown-toggle"
+                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anulat
                             </button>
                             <% } %>
@@ -150,7 +145,7 @@
                             <% }  %>
                         </select>
                     </span>
-                        <div class="hide-no-offer">
+                        <div>
                             <button class="btn btn-warning float-right btn-sm edit checkUpdate" onClick="editTeamAssoc(this)">
                                 <i class="fa fa-edit"></i>
                             </button>
@@ -170,7 +165,7 @@
                         <span class="edit" style="min-width: 200px">
                             <input type="text" id="estTimeChange" class="form-control form-control-sm" value="<%= est_work_specific ? est_work_specific : '' %>">
                         </span>
-                        <div class="hide-no-offer">
+                        <div>
                             <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
                                     onClick="editEstTimeChange(this)"><i class="fa fa-edit"></i></button>
                         </div>
@@ -211,7 +206,7 @@
                             <input type="text" id="orderValueChange" class="form-control form-control-sm"
                                    value="<%= attributes.order_value %>">
                         </span>
-                        <div class="hide-no-offer">
+                        <div>
                             <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
                                     onClick="editOrderValueChange(this)"><i class="fa fa-edit"></i></button>
                         </div>
@@ -227,7 +222,7 @@
                             <input type="text" id="calculatedPriceChange" class="form-control form-control-sm"
                                    value="<%= attributes.calculated_value %>">
                         </span>
-                        <div class="hide-no-offer">
+                        <div>
                             <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
                                     onClick="editCalcChangeChange(this)"><i class="fa fa-edit"></i></button>
                         </div>
@@ -389,10 +384,6 @@
                     },
                     callback: function () {
                         instance.update({state: new_state})
-                            .then(function () {
-                                // console.log(old_state + " sadasdad " + new_state);
-                                $("#sumar").removeClass(old_state).addClass(new_state);
-                            })
                             .catch(function (data) {
                                 komponentor.intent("/common/errormodal").data({
                                     body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
@@ -421,8 +412,6 @@
             if (!$(this).hasClass("updateAllow"))
                 $(this).attr("disabled", true).removeClass("checkUpdate");
         });
-
-        $("#sumar").addClass(k.data.instance.attributes.state);
 
         // k.$el.parent().find("*").data("komponent",k);
 
