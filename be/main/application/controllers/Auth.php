@@ -51,7 +51,6 @@ class Auth extends CI_Controller
 		 * @var CI_DB_driver
 		 */
 		$url = $this->config->item("dbapi_url")."/__call__/login";
-//		$url = "http://localhost/dbapi/v2/spaleck/__call__/login";
 
 		$ch = curl_init();
 

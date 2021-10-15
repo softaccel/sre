@@ -66,8 +66,11 @@
                             <option value="canceled">Anulat</option>
                         </select>
                     </th>
+                    <th style="min-width: 150px" class="align-top top">
+                        Progres
+                    </th>
                     <th>
-                        <a class="text-white" data-sortfld="created_on">Data intrare
+                        <a class="text-white" data-sortfld="created_on">Data adaugare
                             <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                         <div class="input-group input-group-sm ">
                             <div class="input-group-prepend">
@@ -82,22 +85,7 @@
                             <input type="date" name="created_on" class="form-control-sm form-control" form="ordersListFilter" data-operator="<">
                         </div>
                     </th>
-                    <th>
-                        <a class="text-white" data-sortfld="closed_on">Data iesire
-                            <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
-                        <div class="input-group input-group-sm ">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">de la</span>
-                            </div>
-                            <input type="date" name="closed_on" class="form-control-sm form-control" form="ordersListFilter">
-                        </div>
-                        <div class="input-group input-group-sm">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">pana</span>
-                            </div>
-                            <input type="date" name="closed_on" class="form-control-sm form-control" form="ordersListFilter">
-                        </div>
-                    </th>
+
                 </tr>
                 </thead>
                 <tbody id="ordersList" data-paging="#ordersListPaging"
@@ -110,8 +98,12 @@
                     <td style="cursor: pointer"><%= attributes.label %></td>
                     <td class="customerColumn"><%= relationships.partner_id.attributes.name %></td>
                     <td class="state"><span class="badge badge-pill <%= attributes.state %>"> </span></td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                        </div>
+                    </td>
                     <td><%= attributes.created_on.substr(0,10) %></td>
-                    <td><%= attributes.closed_on?attributes.closed_on.substr(0,10):"-" %></td>
                 </tr>
                 </tbody>
             </table>
@@ -190,14 +182,14 @@
         if (k.data && k.data.instance && k.data.instance.type==="partners") {
             k.$el.find(".customerColumn").remove();
             $("#newOrderButtons").remove();
-            url = apiRoot+"/orders?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0" +
-                "&page[orders_extended][limit]=10&include=doc_id,partner_id&sort=-created_on";
+            url = apiRoot+"/orders?filter=partner_id="+k.data.instance.id+
+                "&include=doc_id,partner_id&sort=-created_on";
         }
 
         if (k.data && k.data.instance && k.data.instance.type==="teams") {
             // k.$el.find(".customerColumn").remove();
             $("#newOrderButtons").remove();
-            url = apiRoot+"/orders?filter=team="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10&include=doc_id,partner_id";
+            url = apiRoot+"/orders?filter=team="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10&include=doc_id,partner_id&sort=-created_on";
             // insertUrl = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
         }
 
