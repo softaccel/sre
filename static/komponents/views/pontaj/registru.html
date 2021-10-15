@@ -280,13 +280,16 @@
                         <input type="text" name="duration" pattern="[0-9]{1,3}(:([0-9]{1,2}))?" value="<%= attributes.duration ? Math.floor(attributes.duration/60)+':'+attributes.duration%60 : ''  %>" style="max-width: 100px" onkeyup="updateStopTime(this)">
                     </div>
                 </td>
-                <td style="width: 100px">
-                    <div class="btn-group" role="group" aria-label="Basic example">
+                <td style="width: 100px;">
+                    <div class="btn-group" role="group" aria-label="Basic example" style="display: flex; justify-content: flex-end; width: 100%">
 <!--                        <button class="btn btn-secondary btn-sm checkCreate" onclick="duplicateItem(this);"><i class="fa fa-copy" title="Duplicare"></i></button>-->
-                        <button class="btn btn-warning btn-sm checkUpdate" onclick="edit(this)" title="Editare"><i class="fa fa-edit"></i> </button>
-                        <button class="btn btn-danger btn-sm checkDelete" onclick="deleteUnit(this);" title="Stergere"><i class="fa fa-trash"></i></button>
-                        <button class="btn btn-primary btn-sm edit" onclick="save(this)" title="Salvare"><i class="fa fa-save"></i> </button>
-                        <button class="btn btn-secondary btn-sm edit" onclick="cancelEdit(this)" title="Anulare"><i class="fa fa-window-close"></i> </button>
+                        <% if(!stopD) { %>
+                        <button class="btn btn-dark btn-sm checkUpdate" style="flex: 0 1" onclick="stopCurrentTT(this)" title="Stop"><i class="fa fa-ban"></i> </button>
+                        <% } %>
+                        <button class="btn btn-warning btn-sm checkUpdate" style="flex: 0 1" onclick="edit(this)" title="Editare"><i class="fa fa-edit"></i> </button>
+                        <button class="btn btn-danger btn-sm checkDelete" style="flex: 0 1" onclick="deleteUnit(this);" title="Stergere"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-primary btn-sm edit" style="flex: 0 1" onclick="save(this)" title="Salvare"><i class="fa fa-save"></i> </button>
+                        <button class="btn btn-secondary btn-sm edit" style="flex: 0 1" onclick="cancelEdit(this)" title="Anulare"><i class="fa fa-window-close"></i> </button>
                     </div>
                 </td>
             </tr>
@@ -319,6 +322,43 @@
 </div>
 
 <script>
+
+    function stopCurrentTT(src) {
+
+        komponentor.intent("/common/messagemodal").data({
+            body: "Sunteti sigur ca doriti oprirea operatiunii?",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        let instance = $(src).data("instance");
+                        let currentDateTime = new Date();
+                        let time_offset = currentDateTime.getTimezoneOffset()/60;
+                        currentDateTime.setHours(currentDateTime.getHours() - time_offset);
+
+                        let formatted_time = (currentDateTime).toISOString().split('.')[0].replace("T", " ");
+
+                        instance.update({stop: formatted_time}).catch(function(data){
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
+    }
 
     function updateStopTime(src) {
         let x = /^([0-9]{1,3})(:([0-9]{1,2}))?$/.exec(src.value);
