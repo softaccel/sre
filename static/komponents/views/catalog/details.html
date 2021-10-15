@@ -64,7 +64,7 @@
             </div>
             <div class="row">
                 <div class="col-3">Tip</div>
-                <div class="col-9"><%= attributes.type %></div>
+                <div class="col-9"><%= attributes.type === "service" ? "Serviciu" : (attributes.type === "product" ? "Produs" : "Produs Compus") %></div>
                 <div class="col-9">
                     <select class="form-control" id="productTypeSelect" name="type">
                         <option value="service">Serviciu</option>
