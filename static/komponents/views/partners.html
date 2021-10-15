@@ -44,30 +44,25 @@
                                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                                     <input type="text" name="cod_fiscal" class="form-control-sm form-control" form="partnersListFilter" data-operator="~=~">
                                 </th>
-                                <th style="width: 150px"></th>
                             </tr>
                             </thead>
+                            <tbody class="d-none">
+                            <tr id="partnersListEmpty"><td colspan="4">Nu exista inregistrari care sa valideze criteriilor de filtrare</td></tr>
+                            </tbody>
                             <tbody id="partnersList" data-emptyview="#partnersListEmpty"
                                    data-resourcetype="collection"
                                    data-type="partners"
                                    data-offsetinp="#partnersOffsetInp" data-pagesizeinp="#partnersPageSizeInp"
                                    data-paging="#partnersListPaging"
                                    data-filter="#partnersListFilter"
-                                   data-sort="#partnersListHeader">
+                            data-sort="#partnersListHeader">
                             <tr onclick="openPartnerModal(this)" style="cursor:pointer;" class="order">
                                 <!--                            <td><%= id %></td>-->
                                 <td><%= attributes.name %></td>
                                 <td><%= attributes.address1 %></td>
                                 <td><%= attributes.cod_fiscal %></td>
-                                <td align="center">
-                                    <% if(id*1!==0) { %>
-                                    <button class="btn-danger btn btn-sm checkDelete" onclick="deletePartner(this,event)"><i class="fa fa-trash-alt"></i> Sterge</button>
-                                    <% } %>
-                                </td>
+
                             </tr>
-                            </tbody>
-                            <tbody class="d-none">
-                            <tr id="partnersListEmpty"><td colspan="4">Nu exista inregistrari care sa valideze criteriilor de filtrare</td></tr>
                             </tbody>
                             <tfoot>
                             <tr>
@@ -146,7 +141,7 @@
     function init_komponent(k,c) {
 
         let instance = $("#partnersList").apiator({
-            url:apiRoot+"/partners?page[partners][offset]=0&page[partners][limit]=10",
+            url:apiRoot+"/partners?page[partners][offset]=0&page[partners][limit]=10&filter=id<>1",
             type: "partners",
             resourcetype: "collection",
         }).data("instance");
