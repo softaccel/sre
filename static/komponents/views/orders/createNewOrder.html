@@ -47,11 +47,14 @@
                         user_id: jsonDec,
                         calculated_value: data.order_value,
                         orders_items: [],
-                        orders_meta: orderMeta
+                        orders_meta: orderMeta,
+                        doc_id:{
+                            docnum: data.docnum,
+                            user_id: userData.sub,
+                            partners_id: data.partner_id,
+                            type: "order"
+                        }
 
-                    },
-                    relationships: {
-                        doc_id: data.docnum
                     }
                 };
 
