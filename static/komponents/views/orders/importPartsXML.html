@@ -293,11 +293,11 @@
 
             let reqUrl = "";
             with (k.data.instance.insertUrl) {
-                reqUrl = protocol + "://" + fqdn + "/" + path.replace("orders_items_wmeta", "orders_items");
+                path = path.replace("orders_items_wmeta", "orders_items");
             }
 
             $.ajax({
-                url : reqUrl,
+                url : k.data.instance.insertUrl.toString(),
                 type : 'POST',
                 data : JSON.stringify(reqData),
                 processData: false,

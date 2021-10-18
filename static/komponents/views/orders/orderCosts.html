@@ -191,8 +191,6 @@
             }
         });
 
-        console.log("dataaaaaaaa", k.data);
-
         $("#diverseAgg").apiator({url:apiRoot+"/orders_costs_aggregated?filter=grouping=diverse,oid=" + k.data.instance.id,resourcetype: "collection"});
         $("#manoperaAgg").apiator({url:apiRoot+"/orders_costs_aggregated?filter=grouping=manopera,oid=" + k.data.instance.id,resourcetype: "collection"});
         $("#materialeAgg").apiator({url:apiRoot+"/orders_costs_aggregated?filter=grouping=materii%20prime,oid=" + k.data.instance.id,resourcetype: "collection"});
