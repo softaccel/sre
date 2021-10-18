@@ -36,7 +36,7 @@
                         <div class="inner" style="min-height: 120px">
                             <h4>Manopera</h4>
                             <div id="manoperaAgg">
-                                <h5><%= attributes.qty %> <%= attributes.unit %> / <%= attributes.total %><%= attributes.currency %></h5>
+                                <h5><%= attributes.qty %> <%= attributes.unit %> / <%= attributes.total %> <%= attributes.currency %></h5>
                             </div>
                         </div>
                         <a class="small-box-footer" onclick="filterCosts('manopera')">Afiseaza <i class="fas fa-arrow-circle-right"></i></a>
@@ -190,12 +190,15 @@
                 $("#orderCostsTotalEmpty").show();
             }
         });
-        $("#diverseAgg").apiator({url:apiRoot+"/orders/2/orders_costs_aggregated?filter=grouping=diverse",resourcetype: "collection"});
-        $("#manoperaAgg").apiator({url:apiRoot+"/orders/2/orders_costs_aggregated?filter=grouping=manopera",resourcetype: "collection"});
-        $("#materialeAgg").apiator({url:apiRoot+"/orders/2/orders_costs_aggregated?filter=grouping=materii%20prime",resourcetype: "collection"});
+
+        console.log("dataaaaaaaa", k.data);
+
+        $("#diverseAgg").apiator({url:apiRoot+"/orders_costs_aggregated?filter=grouping=diverse,oid=" + k.data.instance.id,resourcetype: "collection"});
+        $("#manoperaAgg").apiator({url:apiRoot+"/orders_costs_aggregated?filter=grouping=manopera,oid=" + k.data.instance.id,resourcetype: "collection"});
+        $("#materialeAgg").apiator({url:apiRoot+"/orders_costs_aggregated?filter=grouping=materii%20prime,oid=" + k.data.instance.id,resourcetype: "collection"});
 
         $("#newCostEntryBtn").on("click",function () {
-            komponentor.intent("/views/orders/costs/newcost").data({instance:costsListIntance,cb:()=>{$("#orderCostsTotal").data().instance.loadFromRemote()}}).send();
+            komponentor.intent("/views/orders/costs/newcost").data({instance:costsListIntance,cb:()=>{$("#orderCostsTotal").data().instance.loadFromRemote();  $("#diverseAgg")}}).send();
         });
 
 
