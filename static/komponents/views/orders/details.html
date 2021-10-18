@@ -311,8 +311,8 @@
 
         instance.update(data)
             .then(function (data) {
-                $("#estTimeText").text(new_est_time + " h");
-                $(src).parent().removeClass('editMode');
+                $("#estTimeText").text(new_est_time ? new_est_time + " h" : "-");
+                $(src).parent().parent().removeClass('editMode');
             })
             .catch(function (data) {
                 komponentor.intent("/common/errormodal").data({

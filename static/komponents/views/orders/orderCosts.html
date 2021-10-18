@@ -131,6 +131,13 @@
 
 <script>
 
+    function callbackUpdate() {
+        $("#orderCostsTotal").data().instance.loadFromRemote();
+        $("#manoperaAgg").data().instance.loadFromRemote();
+        $("#diverseAgg").data().instance.loadFromRemote();
+        $("#materialeAgg").data().instance.loadFromRemote();
+    }
+
     function deleteCost(src) {
         let instance = $(src).parent().parent().data("instance");
         komponentor.intent("/common/messagemodal").data({
@@ -143,7 +150,7 @@
                     },
                     class: "btn btn-danger",
                     callback: function () {
-                        instance.delete().catch(function(data){
+                        instance.delete().then(callbackUpdate).catch(function(data){
                             komponentor.intent("/common/errormodal").data({
                                 body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
                             }).send();
@@ -162,7 +169,7 @@
     }
 
     function editCost(src) {
-        komponentor.intent("/views/orders/costs/newcost").data({instance:$(src).data().instance,cb:()=>{$("#orderCostsTotal").data().instance.loadFromRemote()}}).send();
+        komponentor.intent("/views/orders/costs/newcost").data({instance:$(src).data().instance,cb: callbackUpdate}).send();
     }
 
     function filterCosts(filter) {
@@ -196,7 +203,7 @@
         $("#materialeAgg").apiator({url:apiRoot+"/orders_costs_aggregated?filter=grouping=materii%20prime,oid=" + k.data.instance.id,resourcetype: "collection"});
 
         $("#newCostEntryBtn").on("click",function () {
-            komponentor.intent("/views/orders/costs/newcost").data({instance:costsListIntance,cb:()=>{$("#orderCostsTotal").data().instance.loadFromRemote();  $("#diverseAgg")}}).send();
+            komponentor.intent("/views/orders/costs/newcost").data({instance:costsListIntance,cb: callbackUpdate}).send();
         });
 
 
