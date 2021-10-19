@@ -19,6 +19,7 @@
                     <th class="align-top" style="width: 100px">Nr. crt.</th>
                     <th class="align-top">Nume</th>
                     <th class="align-top">Tip</th>
+                    <th class="align-top">Cantitate</th>
                     <th class="align-top">Unitate</th>
                     <th class="align-top">Pret</th>
                 </tr>
@@ -28,6 +29,7 @@
                     <td><%= id %></td>
                     <td><%= attributes.name %></td>
                     <td><%= attributes.type %></td>
+                    <td><%= attributes.qty ? attributes.qty : "-" %></td>
                     <td><%= attributes.unit %></td>
                     <td><%= attributes.unit_price ? attributes.unit_price : "-" %> <%= attributes.currency !== null ? attributes.currency : "" %></td>
                 </tr>
@@ -43,6 +45,7 @@
 
         let instance_recipes = $("#recipeList").apiator({url: apiRoot + "/recipes_expanded?filter=parent_id=" + k.data.instance.id, returninstance: true});
         let formData;
+        console.log(instance_recipes)
         let instance = $("<span></span>").apiator({returninstance: true, resourcetype: "collection"}).setUrl(apiRoot+"/recipes");
 
         formData = {
