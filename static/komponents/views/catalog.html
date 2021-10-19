@@ -172,6 +172,7 @@
         let formData;
         formData = {
             callback: function (data) {
+                let formModal = data.k;
                 data = data.data;
                 if (data.name === "" || data.type === null || data.unit === null) {
                     komponentor.intent("/common/errormodal").data({
@@ -183,13 +184,14 @@
                 if (data.unit_price === "" || data.unit_price === null)
                     data.unit_price = 0.00;
 
-                instance.createItem(data).catch(function(data){
+                instance.createItem(data).then(() => {
+                    formModal.hide();
+                    instance.view.el.children().last().fadeIn(500)[0].scrollIntoView();
+                }).catch(function(data){
                     komponentor.intent("/common/errormodal").data({
                         body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
                     }).send();
                 });
-
-                instance.view.el.children().last().fadeIn(500)[0].scrollIntoView();
             },
             title:"Adauga reper in catalog",
             autoClose: false,
