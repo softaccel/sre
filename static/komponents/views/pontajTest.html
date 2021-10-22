@@ -1,0 +1,238 @@
+<style>
+
+</style>
+
+<div class="d-flex justify-content-center">
+    <form id="pontajTestForm">
+        <div class="card content" style="width: 30rem">
+            <h5 class="card-header bg-light">Pontaj</h5>
+            <div class="card-body" id="state0">
+                <h5 class="card-title">Cod angajat</h5>
+                <br>
+                <div class="d-flex justify-content-between">
+                    <input type="text" name="employeeId" id="employeeId">
+                    <button class="btn btn-success" type="submit">Submit</button>
+                </div>
+                <br>
+                <br>
+                <br>
+
+            </div>
+            <div class="card-body" id="state1">
+                <h5 class="card-title employeeName"></h5>
+                <br>
+                <div class="" id="state1Text"></div>
+                <br>
+                <br>
+                <div class="d-flex justify-content-between">
+                    <div></div>
+                    <div class="btn btn-success" id="state1Confirm">Da</div>
+                    <div></div>
+                    <div class="btn btn-danger" id="state1Reject">Nu</div>
+                    <div></div>
+                </div>
+                <br>
+
+            </div>
+            <div class="card-body" id="state2">
+                <h5 class="card-title employeeName"></h5>
+                <br>
+                <div>Selectati o comanda pentru a incepe pontarea.</div>
+                <br>
+                <ul class="list-group list-group-flush" id="allocatedOrdersList">
+                    <li class="list-group-item bg-light startWorkOrder"><%= attributes.order_name + " (" + attributes.op_name + ")" %></li>
+                </ul>
+                <br>
+
+            </div>
+            <div class="card-body" id="stateError">
+                <h5 class="card-title" id="stateErrorLbl"></h5>
+                <br>
+                <br>
+                <br>
+                <br>
+
+            </div>
+<!--            <div class="card-footer">-->
+<!--                <span class="text-center text-muted" id="statusLabel">Introdu codul de angajat</span>-->
+<!--            </div>-->
+        </div>
+    </form>
+</div>
+
+<script>
+
+
+
+    function init_komponent(k) {
+
+        function startWork(srcInst) {
+            let data = null;
+            if (srcInst.attributes.order_id === 1) {
+                data = { data: {
+                        type: "timetracking",
+                        attributes: {
+                            employee: srcInst.attributes.emplid,
+                        }}};
+            } else {
+                data = { data: {
+                        type: "timetracking",
+                        attributes: {
+                            hourly_rate: srcInst.attributes.hourly_rate,
+                            employee: srcInst.attributes.emplid,
+                            operation: srcInst.attributes.op_id,
+                            order: srcInst.attributes.order_id,
+                            currency: srcInst.attributes.currency
+                        }}};
+            }
+
+
+            $.ajax({
+                url : apiRoot+"/timetracking/",
+                type : 'POST',
+                data : JSON.stringify(data),
+                contentType: "application/vnd.api+json",
+            }).done(function () {
+                setState("state0");
+            }).fail(function () {
+                setState("stateError", "Error starting work");
+            });
+        }
+
+        function setState(state, message) {
+            k.$el.each(function () {
+                $(this).find("#state0").each(function () {
+                    if (state === "state0") {
+                        $(this).removeClass("d-none");
+                    } else {
+                        $(this).addClass("d-none");
+                    }
+                    $(this).find("#employeeId").text();
+                })
+
+                $(this).find("#state1").each(function () {
+                    if (state === "state1") {
+                        $(this).removeClass("d-none");
+                    } else {
+                        $(this).addClass("d-none");
+                    }
+                    $(this).find("#state1Text").text();
+                })
+
+                $(this).find("#state2").each(function () {
+                    if (state === "state2") {
+                        $(this).removeClass("d-none");
+                    } else {
+                        $(this).addClass("d-none");
+                    }
+                })
+
+                $(this).find("#stateError").each(function () {
+                    if (state === "stateError") {
+                        $(this).removeClass("d-none");
+                        $(this).find("#stateErrorLbl").text(message);
+                    } else {
+                        $(this).addClass("d-none");
+                        $(this).find("#stateErrorLbl").text();
+                    }
+                })
+            });
+        }
+
+        function stopWork() {
+            $.ajax({
+                url: apiRoot+"/timetracking/" + trackId,
+                method: "PATCH",
+                contentType:"application/vnd.api+json",
+                data: JSON.stringify({data: {
+                        "id": trackId,
+                        "type": "timetracking",
+                        "attributes": {
+                            "status": "f"
+                        }
+                }})
+            }).done(function () {
+                setState("state0");
+            }).fail(function (xhr) {
+                k.$el.find("#stateErrorLbl").text("Bad user ID.");
+                k.$el.find("#stateError").removeClass("d-none");
+            });
+        }
+
+        let instanceItem = $("<span>").apiator({resourcetype:"item",returninstance:true});
+        let instanceCollection = $("<span>").apiator({resourcetype:"collection",returninstance:true});
+        let util = instanceItem.getUtilities();
+        let form = k.$el.find("#pontajTestForm")[0];
+        let employeeId = null;
+        let trackId = null;
+
+        setState("state0");
+
+        util.captureFormSubmit(form, function (data) {
+            instanceItem.setUrl(apiRoot + "/tags/" + data.employeeId).loadFromRemote().then(function (response) {
+                employeeId = response.relationships.emplid.id;
+                k.$el.find(".employeeName").text(response.attributes.fname + " " + response.attributes.lname);
+                return instanceCollection.setUrl(apiRoot + "/tags/" + data.employeeId + "/started_work").loadFromRemote();
+            }).then(function (response) {
+                if (response.items.length === 0) {
+                    return true;
+                }
+
+                with (response.items[0].attributes) {
+                    k.$el.each(function () {
+                        if (order_label) {
+                            $(this).find("#state1Text").html('Doriti sa opriti pontajul pe comanda <strong>' + order_label + '</strong> (' + operation_name + ')?');
+                        } else {
+                            $(this).find("#state1Text").text("Doriti sa opriti pontajul?");
+                        }
+
+                        $(this).find("#state1Confirm").on("click", function () {
+                            stopWork();
+                        });
+                        $(this).find("#state1Reject").on("click", function () {
+                            setState("state0");
+                        });
+                    });
+                }
+
+                setState("state1");
+                trackId = response.items[0].id;
+                return false;
+
+            }).then(function (response) {
+                if (!response)
+                    return false;
+
+                let ordersInst = k.$el.find("#allocatedOrdersList").apiator({
+                    type: "alloc_orders",
+                    resourcetype: "collection",
+                    returninstance: true
+                });
+
+                return ordersInst.setUrl(apiRoot + "/tags/" + data.employeeId + "/alloc_orders").loadFromRemote();
+            }).then(function (response) {
+                if (response === false)
+                    return;
+
+                k.$el.find(".startWorkOrder").each(function () {
+                    $(this).on("click", function () {
+                        startWork($(this).data('instance'));
+                    });
+                });
+                setState("state2");
+
+            }).catch(function (reject) {
+
+                k.$el.find("#stateErrorLbl").text(reject.jqXHR);
+                let badIdRegex = new RegExp('tags\\/\\d{0,12}$');
+                if (reject.jqXHR.status === 404 && badIdRegex.test(reject.options.url.path)) {
+                    setState("stateError", "Bad user ID.");
+                }
+
+
+            });
+        });
+
+    }
+
+</script>
