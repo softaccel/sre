@@ -578,7 +578,7 @@
 </div>
 <script>
     function init_komponent(k) {
-        // k.$el.find("#testApp").apiator({resourcetype:"item",url:apiRoot+"/orders/46"});
+        k.$el.find("#testApp").apiator({resourcetype:"item",url:apiRoot+"/orders/46"});
 
         $("<span>").apiator({returninstance:true,resourcetype: "collection"}).setUrl(apiRoot+"/orders_states_cnt").loadFromRemote()
             .then(function (collection) {

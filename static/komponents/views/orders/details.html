@@ -35,30 +35,16 @@
         <div class="col-6" id="firstColOrdersDetails">
             <table class="order-summary-table">
                 <tr>
-                    <td>Nr. comanda intern</td>
+                    <td width="150">Nr. comanda intern</td>
                     <td>
                         <span class="display"><%= relationships.doc_id.attributes.docnum %></span>
                         <span class="edit" style="min-width: 200px">
-                        <input type="text" id="docnumChange" class="form-control form-control-sm" value="<%= relationships.doc_id.attributes.docnum %>">
+                        <input type="text" id="docnumChange" name="doc_id.docnum" class="form-control form-control-sm" value="<%= relationships.doc_id.attributes.docnum %>">
                     </span>
-                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editDocnumChange(this)">
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editFld(this)">
                             <i class="fa fa-edit"></i>
                         </button>
-                        <button class="btn btn-success float-right btn-sm save" onClick="saveDocnumChange(this)"><i
-                                class="fa fa-save"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Denumire</td>
-                    <td>
-                        <span class="display"><%= attributes.label %></span>
-                        <span class="edit" style="min-width: 200px">
-                        <input type="text" id="denumChange" class="form-control form-control-sm" value="<%= attributes.label %>">
-                    </span>
-                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editDenumChange(this)">
-                            <i class="fa fa-edit"></i>
-                        </button>
-                        <button class="btn btn-success float-right btn-sm save" onClick="saveDenumChange(this)"><i
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i
                                 class="fa fa-save"></i></button>
                     </td>
                 </tr>
@@ -67,10 +53,51 @@
                     <td><a href="#" onClick="event.preventDefault(); goToPartner(this);"><%=
                         relationships.partner_id.attributes.name %></a></td>
                 </tr>
-                <tr class="notA000">
-                    <td>Referinta interna</td>
-                    <td><%= attributes.cust_int_ref %></td>
+                <tr>
+                    <td>Denumire</td>
+                    <td>
+                        <span class="display"><%= attributes.label %></span>
+                        <span class="edit" style="min-width: 200px">
+                        <input type="text" name="label" class="form-control form-control-sm" value="<%= attributes.label %>">
+                    </span>
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editFld(this)">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i
+                                class="fa fa-save"></i></button>
+                    </td>
                 </tr>
+                <tr>
+                    <td>Descriere</td>
+                    <td>
+                        <span class="display"><%= attributes.comments %></span>
+                        <span class="edit" style="min-width: 200px">
+                        <input type="text" name="comments" class="form-control form-control-sm" value="<%= attributes.comments %>">
+                    </span>
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editFld(this)">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i
+                                class="fa fa-save"></i></button>
+                    </td>
+                </tr>
+                <tr class="notA000">
+                    <td>Auftrag</td>
+                    <td>
+                        <span class="display"><%= attributes.cust_int_ref %></span>
+                            <span class="edit" style="min-width: 200px">
+                            <input type="text" name="cust_int_ref" class="form-control form-control-sm" value="<%= attributes.cust_int_ref %>">
+                        </span>
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editFld(this)">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i class="fa fa-save"></i></button>
+                    </td>
+                </tr>
+<!--                <tr class="notA000">-->
+<!--                    <td>Bestellung</td>-->
+<!--                    <td><%= attributes.cust_int_ref %></td>-->
+<!--                </tr>-->
                 <tr class="notA000">
                     <td>Stadiu</td>
                     <td>
@@ -139,24 +166,20 @@
                 <tr class="notA000">
                     <td>Echipa responsabila</td>
                     <td>
-                    <span class="display">
-                    <% if(relationships.team) { %>
-                        <%= relationships.team.attributes.name %>
-                    <% } else { %>
-                        nealocat
-                    <% }  %>
-                    </span>
+                        <span class="display">
+                            <%= relationships.team ? relationships.team.attributes.name : "nealocat" %>
+                        </span>
                         <span class="edit" style="min-width: 200px">
-                        <select id="teamAllocation" style="width: 150px">
-                            <% if(relationships.team) { %>
-                            <option value="<%= relationships.team.id %>"><%= relationships.team.attributes.name %></option>
-                            <% }  %>
-                        </select>
-                    </span>
+                            <select id="teamAllocation" name="team" style="width: 150px">
+                                <% if(relationships.team) { %>
+                                <option value="<%= relationships.team.id %>"><%= relationships.team.attributes.name %></option>
+                                <% }  %>
+                            </select>
+                        </span>
                         <button class="btn btn-warning float-right btn-sm edit checkUpdate" onClick="editTeamAssoc(this)">
                             <i class="fa fa-edit"></i>
                         </button>
-                        <button class="btn btn-success float-right btn-sm save" onClick="saveTeamAssoc(this)">
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)">
                             <i class="fa fa-save"></i>
                         </button>
                     </td>
@@ -169,12 +192,11 @@
                     <td id="ordersMetaEstimatedWork" name="<%= id_est_work %>">
                         <span id="estTimeText" class="display"><%= est_work_specific ? est_work_specific + " h" : "-" %></span>
                         <span class="edit" style="min-width: 200px">
-                            <input type="text" id="estTimeChange" class="form-control form-control-sm" value="<%= est_work_specific ? est_work_specific : '' %>">
+                            <input type="text" id="estTimeChange" class="form-control form-control-sm" name="orders_meta.<%=id_est_work%>.meta_val" value="<%= est_work_specific ? est_work_specific : '' %>">
                         </span>
                         <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
-                                onClick="editEstTimeChange(this)"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-success float-right btn-sm save" onClick="saveEstTimeChange(this)"><i
-                                class="fa fa-save"></i></button>
+                                onClick="editFld(this)"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i class="fa fa-save"></i></button>
                     </td>
                 </tr>
             </table>
@@ -183,7 +205,7 @@
             <table class="order-summary-table">
                 <tbody>
                 <tr>
-                    <td>Data preluare comanda</td>
+                    <td  width="150">Data preluare comanda</td>
                     <td><%= attributes.created_on %></td>
                 </tr>
                 <tr>
@@ -196,7 +218,16 @@
                 </tr>
                 <tr>
                     <td>Data estimata livrare</td>
-                    <td><%= attributes.closed_on?attributes.closed_on:"-" %></td>
+                    <td>
+                        <span class="display"><%= attributes.closed_on?attributes.closed_on:"-" %></span>
+                        <span class="edit" style="min-width: 200px">
+                            <input type="text" name="closed_on" class="form-control form-control-sm" value="<%= attributes.closed_on %>">
+                        </span>
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editFld(this)">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i class="fa fa-save"></i></button>
+                    </td>
                 </tr>
                 <tr>
                     <td>Data livrare</td>
@@ -207,13 +238,14 @@
                     <td>
                         <span class="display"><%= attributes.order_value ?  attributes.order_value + " " + (relationships.currency?relationships.currency.id:"-") : "-" %></span>
                         <span class="edit" style="min-width: 200px">
-                            <input type="text" id="orderValueChange" class="form-control form-control-sm"
+                            <input type="text" id="orderValueChange" class="form-control form-control-sm" name="order_value"
                                    value="<%= attributes.order_value %>">
                         </span>
                         <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
-                                onClick="editOrderValueChange(this)"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-success float-right btn-sm save" onClick="saveOrderValueChange(this)"><i
+                                onClick="editFld(this)"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i
                                 class="fa fa-save"></i></button>
+
                     </td>
                 </tr>
                 <tr>
@@ -221,13 +253,11 @@
                     <td>
                         <span class="display"><%= attributes.calculated_value ?  attributes.calculated_value + " " + (relationships.currency ? relationships.currency.id:"-") : "-" %></span>
                         <span class="edit" style="min-width: 200px">
-                            <input type="text" id="calculatedPriceChange" class="form-control form-control-sm"
+                            <input type="text" class="form-control form-control-sm" name="calculated_value"
                                    value="<%= attributes.calculated_value %>">
                         </span>
-                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
-                                onClick="editCalcChangeChange(this)"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-success float-right btn-sm save" onClick="saveCalcChangeChange(this)"><i
-                                class="fa fa-save"></i></button>
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editFld(this)"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i class="fa fa-save"></i></button>
                     </td>
                 </tr>
                 <tr>
@@ -247,150 +277,95 @@
     // function updateMetaVal(instance) {
     // }
 
-    function editOrderValueChange(src) {
+    function editFld(src) {
         $(src).parent().parent().addClass('editMode');
     }
 
-    function saveOrderValueChange(src) {
-        let $order_value;
-        $order_value = $("#orderValueChange");
 
-        $(src).parent().removeClass('editMode');
-        $(src).data("instance").update({order_value: $order_value.val()})
-            .then(function (a) {
-                // updateMetaVal($(src).data("instance"));
-            })
-            .catch(function (data) {
-                komponentor.intent("/common/errormodal").data({
-                    body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
-                }).send();
-            });
-    }
+    /**
+     * smart update
+     * @param src
+     */
+    function saveFld(src) {
+        let parent = $(src).parent();
+        let inp = parent.find("input").attr("disabled",true);
+        if(!inp.length) {
+            inp = parent.find("select").attr("disabled",true);
+        }
+        if(!inp.length) {
+            inp = parent.find("textarea").attr("disabled",true);
+        }
+        let name  = inp.attr("name");
 
-    function editCalcChangeChange(src) {
-        $(src).parent().parent().addClass('editMode');
-    }
+        let res = /(\w+)(\.(\w+)(\.(\w+))?)?/.exec(name);
 
-    function saveCalcChangeChange(src) {
-        let $calcPrice;
-        $calcPrice = $("#calculatedPriceChange");
+        console.log(res);
+        let instance = $(src).data().instance;
+        let instanceToUpdate;
+        let upd = {};
+        let reload = false;
 
+        if(res[5]!==undefined) {
+            console.log('update 1:n relation');
+            reload = true;
+            instanceToUpdate = $("<span>")
+                .apiator({
+                    resourcetype: "item",
+                    id: res[3],
+                    returninstance: true
+                })
+                .setUrl( apiRoot + "/orders/" + instance.id + "/" + res[1] + "/"+res[3])
+            upd[res[5]] = inp.val();
+        }
+        else if(res[3]!==undefined) {
+            console.log('update 1:1 relation');
+            reload = true;
+            instanceToUpdate = $("<span>")
+                .apiator({
+                    resourcetype: "item",
+                    id: instance.relationships[res[1]].id,
+                    returninstance: true
+                })
+                .setUrl( apiRoot + "/orders/" + instance.id + "/" + res[1] + "/" + instance.relationships[res[1]].id)
+            upd[res[3]] = inp.val();
+        }
+        else {
+            instanceToUpdate = instance;
+            upd[name] = inp.val();
+        }
 
-        $(src).parent().removeClass('editMode');
-        $(src).data("instance").update({calculated_value: $calcPrice.val()}).then(function (a) {
-            // console.log(a);
-            // updateMetaVal($(src).data("instance"));
-        })
-            .catch(function (data) {
-                komponentor.intent("/common/errormodal").data({
-                    body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
-                }).send();
-            });
-    }
-
-    function editEstTimeChange(src) {
-        $(src).parent().parent().addClass('editMode');
-    }
-
-    function saveEstTimeChange(src) {
-        let est_time_id = $("#ordersMetaEstimatedWork").attr("name");
-        // console.log("asdasd" + est_time_id);
-
-        let instance = $("<span>").apiator({
-            resourcetype: "item",
-            url: apiRoot + "/orders_meta/" + est_time_id,
-            id: est_time_id,
-            returninstance: true
-        });
-
-        let new_est_time = $("#estTimeChange").val();
-
-        let data = {meta_val: new_est_time};
-
-        // console.log(data);
-
-        instance.update(data)
-            .then(function (data) {
-                $("#estTimeText").text(new_est_time ? new_est_time + " h" : "-");
+        instanceToUpdate.update(upd)
+            .then(function () {
                 $(src).parent().parent().removeClass('editMode');
+                if(reload) {
+                    instance.loadFromRemote();
+                }
             })
             .catch(function (data) {
                 komponentor.intent("/common/errormodal").data({
                     body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
                 }).send();
             })
+            .finally(function () {
+                inp.attr("disabled",true);
+            })
 
-        // console.log("asdasd ", new_est_time);
+        // normal attribute
     }
+
 
     function goToPartner(src) {
         komponentor.intent("/views/partners/addPartner").data({
             instance: $(src).data().instance.relationships.partner_id,
             title: "ceva"
-        })
-            .send();
+        }).send();
     }
 
-    function editDenumChange(src) {
-        $(src).parent().parent().addClass('editMode');
-    }
 
-    function saveDenumChange(src) {
-        let $denum;
-        $denum = $("#denumChange");
-
-        $(src).parent().removeClass('editMode');
-        $(src).data("instance").update({label: $denum.val()}).then(function (a) {
-            // updateMetaVal($(src).data("instance"));
-        })
-            .catch(function (data) {
-                komponentor.intent("/common/errormodal").data({
-                    body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
-                }).send();
-            });
-    }
-
-    function editDocnumChange(src) {
-        $(src).parent().parent().addClass('editMode');
-    }
-
-    function saveDocnumChange(src) {
-        let $docnum;
-        $docnum = $("#docnumChange");
-
-        console.log("instance", $(src).data("instance"));
-
-        let instance =  $(src).data("instance");
-        let tmpint = $("<span>").apiator({returninstance: true, resourcetype:"item"});
-        tmpint.setUrl(apiRoot+"/documents/"+instance.relationships.doc_id.id);
-        tmpint.id  = instance.relationships.doc_id.id;
-        tmpint.update({docnum: $docnum.val()}).then(function () {
-            $(src).parent().removeClass('editMode');
-            return $(src).data("instance").loadFromRemote();
-        })
-        .catch(function (data) {
-            komponentor.intent("/common/errormodal").data({
-                body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
-            }).send();
-        });
-    }
 
     function editTeamAssoc(src) {
         $(src).parent().parent().addClass('editMode');
         $("#teamAllocation").select2wrapper({url: apiRoot + "/teams", placeholder: "Aloca echipa", labelfld: "name"});
-    }
-
-    function saveTeamAssoc(src) {
-        $(src).parent().removeClass('editMode');
-        let $teamalloc = $("#teamAllocation");
-        $(src).data("instance").update({team: $teamalloc.val()}).then(function (a) {
-            // updateMetaVal($(src).data("instance"));
-        })
-            .catch(function (data) {
-                komponentor.intent("/common/errormodal").data({
-                    body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
-                }).send();
-            });
     }
 
     function changeState(src, new_state) {

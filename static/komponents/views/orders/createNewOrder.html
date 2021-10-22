@@ -48,17 +48,20 @@
                         calculated_value: data.order_value,
                         orders_items: [],
                         orders_meta: orderMeta,
-                        doc_id:{
-                            docnum: data.docnum,
-                            user_id: userData.sub,
-                            partners_id: data.partner_id,
-                            type: "order"
-                        }
 
                     }
                 };
 
-                k.data.instance.createItem(order)
+                if(data.docnum!=="" || data.docnum!==null) {
+                    order.attributes.doc_id = {
+                        docnum: data.docnum,
+                            user_id: userData.sub,
+                            partners_id: data.partner_id,
+                            type: "order"
+                    };
+                }
+
+                    k.data.instance.createItem(order)
                     .then(function () {
                         k.data.instance.view.el.children().last().click();
                         formModal.hide();
@@ -82,7 +85,7 @@
                 {type: "text", name: "belegnummer", label: "Bestellung"},
                 {type: "date", name: "estimated_delivery", label: "Data estimata livrare"},
                 {type: "number", name: "order_value", label: "Valoare factura"},
-                {type: "number", name: "estimated_work", label: "Efort estimat (ore)"}
+                {type: "number", name: "estimated_work", label: "Timp estimat (ore)"}
             ],
         }).send();
 

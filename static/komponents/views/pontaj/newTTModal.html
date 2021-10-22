@@ -1,5 +1,5 @@
 <style>
-    #anotherTTData>.row>div{
+    #anotherTTData .row>div{
         padding: 5px;
     }
 
@@ -12,15 +12,15 @@
         font-weight: bold;
     }
 
-    #newTTData>.row>div{
+    #newTTData .row>div{
         padding: 5px;
     }
 
-    #newTTData>.row{
+    #newTTData .row{
         border-bottom: silver solid 1px;
     }
 
-    #newTTData>.row>div:nth-child(1) {
+    #newTTData .row>div:nth-child(1) {
         padding: 10px;
         font-weight: bold;
     }
@@ -41,7 +41,6 @@
             <div class="modal-body">
                 <form id="newTTForm" class="d-none"></form>
                 <div>
-
                     <div id="anotherTTData">
                         <div class="row">
                             <div class="col-3">Angajat</div>
@@ -51,6 +50,9 @@
                             <div class="col-3">Comanda - Operatie</div>
                             <div class="col-9"><select id="selectComm" name="operation" form="newTTForm" class="form-control"></select></div>
                         </div>
+                        <div class="">
+                        </div>
+
                         <div id="newTTData">
                             <div class="row hide-till-comm">
                                 <div class="col-3">Start</div>
