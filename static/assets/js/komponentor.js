@@ -283,6 +283,10 @@
             });
         }
 
+        /**
+         *
+         * @returns {Promise<unknown>}
+         */
         function initKomponent () {
             return new Promise(function(resolve) {
                 let initFunc = typeof init_komponent==="function" ? init_komponent : new Function();
@@ -290,7 +294,7 @@
 
                 if(k.$el && $renderedKomponent.length) {
                     if(k.replace) {
-                        let id = k.$el.attr("id");
+                        // let id = k.$el.attr("id");
                         k.$el.replaceWith($renderedKomponent);
                         k.$el = $renderedKomponent;
                         // k.$el.attr("id",id);

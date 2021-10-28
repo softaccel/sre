@@ -1,0 +1,93 @@
+<style>
+    .loading-overlay {
+        position: fixed; /* Sit on top of the page content */
+        display: none; /* Hidden by default */
+        width: 100%; /* Full width (cover the whole page) */
+        height: 100%; /* Full height (cover the whole page) */
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #fdfdfd; /* Black background with opacity */
+        z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+        cursor: pointer; /* Add a pointer on hover */
+    }
+</style>
+<div class="container">
+    <div id="loader" class="loading-overlay" style="display: none">
+        Loading...
+    </div>
+    <div id="login">
+        <form onsubmit="event.preventDefault();$(this).data().komponent.checkuser(this);">
+            <input type="text" name="uid" required><button type="submit" id="submButt">Check</button>
+        </form>
+    </div>
+    <div id="invalidCode" style="display: none">
+        Codul introdus este invalid
+    </div>
+    <div id="severError" style="display: none">
+        Eroare pe server
+    </div>
+    <div id="serviceUnavail" style="display: none">
+        Serviciul este indisponibil
+    </div>
+    <div id="unknowError" style="display: none">
+        Eroare necunoscuta
+    </div>
+
+    <div id="projectSelect" class="d-none">
+
+    </div>
+    <div id="working" class="d-none">
+
+    </div>
+</div>
+
+<script>
+    function init_komponent(k) {
+        k.checkuser = function (src) {
+            k.$el.find("#loader").show();
+            // k.$el.find("#login").hide();
+
+            let inst = $("<span>").apiator({returninstance: true,resourcetype: "item"});
+            inst.setUrl(apiRoot+"/tags/"+src.uid.value)
+                .loadFromRemote()
+                .then(function (xhr) {
+                    k.$el.find("#loader").hide();
+                    inst.setUrl()
+                })
+                .catch(function (xhr) {
+                    // console.log(xhr)
+                    k.$el.find("#loader").hide();
+                    let cb;
+                    switch(xhr.jqXHR.status) {
+                        case "404":
+                            k.$el.find("#invalidCode").show();
+                            cb = ()=>k.$el.find("#invalidCode").show();
+                            break;
+                        case 500:
+                            k.$el.find("#severError").show();
+                            cb = ()=>k.$el.find("#severError").show();
+                            break;
+                        case 0:
+                            k.$el.find("#serviceUnavail").show();
+                            cb = ()=>k.$el.find("#serviceUnavail").show();
+                            break;
+                        default:
+                            k.$el.find("#unknowError").show();
+                            cb = ()=>k.$el.find("#unknowError").show();
+                    }
+
+
+                    setTimeout(cb,1000);
+
+
+                    src.uid.disabled = false;
+                    src.submButt.disabled = false;
+                })
+
+
+
+        }
+    }
+</script>

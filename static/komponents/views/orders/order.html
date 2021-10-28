@@ -88,6 +88,9 @@
                         <li class="nav-item notA000">
                             <a data-toggle="tab" href="#deliveriesPanel" class="nav-link" id="deliveriesTab">Livrari</a>
                         </li>
+                        <li class="nav-item notA000">
+                            <a data-toggle="tab" href="#reportsPanel" class="nav-link" id="reportsTab">Rapoarte</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="modal-body bg-white">
@@ -111,6 +114,9 @@
                         <div class="tab-pane fade" id="resursePanel">
                             <div is="komponent" data-url="/views/orders/orderEmployees" id="resurse"></div>
                         </div>
+                        <div class="tab-pane fade" id="reportsPanel">
+                            <div is="komponent" data-url="/views/reports/report_order_workedhours" id="reports"></div>
+                        </div>
 
                     </div>
                 </div>
@@ -127,6 +133,7 @@
     function init_komponent(k,d) {
 
         let source = k.data.source ? k.data.source : "orders";
+        console.log("************",k);
 
         k.$el.appendTo("body");
 
@@ -158,6 +165,8 @@
                     komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + resp.jqXHR.responseText + "</pre>"}).send();
                 });
         }
+
+        if(!k.data.instance && !k.data.orderId) throw "No order selected";
 
         function load_order() {
 
@@ -207,6 +216,7 @@
             }
             $("#proprietati").komponent({data:k.data});
             $("#resurse").komponent({data:k.data});
+            $("#reports").komponent({data:k.data});
             $("#documents").komponent({data:k.data});
 
             $("#sumarTab").tab("show");

@@ -1,0 +1,30 @@
+<div>
+    Ore lucrate
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Angajat</th>
+            <th>Manopera</th>
+            <th>Pret orar</th>
+            <th>Durata</th>
+            <th>Cost orar</th>
+        </tr>
+        </thead>
+        <tbody id="tbl_rep">
+        <tr>
+            <td><%= </td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    function init_komponent(k) {
+
+        console.log(k);
+        let url = apiRoot+"/report_agg_order_tt_op_empl";
+        k.$el.find("#tbl_rep").apiator(url);
+    }
+</script>

@@ -517,7 +517,7 @@
 					})
 					.catch(function(jqXHR, textStatus, errorThrown)
 					{
-						console.log("fail to load resource",_item.url,jqXHR, textStatus, errorThrown);
+						// console.log("fail to load resource",_item.url,jqXHR, textStatus, errorThrown);
 						fail(jqXHR, textStatus, errorThrown);
 						reject(jqXHR);
 					});

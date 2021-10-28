@@ -225,9 +225,16 @@
                     </div>
                 </td>
                 <td class="orderCol" style="width: 150px">
-                    <div class="values"><%= relationships.operation.attributes.name %></div>
+                    <div class="values">
+                        <%= relationships.operation ? relationships.operation.attributes.name : "-" %>
+                    </div>
                     <div class="inputs">
-                        <select name="op"  style="width: 100%"><option value="<%= relationships.operation.id %>"><%= relationships.operation.attributes.name %></option></select>
+                        <select name="op"  style="width: 100%">
+                            <% if(relationships.operation){ %>
+                            <option value="<%= relationships.operation.id %>"><%= relationships.operation.attributes.name %></option>
+                            <% } %>
+                        </select>
+
                     </div>
                 </td>
                 <td>
@@ -438,7 +445,7 @@
         console.log("----------------",src);
     }
 
-    timeRegex = /(\d+):(\d+):(\d+)/;
+    // timeRegex = /(\d+):(\d+):(\d+)/;
 
     function performSearch(src) {
         let $src = $(src);
@@ -674,8 +681,9 @@
             console.log("Emplid is present");
             return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team&filter=employee="+data.emplid;
         }
+
         if(data.orderid) {
-            console.log("Emplid is present");
+            console.log("orderid is present");
             return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team&filter=order="+data.orderid;
         }
 
@@ -683,7 +691,7 @@
 
     function init_komponent(k) {
 
-        if (k.data && k.data.instance && k.data.instance.type === "employees") {
+        if (k.data && ((k.data.instance && k.data.instance.type === "employees") || k.data.emplId)) {
             k.$el.find(".employeeRelated").remove();
             k.$el.find("#newTTBtn").remove();
         }
@@ -734,15 +742,6 @@
                 .data({instance: instance})
                 .send();
         });
-
-
-
-        let submitButton = k.$el.find("#timeTrackingEntriesFiltering").find("#submitBtn");
-
-
-        // $("#timeTrackingTable").find("input").on("change", function () {
-        //     submitButton.click();
-        // });
 
 
         let util = instance.getUtilities();

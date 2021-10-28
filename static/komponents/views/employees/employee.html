@@ -50,12 +50,16 @@
                     <li class="nav-item">
                         <a data-toggle="tab" href="#detaliiPanel" class="nav-link active">Sumar</a>
                     </li>
-                    <li class="nav-item" id="pontajTabFromEmployee">
-                        <a data-toggle="tab" href="#pontajPanel" class="nav-link">Pontaj</a>
-                    </li>
                     <li class="nav-item">
                         <a data-toggle="tab" href="#allocatedProjectsPanel" class="nav-link">Proiecte alocate</a>
                     </li>
+                    <li class="nav-item" id="pontajTabFromEmployee">
+                        <a data-toggle="tab" href="#pontajPanel" class="nav-link">Pontaj</a>
+                    </li>
+                    <li class="nav-item" id="reportTabFromEmployee">
+                        <a data-toggle="tab" href="#reportPanel" class="nav-link">Raport</a>
+                    </li>
+
                 </ul>
             </div>
             <div class="modal-body bg-light">
@@ -69,6 +73,10 @@
                     <div class="tab-pane" role="tabpanel" id="pontajPanel" >
                         <div id="employeeTimetracking" is="komponent" data-url="/views/pontaj/registru"></div>
                     </div>
+                    <div class="tab-pane" role="tabpanel" id="reportPanel" >
+                        <div id="employeeReport" is="komponent" data-url="/views/pontaj/report"></div>
+                    </div>
+
                 </div>
             </div>
             <div class="modal-footer">
@@ -100,17 +108,20 @@
             $modal.modal("hide");
         };
 
-        let dataToPass
-        if (k.data.emplId) {
-            let instance = $("<span>").apiator({url: apiRoot + "/employees/" + k.data.emplId, returninstance: true, resourcetype: "item"});
-            instance.loadFromRemote().then(function() {
-                dataToPass = {instance: instance};
-                $("#employeeTimetracking").komponent({data: dataToPass, parent: k});
-            });
-        } else {
-            dataToPass = k.data;
-            $("#employeeTimetracking").komponent({data: dataToPass, parent: k});
-        }
+        // let dataToPass;
+        // if (k.data.emplId) {
+        //     let instance = $("<span>").apiator({url: apiRoot + "/employees/" + k.data.emplId, returninstance: true, resourcetype: "item"});
+        //     instance.loadFromRemote().then(function() {
+        //         dataToPass = {instance: instance};
+        //         $("#employeeTimetracking").komponent({data: dataToPass, parent: k});
+        //     });
+        // } else {
+        //     dataToPass = k.data;
+        // }
+
+        $("#employeeTimetracking").komponent({data: k.data, parent: k});
+        $("#employeeReport").komponent({data: k.data, parent: k});
+
 
         $("#allocatedProjects").komponent({data:k.data,parent:k});
 
