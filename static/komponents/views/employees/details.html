@@ -344,7 +344,10 @@
 
             let modUrl = {};
             Object.assign(modUrl, instance.url);
-            delete modUrl.parameters['fields[employees]'];
+            console.log("''''''''''''''",modUrl);
+            if(modUrl.parameters)
+                delete modUrl.parameters['fields[employees]'];
+            console.log(instance);
 
             instance.bindView($('#employeeSummary'))
                 .setUrl(modUrl)

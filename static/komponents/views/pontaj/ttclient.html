@@ -12,14 +12,23 @@
         z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
         cursor: pointer; /* Add a pointer on hover */
     }
+    #projectSelect ul{
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+    }
+    #projectSelect li{
+        padding: 5px;
+    }
+
 </style>
 <div class="container">
     <div id="loader" class="loading-overlay" style="display: none">
         Loading...
     </div>
     <div id="login">
-        <form onsubmit="event.preventDefault();$(this).data().komponent.checkuser(this);">
-            <input type="text" name="uid" required><button type="submit" id="submButt">Check</button>
+        <form onsubmit="event.preventDefault();$(this).data().komponent.checkuser();">
+            <input type="text" name="uid" value="121212" required><button type="submit" id="submButt">Check</button>
         </form>
     </div>
     <div id="invalidCode" style="display: none">
@@ -35,59 +44,158 @@
         Eroare necunoscuta
     </div>
 
-    <div id="projectSelect" class="d-none">
-
+    <div id="projectSelect" style="display: none">
+        <h3></h3>
+        <form onsubmit="event.preventDefault();$(this).data().komponent.startWork(this);">
+            <select name="project">
+                <option value="<%= id %>"><%= attributes.order_name ? attributes.order_name : "fara nume" %> <%= attributes.op_name ? "/ "+attributes.op_name : "fara nume" %></option>
+            </select>
+            <button>Incepe lucru</button>
+        </form>
     </div>
-    <div id="working" class="d-none">
-
+    <div id="working" style="display: none">
+        <h2></h2>
+        <h3></h3>
+        <h4></h4>
+        <h5>In lucru de <span></span> ore</h5>
+        <button onclick="$(this).data().komponent.stopWork(this);">Stop</button>
+        <button onclick="$(this).parent().hide()">Anuleaza</button>
     </div>
 </div>
 
 <script>
     function init_komponent(k) {
-        k.checkuser = function (src) {
+        // current_ttregistry;
+
+        k.stopWork = function() {
+            k.$el.find("#loader").show();
+            let ttid = current_ttregistry.relationships.started_work[0].id;
+            let inst = $("<span>").apiator({returninstance:true,resourcetype:"item"}).setUrl(apiRoot+"/timetracking/"+ttid)
+            inst.id = ttid;
+            inst.update({status:"f"})
+                .then(function () {
+                    k.$el.find("#loader").hide();
+                    k.$el.find("#working").hide();
+                    k.checkuser();
+                })
+        };
+
+
+        k.startWork = function(src) {
+            k.$el.find("#loader").show();
+            let sel = $("#projectSelect form").find("option:selected").data().instance;
+            let data = {
+                employee: current_ttregistry.relationships.emplid.id,
+            };
+            if(sel.attributes.hourly_rate) {
+                data.hourly_rate = sel.attributes.hourly_rate;
+            }
+            if(sel.attributes.op_id) {
+                data.operation = sel.attributes.op_id;
+            }
+            if(sel.attributes.order_id) {
+                data.order = sel.attributes.order_id;
+            }
+            if(sel.attributes.currency) {
+                data.currency = sel.attributes.currency;
+            }
+
+            console.log(data);
+            $("<span>")
+                .apiator({returninstance: true,resourcetype: "collection"})
+                .setUrl(apiRoot+"/timetracking")
+                .append(data)
+                .then(function () {
+                    k.$el.find("#loader").hide();
+                    k.$el.find("#projectSelect").hide();
+                    k.checkuser();
+                })
+                .catch(function (xhr) {
+                    
+                });
+            console.log(sel)
+
+        };
+
+        k.checkuser = function () {
+            let form = k.$el.find("#login form")[0];
             k.$el.find("#loader").show();
             // k.$el.find("#login").hide();
 
             let inst = $("<span>").apiator({returninstance: true,resourcetype: "item"});
-            inst.setUrl(apiRoot+"/tags/"+src.uid.value)
+            inst.setUrl(apiRoot+"/tags/"+form.uid.value+"?include=started_work,emplid,alloc_orders")
                 .loadFromRemote()
-                .then(function (xhr) {
+                .then(function (data) {
+                    current_ttregistry = data;
+
                     k.$el.find("#loader").hide();
-                    inst.setUrl()
+                    if(data.relationships.started_work.length) {
+                        let cont = k.$el.find("#working").show();
+                        if(data.relationships.started_work[0].attributes.order_label) {
+                            cont.find("h3").html(data.relationships.started_work[0].attributes.order_label);
+                        }
+                        if(data.relationships.started_work[0].attributes.operation_name) {
+                            cont.find("h4").html(data.relationships.started_work[0].attributes.operation_name);
+                        }
+
+                        let dateDiff = (new Date()).getTime()-(new Date(data.relationships.started_work[0].attributes.start)).getTime();
+
+                        cont.find("h5 span").html(Math.round(dateDiff/3600000)+":"+Math.round(dateDiff/1000%60));
+                        return;
+                    }
+
+                    let projView = k.$el.find("#projectSelect");
+                    projView.find("h3").html(data.attributes.fname + " " + data.attributes.lname);
+                    let instance = projView.show().find("select").apiator({returninstance: true,resourcetype: "collection"});
+
+                    let projects = [
+                        {
+                            id: null,
+                            attributes:{
+                                op_id: null,
+                                op_name: null,
+                                order_id: null,
+                                order_name: null,
+                                hourly_rate: null,
+                                currency: null
+                            }
+                        },
+                        ...data.relationships.alloc_orders
+                    ];
+
+                    instance.loadFromData(projects);
+                    if(projects.length<2) {
+                        k.$el.find("#projectSelect").find("select").hide();
+                    }
+
                 })
                 .catch(function (xhr) {
-                    // console.log(xhr)
+                    console.log(xhr)
                     k.$el.find("#loader").hide();
                     let cb;
                     switch(xhr.jqXHR.status) {
                         case "404":
                             k.$el.find("#invalidCode").show();
-                            cb = ()=>k.$el.find("#invalidCode").show();
+                            cb = ()=>k.$el.find("#invalidCode").hide();
                             break;
                         case 500:
                             k.$el.find("#severError").show();
-                            cb = ()=>k.$el.find("#severError").show();
+                            cb = ()=>k.$el.find("#severError").hide();
                             break;
                         case 0:
                             k.$el.find("#serviceUnavail").show();
-                            cb = ()=>k.$el.find("#serviceUnavail").show();
+                            cb = ()=>k.$el.find("#serviceUnavail").hide();
                             break;
                         default:
                             k.$el.find("#unknowError").show();
-                            cb = ()=>k.$el.find("#unknowError").show();
+                            cb = ()=>k.$el.find("#unknowError").hide();
                     }
-
 
                     setTimeout(cb,1000);
 
-
-                    src.uid.disabled = false;
-                    src.submButt.disabled = false;
-                })
-
-
-
+                    form.uid.disabled = false;
+                    form.submButt.disabled = false;
+                });
         }
     }
 </script>

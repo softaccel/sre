@@ -19,7 +19,12 @@
         tmp = tmp.substr(1);
         let paras = tmp.split("|");
         res.path = paras.shift();
-        res.paras = paras;
+        res.paras = {}
+        paras.forEach(function (f) {
+            let tmp = f.split("=");
+            res.paras[tmp[0]] = tmp[1];
+        });
+
         return res;
     })();
 
@@ -313,8 +318,6 @@
                     .attr("is","komponent")
                     .find("*").data("komponent",k);
 
-
-                console.log("initKomponent",k);
 
 
                 let moduleName = initFunc(k);

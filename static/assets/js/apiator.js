@@ -605,7 +605,7 @@
 		 * @param ctx
 		 * @returns {_item}
 		 */
-		_item.loadFromData = function (data,db) {
+		_item.loadFromData = function (data) {
 			// throw "Asa";
 			let obj;
 
@@ -1092,8 +1092,9 @@
 		if(typeof url==="object" && url.hasOwnProperty("protocol") )
 			return url;
 
-		if(url.constructor!==String)
-			throw "URL is not a string: "+url.toString();
+		if(url.constructor!==String) {
+			throw "URL is not a string: " + url.toString();
+		}
 
 		let regExp = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
 		let parts = regExp.exec(url);
@@ -1317,6 +1318,9 @@
 			data.forEach(function (item) {
 				_collection.loadItem(item);
 			});
+
+			_collection.view.render();
+			return _collection;
 		};
 
 		_collection.clear = function() {
@@ -1502,14 +1506,17 @@
 				collection: _collection
 			};
 
-			if(itemData.id) {
+			if(itemData.id && _collection.url) {
 				opts.url = Object.assign({},_collection.url);
 				opts.url.path += "/" + itemData.id;
-				opts.updateUrl = Object.assign({},_collection.updateUrl);
+
+				opts.updateUrl = _collection.updateUrl ? Object.assign({},_collection.updateUrl) :  Object.assign({},_collection.url);
 				opts.updateUrl.path += "/" + itemData.id;
-				opts.deleteUrl = Object.assign({},_collection.deleteUrl);
+
+				opts.deleteUrl = _collection.deleteUrl ? Object.assign({},_collection.deleteUrl) :  Object.assign({},_collection.url);
 				opts.deleteUrl.path += "/" + itemData.id;
 			}
+
 
 			let newItem = Item(opts)
 				.bindView(ItemView({

@@ -26,6 +26,7 @@
 <!--                </div>-->
 <!--            </div>-->
             <button class="btn btn-primary" onclick="openCreateOrderModal()">Comanda noua</button>
+            <button class="btn btn-primary" onclick="reload()"><i class="fa fa-arrows"></i></button>
             <br>
             <br>
             <form id="ordersListFilter" class="d-none"><button type="submit" name="submit"></button></form>
@@ -68,6 +69,11 @@
                     </th>
                     <th style="min-width: 150px" class="align-top top">
                         Progres
+                        <input type="hidden" name="oid" data-operator="><" form="ordersListFilter">
+                        <select class="custom-select-sm custom-select" id="progressFilter">
+                            <option value="0">indiferent</option>
+                            <option value="1">In depasire</option>
+                        </select>
                     </th>
                     <th>
                         <a class="text-white" data-sortfld="created_on">Data adaugare
@@ -196,7 +202,12 @@
         komponentor.intent("/views/orders/createNewOrder").data({instance:$("#ordersList").data("instance")}).send();
     }
 
+
+
     function init_komponent(k) {
+
+
+
 
         let url = apiRoot+ "/orders?include=doc_id,partner_id,orders_working_hours&sort=-created_on";
 
@@ -313,7 +324,7 @@
 
         k.exec = function (b) {
             // console.log("exec order",k,b);
-        }
+        };
 
         let instance_lastissued = $("<span></span>").apiator({resourcetype: "collection", returninstance: true});
 
@@ -325,6 +336,41 @@
                 }
             });
         });
+
+
+
+
+        function filterByProgress() {
+            console.log("äääääääääääääÄÄ",instance);
+            if($("#progressFilter").val()*1===1) {
+                $.get(apiRoot+"/orders_working_hours?page[orders_working_hours][limit]=1000&filter_advanced="+encodeURIComponent("estimated IS NOT NULL AND total>estimated"))
+                    .done(function (data) {
+                        let tmp = [];
+                        data.data.forEach(function (item) {
+                            tmp.push(item.id);
+                        });
+                        console.log(tmp);
+                        instance.filtering.oid = tmp.join(";")
+                    })
+
+            }
+            else {
+                instance.filtering.oid = "";
+            }
+            instance.filtering.submit();
+        }
+
+        k.$el.find("#progressFilter").on("change",filterByProgress);
+
+        if(!komponentor.routing.paras.filter){
+            return;
+        }
+
+        if(komponentor.routing.paras.filter==="overtime") {
+            setTimeout(()=>filterByProgress(true,8),50);
+
+        }
+
 
     }
 

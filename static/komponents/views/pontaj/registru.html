@@ -153,11 +153,11 @@
                         <div class="dropdown-menu p-3" style="min-width: 350px">
                             <ul class="someSelect" id="" data-resourcetype="collection" data-filter="#orderSelectSearch">
                                 <li onclick="$('#longerThanCheck')[0].click();">
-                                    <input type="checkbox" id="longerThanCheck" onclick="filterLongerThen(this.checked,$(this).parent().find('input[type=number]').val()); event.stopPropagation();"> Durata mai mare de
+                                    <input type="checkbox" id="longerThanCheck" onclick="event.stopPropagation();filterLongerThen(this.checked,$(this).parent().find('input[type=number]').val()); "> Durata mai mare de
                                     <input type="number" style="width: 40px" onclick="event.stopPropagation();" value="8"> ore
                                 </li>
                                 <li onclick="$('#unallocatedCheck')[0].click();">
-                                    <input type="checkbox" id="unallocatedCheck" onclick="filterUnallocated(this.checked); event.stopPropagation();"> Comanda tampon
+                                    <input type="checkbox" id="unallocatedCheck" onclick="event.stopPropagation();filterUnallocated(this.checked); "> Comanda tampon
                                 </li>
                             </ul>
                         </div>
@@ -390,10 +390,9 @@
         }
         $(src).data("locked",true);
 
-        let orderId = $(src).data("instance").relationships.order.id;
         komponentor.intent('/views/orders/order')
             .data({
-                orderId: orderId,
+                orderId:  $(src).data("instance").relationships.order.id,
             })
             .send()
             .finally(function () {
@@ -421,15 +420,11 @@
     }
 
     function filterUnallocated(toggleOn) {
-        if(toggleOn) {
-            $($("#timeTrackingEntriesFiltering")[0].order).val("1").form().submit();
-        }
-        else {
-            $($("#timeTrackingEntriesFiltering")[0].order).val("").form().submit();
-        }
+        $($("#timeTrackingEntriesFiltering")[0].order).val(toggleOn ? 1 : "").form().submit();
     }
 
     function filterLongerThen(toggleOn,val) {
+        console.log("filterLongerThen",toggleOn,val)
         let instance = $("#timeTrackingEntries").data("instance");
         if(toggleOn) {
             instance.url.parameters["filter_advanced"] = encodeURIComponent("TIMESTAMPDIFF(MINUTE,start,stop)>"+val*60)
@@ -713,6 +708,8 @@
                 k.$el.find("#timeTrackingEntriesFiltering").submit();
             });
 
+
+
         let url = apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team";
 
         try {
@@ -792,6 +789,18 @@
             }
         }
 
+        if(!komponentor.routing.paras.filter){
+            return;
+        }
+
+        if(komponentor.routing.paras.filter==="overtime") {
+            setTimeout(()=>filterLongerThen(true,8),50);
+        }
+
+        if(komponentor.routing.paras.filter==="buffer") {
+            setTimeout(()=>filterUnallocated(true),50);
+
+        }
     }
 
 </script>

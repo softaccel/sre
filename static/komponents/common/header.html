@@ -11,6 +11,19 @@
                 <div class="widget-content-wrapper">
                     <div class="widget-content-left">
                         <h4 class="d-inline m-0"><span class="badge-dark badge badge-pill" id="timeDisplay" style="min-width: 120px">12:00:00</span></h4>
+
+                        <div class="btn-group" style="display: none" id="alerts">
+                            <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
+                                <i class="fa fa-bell d-inline rounded-circle bg-gradient-danger  m-0" style="font-size: 15px; padding: 10px;"></i>
+                                <span class="badge badge-dark" style="position: relative; left: -15px; top: -15px" id="totalAlerts">28</span>
+                            </a>
+                            <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
+                                <a id="ordersOverTime" style="display: none" href="#/views/orders|filter=overtime" tabindex="0" class="dropdown-item"><span class="badge badge-pill badge-danger">10</span> comenzi in depasire</a>
+                                <a id="ordersInDelay" style="display: none" href="#/views/orders|filter=delayed" tabindex="0" class="dropdown-item"><span class="badge badge-pill badge-danger">10</span> comenzi in intarziere</a>
+                                <a id="overTimeTT" style="display: none" href="#/views/pontaj/registrywrapper|filter=overtime" tabindex="0" class="dropdown-item"><span class="badge badge-pill badge-danger">3</span> pontaje peste 8 ore</a>
+                                <a id="bufferProjTT" style="display: none" href="#/views/pontaj/registrywrapper|filter=buffer" tabindex="0" class="dropdown-item"><span class="badge badge-pill badge-danger">7</span> pontaje pe comanda tampon</a>
+                            </div>
+                        </div>
                         <div class="btn-group">
                             <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
                                 <i class="fa fa-user d-inline rounded-circle bg-secondary m-0" style="font-size: 15px; padding: 10px; color: white"></i>
@@ -19,6 +32,7 @@
                             </a>
                             <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
                                 <!--									<button type="button" tabindex="0" class="dropdown-item">User Account</button>-->
+                                <a href="#" tabindex="0" class="dropdown-item" onclick="">Profil</a>
                                 <a href="#" tabindex="0" class="dropdown-item" onclick="event.preventDefault();preferences()">Preferinte</a>
                                 <a href="#" onclick="logout()" tabindex="0" class="dropdown-item">Logout</a>
                                 <!--                                    <a href="#" tabindex="0" class="dropdown-item" onclick="$('body').addClass('admin');return false;">AM</a>-->
@@ -58,46 +72,94 @@
     function preferences() {
         komponentor.intent("/views/preferences").send();
     }
-    
-  function toggleSideBar(btn) {
-    let $main = $('body');
-    let $btn = $(btn);
-    if($main.hasClass('sidebar-collapse')){
-        $main.removeClass('sidebar-collapse');
-        $btn.addClass("active");
-    } else {
-        $main.addClass('sidebar-collapse');
-        $btn.removeClass("active");
+
+    function toggleSideBar(btn) {
+        let $main = $('body');
+        let $btn = $(btn);
+        if($main.hasClass('sidebar-collapse')){
+            $main.removeClass('sidebar-collapse');
+            $btn.addClass("active");
+        } else {
+            $main.addClass('sidebar-collapse');
+            $btn.removeClass("active");
+        }
     }
-  }
 
-  function toggleMobileMenu(btn) {
-    // alert("");
-    let $main = $('#mainc');
-    let $btn = $(btn);
+    function toggleMobileMenu(btn) {
+        // alert("");
+        let $main = $('#mainc');
+        let $btn = $(btn);
 
-    if($main.hasClass('sidebar-mobile-open')) {
-      $main.removeClass('sidebar-mobile-open');
-      $btn.removeClass('is-active');
+        if($main.hasClass('sidebar-mobile-open')) {
+            $main.removeClass('sidebar-mobile-open');
+            $btn.removeClass('is-active');
+        }
+        else {
+            $main.addClass('sidebar-mobile-open');
+            $btn.addClass('is-active');
+        }
     }
-    else {
-      $main.addClass('sidebar-mobile-open');
-      $btn.addClass('is-active');
+
+    function displayAlerts() {
+        //
+        $("#alerts").hide();
+        let cnt = 0;
+        $.get(apiRoot+"/orders_working_hours?filter_advanced=(total>estimated)&page[orders_working_hours][limit]=1")
+            .done(function (data) {
+                let lnk = $("#ordersOverTime").hide();
+                if(data.meta.totalRecords>0) {
+                    cnt +=data.meta.totalRecords;
+                    lnk.show().find(".badge").text(data.meta.totalRecords);
+                    $("#totalAlerts").text(cnt)
+                    $("#alerts").show();
+                }
+            });
+        $.get(apiRoot+"/orders_in_delay")
+            .done(function (data) {
+                let lnk = $("#ordersInDelay").hide();
+                if(data.meta.totalRecords>0) {
+                    cnt +=data.meta.totalRecords;
+                    lnk.show().find(".badge").text(data.meta.totalRecords);
+                    $("#totalAlerts").text(cnt)
+                    $("#alerts").show();
+                }
+            });
+        $.get(apiRoot+"/timetracking?filter=duration>480")
+            .done(function (data) {
+                $("#overTimeTT").hide();
+                if(data.meta.totalRecords>0) {
+                    cnt +=data.meta.totalRecords;
+                    $("#overTimeTT").show().find(".badge").text(data.meta.totalRecords);
+                    $("#totalAlerts").text(cnt)
+                    $("#alerts").show();
+                }
+            });
+
+        $.get(apiRoot+"/timetracking?filter=order=1")
+            .done(function (data) {
+                $("#bufferProjTT").hide();
+                if(data.meta.totalRecords>0) {
+                    cnt +=data.meta.totalRecords;
+                    $("#bufferProjTT").show().find(".badge").text(data.meta.totalRecords);
+                    $("#totalAlerts").text(cnt)
+                    $("#alerts").show();
+
+                }
+            });
+
+
+
+        setTimeout(displayAlerts,60000);
     }
-  }
-</script>
 
+    function init_komponent(k,data) {
+        startTime(k.$el.find("#timeDisplay"));
+        let jsonDec = jwt_decode(localStorage.getItem("spaleck")).unm;
+        $("#userName").text(jsonDec);
 
-<script>
+        displayAlerts();
 
-  function init_komponent(k,data) {
-      startTime(k.$el.find("#timeDisplay"));
-    // $(".modal").appendTo("body");
-    // let url = apiRoot + "/stocks"
-    // $("#gestiuniTable").apiator({url:url});
-    let jsonDec = jwt_decode(localStorage.getItem("spaleck")).unm;
-    $("#userName").text(jsonDec);
-  }
+    }
 
 </script>
 
