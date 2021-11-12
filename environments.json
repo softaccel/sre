@@ -50,5 +50,15 @@
     "authUrl": "/spaleck/be/main/auth/login",
     "fileApiUrl": "http://10.1.1.10/FileApi",
     "logLevel": 3
+  },
+  "ezerp": {
+    "baseUrl": "/ezerp",
+    "feDBapiUrl": "/dbapi/v2/spaleck",
+    "beDBapiUrl": "http://localhost/dbapi/v2/spaleck",
+    "backendUrl": "/ezerp/be",
+    "authUrl": "/ezerp/be/main/auth/login",
+    "fileApiUrl": "/FileApi",
+    "logLevel": 3
   }
+
 }
