@@ -251,58 +251,6 @@
         if (!statusBtn.hasClass("updateAllow"))
             statusBtn.attr("disabled", true).removeClass("checkUpdate");
 
-        k.$el.find("#cancelButton").on("click", function (e) {
-            if (e.target.form.id.value !== "") {
-                $('#employeeSummary').removeClass('editMode');
-                return;
-            }
-            k.parent.hideModal();
-        });
-
-
-        if(k.data.instance) {
-            let instance = k.data.instance;
-
-            if (instance.hasOwnProperty("items")) {
-                $("#btnForEmpl").remove();
-                k.editMode(instance);
-                return k;
-            }
-
-            let modUrl = {};
-            Object.assign(modUrl, instance.url);
-            console.log("''''''''''''''",modUrl);
-            if(modUrl.parameters)
-                delete modUrl.parameters['fields[employees]'];
-            console.log(instance);
-
-            instance.bindView($('#employeeSummary'))
-                .setUrl(modUrl)
-                .loadFromRemote()
-                .then(function () {
-                    k.$el.find("#cancelButton").off("click").on("click", function (e) {
-                        if (e.target.form.id.value !== "") {
-                            $('#employeeSummary').removeClass('editMode');
-                            return;
-                        }
-
-                        k.parent.hideModal();
-                    });
-                }).catch(function(data){
-                komponentor.intent("/common/errormodal").data({
-                    body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
-                }).send();
-            });
-        }
-
-        if(k.data.emplId) {
-            $('#employeeSummary').apiator({
-                url: apiRoot+"/employees/"+k.data.emplId+"?include=team,jobtitle",
-                resourcetype: "item",
-                type: "employees"
-            });
-        }
-
         k.editMode = function(instance) {
             k.$el.find('#employeeSummary').addClass('editMode');
             let form = k.$el.find("#employeeForm")[0];
@@ -377,6 +325,58 @@
             }
 
         };
+        k.$el.find("#cancelButton").on("click", function (e) {
+            if (e.target.form.id.value !== "") {
+                $('#employeeSummary').removeClass('editMode');
+                return;
+            }
+            k.parent.hideModal();
+        });
+
+
+        if(k.data.instance) {
+            let instance = k.data.instance;
+
+            if (instance.hasOwnProperty("items")) {
+                $("#btnForEmpl").remove();
+                k.editMode(instance);
+                return k;
+            }
+
+            let modUrl = {};
+            Object.assign(modUrl, instance.url);
+            console.log("''''''''''''''",modUrl);
+            if(modUrl.parameters)
+                delete modUrl.parameters['fields[employees]'];
+            console.log(instance);
+
+            instance.bindView($('#employeeSummary'))
+                .setUrl(modUrl)
+                .loadFromRemote()
+                .then(function () {
+                    k.$el.find("#cancelButton").off("click").on("click", function (e) {
+                        if (e.target.form.id.value !== "") {
+                            $('#employeeSummary').removeClass('editMode');
+                            return;
+                        }
+
+                        k.parent.hideModal();
+                    });
+                }).catch(function(data){
+                komponentor.intent("/common/errormodal").data({
+                    body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                }).send();
+            });
+        }
+
+        if(k.data.emplId) {
+            $('#employeeSummary').apiator({
+                url: apiRoot+"/employees/"+k.data.emplId+"?include=team,jobtitle",
+                resourcetype: "item",
+                type: "employees"
+            });
+        }
+
 
 
 
