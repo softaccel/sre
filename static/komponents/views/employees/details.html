@@ -156,11 +156,11 @@
             <div class="row" id="btnForEmpl">
                 &nbsp;
                 <% if(attributes.active === "1") { %>
-                    <button class="btn btn-warning btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button">Editeaza</button>
+                    <button class="btn btn-warning btn-edit checkUpdate" onclick="$(this).data().komponent.editMode($(this).data('instance'))" type="button">Editeaza</button>
                     &nbsp;
                     <button class="btn btn-danger btn-delete checkDelete hide-on-edit" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button">Sterge</button>
                 <% } else { %>
-                    <button class="btn btn-warning btn-edit checkUpdate" onclick="editMode($(this).data('instance'))" type="button" disabled>Editeaza</button>
+                    <button class="btn btn-warning btn-edit checkUpdate" onclick="$(this).data().komponent.editMode($(this).data('instance'))" type="button" disabled>Editeaza</button>
                     &nbsp;
                     <button class="btn btn-danger btn-delete checkDelete" data-dismiss="modal" onclick="deleteEmployee($(this).data('instance'))" type="button" disabled>Sterge</button>
                 <% } %>
@@ -208,79 +208,6 @@
         }).send();
     }
 
-    function editMode(instance) {
-        $('#employeeSummary').addClass('editMode');
-
-        let $jobtitle = $($("#employeeForm")[0]["jobtitle"]).empty();
-        let $team = $($("#employeeForm")[0]["team"]).empty();
-
-        let form = $("#employeeForm")[0];
-        let util = instance.getUtilities();
-
-        form.reset();
-
-        util.captureFormSubmit(form,function (data) {
-            if(!data.card || data.card==="") {
-                delete data.card;
-            }
-
-            if(data.id!=="") {
-                instance.update(data)
-                    .then(function () {
-                        $('#employeeSummary').removeClass('editMode');
-                    })
-                    .catch(function (jqxhr) {
-                        if(jqxhr.errorThrown==="Conflict") {
-                            komponentor.intent("/common/errormodal").data({
-                                body: "Card-ul este asociat cu alt angajat.<br> Pentru a il asociat cu acest angajat, mai intai trebuie sa il dezasociati."
-                            }).send();
-                        } else {
-                            komponentor.intent("/common/errormodal").data({
-                                body: "A aparut o eroare: <pre>"+(jqxhr.jqXHR.responseText)+"</pre>"
-                            }).send();
-                        }
-                    });
-            }
-            // instance is item
-            else {
-                data.active = "1";
-                instance.createItem(data).then(function () {
-                    $("#cancelButton").click();
-                }).catch(function(data){
-                    komponentor.intent("/common/errormodal").data({
-                        body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
-                    }).send();
-                });
-            }
-        });
-
-        if(!instance.hasOwnProperty("items")) {
-            util.fillForm(form,instance);
-
-            if(instance.relationships.jobtitle)
-                $("<option>")
-                    .text(instance.relationships.jobtitle.attributes.name)
-                    .attr('value',instance.relationships.jobtitle.id)
-                    .appendTo($jobtitle);
-
-            if(instance.relationships.team)
-                $("<option>")
-                    .text(instance.relationships.team.attributes.name)
-                    .attr('value',instance.relationships.team.id)
-                    .appendTo($team);
-        }
-
-
-
-        if(!$jobtitle.data("select2-id")) {
-            $jobtitle.select2wrapper({url: apiRoot+"/jobs",placeholder:"Alege functia",labelfld:"name"});
-        }
-
-
-        if(!$team.data("select2-id")) {
-            $team.select2wrapper({url: apiRoot+"/teams",placeholder:"Alege echipa",labelfld:"name"});
-        }
-    }
 
     function deleteEmployee(instance) {
 
@@ -338,7 +265,7 @@
 
             if (instance.hasOwnProperty("items")) {
                 $("#btnForEmpl").remove();
-                editMode(instance);
+                k.editMode(instance);
                 return k;
             }
 
@@ -375,6 +302,85 @@
                 type: "employees"
             });
         }
+
+        k.editMode = function(instance) {
+            k.$el.find('#employeeSummary').addClass('editMode');
+            let form = k.$el.find("#employeeForm")[0];
+
+            let $jobtitle = $(form.jobtitle).empty();
+            let $team = $(form.team).empty();
+
+            let util = instance.getUtilities();
+
+            form.reset();
+
+            util.captureFormSubmit(form,function (data) {
+                if(!data.card || data.card==="") {
+                    delete data.card;
+                }
+
+                if(data.id!=="") {
+                    instance.update(data)
+                        .then(function () {
+                            $('#employeeSummary').removeClass('editMode');
+                        })
+                        .catch(function (jqxhr) {
+                            if(jqxhr.errorThrown==="Conflict") {
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "Card-ul este asociat cu alt angajat.<br> Pentru a il asociat cu acest angajat, mai intai trebuie sa il dezasociati."
+                                }).send();
+                            } else {
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "A aparut o eroare: <pre>"+(jqxhr.jqXHR.responseText)+"</pre>"
+                                }).send();
+                            }
+                        });
+                }
+                // instance is item
+                else {
+                    data.active = "1";
+                    instance.createItem(data).then(function () {
+                        $("#cancelButton").click();
+                    }).catch(function(data){
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                        }).send();
+                    });
+                }
+            });
+
+            if(!instance.hasOwnProperty("items")) {
+                util.fillForm(form,instance);
+
+                if(instance.relationships.jobtitle)
+                    $("<option>")
+                        .text(instance.relationships.jobtitle.attributes.name)
+                        .attr('value',instance.relationships.jobtitle.id)
+                        .appendTo($jobtitle);
+
+                if(instance.relationships.team)
+                    $("<option>")
+                        .text(instance.relationships.team.attributes.name)
+                        .attr('value',instance.relationships.team.id)
+                        .appendTo($team);
+            }
+
+
+
+            if(!$jobtitle.data("select2-id")) {
+                $jobtitle.select2wrapper({url: apiRoot+"/jobs",placeholder:"Alege functia",labelfld:"name"});
+            }
+
+
+            if(!$team.data("select2-id")) {
+                $team.select2wrapper({url: apiRoot+"/teams",placeholder:"Alege echipa",labelfld:"name"});
+            }
+
+        };
+
+
+
+        // k.editMode(k.data.instance);
 
 
         return k;
