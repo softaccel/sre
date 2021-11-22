@@ -257,17 +257,16 @@ CREATE TABLE `deliveries_contents` (
   CONSTRAINT `deliveries_contents_ibfk_2` FOREIGN KEY (`item`) REFERENCES `orders_items` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `create_sqqno` BEFORE INSERT ON `deliveries_contents` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `create_sqqno` BEFORE INSERT ON `deliveries_contents` FOR EACH ROW BEGIN
 	
 	SELECT count(*) +1 INTO @seqno from deliveries_contents where delivery=NEW.delivery and item=NEW.item;
     SET NEW.seqno=@seqno;
@@ -281,18 +280,16 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `decrement_dlvd_qty` AFTER DELETE ON `deliveries_contents` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `decrement_dlvd_qty` AFTER DELETE ON `deliveries_contents` FOR EACH ROW BEGIN
 	UPDATE orders_items SET dlvd_qty=dlvd_qty-1 WHERE id=OLD.item;
 END */;;
 DELIMITER ;
@@ -300,7 +297,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 
 --
 -- Temporary view structure for view `deliveries_contents_notdlvd`
@@ -380,17 +376,16 @@ CREATE TABLE `documents` (
   CONSTRAINT `fk_documents_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`userid`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `gen_docnum` BEFORE INSERT ON `documents` FOR EACH ROW IF(NEW.docnum is NULL) THEN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `gen_docnum` BEFORE INSERT ON `documents` FOR EACH ROW IF(NEW.docnum is NULL) THEN
 	SELECT concat(series, lastissued+1) INTO @docnum FROM settings_document_numbers WHERE type=NEW.type AND validfrom<CURRENT_TIMESTAMP() and validto>CURRENT_TIMESTAMP() and (maxval is null or maxval>=lastissued+1);
     IF(@cnt != 1 ) THEN
     	signal sqlstate '45010' set message_text = 'Nu a putut fi generat numar de document';
@@ -404,7 +399,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 
 --
 -- Temporary view structure for view `emplToOrdAssoc`
@@ -600,17 +594,16 @@ CREATE TABLE `invoices` (
   CONSTRAINT `invoices_ibfk_4` FOREIGN KEY (`issued_by`) REFERENCES `users` (`userid`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `create_document_entry` BEFORE INSERT ON `invoices` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `create_document_entry` BEFORE INSERT ON `invoices` FOR EACH ROW BEGIN
 	IF(NEW.doc_id IS NULL) THEN
     	INSERT INTO documents(user_id,type) VALUES(NEW.issued_by,'invoice');
     	SET NEW.doc_id=LAST_INSERT_ID();
@@ -621,7 +614,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 
 --
 -- Table structure for table `jobs`
@@ -763,17 +755,16 @@ CREATE TABLE `orders` (
   CONSTRAINT `orders_ibfk_3` FOREIGN KEY (`currency`) REFERENCES `currencies` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `create_document` BEFORE INSERT ON `orders` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `create_document` BEFORE INSERT ON `orders` FOR EACH ROW BEGIN
 	IF(NEW.doc_id IS NULL) THEN
     	INSERT INTO documents(user_id,partners_id,type) VALUES(NEW.user_id,NEW.partner_id,'order');
     	SET NEW.doc_id=LAST_INSERT_ID();
@@ -784,18 +775,16 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `status_update_dates` BEFORE UPDATE ON `orders` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `status_update_dates` BEFORE UPDATE ON `orders` FOR EACH ROW BEGIN
 	IF (OLD.state != NEW.state) THEN
 		IF (NEW.state = "proc") THEN
         	SET NEW.startwork_on=CURRENT_TIMESTAMP();
@@ -813,18 +802,16 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `delete_document` AFTER DELETE ON `orders` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `delete_document` AFTER DELETE ON `orders` FOR EACH ROW BEGIN
 	DELETE FROM documents WHERE documents.id=OLD.doc_id;
     update settings_document_numbers set lastissued=lastissued-1 WHERE label="order";
 END */;;
@@ -833,7 +820,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 
 --
 -- Table structure for table `orders_2_deliveries`
@@ -907,17 +893,16 @@ CREATE TABLE `orders_costs` (
   CONSTRAINT `orders_costs_ibfk_4` FOREIGN KEY (`cat_id`) REFERENCES `catalog` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1415 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `calc_total` BEFORE INSERT ON `orders_costs` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `calc_total` BEFORE INSERT ON `orders_costs` FOR EACH ROW BEGIN
 	IF(NEW.vat IS NULL) THEN
     	SET NEW.vat = 19;
     END IF;
@@ -931,18 +916,16 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `recalc_total` BEFORE UPDATE ON `orders_costs` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `recalc_total` BEFORE UPDATE ON `orders_costs` FOR EACH ROW BEGIN
 	IF(NEW.vat IS NULL) THEN
     	SET NEW.vat = 19;
     END IF;
@@ -954,7 +937,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 
 --
 -- Temporary view structure for view `orders_costs_aggregated`
@@ -1088,17 +1070,16 @@ CREATE TABLE `orders_items` (
   CONSTRAINT `orders_items_ibfk_3` FOREIGN KEY (`unit`) REFERENCES `units` (`unit`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=1069 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `set_catid_when_null` BEFORE INSERT ON `orders_items` FOR EACH ROW if(NEW.cat_id is null) THEN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `set_catid_when_null` BEFORE INSERT ON `orders_items` FOR EACH ROW if(NEW.cat_id is null) THEN
 	SET @cat_id=null;
 	if(NEW.match_key is not null and NEW.match_value is not null) THEN
     	SELECT cat_id into @cat_id FROM catalog_meta WHERE meta_key=NEW.match_key AND meta_val=NEW.match_value;
@@ -1120,18 +1101,16 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `deny_dlvdqty_bigger_then_qty` BEFORE UPDATE ON `orders_items` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `deny_dlvdqty_bigger_then_qty` BEFORE UPDATE ON `orders_items` FOR EACH ROW BEGIN
 	IF(NEW.dlvd_qty>NEW.qty) THEN
     	SIGNAL SQLSTATE '45004' SET message_text = 'Delivered Qty not allowed to be bigger then ordered Qty';
     END IF;
@@ -1144,7 +1123,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 
 --
 -- Temporary view structure for view `orders_items_labels`
@@ -1183,23 +1161,21 @@ CREATE TABLE `orders_items_meta` (
   CONSTRAINT `orders_items_meta_ibfk_1` FOREIGN KEY (`order_item_id`) REFERENCES `orders_items` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3349 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `create_catalog_meta` AFTER INSERT ON `orders_items_meta` FOR EACH ROW insert ignore into catalog_meta(cat_id,meta_key,meta_val) SELECT cat_id,NEW.meta_key,NEW.meta_val from orders_items WHERE id=NEW.order_item_id */;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `create_catalog_meta` AFTER INSERT ON `orders_items_meta` FOR EACH ROW insert ignore into catalog_meta(cat_id,meta_key,meta_val) SELECT cat_id,NEW.meta_key,NEW.meta_val from orders_items WHERE id=NEW.order_item_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 
 --
 -- Temporary view structure for view `orders_items_wdocnum`
@@ -1743,17 +1719,16 @@ CREATE TABLE `timetracking` (
   CONSTRAINT `timetracking_ibfk_2` FOREIGN KEY (`team`) REFERENCES `teams` (`tid`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=1296 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `before_insert` BEFORE INSERT ON `timetracking` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `before_insert` BEFORE INSERT ON `timetracking` FOR EACH ROW BEGIN
 	
 	SELECT count(*) INTO @cnt FROM timetracking WHERE employee=NEW.employee AND stop is NULL;
     IF (@cnt>0) THEN
@@ -1780,18 +1755,16 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `add_cost_on_full_insert` AFTER INSERT ON `timetracking` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `add_cost_on_full_insert` AFTER INSERT ON `timetracking` FOR EACH ROW BEGIN
 	IF(NEW.stop IS NOT NULL and NEW.order IS NOT NULL AND NEW.hourly_rate IS NOT NULL) THEN
         SELECT name,unit,`grouping` into @new_op,@new_op_unit,@grp FROM catalog WHERE id=NEW.operation;
 	    INSERT INTO orders_costs(oid, cat_id,`grouping`, name, qty, unit, unit_price, currency)
@@ -1804,18 +1777,16 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
 /*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `before_update` BEFORE UPDATE ON `timetracking` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `before_update` BEFORE UPDATE ON `timetracking` FOR EACH ROW BEGIN
   	
 	IF (NEW.stop IS NOT NULL AND NEW.stop<NEW.start) THEN
     	SIGNAL SQLSTATE '45050' SET message_text = 'Data la oprire este mai veche decat data la pornire';
@@ -1840,18 +1811,16 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `add_cost_on_update` AFTER UPDATE ON `timetracking` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `add_cost_on_update` AFTER UPDATE ON `timetracking` FOR EACH ROW BEGIN
   
     IF( (OLD.stop is NOT NULL) AND (OLD.order IS NOT NULL) AND (OLD.hourly_rate IS NOT NULL) AND (OLD.operation IS NOT NULL)) THEN
     	SELECT name,unit into @old_op,@old_op_unit FROM catalog WHERE id=OLD.operation;
@@ -1871,18 +1840,16 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `update_cost_on_ttentry_delete` BEFORE DELETE ON `timetracking` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `update_cost_on_ttentry_delete` BEFORE DELETE ON `timetracking` FOR EACH ROW BEGIN
 	SELECT name,unit into @old_op,@old_op_unit FROM catalog WHERE id=OLD.operation;
   
     IF( (OLD.stop is NOT NULL) AND (OLD.order IS NOT NULL) AND (OLD.hourly_rate IS NOT NULL) ) THEN
@@ -1900,7 +1867,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 
 --
 -- Temporary view structure for view `timetracking_wdiff`
@@ -1982,34 +1948,31 @@ CREATE TABLE `users` (
   PRIMARY KEY (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `hash_password_on_insert` BEFORE INSERT ON `users` FOR EACH ROW SET NEW.password=sha2(NEW.password,224) */;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `hash_password_on_insert` BEFORE INSERT ON `users` FOR EACH ROW SET NEW.password=sha2(NEW.password,224) */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `add_user_rights` AFTER INSERT ON `users` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `add_user_rights` AFTER INSERT ON `users` FOR EACH ROW BEGIN
     INSERT INTO users_meta (user_id, meta_key, meta_val)
     SELECT NEW.userid, CONCAT('rights', SUBSTR(s.key, 7)), '[]' FROM settings s WHERE s.key LIKE 'module.%';
 END */;;
@@ -2018,18 +1981,16 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `do_not_alter_admin_userid` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `do_not_alter_admin_userid` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
 	IF (OLD.userid="admin" and NEW.userid!="admin") THEN
 		SIGNAL SQLSTATE '45002' SET MESSAGE_TEXT = 'Nu este permisa modificarea userid-lui utilizatorului admin';
 	END IF;
@@ -2039,18 +2000,16 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `hash_password_on_update` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `hash_password_on_update` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
 	if(NEW.password!="" and NEW.password is not null and NEW.password!=OLD.password) THEN
     	SET NEW.password=sha2(NEW.password,224);
     end if;
@@ -2060,18 +2019,16 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `do_not_delete_admin` BEFORE DELETE ON `users` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `do_not_delete_admin` BEFORE DELETE ON `users` FOR EACH ROW BEGIN
 	IF (OLD.userid="admin") THEN
 		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = 'Nu este permisa stergerea utilizatorului admin';
 	END IF;
@@ -2081,7 +2038,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 
 --
 -- Table structure for table `users_meta`
@@ -2120,13 +2076,12 @@ SET character_set_client = @saved_cs_client;
 -- Dumping routines for database 'spaleck'
 --
 /*!50003 DROP PROCEDURE IF EXISTS `addToDelivery` */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
@@ -2140,15 +2095,13 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `delete_zeroqty_costs` */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
@@ -2159,15 +2112,13 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `detele_zerolength_tt` */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
@@ -2179,15 +2130,13 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `log` */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
@@ -2199,15 +2148,13 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `login` */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
@@ -2219,15 +2166,13 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `stop_tt_allopen` */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
@@ -2239,15 +2184,13 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `stop_tt_exceed` */;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
@@ -2265,7 +2208,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 
 --
 -- Current Database: `spaleck`
@@ -2281,9 +2223,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `alloc_orders` AS select `e`.`id` AS `emplid`,`e`.`fname` AS `fname`,`e`.`lname` AS `lname`,`e`.`card` AS `card`,`op`.`name` AS `op_name`,`op`.`id` AS `op_id`,`d`.`docnum` AS `order_name`,`o`.`oid` AS `order_id`,`o2e`.`hourlyrate` AS `hourlyrate`,`o2e`.`currency` AS `currency`,concat(`e`.`id`,convert(`d`.`docnum` using utf8mb4),convert(`op`.`name` using utf8mb4)) AS `unq` from ((((`employees` `e` left join `orders_2_employees` `o2e` on((`o2e`.`emplid` = `e`.`id`))) left join `orders` `o` on((`o`.`oid` = `o2e`.`orderid`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) left join `catalog` `op` on((`op`.`id` = `o2e`.`operation`))) where ((`d`.`docnum` is not null) and (`o`.`state` = 'proc')) */;
@@ -2299,9 +2241,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `cnt_ttrecs_big_duration` AS select 1 AS `id`,count(0) AS `num` from `timetracking` where (timestampdiff(MINUTE,`timetracking`.`start`,`timetracking`.`stop`) > 420) */;
@@ -2317,9 +2259,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `cnt_ttrecs_not_alloc` AS select 1 AS `id`,count(0) AS `cnt` from `timetracking_wdiff` where (`timetracking_wdiff`.`order` is null) */;
@@ -2335,9 +2277,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `deliveries_contents_notdlvd` AS select `deliveries_contents`.`id` AS `id`,`deliveries_contents`.`delivery` AS `delivery`,`deliveries_contents`.`item` AS `item`,`deliveries_contents`.`seqno` AS `seqno`,`deliveries_contents`.`label_printed` AS `label_printed`,`deliveries_contents`.`checkout` AS `checkout` from `deliveries_contents` where (`deliveries_contents`.`checkout` = 0) */;
@@ -2353,9 +2295,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `delivery_items_aggregated` AS select `oim`.`meta_val` AS `code`,`a`.`delivery` AS `delivery`,`a`.`label` AS `label`,`a`.`item` AS `item`,`a`.`totalcnt` AS `totalcnt`,`a`.`printed` AS `printed`,`a`.`checkout` AS `checkout`,(`a`.`totalcnt` - `a`.`printed`) AS `notprinted`,(`a`.`totalcnt` - `a`.`checkout`) AS `notcheckout` from ((select `deliveries_contents`.`delivery` AS `delivery`,`orders_items`.`name` AS `label`,`deliveries_contents`.`item` AS `item`,count(0) AS `totalcnt`,sum(`deliveries_contents`.`label_printed`) AS `printed`,sum(`deliveries_contents`.`checkout`) AS `checkout` from (`orders_items` join `deliveries_contents`) where (`orders_items`.`id` = `deliveries_contents`.`item`) group by `deliveries_contents`.`delivery`,`deliveries_contents`.`item`) `a` left join `orders_items_meta` `oim` on(((`oim`.`order_item_id` = `a`.`item`) and (`oim`.`meta_key` = 'P.A.P_ZeichnungSpr.Zeichnung')))) */;
@@ -2371,9 +2313,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `emplToOrdAssoc` AS select `o2e`.`id` AS `id`,`ord`.`oid` AS `oid`,`ord`.`state` AS `status`,`doc`.`docnum` AS `docnum`,`ops`.`name` AS `opname`,`o2e`.`hourlyrate` AS `hourlyrate`,`o2e`.`currency` AS `currency`,`empl`.`fname` AS `fname`,`empl`.`lname` AS `lname`,`o2e`.`emplid` AS `emplid`,`ord`.`label` AS `label`,`ops`.`id` AS `opid` from ((((`orders_2_employees` `o2e` left join `orders` `ord` on((`ord`.`oid` = `o2e`.`orderid`))) left join `catalog` `ops` on((`ops`.`id` = `o2e`.`operation`))) left join `documents` `doc` on((`doc`.`id` = `ord`.`doc_id`))) left join `employees` `empl` on((`empl`.`id` = `o2e`.`emplid`))) order by `o2e`.`emplid` */;
@@ -2389,9 +2331,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `employees_names` AS select `employees`.`id` AS `id`,concat(`employees`.`fname`,' ',`employees`.`lname`) AS `fullname`,`employees`.`team` AS `team` from `employees` */;
@@ -2407,9 +2349,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY INVOKER */
 /*!50001 VIEW `employees_work` AS select round((sum(`tt`.`duration`) / 60),2) AS `d`,`tt`.`employee` AS `employee`,`tt`.`operation` AS `operation`,left(`tt`.`start`,10) AS `day`,`tt`.`order` AS `order` from `timetracking` `tt` group by `tt`.`order`,`tt`.`operation`,`day`,`tt`.`employee` order by `tt`.`employee` */;
@@ -2425,9 +2367,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `order_to_delivery` AS select distinct `o`.`oid` AS `oid`,`d`.`id` AS `did`,`d`.`label` AS `label` from (((`orders` `o` join `orders_items` `oi` on((`oi`.`order` = `o`.`oid`))) join `deliveries_contents` `dc` on((`dc`.`item` = `oi`.`id`))) join `deliveries` `d` on((`d`.`id` = `dc`.`delivery`))) */;
@@ -2443,9 +2385,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `orders_costs_aggregated` AS select `orders_costs`.`oid` AS `oid`,`orders_costs`.`unit` AS `unit`,`orders_costs`.`currency` AS `currency`,`orders_costs`.`grouping` AS `grouping`,sum(`orders_costs`.`qty`) AS `qty`,sum(`orders_costs`.`total`) AS `total` from `orders_costs` group by `orders_costs`.`oid`,`orders_costs`.`grouping`,`orders_costs`.`unit`,`orders_costs`.`currency` order by `orders_costs`.`oid` */;
@@ -2461,9 +2403,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `orders_costs_total` AS select `orders_costs`.`currency` AS `currency`,`orders_costs`.`oid` AS `oid`,sum(`orders_costs`.`total`) AS `total`,sum(`orders_costs`.`total_wvat`) AS `total_wvat` from `orders_costs` group by `orders_costs`.`oid`,`orders_costs`.`currency` */;
@@ -2479,9 +2421,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `orders_count_bystate` AS select `orders`.`state` AS `state`,count(0) AS `cnt` from `orders` group by `orders`.`state` */;
@@ -2497,9 +2439,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `orders_extended` AS select `o`.`oid` AS `oid`,`o`.`label` AS `label`,`o`.`comments` AS `comments`,`o`.`state` AS `state`,`o`.`doc_id` AS `doc_id`,`o`.`partner_id` AS `partner_id`,`o`.`created_on` AS `created_on`,`o`.`closed_on` AS `closed_on`,`o`.`final_value` AS `final_value`,`o`.`user_id` AS `user_id`,`p`.`name` AS `pname`,`d`.`docnum` AS `docnum` from ((`orders` `o` left join `partners` `p` on((`p`.`id` = `o`.`partner_id`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) */;
@@ -2515,9 +2457,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `orders_in_delay` AS select `o`.`oid` AS `oid`,`o`.`label` AS `label`,`o`.`comments` AS `comments`,`o`.`state` AS `state`,`o`.`multiplied_by` AS `multiplied_by`,`o`.`doc_id` AS `doc_id`,`o`.`cust_int_ref` AS `cust_int_ref`,`o`.`partner_id` AS `partner_id`,`o`.`created_on` AS `created_on`,`o`.`startwork_on` AS `startwork_on`,`o`.`readytodeliver_on` AS `readytodeliver_on`,`o`.`closed_on` AS `closed_on`,`o`.`order_value` AS `order_value`,`o`.`calculated_value` AS `calculated_value`,`o`.`final_value` AS `final_value`,`o`.`currency` AS `currency`,`o`.`user_id` AS `user_id`,`o`.`team` AS `team` from (`orders` `o` left join `orders_meta` `om` on(((`om`.`order_id` = `o`.`oid`) and (`om`.`meta_key` = 'estimated_delivery')))) where ((`o`.`state` in ('proc','ready')) and (`om`.`meta_val` is not null) and (`om`.`meta_val` < curdate())) */;
@@ -2533,9 +2475,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `orders_items_labels` AS select `o`.`oid` AS `orderId`,`oi`.`id` AS `itemId`,`oi`.`name` AS `title`,`om`.`meta_val` AS `belegNum`,`d`.`docnum` AS `docnum`,`oim1`.`meta_val` AS `partId`,`oim2`.`meta_val` AS `designId` from (((((`orders_items` `oi` left join `orders` `o` on((`o`.`oid` = `oi`.`order`))) left join `orders_items_meta` `oim1` on(((`oim1`.`order_item_id` = `oi`.`id`) and (`oim1`.`meta_key` = 'P.A.E_BelegPos.Artikel')))) left join `orders_items_meta` `oim2` on(((`oim2`.`order_item_id` = `oi`.`id`) and (`oim2`.`meta_key` = 'P.A.P_ZeichnungSpr.Zeichnung')))) left join `orders_meta` `om` on(((`om`.`order_id` = `o`.`oid`) and (`om`.`meta_key` = 'K.E.E_BelegKopf.BelegNummer')))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) order by `o`.`oid`,`oi`.`id` */;
@@ -2551,9 +2493,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `orders_items_wdocnum` AS select `oi`.`id` AS `id`,`oi`.`order` AS `order`,`oi`.`name` AS `name`,`oi`.`cat_id` AS `cat_id`,`oi`.`unit` AS `unit`,`oi`.`qty` AS `qty`,`oi`.`dlvd_qty` AS `dlvd_qty`,`oi`.`unit_price` AS `unit_price`,`oi`.`vat` AS `vat`,`oi`.`unit_price_wvat` AS `unit_price_wvat`,`oi`.`vat_value` AS `vat_value`,`oi`.`total_value` AS `total_value`,`oi`.`total_value_wvat` AS `total_value_wvat`,`oi`.`currency` AS `currency`,`oi`.`match_key` AS `match_key`,`oi`.`match_value` AS `match_value`,`d`.`docnum` AS `docnum` from ((`orders_items` `oi` left join `orders` `o` on((`o`.`oid` = `oi`.`order`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) */;
@@ -2569,9 +2511,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `orders_items_wmeta` AS select `oi`.`id` AS `id`,`oi`.`order` AS `order`,`oi`.`name` AS `name`,`oi`.`cat_id` AS `cat_id`,`oi`.`unit` AS `unit`,`oi`.`qty` AS `qty`,`oi`.`dlvd_qty` AS `dlvd_qty`,`oi`.`unit_price` AS `unit_price`,`oi`.`vat` AS `vat`,`oi`.`unit_price_wvat` AS `unit_price_wvat`,`oi`.`vat_value` AS `vat_value`,`oi`.`total_value` AS `total_value`,`oi`.`total_value_wvat` AS `total_value_wvat`,`oi`.`currency` AS `currency`,`oi`.`match_key` AS `match_key`,`oi`.`match_value` AS `match_value`,`opm1`.`meta_val` AS `partid`,`opm2`.`meta_val` AS `design`,`cm`.`meta_val` AS `gallery` from (((`orders_items` `oi` left join `orders_items_meta` `opm1` on(((`opm1`.`order_item_id` = `oi`.`id`) and (`opm1`.`meta_key` = 'P.A.E_BelegPos.Artikel')))) left join `orders_items_meta` `opm2` on(((`opm2`.`order_item_id` = `oi`.`id`) and (`opm2`.`meta_key` = 'P.A.P_ZeichnungSpr.Zeichnung')))) left join `catalog_meta` `cm` on(((`cm`.`cat_id` = `oi`.`cat_id`) and (`cm`.`meta_key` = 'Gallery')))) */;
@@ -2587,9 +2529,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `orders_items_wmeta_notdlvd` AS select `oi`.`id` AS `id`,`oi`.`order` AS `order`,`oi`.`name` AS `name`,`oi`.`cat_id` AS `cat_id`,`oi`.`unit` AS `unit`,`oi`.`qty` AS `qty`,`oi`.`dlvd_qty` AS `dlvd_qty`,`oi`.`unit_price` AS `unit_price`,`oi`.`vat` AS `vat`,`oi`.`unit_price_wvat` AS `unit_price_wvat`,`oi`.`vat_value` AS `vat_value`,`oi`.`total_value` AS `total_value`,`oi`.`total_value_wvat` AS `total_value_wvat`,`oi`.`currency` AS `currency`,`oi`.`match_key` AS `match_key`,`oi`.`match_value` AS `match_value`,`opm1`.`meta_val` AS `partid`,`opm2`.`meta_val` AS `design`,`cm`.`meta_val` AS `gallery` from (((`orders_items` `oi` left join `catalog_meta` `opm1` on(((`opm1`.`cat_id` = `oi`.`cat_id`) and (`opm1`.`meta_key` = 'P.A.E_BelegPos.Artikel')))) left join `catalog_meta` `opm2` on(((`opm2`.`cat_id` = `oi`.`cat_id`) and (`opm2`.`meta_key` = 'P.A.P_ZeichnungSpr.Zeichnung')))) left join `catalog_meta` `cm` on(((`cm`.`cat_id` = `oi`.`cat_id`) and (`cm`.`meta_key` = 'Gallery')))) where (`oi`.`qty` > `oi`.`dlvd_qty`) */;
@@ -2605,9 +2547,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `orders_states_cnt` AS select `orders`.`state` AS `state`,count(0) AS `cnt` from `orders` where (`orders`.`state` not in ('offer','canceled')) group by `orders`.`state` */;
@@ -2623,9 +2565,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `orders_totalcnt_item` AS select `o`.`oid` AS `oid`,`d`.`docnum` AS `docnum`,sum((`oi`.`qty` - `oi`.`dlvd_qty`)) AS `cnt` from ((`orders_items` `oi` left join `orders` `o` on((`o`.`oid` = `oi`.`order`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) group by `oi`.`order` */;
@@ -2641,9 +2583,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `orders_working_hours` AS select `tt`.`order` AS `order_id`,round((sum(`tt`.`duration`) / 60),1) AS `total`,`om`.`meta_val` AS `estimated` from (`timetracking` `tt` left join `orders_meta` `om` on(((`om`.`meta_key` = 'estimated_work') and (`om`.`order_id` = `tt`.`order`)))) where ((`tt`.`hourly_rate` <> 0) and (`tt`.`duration` is not null)) group by `tt`.`order` */;
@@ -2659,9 +2601,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `recipes_expanded` AS select `rcp`.`id` AS `rcpid`,`rcp`.`parent_id` AS `parent_id`,`cat`.`id` AS `id`,`cat`.`name` AS `name`,`cat`.`type` AS `type`,`cat`.`unit` AS `unit`,`cat`.`unit_price` AS `unit_price`,`cat`.`currency` AS `currency` from (`recipes` `rcp` left join `catalog` `cat` on((`cat`.`id` = `rcp`.`component_id`))) */;
@@ -2677,9 +2619,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `report_agg_order_tt_op` AS select `a`.`order` AS `order`,`a`.`operation` AS `operation`,`a`.`hourly_rate` AS `hourly_rate`,`a`.`ROUND(SUM(duration)/60,2)` AS `ROUND(SUM(duration)/60,2)`,`c`.`name` AS `name`,`o`.`label` AS `label`,`o`.`comments` AS `comments`,`o`.`docnum` AS `docnum` from (((select `timetracking`.`order` AS `order`,`timetracking`.`operation` AS `operation`,`timetracking`.`hourly_rate` AS `hourly_rate`,round((sum(`timetracking`.`duration`) / 60),2) AS `ROUND(SUM(duration)/60,2)` from `timetracking` group by `timetracking`.`order`,`timetracking`.`operation`,`timetracking`.`hourly_rate`) `a` left join `orders_extended` `o` on((`o`.`oid` = `a`.`order`))) left join `catalog` `c` on((`c`.`id` = `a`.`operation`))) */;
@@ -2695,9 +2637,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `report_agg_order_tt_op_empl` AS select `o`.`docnum` AS `docnum`,`o`.`label` AS `label`,`o`.`comments` AS `comments`,`c`.`name` AS `opname`,`a`.`d` AS `d`,`a`.`employee` AS `employee`,`a`.`operation` AS `operation`,`a`.`order` AS `order`,`a`.`hourly_rate` AS `hourly_rate` from (((select round((sum(`tt`.`duration`) / 60),2) AS `d`,`tt`.`employee` AS `employee`,`tt`.`operation` AS `operation`,`tt`.`order` AS `order`,`tt`.`hourly_rate` AS `hourly_rate` from `timetracking` `tt` group by `tt`.`employee`,`tt`.`operation`,`tt`.`hourly_rate`,`tt`.`order`) `a` left join `orders_extended` `o` on((`o`.`oid` = `a`.`order`))) left join `catalog` `c` on((`c`.`id` = `a`.`operation`))) */;
@@ -2713,9 +2655,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `report_tt_agg_by_order` AS select `a`.`duration` AS `duration`,`a`.`order` AS `order`,`a`.`operation` AS `operation`,`a`.`hourly_rate` AS `hourly_rate`,`a`.`currency` AS `currency`,`o`.`label` AS `label`,`o`.`comments` AS `comments`,`d`.`docnum` AS `docnum`,`c`.`name` AS `opname` from ((((select round((sum(`timetracking`.`duration`) / 60),2) AS `duration`,`timetracking`.`order` AS `order`,`timetracking`.`operation` AS `operation`,`timetracking`.`hourly_rate` AS `hourly_rate`,`timetracking`.`currency` AS `currency` from `timetracking` where (`timetracking`.`duration` is not null) group by `timetracking`.`order`,`timetracking`.`operation`,`timetracking`.`hourly_rate`,`timetracking`.`currency`) `a` left join `orders` `o` on((`o`.`oid` = `a`.`order`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) left join `catalog` `c` on((`c`.`id` = `a`.`operation`))) */;
@@ -2731,9 +2673,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `report_tt_agg_byempl` AS select `e`.`fname` AS `fname`,`e`.`lname` AS `lname`,`a`.`employee` AS `employee`,`a`.`st` AS `date`,`a`.`order` AS `order`,`a`.`operation` AS `operation`,`a`.`round(sum(duration)/60,2)` AS `duration`,`o`.`label` AS `label`,`o`.`comments` AS `comments`,`o`.`doc_id` AS `doc_id`,`d`.`docnum` AS `docnum`,`c`.`name` AS `opname` from (((((select `timetracking`.`employee` AS `employee`,left(`timetracking`.`start`,10) AS `st`,`timetracking`.`order` AS `order`,`timetracking`.`operation` AS `operation`,round((sum(`timetracking`.`duration`) / 60),2) AS `round(sum(duration)/60,2)` from `timetracking` where (`timetracking`.`duration` is not null) group by `timetracking`.`employee`,`st`,`timetracking`.`order`,`timetracking`.`operation`) `a` left join `orders` `o` on((`o`.`oid` = `a`.`order`))) left join `documents` `d` on((`d`.`id` = `o`.`doc_id`))) left join `catalog` `c` on((`c`.`id` = `a`.`operation`))) left join `employees` `e` on((`e`.`id` = `a`.`employee`))) */;
@@ -2749,9 +2691,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `started_work` AS select `tt`.`id` AS `id`,`tt`.`employee` AS `employee`,`tt`.`start` AS `start`,`tt`.`stop` AS `stop`,timediff(now(),`tt`.`start`) AS `worktime`,`tt`.`operation` AS `operation`,`op`.`name` AS `operation_name`,`tt`.`order` AS `order`,`doc`.`docnum` AS `order_label`,`tt`.`hourly_rate` AS `hourly_rate`,`tt`.`currency` AS `currency`,`e`.`card` AS `card` from ((((`timetracking` `tt` left join `employees` `e` on((`e`.`id` = `tt`.`employee`))) left join `catalog` `op` on((`op`.`id` = `tt`.`operation`))) left join `orders` `o` on((`o`.`oid` = `tt`.`order`))) left join `documents` `doc` on((`doc`.`id` = `o`.`doc_id`))) where (`tt`.`stop` is null) */;
@@ -2767,9 +2709,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `tags` AS select `employees`.`id` AS `emplid`,`employees`.`fname` AS `fname`,`employees`.`lname` AS `lname`,`employees`.`card` AS `card` from `employees` where (`employees`.`card` is not null) */;
@@ -2785,9 +2727,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=MERGE */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `timetracking_wdiff` AS select `timetracking`.`id` AS `id`,`timetracking`.`employee` AS `employee`,`timetracking`.`start` AS `start`,`timetracking`.`stop` AS `stop`,`timetracking`.`operation` AS `operation`,`timetracking`.`order` AS `order`,`timetracking`.`hourly_rate` AS `hourly_rate`,`timetracking`.`currency` AS `currency`,`timetracking`.`status` AS `status`,timediff(`timetracking`.`stop`,`timetracking`.`start`) AS `diff` from `timetracking` */;
@@ -2803,9 +2745,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `tt_expanded` AS select `tt`.`id` AS `id`,`tt`.`employee` AS `employee`,`tt`.`start` AS `start`,`tt`.`stop` AS `stop`,`tt`.`operation` AS `operation`,timediff(`tt`.`stop`,`tt`.`start`) AS `duration`,`tt`.`order` AS `order`,`tt`.`hourly_rate` AS `hourly_rate`,`tt`.`currency` AS `currency`,`tt`.`status` AS `status`,concat(`e`.`fname`,' ',`e`.`lname`) AS `empl_name`,`ops`.`name` AS `op_name`,`doc`.`docnum` AS `docnum` from ((((`timetracking` `tt` left join `employees` `e` on((`e`.`id` = `tt`.`employee`))) left join `catalog` `ops` on((`ops`.`id` = `tt`.`operation`))) left join `orders` `o` on((`o`.`oid` = `tt`.`order`))) left join `documents` `doc` on((`doc`.`id` = `o`.`doc_id`))) */;
@@ -2821,9 +2763,9 @@ USE `spaleck`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`spaleck`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `users_rights` AS select `users_meta`.`id` AS `id`,`users_meta`.`user_id` AS `user_id`,substr(`users_meta`.`meta_key`,8) AS `module`,`users_meta`.`meta_val` AS `meta_val` from `users_meta` where (`users_meta`.`meta_key` like 'rights.%') */;
@@ -2840,4 +2782,4 @@ USE `spaleck`;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-22 10:06:16
+-- Dump completed on 2021-11-22 10:26:25
