@@ -96,7 +96,7 @@ class Auth extends CI_Controller
 			"sub"=>$login,
 			"unm"=>$record->attributes->fname,
 			"level"=>$record->attributes->level,
-			"exp"=>time()+$this->config->item("jwt_exp")
+			"exp"=>time()+($this->config->item("jwt_exp")?$this->config->item("jwt_exp"):600)
 		];
 
 

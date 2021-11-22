@@ -58,6 +58,9 @@
     "backendUrl": "/ezerp/be",
     "authUrl": "/ezerp/be/main/auth/login",
     "fileApiUrl": "/FileApi",
-    "logLevel": 3
+    "logLevel": 3,
+    "dashboard": "",
+    "menu": ""
+
   }
 }
