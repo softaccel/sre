@@ -195,7 +195,6 @@
                     url: apiRoot + "/settings/?filter=key=data_expiry_time",
                     type: "GET",
                     success: function(data) {
-                        console.log("äääääääää",data);
                         if (!data.data.length) {
                             resolve();
                             return;

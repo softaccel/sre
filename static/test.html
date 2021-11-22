@@ -4,21 +4,22 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
-        @media print {
-            @page {
-                size: 50mm 150mm;
-            }
+        @font-face {
+            font-family:    "Poppins";
+            font-style: normal;
+            font-weight: 300;
+            font-display: fallback;
+            src: url("Poppins-Regular.ttf") format("woff2");
+        }
+        .withfont{
+            font-family: "Poppins";
         }
 
-        .pagebreak{
-            page-break-after: always;
-        }
     </style>
 </head>
 <body>
-<script src="assets/js/jquery.js"></script>
-<script src="assets/js/apiator.js"></script>
-
+<p>Test paragraph</p>
+<p class="withfont">Test paragraph</p>
 
 </body>
 </html>

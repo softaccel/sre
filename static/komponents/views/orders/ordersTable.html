@@ -341,7 +341,6 @@
 
 
         function filterByProgress() {
-            console.log("äääääääääääääÄÄ",instance);
             if($("#progressFilter").val()*1===1) {
                 $.get(apiRoot+"/orders_working_hours?page[orders_working_hours][limit]=1000&filter_advanced="+encodeURIComponent("estimated IS NOT NULL AND total>estimated"))
                     .done(function (data) {

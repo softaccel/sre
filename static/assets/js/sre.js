@@ -70,6 +70,8 @@ const activeEnvFile = "../active_env.json";
 const defaultAppUrl = "/views/app";
 const loginAppUrl = "/views/login";
 
+let active_env;
+
 
 // let localData,userData;
 let [localData,userData] = checkAuth();
