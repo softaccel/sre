@@ -352,7 +352,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `create_sqqno` BEFORE INSERT ON `deliveries_contents` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `create_sqqno` BEFORE INSERT ON `deliveries_contents` FOR EACH ROW BEGIN
 	
 	SELECT count(*) +1 INTO @seqno from deliveries_contents where delivery=NEW.delivery and item=NEW.item;
     SET NEW.seqno=@seqno;
@@ -377,7 +377,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `decrement_dlvd_qty` AFTER DELETE ON `deliveries_contents` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `decrement_dlvd_qty` AFTER DELETE ON `deliveries_contents` FOR EACH ROW BEGIN
 	UPDATE orders_items SET dlvd_qty=dlvd_qty-1 WHERE id=OLD.item;
 END */;;
 DELIMITER ;
@@ -494,7 +494,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `gen_docnum` BEFORE INSERT ON `documents` FOR EACH ROW IF(NEW.docnum is NULL) THEN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `gen_docnum` BEFORE INSERT ON `documents` FOR EACH ROW IF(NEW.docnum is NULL) THEN
 	SELECT concat(series, lastissued+1) INTO @docnum FROM settings_document_numbers WHERE type=NEW.type AND validfrom<CURRENT_TIMESTAMP() and validto>CURRENT_TIMESTAMP() and (maxval is null or maxval>=lastissued+1);
     IF(@cnt != 1 ) THEN
     	signal sqlstate '45010' set message_text = 'Nu a putut fi generat numar de document';
@@ -760,7 +760,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `create_document_entry` BEFORE INSERT ON `invoices` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `create_document_entry` BEFORE INSERT ON `invoices` FOR EACH ROW BEGIN
 	IF(NEW.doc_id IS NULL) THEN
     	INSERT INTO documents(user_id,type) VALUES(NEW.issued_by,'invoice');
     	SET NEW.doc_id=LAST_INSERT_ID();
@@ -982,7 +982,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `create_document` BEFORE INSERT ON `orders` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `create_document` BEFORE INSERT ON `orders` FOR EACH ROW BEGIN
 	IF(NEW.doc_id IS NULL) THEN
     	INSERT INTO documents(user_id,partners_id,type) VALUES(NEW.user_id,NEW.partner_id,'order');
     	SET NEW.doc_id=LAST_INSERT_ID();
@@ -1004,7 +1004,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `status_update_dates` BEFORE UPDATE ON `orders` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `status_update_dates` BEFORE UPDATE ON `orders` FOR EACH ROW BEGIN
 	IF (OLD.state != NEW.state) THEN
 		IF (NEW.state = "proc") THEN
         	SET NEW.startwork_on=CURRENT_TIMESTAMP();
@@ -1033,7 +1033,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `delete_document` AFTER DELETE ON `orders` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `delete_document` AFTER DELETE ON `orders` FOR EACH ROW BEGIN
 	DELETE FROM documents WHERE documents.id=OLD.doc_id;
     update settings_document_numbers set lastissued=lastissued-1 WHERE label="order";
 END */;;
@@ -1155,7 +1155,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `calc_total` BEFORE INSERT ON `orders_costs` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `calc_total` BEFORE INSERT ON `orders_costs` FOR EACH ROW BEGIN
 	IF(NEW.vat IS NULL) THEN
     	SET NEW.vat = 19;
     END IF;
@@ -1180,7 +1180,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `recalc_total` BEFORE UPDATE ON `orders_costs` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `recalc_total` BEFORE UPDATE ON `orders_costs` FOR EACH ROW BEGIN
 	IF(NEW.vat IS NULL) THEN
     	SET NEW.vat = 19;
     END IF;
@@ -1346,7 +1346,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `set_catid_when_null` BEFORE INSERT ON `orders_items` FOR EACH ROW if(NEW.cat_id is null) THEN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `set_catid_when_null` BEFORE INSERT ON `orders_items` FOR EACH ROW if(NEW.cat_id is null) THEN
 	SET @cat_id=null;
 	if(NEW.match_key is not null and NEW.match_value is not null) THEN
     	SELECT cat_id into @cat_id FROM catalog_meta WHERE meta_key=NEW.match_key AND meta_val=NEW.match_value;
@@ -1379,7 +1379,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `deny_dlvdqty_bigger_then_qty` BEFORE UPDATE ON `orders_items` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `deny_dlvdqty_bigger_then_qty` BEFORE UPDATE ON `orders_items` FOR EACH ROW BEGIN
 	IF(NEW.dlvd_qty>NEW.qty) THEN
     	SIGNAL SQLSTATE '45004' SET message_text = 'Delivered Qty not allowed to be bigger then ordered Qty';
     END IF;
@@ -1451,7 +1451,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `create_catalog_meta` AFTER INSERT ON `orders_items_meta` FOR EACH ROW insert ignore into catalog_meta(cat_id,meta_key,meta_val) SELECT cat_id,NEW.meta_key,NEW.meta_val from orders_items WHERE id=NEW.order_item_id */;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `create_catalog_meta` AFTER INSERT ON `orders_items_meta` FOR EACH ROW insert ignore into catalog_meta(cat_id,meta_key,meta_val) SELECT cat_id,NEW.meta_key,NEW.meta_val from orders_items WHERE id=NEW.order_item_id */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -2128,7 +2128,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `before_insert` BEFORE INSERT ON `timetracking` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `before_insert` BEFORE INSERT ON `timetracking` FOR EACH ROW BEGIN
 	
 	SELECT count(*) INTO @cnt FROM timetracking WHERE employee=NEW.employee AND stop is NULL;
     IF (@cnt>0) THEN
@@ -2166,7 +2166,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `add_cost_on_full_insert` AFTER INSERT ON `timetracking` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `add_cost_on_full_insert` AFTER INSERT ON `timetracking` FOR EACH ROW BEGIN
 	IF(NEW.stop IS NOT NULL and NEW.order IS NOT NULL AND NEW.hourly_rate IS NOT NULL) THEN
         SELECT name,unit,`grouping` into @new_op,@new_op_unit,@grp FROM catalog WHERE id=NEW.operation;
 	    INSERT INTO orders_costs(oid, cat_id,`grouping`, name, qty, unit, unit_price, currency)
@@ -2190,7 +2190,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `before_update` BEFORE UPDATE ON `timetracking` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `before_update` BEFORE UPDATE ON `timetracking` FOR EACH ROW BEGIN
   	
 	IF (NEW.stop IS NOT NULL AND NEW.stop<NEW.start) THEN
     	SIGNAL SQLSTATE '45050' SET message_text = 'Data la oprire este mai veche decat data la pornire';
@@ -2226,7 +2226,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `add_cost_on_update` AFTER UPDATE ON `timetracking` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `add_cost_on_update` AFTER UPDATE ON `timetracking` FOR EACH ROW BEGIN
   
     IF( (OLD.stop is NOT NULL) AND (OLD.order IS NOT NULL) AND (OLD.hourly_rate IS NOT NULL) AND (OLD.operation IS NOT NULL)) THEN
     	SELECT name,unit into @old_op,@old_op_unit FROM catalog WHERE id=OLD.operation;
@@ -2257,7 +2257,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `update_cost_on_ttentry_delete` BEFORE DELETE ON `timetracking` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `update_cost_on_ttentry_delete` BEFORE DELETE ON `timetracking` FOR EACH ROW BEGIN
 	SELECT name,unit into @old_op,@old_op_unit FROM catalog WHERE id=OLD.operation;
   
     IF( (OLD.stop is NOT NULL) AND (OLD.order IS NOT NULL) AND (OLD.hourly_rate IS NOT NULL) ) THEN
@@ -2387,7 +2387,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `hash_password_on_insert` BEFORE INSERT ON `users` FOR EACH ROW SET NEW.password=sha2(NEW.password,224) */;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `hash_password_on_insert` BEFORE INSERT ON `users` FOR EACH ROW SET NEW.password=sha2(NEW.password,224) */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -2404,7 +2404,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `add_user_rights` AFTER INSERT ON `users` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `add_user_rights` AFTER INSERT ON `users` FOR EACH ROW BEGIN
     INSERT INTO users_meta (user_id, meta_key, meta_val)
     SELECT NEW.userid, CONCAT('rights', SUBSTR(s.key, 7)), '[]' FROM settings s WHERE s.key LIKE 'module.%';
 END */;;
@@ -2424,7 +2424,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `do_not_alter_admin_userid` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `do_not_alter_admin_userid` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
 	IF (OLD.userid="admin" and NEW.userid!="admin") THEN
 		SIGNAL SQLSTATE '45002' SET MESSAGE_TEXT = 'Nu este permisa modificarea userid-lui utilizatorului admin';
 	END IF;
@@ -2445,7 +2445,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `hash_password_on_update` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `hash_password_on_update` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
 	if(NEW.password!="" and NEW.password is not null and NEW.password!=OLD.password) THEN
     	SET NEW.password=sha2(NEW.password,224);
     end if;
@@ -2466,7 +2466,7 @@ ALTER DATABASE `spaleck` CHARACTER SET utf8mb3 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`vsergiu`@`localhost`*/ /*!50003 TRIGGER `do_not_delete_admin` BEFORE DELETE ON `users` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`spaleck`@`localhost`*/ /*!50003 TRIGGER `do_not_delete_admin` BEFORE DELETE ON `users` FOR EACH ROW BEGIN
 	IF (OLD.userid="admin") THEN
 		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = 'Nu este permisa stergerea utilizatorului admin';
 	END IF;
