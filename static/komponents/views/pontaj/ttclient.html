@@ -22,17 +22,33 @@
     }
 
 </style>
-<div class="container">
+<div class="container p-0 text-center">
+    <h3 class="bg-secondary p-3 ">ClientPontaj</h3>
     <div id="loader" class="loading-overlay" style="display: none">
         Loading...
     </div>
     <div id="login">
         <form onsubmit="event.preventDefault();$(this).data().komponent.checkuser();">
-            <input type="text" name="uid" value="121212" required><button type="submit" id="submButt">Check</button>
+            <div class="input-group">
+                <input type="text" name="uid" value="121212" required class="form-control">
+                <div class="input-group-append">
+                    <button type="submit" id="submButt" class="btn btn-primary">Verifica</button>
+                </div>
+            </div>
         </form>
     </div>
     <div id="invalidCode" style="display: none">
         Codul introdus este invalid
+    </div>
+    <div id="stopOk" style="display: none">
+        <p>
+            Pontajul a fost oprit.
+        </p>
+        <p>
+            Ai lucrat in total <span class="duration"></span>.
+        </p>
+        <button class=""></button>
+
     </div>
     <div id="severError" style="display: none">
         Eroare pe server
@@ -50,33 +66,38 @@
             <select name="project">
                 <option value="<%= id %>"><%= attributes.order_name ? attributes.order_name : "fara nume" %> <%= attributes.op_name ? "/ "+attributes.op_name : "fara nume" %></option>
             </select>
-            <button>Incepe lucru</button>
+            <button class="btn btn-success">Incepe pontarea</button>
+            <button class="btn btn-secondary" type="button" onclick="$(this).parents('#projectSelect').hide();$(this).data().komponent.$el.find('#login').show();">Anuleaza</button>
         </form>
     </div>
     <div id="working" style="display: none">
-        <h2></h2>
-        <h3></h3>
-        <h4></h4>
-        <h5>In lucru de <span></span> ore</h5>
-        <button onclick="$(this).data().komponent.stopWork(this);">Stop</button>
-        <button onclick="$(this).parent().hide()">Anuleaza</button>
+        <h2 class="emplName"></h2>
+        <h3 class="project"></h3>
+        <h4 class="operation"></h4>
+        <h5>In lucru de <span class="elapsedTime"></span> ore</h5>
+        <button onclick="$(this).data().komponent.stopWork(this);" class="btn btn-danger">Opreste lucru</button>
+        <button onclick="$(this).parent().hide();$(this).data().komponent.$el.find('#login').show()" class="btn btn-secondary">Inapoi</button>
     </div>
 </div>
 
 <script>
     function init_komponent(k) {
-        // current_ttregistry;
-
         k.stopWork = function() {
             k.$el.find("#loader").show();
             let ttid = current_ttregistry.relationships.started_work[0].id;
             let inst = $("<span>").apiator({returninstance:true,resourcetype:"item"}).setUrl(apiRoot+"/timetracking/"+ttid)
             inst.id = ttid;
             inst.update({status:"f"})
-                .then(function () {
+                .then(function (data) {
+                    console.log(data)
                     k.$el.find("#loader").hide();
                     k.$el.find("#working").hide();
-                    k.checkuser();
+                    k.$el.find("#stopOk").show();
+                    setTimeout(function () {
+                        k.$el.find("#stopOk").hide();
+                        k.$el.find('#login').show();
+                    },3000);
+                    // k.checkuser();
                 })
         };
 
@@ -113,7 +134,6 @@
                 .catch(function (xhr) {
                     
                 });
-            console.log(sel)
 
         };
 
@@ -126,6 +146,7 @@
             inst.setUrl(apiRoot+"/tags/"+form.uid.value+"?include=started_work,emplid,alloc_orders")
                 .loadFromRemote()
                 .then(function (data) {
+                    k.$el.find("#login").hide();
                     current_ttregistry = data;
 
                     k.$el.find("#loader").hide();
@@ -138,9 +159,27 @@
                             cont.find("h4").html(data.relationships.started_work[0].attributes.operation_name);
                         }
 
-                        let dateDiff = (new Date()).getTime()-(new Date(data.relationships.started_work[0].attributes.start)).getTime();
+                        showKontor = true;
 
-                        cont.find("h5 span").html(Math.round(dateDiff/3600000)+":"+Math.round(dateDiff/1000%60));
+                        cont.find(".emplName").text(data.attributes.fname+" "+data.attributes.lname);
+                        // cont.find(".project").text(data.attributes.fname+" "+data.attributes.lname);
+                        function showTime() {
+
+                            let dateDiffSeconds = Math.round(((new Date()).getTime()-(new Date(data.relationships.started_work[0].attributes.start)).getTime())/1000);
+                            let seconds = dateDiffSeconds%60;
+                            let minutes = Math.floor(dateDiffSeconds/60);
+                            let hours = Math.floor(minutes/60);
+                            minutes = minutes%60;
+                            // let minutes = Math.floor(dateDiffSeconds/3600);
+
+                            let elapsed = ("0" + hours).slice(-2) + ":"+("0" + minutes).slice(-2) + ":"+("0" + seconds).slice(-2);
+                            cont.find(".elapsedTime").html(elapsed);
+
+                            if(showKontor) {
+                                setTimeout(showTime,1000);
+                            }
+                        }
+                        showTime();
                         return;
                     }
 
@@ -167,10 +206,8 @@
                     if(projects.length<2) {
                         k.$el.find("#projectSelect").find("select").hide();
                     }
-
                 })
                 .catch(function (xhr) {
-                    console.log(xhr)
                     k.$el.find("#loader").hide();
                     let cb;
                     switch(xhr.jqXHR.status) {
@@ -190,9 +227,7 @@
                             k.$el.find("#unknowError").show();
                             cb = ()=>k.$el.find("#unknowError").hide();
                     }
-
                     setTimeout(cb,1000);
-
                     form.uid.disabled = false;
                     form.submButt.disabled = false;
                 });

@@ -195,6 +195,11 @@
                     url: apiRoot + "/settings/?filter=key=data_expiry_time",
                     type: "GET",
                     success: function(data) {
+                        console.log("äääääääää",data);
+                        if (!data.data.length) {
+                            resolve();
+                            return;
+                        }
                         let expiryTime = data.data[0].attributes.value;
                         let dateNow = new Date();
                         dateNow.setHours(dateNow.getHours() + parseInt(expiryTime));
