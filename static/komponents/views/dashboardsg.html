@@ -1,0 +1,197 @@
+<div class="content-fluid ">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Panou de control</h1>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content-header -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col d-none">
+                    <ul>
+                        <li>nr. de comenzi comandate</li>
+                        <li>nr. de comenzi in lucru</li>
+                        <li>nr. de comenzi in gata de livrare</li>
+                        <li>nr. de comenzi livrate</li>
+                    </ul>
+                    Alert
+                    <ul>
+                        <li>nr. de comenzi in lucru in depasire</li>
+                        <li>nr. de comenzi in intarziere</li>
+                        <li>nr. pontaje pe comanda zero</li>
+                        <li>nr. pontaje in depasire</li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info" id="testApp">
+                        <div class="inner">
+                            <h3><%= attributes.order_value %>    </h3>
+
+                            <p>New Orders</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>53<sup style="font-size: 20px">%</sup></h3>
+
+                            <p>Bounce Rate</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>44</h3>
+
+                            <p>User Registrations</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-person-add"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3>65</h3>
+
+                            <p>Unique Visitors</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-pie-graph"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+            <!-- /.row -->
+            <!-- Main row -->
+            <div class="row">
+                <!-- Left col -->
+                <section class="col-lg-3 connectedSortable">
+                    <!-- Custom tabs (Charts with tabs)-->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-chart-pie mr-1"></i>
+                                Comenzi
+                            </h3>
+                        </div><!-- /.card-header -->
+                        <div class="card-body">
+                            <canvas id="revenue-chart-canvas" height="200" style="height: 200px;"></canvas>
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+
+
+                </section>
+                <!-- /.Left col -->
+                <!-- right col (We are only adding the ID to make the widgets sortable)-->
+                <section class="col-lg-5 connectedSortable">
+
+                </section>
+                <!-- right col -->
+            </div>
+            <!-- /.row (main row) -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<script>
+    function init_komponent(k) {
+        k.$el.find("#testApp").apiator({resourcetype:"item",url:apiRoot+"/orders/46"});
+
+        $("<span>").apiator({returninstance:true,resourcetype: "collection"}).setUrl(apiRoot+"/orders_states_cnt").loadFromRemote()
+            .then(function (collection) {
+                let data = [];
+                let backgroundColor = [];
+                let labels = [];
+
+                let orderColors = {
+                    offer: "#6f6f6f",
+                    proc: "#DC3545",
+                    ord: "#17A2B8",
+                    ready: "#FEC108",
+                    dlvd: "#2AA744",
+                    canceled: "#6C757D",
+                };
+                let orderStateLabels = {
+                    offer: "Oferta",
+                    proc: "In lucru",
+                    ord: "Comandat",
+                    ready: "Gata de livrare",
+                    dlvd: "Livrat",
+                    canceled: "Anulat",
+                };
+
+                let dlvrColors = {
+                    created: "secondary",
+                    delivered: "warning",
+                    received: "success",
+                    canceled: "secondary",
+                };
+
+
+                collection.items.forEach(function (item) {
+                    labels.push(orderStateLabels[item.id]);
+                    data.push(item.attributes.cnt);
+                    backgroundColor.push(orderColors[item.id]);
+                });
+                data = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'My First Dataset',
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        hoverOffset: 4
+                    }]
+                };
+
+                new Chart(
+                    document.getElementById('revenue-chart-canvas'),
+                    {
+                        type: 'doughnut',
+                        data: data,
+                    }
+                );
+
+
+            });
+    }
+</script>
+

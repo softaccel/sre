@@ -1,0 +1,166 @@
+<nav class="main-header navbar navbar-expand navbar-light">
+  <!-- Left navbar links -->
+    <div class="navbar-nav">
+        <div class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button" onclick="event.preventDefault(); toggleSideBar(this);"><i class="fas fa-bars"></i></a>
+        </div>
+    </div>
+    <div class="navbar-nav ml-auto">
+        <div class="header-btn-lg pr-0">
+            <div class="widget-content p-0">
+                <div class="widget-content-wrapper">
+                    <div class="widget-content-left">
+                        <h4 class="d-inline m-0"><span class="badge-dark badge badge-pill" id="timeDisplay" style="min-width: 120px">12:00:00</span></h4>
+
+                        <div class="btn-group" style="display: none" id="alerts">
+                            <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
+                                <i class="fa fa-bell d-inline rounded-circle bg-gradient-danger  m-0" style="font-size: 15px; padding: 10px;"></i>
+                                <span class="badge badge-dark" style="position: relative; left: -15px; top: -15px" id="totalAlerts">28</span>
+                            </a>
+                            <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
+                                <a id="ordersOverTime" style="display: none" href="#/views/orders|filter=overtime" tabindex="0" class="dropdown-item"><span class="badge badge-pill badge-danger">10</span> comenzi in depasire</a>
+                                <a id="ordersInDelay" style="display: none" href="#/views/orders|filter=delayed" tabindex="0" class="dropdown-item"><span class="badge badge-pill badge-danger">10</span> comenzi in intarziere</a>
+                                <a id="overTimeTT" style="display: none" href="#/views/pontaj/registrywrapper|filter=overtime" tabindex="0" class="dropdown-item"><span class="badge badge-pill badge-danger">3</span> pontaje peste 8 ore</a>
+                                <a id="bufferProjTT" style="display: none" href="#/views/pontaj/registrywrapper|filter=buffer" tabindex="0" class="dropdown-item"><span class="badge badge-pill badge-danger">7</span> pontaje pe comanda tampon</a>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
+                                <i class="fa fa-user d-inline rounded-circle bg-secondary m-0" style="font-size: 15px; padding: 10px; color: white"></i>
+                                <span id="userName"></span>
+                                <i class="fa fa-angle-down ml-2 opacity-8"></i>
+                            </a>
+                            <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
+                                <!--									<button type="button" tabindex="0" class="dropdown-item">User Account</button>-->
+                                <a href="#" tabindex="0" class="dropdown-item" onclick="">Profil</a>
+                                <a href="#" tabindex="0" class="dropdown-item" onclick="event.preventDefault();preferences()">Preferinte</a>
+                                <a href="#" onclick="logout()" tabindex="0" class="dropdown-item">Logout</a>
+                                <!--                                    <a href="#" tabindex="0" class="dropdown-item" onclick="$('body').addClass('admin');return false;">AM</a>-->
+                                <!--									<h6 tabindex="-1" class="dropdown-header">Header</h6>-->
+                                <!--									<button type="button" tabindex="0" class="dropdown-item">Actions</button>-->
+                                <!--									<div tabindex="-1" class="dropdown-divider"></div>-->
+                                <!--									<button type="button" tabindex="0" class="dropdown-item">Dividers</button>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<script>
+
+    function startTime(el) {
+        const today = new Date();
+        let h = today.getHours();
+        let m = today.getMinutes();
+        let s = today.getSeconds();
+        m = checkTime(m);
+        s = checkTime(s);
+        el.html(h + ":" + m + ":" + s);
+        setTimeout(()=>startTime(el), 1000);
+    }
+
+    function checkTime(i) {
+        if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+        return i;
+    }
+
+
+    function preferences() {
+        komponentor.intent("/views/preferences").send();
+    }
+
+    function toggleSideBar(btn) {
+        let $main = $('body');
+        let $btn = $(btn);
+        if($main.hasClass('sidebar-collapse')){
+            $main.removeClass('sidebar-collapse');
+            $btn.addClass("active");
+        } else {
+            $main.addClass('sidebar-collapse');
+            $btn.removeClass("active");
+        }
+    }
+
+    function toggleMobileMenu(btn) {
+        // alert("");
+        let $main = $('#mainc');
+        let $btn = $(btn);
+
+        if($main.hasClass('sidebar-mobile-open')) {
+            $main.removeClass('sidebar-mobile-open');
+            $btn.removeClass('is-active');
+        }
+        else {
+            $main.addClass('sidebar-mobile-open');
+            $btn.addClass('is-active');
+        }
+    }
+
+    function displayAlerts() {
+        //
+        $("#alerts").hide();
+        let cnt = 0;
+        $.get(apiRoot+"/orders_working_hours?filter_advanced=(total>estimated)&page[orders_working_hours][limit]=1")
+            .done(function (data) {
+                let lnk = $("#ordersOverTime").hide();
+                if(data.meta.totalRecords>0) {
+                    cnt +=data.meta.totalRecords;
+                    lnk.show().find(".badge").text(data.meta.totalRecords);
+                    $("#totalAlerts").text(cnt)
+                    $("#alerts").show();
+                }
+            });
+        $.get(apiRoot+"/orders_in_delay")
+            .done(function (data) {
+                let lnk = $("#ordersInDelay").hide();
+                if(data.meta.totalRecords>0) {
+                    cnt +=data.meta.totalRecords;
+                    lnk.show().find(".badge").text(data.meta.totalRecords);
+                    $("#totalAlerts").text(cnt)
+                    $("#alerts").show();
+                }
+            });
+        $.get(apiRoot+"/timetracking?filter=duration>480")
+            .done(function (data) {
+                $("#overTimeTT").hide();
+                if(data.meta.totalRecords>0) {
+                    cnt +=data.meta.totalRecords;
+                    $("#overTimeTT").show().find(".badge").text(data.meta.totalRecords);
+                    $("#totalAlerts").text(cnt)
+                    $("#alerts").show();
+                }
+            });
+
+        $.get(apiRoot+"/timetracking?filter=order=1")
+            .done(function (data) {
+                $("#bufferProjTT").hide();
+                if(data.meta.totalRecords>0) {
+                    cnt +=data.meta.totalRecords;
+                    $("#bufferProjTT").show().find(".badge").text(data.meta.totalRecords);
+                    $("#totalAlerts").text(cnt)
+                    $("#alerts").show();
+
+                }
+            });
+
+
+
+        setTimeout(displayAlerts,60000);
+    }
+
+    function init_komponent(k,data) {
+        startTime(k.$el.find("#timeDisplay"));
+        let jsonDec = jwt_decode(localStorage.getItem("spaleck")).unm;
+        $("#userName").text(jsonDec);
+
+        displayAlerts();
+
+    }
+
+</script>
+
+<!--<script src="assets/js/PushMennu_adminlte.js"></script>-->
