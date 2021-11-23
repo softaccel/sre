@@ -495,10 +495,9 @@
 
         let instance = $(src).data("instance");
 
-
-        if(opSel === null || startTime.length === 0){
+        if( startTime.length === 0){
             komponentor.intent("/common/messagemodal").data({
-                body: "Completati campurile \"Operatie\", \"Start\" si \"Stop\" pentru a continua.",
+                body: "Completati operatia pentru a continua.",
                 buttons: [
                     {
                         label: "Ok",
