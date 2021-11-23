@@ -61,7 +61,7 @@
     "logLevel": 3,
     "header": "/common/header",
     "sideBar": "/common/sidebarsg",
-    "defaultPage": "/views/dashboardsg"
+    "defaultView": "/views/dashboardsg"
   },
   "sportsgamesdevel": {
     "baseUrl": "/spaleck",
@@ -73,7 +73,7 @@
     "logLevel": 3,
     "header": "/common/header",
     "sideBar": "/common/sidebarsg",
-    "defaultPage": "/views/dashboardsg"
+    "defaultView": "/views/dashboardsg"
   }
 
 }
