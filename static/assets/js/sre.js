@@ -109,7 +109,6 @@ Promise.all([p1,p2])
         authUrl = environments[active].authUrl;
         fileApiUrl = environments[active].fileApiUrl;
 
-        console.log(appUrl);
         if(typeof appUrl==="undefined") {
             appUrl = defaultAppUrl;
         }
