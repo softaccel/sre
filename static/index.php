@@ -24,7 +24,7 @@ if(json_last_error()) {
 $active = $tmp->active;
 if(!@$envs->$active) {
     http_response_code(500);
-    die("Invalid environment selection");
+    die("Invalid environment selection from index");
 }
 
 
