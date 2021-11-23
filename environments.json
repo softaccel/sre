@@ -51,7 +51,7 @@
     "fileApiUrl": "http://10.1.1.10/FileApi",
     "logLevel": 3
   },
-  "ezerp": {
+  "sportsgames": {
     "baseUrl": "/ezerp",
     "feDBapiUrl": "/dbapi/v2/spaleck",
     "beDBapiUrl": "http://localhost/dbapi/v2/spaleck",
@@ -59,8 +59,21 @@
     "authUrl": "/ezerp/be/main/auth/login",
     "fileApiUrl": "/FileApi",
     "logLevel": 3,
-    "dashboard": "",
-    "menu": ""
-
+    "header": "/common/header",
+    "sideBar": "/common/sidebarsg",
+    "defaultPage": "/views/dashboardsg"
+  },
+  "sportsgamesdevel": {
+    "baseUrl": "/spaleck",
+    "feDBapiUrl": "/dbapi/v2/spaleck",
+    "beDBapiUrl": "http://localhost/dbapi/v2/spaleck",
+    "backendUrl": "/spaleck/be",
+    "authUrl": "/spaleck/be/main/auth/login",
+    "fileApiUrl": "/FileApi",
+    "logLevel": 3,
+    "header": "/common/header",
+    "sideBar": "/common/sidebarsg",
+    "defaultPage": "/views/dashboardsg"
   }
+
 }

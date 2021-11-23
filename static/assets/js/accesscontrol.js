@@ -1,0 +1,5 @@
+function AccessControl() {
+    function f() {
+        
+    }
+}

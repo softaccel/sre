@@ -41,6 +41,9 @@
         if(typeof opts==="undefined") {
             opts = {};
         }
+        if(typeof opts==="string") {
+            opts = {url:opts};
+        }
 
         let options = this.data();
         if(typeof options==="undefined") {
@@ -337,9 +340,13 @@
         }
 
 
-        initKomponent()
+        if(typeof k.checkAccess==="undefined" || k.checkAccess.constructor!==Function && k.checkAccess()) {
+            initKomponent();
+        }
+
+
         return;
-        
+
         getAll()
             .then(function () {
                 return checkAccess();

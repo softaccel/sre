@@ -64,13 +64,11 @@ const localStorageLabel = "spaleck";
 const _kPath = "komponents";
 const _kExt = ".html";
 const envsFile = "../environments.json";
-// const defaultView = "/views/dashboard";
-const defaultView = "/views/dashboardsg";
 const activeEnvFile = "../active_env.json";
 const defaultAppUrl = "/views/app";
 const loginAppUrl = "/views/login";
 
-let active_env;
+let environment;
 
 
 // let localData,userData;
@@ -105,6 +103,7 @@ Promise.all([p1,p2])
         let environments,active;
         [environments,active] = values;
         active = active.active;
+        environment = environments[active];
         backendUrl = environments[active].backendUrl;
         apiRoot = environments[active].feDBapiUrl;
         authUrl = environments[active].authUrl;
