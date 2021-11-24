@@ -85,7 +85,7 @@
             inst.minsTotal = 0;
 
             let url = apiRoot + "/report_tt_agg_byempl/?sort=-date&filter="
-                +"date>"+ start.format('YYYY-MM-DD') + ",date<" + end.format('YYYY-MM-DD');
+                +"date>"+ start.format('YYYY-MM-DD') + " 00:00,date<" + end.format('YYYY-MM-DD')+" 23:59";
 
             if(currentEmplId) {
                 url += ",employee="+currentEmplId;
