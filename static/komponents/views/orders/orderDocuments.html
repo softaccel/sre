@@ -17,7 +17,7 @@
                         </form>
                     </div>
                 </div>
-                <div id="documentsFacturi" data-resourcetype="collection">
+                <div id="documentsFacturi" data-resourcetype="collection" data-filter="facturi">
                     <% documents = JSON.parse(attributes.meta_val);%>
                     <ul>
                         <% for (let [i,doc] of documents.entries()) { %>
@@ -38,13 +38,13 @@
                 <div class="d-flex justify-content-between">
                     <div>Avize</div>
                     <div class="checkUpdate">
-                        <form id="orderDocumentsAvize">
+                        <form id="orderDocumentsAvize" data-type="avize">
                             <input type="file" name="files[]" multiple class="">
                             <input type="submit" value="Upload" name="upload">
                         </form>
                     </div>
                 </div>
-                <div id="documentsAvize" data-resourcetype="collection">
+                <div id="documentsAvize" data-resourcetype="collection" data-filter="avize">
                     <% documents = JSON.parse(attributes.meta_val);%>
                     <ul>
                         <% for (let [i,doc] of documents.entries()) { %>
@@ -65,13 +65,13 @@
                 <div class="d-flex justify-content-between">
                     <div>Certificate de calitate</div>
                     <div class="checkUpdate">
-                        <form id="orderDocumentsCertificate">
+                        <form id="orderDocumentsCertificate" data-type="certificate">
                             <input type="file" name="files[]" multiple class="">
                             <input type="submit" value="Upload" name="upload">
                         </form>
                     </div>
                 </div>
-                <div id="documentsCertificate" data-resourcetype="collection">
+                <div id="documentsCertificate" data-resourcetype="collection"  data-filter="certificate">
                     <% documents = JSON.parse(attributes.meta_val);%>
                     <ul>
                         <% for (let [i,doc] of documents.entries()) { %>
@@ -92,13 +92,13 @@
                 <div class="d-flex justify-content-between">
                     <div>Fise de urmarire</div>
                     <div class="checkUpdate">
-                        <form id="orderDocumentsFise">
+                        <form id="orderDocumentsFise" data-type="fise">
                             <input type="file" name="files[]" multiple class="">
                             <input type="submit" value="Upload" name="upload">
                         </form>
                     </div>
                 </div>
-                <div id="documentsFise" data-resourcetype="collection">
+                <div id="documentsFise" data-resourcetype="collection"  data-filter="fise">
                     <% documents = JSON.parse(attributes.meta_val);%>
                     <ul>
                         <% for (let [i,doc] of documents.entries()) { %>
@@ -119,13 +119,13 @@
                 <div class="d-flex justify-content-between">
                     <div>Altele</div>
                     <div class="checkUpdate">
-                        <form id="orderDocumentsOther">
+                        <form id="orderDocumentsOther" data-type="other">
                             <input type="file" name="files[]" multiple class="">
                             <input type="submit" value="Upload" name="upload">
                         </form>
                     </div>
                 </div>
-                <div id="documentsOther" data-resourcetype="collection">
+                <div id="documentsOther" data-resourcetype="collection"  data-filter="other">
                     <% documents = JSON.parse(attributes.meta_val);%>
                     <ul>
                         <% for (let [i,doc] of documents.entries()) { %>
@@ -229,33 +229,36 @@
         function downloadSelected() {
             let requestFiles = [];
 
-            $("#orderDocumentsList").each(function () {
-                $(this).find("#documentsFacturi").find(".downChk:checked").each(function (){
-                    let url = $($(this).siblings("a")[0]).attr("href");
-                    requestFiles.push(url.slice(url.indexOf("files/") + 6));
-                });
-                $(this).find("#documentsAvize").find(".downChk:checked").each(function (){
-                    let url = $($(this).siblings("a")[0]).attr("href");
-                    requestFiles.push(url.slice(url.indexOf("files/") + 6));
-                });
-                $(this).find("#documentsCertificate").find(".downChk:checked").each(function (){
-                    let url = $($(this).siblings("a")[0]).attr("href");
-                    requestFiles.push(url.slice(url.indexOf("files/") + 6));
-                });
-                $(this).find("#documentsFise").find(".downChk:checked").each(function (){
-                    let url = $($(this).siblings("a")[0]).attr("href");
-                    requestFiles.push(url.slice(url.indexOf("files/") + 6));
-                });
-                $(this).find("#documentsOther").find(".downChk:checked").each(function (){
-                    let url = $($(this).siblings("a")[0]).attr("href");
-                    requestFiles.push(url.slice(url.indexOf("files/") + 6));
-                });
+            $("#orderDocumentsList .downChk:checked").each(function (item) {
+                let url = $($(item).siblings("a")[0]).attr("href");
+                requestFiles.push(url.slice(url.indexOf("files/") + 6));
+
+                // $(this).find("#documentsFacturi").find(".downChk:checked").each(function (){
+                //     let url = $($(this).siblings("a")[0]).attr("href");
+                //     requestFiles.push(url.slice(url.indexOf("files/") + 6));
+                // });
+                // $(this).find("#documentsAvize").find(".downChk:checked").each(function (){
+                //     let url = $($(this).siblings("a")[0]).attr("href");
+                //     requestFiles.push(url.slice(url.indexOf("files/") + 6));
+                // });
+                // $(this).find("#documentsCertificate").find(".downChk:checked").each(function (){
+                //     let url = $($(this).siblings("a")[0]).attr("href");
+                //     requestFiles.push(url.slice(url.indexOf("files/") + 6));
+                // });
+                // $(this).find("#documentsFise").find(".downChk:checked").each(function (){
+                //     let url = $($(this).siblings("a")[0]).attr("href");
+                //     requestFiles.push(url.slice(url.indexOf("files/") + 6));
+                // });
+                // $(this).find("#documentsOther").find(".downChk:checked").each(function (){
+                //     let url = $($(this).siblings("a")[0]).attr("href");
+                //     requestFiles.push(url.slice(url.indexOf("files/") + 6));
+                // });
             });
 
             if (requestFiles.length === 0) {
-                komponentor.intent("/common/errormodal").data({
-                    body: "Trebuie selectat macar un fisier!"
-                }).send();
+                // komponentor.intent("/common/errormodal").data({
+                //     body: "Trebuie selectat macar un fisier!"
+                // }).send();
                 return;
             }
 
@@ -265,39 +268,52 @@
 
         }
 
-        let url = apiRoot + "/orders/" + k.data.instance.id + "/orders_meta/?filter=meta_key=documents.facturi";
-        let facturi = k.$el.find("#documentsFacturi").apiator({url: url, returninstance:true});
-        let avize = k.$el.find("#documentsAvize").apiator({url: url.replace("facturi", "avize"), returninstance:true});
-        let certificate = k.$el.find("#documentsCertificate").apiator({url: url.replace("facturi", "certificate"), returninstance:true});
-        let fise = k.$el.find("#documentsFise").apiator({url: url.replace("facturi", "fise"), returninstance:true});
-        let altele = k.$el.find("#documentsOther").apiator({url: url.replace("facturi", "other"), returninstance:true});
+        let url = apiRoot + "/orders/" + k.data.instance.id + "/orders_meta/?filter=meta_key=documents.%type%";
 
-        const util = facturi.getUtilities();
 
-        let formFacturi = k.$el.find("#orderDocumentsFacturi")[0];
-        util.captureFormSubmit(formFacturi, function (data) {
-            uploadDocument(facturi, formFacturi, "facturi");
+
+        k.$el.find("[data-resourcetype=collection]").each(function () {
+            let tmp = $(this);
+            tmp.apiator(url.replace("%type%",tmp.data('filter')));
         });
+        // let facturi = k.$el.find("#documentsFacturi").apiator({url: url, returninstance:true});
+        // let avize = k.$el.find("#documentsAvize").apiator({url: url.replace("facturi", "avize"), returninstance:true});
+        // let certificate = k.$el.find("#documentsCertificate").apiator({url: url.replace("facturi", "certificate"), returninstance:true});
+        // let fise = k.$el.find("#documentsFise").apiator({url: url.replace("facturi", "fise"), returninstance:true});
+        // let altele = k.$el.find("#documentsOther").apiator({url: url.replace("facturi", "other"), returninstance:true});
 
-        let formAvize = k.$el.find("#orderDocumentsAvize")[0];
-        util.captureFormSubmit(formAvize, function (data) {
-            uploadDocument(avize, formAvize, "avize");
-        });
+        const util = $("<span>").apiator({returninstance:true,resourcetype:'item'}).getUtilities();
 
-        let formCertificate = k.$el.find("#orderDocumentsCertificate")[0];
-        util.captureFormSubmit(formCertificate, function (data) {
-            uploadDocument(certificate, formCertificate, "certificate");
+        k.$el.find("form[data-type]").each(function (form) {
+            util.captureFormSubmit(form, function (data) {
+                uploadDocument(facturi, formFacturi, $(form).data(type));
+            });
         });
-
-        let formFise = k.$el.find("#orderDocumentsFise")[0];
-        util.captureFormSubmit(formFise, function (data) {
-            uploadDocument(fise, formFise, "fise");
-        });
-
-        let formOther = k.$el.find("#orderDocumentsOther")[0];
-        util.captureFormSubmit(formOther, function (data) {
-            uploadDocument(altele, formOther, "other");
-        });
+        //
+        // let formFacturi = k.$el.find("#orderDocumentsFacturi")[0];
+        // util.captureFormSubmit(formFacturi, function (data) {
+        //     uploadDocument(facturi, formFacturi, "facturi");
+        // });
+        //
+        // let formAvize = k.$el.find("#orderDocumentsAvize")[0];
+        // util.captureFormSubmit(formAvize, function (data) {
+        //     uploadDocument(avize, formAvize, "avize");
+        // });
+        //
+        // let formCertificate = k.$el.find("#orderDocumentsCertificate")[0];
+        // util.captureFormSubmit(formCertificate, function (data) {
+        //     uploadDocument(certificate, formCertificate, "certificate");
+        // });
+        //
+        // let formFise = k.$el.find("#orderDocumentsFise")[0];
+        // util.captureFormSubmit(formFise, function (data) {
+        //     uploadDocument(fise, formFise, "fise");
+        // });
+        //
+        // let formOther = k.$el.find("#orderDocumentsOther")[0];
+        // util.captureFormSubmit(formOther, function (data) {
+        //     uploadDocument(altele, formOther, "other");
+        // });
 
         k.$el.find("#downBtn").on("click", function () {
             downloadSelected();

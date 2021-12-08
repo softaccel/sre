@@ -1,0 +1,220 @@
+<!--<div class="mainc">-->
+<style>
+    .nav-sidebar{
+        /*font-size: 1rem;*/
+        line-height: 1.5
+    }
+    .nav-sidebar .nav-header{
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        border-bottom: grey solid 1px;
+        margin-top: 0.2rem;
+    }
+</style>
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <div class="app-header__logo">
+        <a href="index.html" class="brand-link">
+<!--            <img class="logo-src" src="assets/images/spaleck.png" style="width: 50px; border-radius: 50%">-->
+            <span class="brand-text font-weight-light"><i class="fa fa-skiing"></i> SportsGames</span>
+        </a>
+    </div>
+    <div class="app-header__mobile-menu">
+        <div>
+        </div>
+    </div>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <nav id="mainSubMenu">
+
+        </nav>
+        <nav class="mt-2 d-none">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-item module-home">
+                    <a href="#" title="" class="nav-link">
+                        <i class="metismenu-icon fa fa-home"></i>
+                        <p>Home</p>
+                    </a>
+                </li>
+                <li class="nav-header">Operational</li>
+                <li class="nav-item d-none">
+                    <a href="#/views/orders" class="nav-link checkRead">
+                        <i class="metismenu-icon fa fa-funnel-dollar"></i> <p>Comenzi</p>
+                    </a>
+                </li>
+
+                <li class="nav-item module-livrari d-none">
+                    <a href="#/views/deliveries" class="nav-link checkRead">
+                        <i class="metismenu-icon fa fa-truck"></i> <p>Livrari</p>
+                    </a>
+                </li>
+
+                <li class="nav-item module-timetracking" id="pontaj">
+                    <a data-toggle="collapse" href="#pontajMenu" role="button" class="nav-link">
+                        <i class="fas fa-clock"></i> <p>Pontaj <i class="fas fa-angle-down right"></i></p>
+                    </a>
+                    <ul class="collapse nav" id="pontajMenu">
+                        <li class="nav-item ">
+                            <a href="#/views/pontaj/registrywrapper" class="nav-link checkRead">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Registru</p>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a href="#/views/pontaj/reportwrapper_sg" class="nav-link checkRead">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Rapoarte</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-header module-admin">Administrativ</li>
+                <li class="nav-item d-none">
+                    <a href="#/views/partners" class="nav-link checkRead">
+                        <i class="fas fa-handshake"></i> <p>Parteneri</p>
+                    </a>
+                </li>
+                <li class="nav-item module-personel" id="personal">
+                    <a data-toggle="collapse" href="#collapseExample" role="button" class="nav-link">
+                        <i class="fas fa-user-friends"></i> <p>Personal <i class="fas fa-angle-down right"></i></p>
+                    </a>
+                    <ul class="collapse nav" id="collapseExample">
+                        <li class="nav-item module-employees">
+                            <a href="#/views/employees" class="nav-link checkRead">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Angajati</p>
+                            </a>
+                        </li>
+                        <li class="nav-item module-teams">
+                            <a href="#/views/teams" class="nav-link checkRead">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Echipe</p>
+                            </a>
+                        </li>
+                        <li class="nav-item module-jobs">
+                            <a href="#/views/jobs" class="nav-link checkRead">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Posturi</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item module-units d-none">
+                    <a href="#/views/units" class="nav-link checkRead">
+                        <i class="metismenu-icon fa fa-balance-scale"></i> <p>Unitati de masura</p>
+                    </a>
+                </li>
+
+                <li class="nav-item module-catalog d-none">
+                    <a href="#/views/catalog" class="nav-link checkRead">
+                        <i class="metismenu-icon fa fa-book"></i> <p>Catalog</p>
+                    </a>
+                </li>
+                <li class="nav-header module-appsettings">Aplicatie</li>
+                <li class="nav-item module-users">
+                    <a href="#/views/users" class="nav-link checkRead">
+                        <i class="metismenu-icon fa fa-users"></i> <p>Utilizatori</p>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>
+<template id="menuTemplate">
+    <ul>{{groups}}</ul>
+</template>
+<template id="groupTemplate">
+    <li class="nav-header">{{name}}</li>
+    {{items}}
+</template>
+<template id="itemTemplate">
+    <li class="nav-item">
+        <a href="{{link}}" class="nav-link checkRead">
+            <i class="metismenu-icon fa fa-{{faIcon}}"></i> <p>{{title}}}</p>
+        </a>
+        <ul>{{subItems}}</ul>
+    </li>
+</template>
+<template id="subItemTemplate">
+    <li class="nav-item">
+        <a href="{{link}}" class="nav-link checkRead">
+            <i class="metismenu-icon fa fa-{{faIcon}}"></i> <p>{{title}}}</p>
+        </a>
+    </li>
+</template>
+<!--</div>-->
+<script>
+    function init_komponent(k) {
+
+        // let modules = ["orders","deliveries","timetracking","partners","employees","teams","jobs","units","catalog","users"];
+        // let nodes = k.$el.find(".checkRead").parent();
+        //
+        // $.map(nodes, function (value, index) {
+        //     checkUserRights($(value),modules[index]);
+        // });
+
+        // if ($("#personal>ul>li>a.readAllow").length===0) {
+        //     $("#personal").addClass("d-none");
+        // }
+
+        let menu = [
+            {
+                items:[
+                    {name: "Home",link: ""}
+                ]
+            },
+            {
+                name: "Operational",
+                items:[
+                    {name: "Comenzi",link: ""},
+                    {name: "Pontaj",link: ""},
+                    {name: "Livrari",link: ""}
+                ]
+            },
+            {
+                name: "Administrativ",
+                items:[
+                    {name: "Parteneri",link: ""},
+                    {name: "Personal",items:[
+                            {name: "Angajati",link: ""},
+                            {name: "Echipe",link: ""},
+                        ]},
+                    {name: "Altceva",link: ""}
+                ]
+            }
+        ];
+
+        menu.reduce(function (carry,group) {
+            if(typeof group.items==="undefined") return;
+            let menuTpl =  $("#menuTemplate").html();
+            let groupTpl = $("#groupTemplate").html();
+            let itemTpl = $("#itemTemplate").html();
+            let subItemTpl = $("#subItemTemplate").html();
+
+            let contents = group.items.reduce(function (carry,item) {
+                let subItems = !item.hasOwnProperty("items") ? null :
+                    item.items.reduce(function (carry,subitem) {
+                        let subItemView = subItemTpl+"";
+                        return carry+subItemView
+                            .replace("{{link}}",subitem.link)
+                            .replace("{{name}}",subitem.name);
+                    });
+
+                let itemView = itemTpl+"";
+                itemView
+                    .replace("{{link}}",subitem.link)
+                    .replace("{{name}}",subitem.name);
+                    .replace("{{subItems}}",subItems);
+                ite
+            });
+
+            return carry+
+        });
+
+    }
+</script>

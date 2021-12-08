@@ -74,5 +74,29 @@
     "header": "/common/header",
     "sideBar": "/common/sidebarsg",
     "defaultView": "/views/dashboardsg"
+  },
+  "sportsgameswithlivedb": {
+    "baseUrl": "/spaleck",
+    "feDBapiUrl": "http://192.168.234.3/dbapi/v2/spaleck",
+    "beDBapiUrl": "http://192.168.234.3/dbapi/v2/spaleck",
+    "backendUrl": "/spaleck/be",
+    "authUrl": "/spaleck/be/main/auth/login",
+    "fileApiUrl": "/FileApi",
+    "logLevel": 3,
+    "header": "/common/header",
+    "sideBar": "/common/sidebarsg",
+    "defaultView": "/views/dashboardsg"
+  },
+  "sportsgameswithlivedboverinet": {
+    "baseUrl": "/spaleck",
+    "feDBapiUrl": "https://sportsgamestm.softaccel.net/dbapi/v2/spaleck",
+    "beDBapiUrl": "https://sportsgamestm.softaccel.net/dbapi/v2/spaleck",
+    "backendUrl": "/spaleck/be",
+    "authUrl": "/spaleck/be/main/auth/login",
+    "fileApiUrl": "/FileApi",
+    "logLevel": 3,
+    "header": "/common/header",
+    "sideBar": "/common/sidebarsg",
+    "defaultView": "/views/dashboardsg"
   }
 }

@@ -3,14 +3,25 @@
     <div class="card-body ">
 
         <div class="row">
-            <div class="col-md-4"><select style="width: 100%" id="emplSel"></select>
+            <div class="col-md-5"><select style="width: 100%" id="emplSel"></select>
             </div>
-            <div class="col-md-4">        <select style="width: 100%" id="orderSel"></select>
-            </div>
-            <div class="col-md-4">
+            <!--            <div class="col-md-4">        <select style="width: 100%" id="orderSel"></select></div>-->
+            <div class="col-md-5">
                 <div name="reportrange" style="width: 100%;background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; display: inline-block">
                     <i class="fa fa-calendar"></i>&nbsp;
                     <span></span> <i class="fa fa-caret-down"></i>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="btn-group w-100">
+                    <button type="button" class="btn btn-info form-control form-control-sm">Export</button>
+                    <button type="button" class="btn btn-info dropdown-toggle dropdown-icon  form-control-sm" data-toggle="dropdown" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu" role="menu" style="">
+                        <button class="dropdown-item" href="#" onclick="exportFile(this,'xls')"><i class="fa fa-file-excel"></i> Exporta Excel</button>
+                        <button class="dropdown-item" href="#" onclick="exportFile(this,'csv')"><i class="fa fa-file-csv"></i> Exporta CSV</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -21,33 +32,45 @@
 <table class="table">
     <thead class="bg-secondary">
     <tr>
-        <th>Angajat</th>
-        <th>Comanda</th>
-        <th>Data</th>
-<!--        <th>Denumire comanda</th>-->
-        <th>Operatie</th>
-        <th>Durata</th>
+        <th data-name="emplName">Angajat</th>
+        <th data-name="order">Comanda</th>
+        <th data-name="operation">Operatie</th>
+        <th data-name="date">Data</th>
+        <th data-name="wday">Ziua saptamanii</th>
+        <th data-name="duration">Durata</th>
     </tr>
     </thead>
-    <tbody data-resourcetype="collection" data-paging="#reportEmplTTPaging">
+    <tbody data-resourcetype="collection" data-paging="#reportEmplTTPaging" data-type="report_tt_agg_byempl">
     <tr>
-        <td><%=attributes.fname%> <%=attributes.lname%></td>
-        <td><%=attributes.docnum%></td>
-        <td><%=attributes.date%></td>
-<!--        <td><%=attributes.label%></td>-->
-        <td><%=attributes.opname%></td>
-        <td><%=attributes.duration%><%this.item.collection.minsTotal += attributes.duration*1%></td>
+        <td data-name="emplName"><%=attributes.fname%> <%=attributes.lname%></td>
+        <td data-name="order"><%=attributes.docnum%></td>
+        <td data-name="operation"><%=attributes.opname%></td>
+        <td data-name="date"><%=attributes.date%></td>
+        <td data-name="wday"><%= ['duminica','luni','marti','miercuri','joi','vineri','sambata'][(new Date(attributes.date)).getDay()]%></td>
+        <td data-name="duration"><%=attributes.duration%><%this.item.collection.minsTotal += attributes.duration*1%></td>
     </tr>
     </tbody>
     <tfoot>
     <tr class="bg-light">
-        <td colspan="4">Total (ore)</td>
+        <td colspan="3">Total (ore)</td>
         <td>0</td>
     </tr>
     </tfoot>
     <tfoot id="reportEmplTTPaging"></tfoot>
 </table>
 <script>
+
+    function exportFile(src,type) {
+        let url = {};
+        let instance = $(src).data().komponent.$el.find("table tbody").data().instance;
+        Object.assign(url,instance.url);
+        url.parameters["page["+instance.type+"][limit]"] = 10000;
+        url.parameters["outputFormat"] = type;
+        url.parameters["includetablehead"] = true;
+
+        $("<a>").attr("href",url.toString()).appendTo("body")[0].click();
+    }
+
     function init_komponent(k) {
         let currentEmplId = null;
         let currentOrderId = null;
@@ -87,7 +110,7 @@
             inst.minsTotal = 0;
 
             let url = apiRoot + "/report_tt_agg_byempl/?sort=-date&filter="
-                +"date>"+ start.format('YYYY-MM-DD') + ",date<" + end.format('YYYY-MM-DD');
+                +"date>="+ start.format('YYYY-MM-DD') + ",date<=" + end.format('YYYY-MM-DD')+"";
 
             if(currentEmplId) {
                 url += ",employee="+currentEmplId;
@@ -104,7 +127,7 @@
 
         }
 
-        $('#reportrange').daterangepicker({
+        $('[name=reportrange]').daterangepicker({
             startDate: start,
             endDate: end,
             ranges: {
@@ -116,6 +139,7 @@
                 'Luna trecuta': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
             }
         }, (s,e)=>{start=s;end=e;loadreport()});
+
 
         loadreport();
 

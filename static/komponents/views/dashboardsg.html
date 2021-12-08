@@ -133,67 +133,58 @@
     <!-- /.content -->
 </div>
 <div class="container-fluid">
-    asd
+    <canvas id="myChart" style="width: 100%;height: 400px"></canvas>
 </div>
 <script>
     function init_komponent(k) {
+        var DateTime = luxon.DateTime;
         k.$el.find("#testApp").apiator({resourcetype:"item",url:apiRoot+"/orders/46"});
-
-        $("<span>").apiator({returninstance:true,resourcetype: "collection"}).setUrl(apiRoot+"/orders_states_cnt").loadFromRemote()
+        const chartconfig = {
+            type: 'line',
+            data:{},
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: "minute"
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'value'
+                        }
+                    }
+                },
+            },
+        };
+        let ctx = document.getElementById('myChart').getContext('2d');
+        $("<span>").apiator({returninstance:true,resourcetype: "collection",type:"timetracking_active_employees"}).setUrl(apiRoot+"/timetracking_active_employees?sort=-ts").loadFromRemote()
             .then(function (collection) {
-                let data = [];
-                let backgroundColor = [];
-                let labels = [];
-
-                let orderColors = {
-                    offer: "#6f6f6f",
-                    proc: "#DC3545",
-                    ord: "#17A2B8",
-                    ready: "#FEC108",
-                    dlvd: "#2AA744",
-                    canceled: "#6C757D",
-                };
-                let orderStateLabels = {
-                    offer: "Oferta",
-                    proc: "In lucru",
-                    ord: "Comandat",
-                    ready: "Gata de livrare",
-                    dlvd: "Livrat",
-                    canceled: "Anulat",
-                };
-
-                let dlvrColors = {
-                    created: "secondary",
-                    delivered: "warning",
-                    received: "success",
-                    canceled: "secondary",
-                };
+                console.log(collection);
+                let dataSeries = [];
 
 
                 collection.items.forEach(function (item) {
-                    labels.push(orderStateLabels[item.id]);
-                    data.push(item.attributes.cnt);
-                    backgroundColor.push(orderColors[item.id]);
+                    // console.log(item.attributes.ts,DateTime.fromISO(item.attributes.ts));
+                    dataSeries.push({
+                        x: moment(item.attributes.ts).unix()*1000,
+                        y: item.attributes.cnt,
+                    });
                 });
-                data = {
-                    labels: labels,
-                    datasets: [{
-                        label: 'My First Dataset',
-                        data: data,
-                        backgroundColor: backgroundColor,
-                        hoverOffset: 4
-                    }]
+                chartconfig.data = {
+                    datasets: [
+                        {
+                            label: 'Dataset with point data',
+                            fill: false,
+                            borderColor: 'rgb(255, 99, 132)',
+                            data:dataSeries
+                        }
+                    ]
                 };
 
-                new Chart(
-                    document.getElementById('revenue-chart-canvas'),
-                    {
-                        type: 'doughnut',
-                        data: data,
-                    }
-                );
-
-
+                const myChart = new Chart(ctx,chartconfig);
             });
     }
 </script>
