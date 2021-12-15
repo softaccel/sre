@@ -255,9 +255,9 @@
 
     function init_komponent(k) {
 
-        let statusBtn = k.$el.find("#employeeStatusButton");
-        if (!statusBtn.hasClass("updateAllow"))
-            statusBtn.attr("disabled", true).removeClass("checkUpdate");
+        // let statusBtn = k.$el.find("#employeeStatusButton");
+        // if (!statusBtn.hasClass("updateAllow"))
+        //     statusBtn.attr("disabled", true).removeClass("checkUpdate");
 
         k.editMode = function(instance) {
             k.$el.find('#employeeSummary').addClass('editMode');

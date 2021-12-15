@@ -407,10 +407,13 @@
             $("#firstColOrdersDetails").removeClass("col-6").addClass("col-12")
         }
 
-        k.$el.find(".orderStageBtn").each(function () {
-            if (!$(this).hasClass("updateAllow"))
-                $(this).attr("disabled", true).removeClass("checkUpdate");
-        });
+        // todo: fix check update
+
+        // k.$el.find(".orderStageBtn").each(function () {
+        //     console.log("has no update allow")
+        //     if (!$(this).hasClass("updateAllow"))
+        //         $(this).attr("disabled", true).removeClass("checkUpdate");
+        // });
 
         // k.$el.parent().find("*").data("komponent",k);
 

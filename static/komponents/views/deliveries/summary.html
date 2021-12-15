@@ -238,10 +238,12 @@
 
     function init_komponent(k) {
 
-        k.$el.find(".deliveryStatusBtn").each(function () {
-            if (!$(this).hasClass("updateAllow"))
-                $(this).attr("disabled", true).removeClass("checkUpdate");
-        });
+        // todo: fix check update
+
+        // k.$el.find(".deliveryStatusBtn").each(function () {
+        //     if (!$(this).hasClass("updateAllow"))
+        //         $(this).attr("disabled", true).removeClass("checkUpdate");
+        // });
 
         k.$el.addClass(k.data.instance.attributes.status);
 

@@ -244,113 +244,27 @@
             // insertUrl: insertUrl
         });
 
-        k.$el.find("#partnerNameFilter").select2({
-            placeholder: '',
-            allowClear: true,
-            ajax:{
-                url: apiRoot+"/partners",
 
-                minimumInputLength: 2,
-                dataType: 'json',
-                data: (params)=>{
-                    let limit = 5;
-                    let p = {
-                        "page[partners][offset]":params.page?(params.page-1)*limit:0,
-                        "page[partners][limit]":limit
-                    };
-                    if(params.term) {
-                        p.filter = "name~=~" + params.term;
-                    }
-                    return p;
-                },
-                processResults: function (data) {
-                    let result = {results:[]};
-                    data.data.forEach(function (item) {
-                        result.results.push({
-                            id: item.id,
-                            text: item.attributes.name,
-                            // data: item
-
-                        })
-                    });
-                    return result;
-                }
-            }
+        k.$el.find("#partnerNameFilter").select2wrapper({
+            url: apiRoot+"/partners",
+            labelfld: "name",
+            placeholder: "Echipa"
         });
 
 
-        k.$el.find("#docNumFilter").select2({
-            allowClear: true,
-            placeholder: "",
-            ajax:{
-                url: apiRoot+"/documents",
-                minimumInputLength: 2,
-                dataType: 'json',
-                data: (params)=>{
-                    let limit = 5;
-                    let p = {
-                        "page[documents][offset]":params.page?(params.page-1)*limit:0,
-                        "page[documents][limit]":limit
-                    };
-                    if(params.term) {
-                        p.filter = "docnum~=~" + params.term;
-                    }
-                    return p;
-                },
-                processResults: function (data) {
-                    let result = {results:[]};
-                    data.data.forEach(function (item) {
-                        result.results.push({
-                            id: item.id,
-                            text: item.attributes.docnum,
-                            // data: item
-
-                        })
-                    });
-                    return result;
-                }
-            }
-        });
         k.$el.find("#teamIdFilter").select2wrapper({
-            // url: apiRoot+"/employees/"+instance.attributes.employee+"/emplToOrdAssoc?filter=status=ord",
-            // url: apiRoot+"/emplToOrdAssoc?filter=status!><offer,ready,dlvd",
             url: apiRoot+"/teams",
             labelfld: "name",
             idfld: "tid",
             placeholder: "Echipa"
         });
-        // k.$el.find("#teamIdFilter").select2({
-        //     allowClear: true,
-        //     placeholder: "",
-        //     ajax:{
-        //         url: apiRoot+"/teams",
-        //         minimumInputLength: 2,
-        //         dataType: 'json',
-        //         data: (params)=>{
-        //             let limit = 5;
-        //             let p = {
-        //                 "page[teams][offset]":params.page?(params.page-1)*limit:0,
-        //                 "page[teams][limit]":limit
-        //             };
-        //             if(params.term) {
-        //                 p.filter = "name~=~" + params.term;
-        //             }
-        //             return p;
-        //         },
-        //         processResults: function (data) {
-        //             let result = {results:[]};
-        //             data.data.forEach(function (item) {
-        //                 result.results.push({
-        //                     id: item.id,
-        //                     text: item.attributes.name,
-        //                     // data: item
-        //
-        //                 })
-        //             });
-        //             return result;
-        //         }
-        //     }
-        // });
+
+        k.$el.find("#docNumFilter").select2wrapper({
+            url: apiRoot+"/documents",
+            labelfld: "docnum",
+            placeholder: "Echipa"
+        });
+
 
         k.$el.find("#stateFilter").select2({
             allowClear: true,

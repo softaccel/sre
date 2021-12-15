@@ -139,6 +139,7 @@
 
         function checkRights (module) {
             let rights = allRights[module];
+            console.log("rights",module,rights);
             if (rights.indexOf("r") === -1) {
                 // todo: show not enough rights
                 return;
@@ -237,7 +238,7 @@
          * get settings
          * @returns {Promise<unknown>}
          */
-        function getAll () {
+        function getAllSettings () {
             return new Promise(((resolve, reject) => {
                 if (userId === null) {
                     return resolve();
@@ -271,6 +272,7 @@
 
         function checkAccess() {
             return new Promise((resolve, reject) => {
+                console.log("check access");
                 if (userId === null)
                     resolve(true);
 
@@ -345,9 +347,9 @@
         }
 
 
-        return;
+        // return;
 
-        getAll()
+        getAllSettings()
             .then(function () {
                 return checkAccess();
             }).then(function (result) {
