@@ -188,8 +188,8 @@
 
     function init_komponent(k) {
 
-        let url = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=active=1";
-        let dispAllUrl = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname";
+        let url = apiRoot+"/employees/?include=team,jobtitle,default_operation&fields[employees]=fname,lname&filter=active=1";
+        let dispAllUrl = apiRoot+"/employees/?include=team,jobtitle,default_operation&fields[employees]=fname,lname";
 
         if(k.data && k.data.instance && k.data.instance.type==="teams") {
             k.$el.addClass("teamView");
@@ -197,15 +197,15 @@
             k.$el.find("#newEmplBtn").remove();
             k.$el.find(".teamsColumn").remove();
             k.teamId = k.data.instance.attributes.tid
-            url = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id + ",active=1";
-            dispAllUrl = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=team="+k.data.instance.id;
+            url = apiRoot+"/employees/?include=team,jobtitle,default_operation&fields[employees]=fname,lname&filter=team="+k.data.instance.id + ",active=1";
+            dispAllUrl = apiRoot+"/employees/?include=team,jobtitle,default_operation&fields[employees]=fname,lname&filter=team="+k.data.instance.id;
         }
         else if(k.data && k.data.instance && k.data.instance.type==="jobs") {
             k.$el.find(".teamsColumn").remove();
             k.$el.find("#newEmplBtn").remove();
             k.$el.find("#addEmployeeToTeam").remove();
-            url = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id+",active=1";
-            dispAllUrl = apiRoot+"/employees/?include=team,jobtitle&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id;
+            url = apiRoot+"/employees/?include=team,jobtitle,default_operation&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id+",active=1";
+            dispAllUrl = apiRoot+"/employees/?include=team,jobtitle,default_operation&fields[employees]=fname,lname&filter=jobtitle="+k.data.instance.id;
         }
         else {
             k.$el.find("#addEmployeeToTeam").remove();

@@ -41,6 +41,9 @@
         if(typeof opts==="undefined") {
             opts = {};
         }
+        if(typeof opts==="string") {
+            opts = {url:opts};
+        }
 
         let options = this.data();
         if(typeof options==="undefined") {
@@ -130,8 +133,6 @@
         $renderedKomponent = $renderedKomponent.remove();
         dummy.remove();
 
-        // console.log("$renderedKomponent", $renderedKomponent);
-
         let userId = (userData && userData.sub) ? userData.sub : null;
         let userLvl = (userData && userData.level) ? userData.level : null;
         let allRights = localStorage.getItem("rights") ? JSON.parse(localStorage.getItem("rights")) : null;
@@ -169,7 +170,7 @@
 
         function getUserRights () {
             return new Promise((resolve, reject) => {
-                console.log(apiRoot,"*************")
+                console.log("getUserRights",apiRoot,"*************");
                 $.ajax({
                     url: apiRoot + "/users/" + userId + "/users_meta/?filter=meta_key=~rights.",
                     type: "GET",
@@ -191,11 +192,8 @@
 
         function getExpiryTime () {
             return new Promise((resolve, reject) => {
-                $.ajax({
-                    url: apiRoot + "/settings/?filter=key=data_expiry_time",
-                    type: "GET",
-                    success: function(data) {
-                        console.log("äääääääää",data);
+                $.get(apiRoot + "/settings/?filter=key=data_expiry_time")
+                    .done(function(data) {
                         if (!data.data.length) {
                             resolve();
                             return;
@@ -204,22 +202,23 @@
                         let dateNow = new Date();
                         dateNow.setHours(dateNow.getHours() + parseInt(expiryTime));
                         localStorage.setItem("dataExpires", dateNow.toISOString());
-                        resolve();
-                    },
-                    error: function(err) {
+                        resolve(dateNow.toISOString());
+                    })
+                    .fail(function(err) {
                         //todo: handle error
                         reject("getExpiryTime/reject: " + err.toString());
-                    }
-                });
+                    });
             })
         }
 
+        /**
+         *
+         * @returns {Promise<unknown>}
+         */
         function getActiveModules () {
             return new Promise((resolve, reject) => {
-                $.ajax({
-                    url: apiRoot + "/settings/?filter=key=~module.",
-                    type: "GET",
-                    success: function (data) {
+                $.get(apiRoot + "/settings/?filter=key=~module.")
+                    .done(function (data) {
                         let modules = [];
                         data.data.forEach(function (item) {
                             if (item.attributes.value === "1")
@@ -227,15 +226,17 @@
                         });
                         localStorage.setItem("activeModules", JSON.stringify(modules));
                         resolve();
-                    },
-                    error: function (err) {
-                        //todo: handle error
+                    })
+                    .fail(function (err) {
                         reject("getActiveModules/reject: " + err.toString());
-                    }
-                });
+                    });
             });
         }
 
+        /**
+         * get settings
+         * @returns {Promise<unknown>}
+         */
         function getAll () {
             return new Promise(((resolve, reject) => {
                 if (userId === null) {
@@ -263,6 +264,7 @@
                         });
                     return;
                 }
+
                 resolve();
             }));
         }
@@ -337,12 +339,20 @@
             });
         }
 
+
+        if(typeof k.checkAccess==="undefined" || k.checkAccess.constructor!==Function && k.checkAccess()) {
+            initKomponent();
+        }
+
+
+        return;
+
         getAll()
             .then(function () {
                 return checkAccess();
             }).then(function (result) {
                 if(result) {
-                    return initKomponent();
+                    return ;
                 }
             }).catch(function (reject) {
                 console.log("renderKomponent/reject: ", reject.toString());

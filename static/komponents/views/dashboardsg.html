@@ -1,0 +1,191 @@
+<div class="content-fluid d-none">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Panou de control</h1>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content-header -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col d-none">
+                    <ul>
+                        <li>nr. de comenzi comandate</li>
+                        <li>nr. de comenzi in lucru</li>
+                        <li>nr. de comenzi in gata de livrare</li>
+                        <li>nr. de comenzi livrate</li>
+                    </ul>
+                    Alert
+                    <ul>
+                        <li>nr. de comenzi in lucru in depasire</li>
+                        <li>nr. de comenzi in intarziere</li>
+                        <li>nr. pontaje pe comanda zero</li>
+                        <li>nr. pontaje in depasire</li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info" id="testApp">
+                        <div class="inner">
+                            <h3><%= attributes.order_value %>    </h3>
+
+                            <p>New Orders</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>53<sup style="font-size: 20px">%</sup></h3>
+
+                            <p>Bounce Rate</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>44</h3>
+
+                            <p>User Registrations</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-person-add"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3>65</h3>
+
+                            <p>Unique Visitors</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-pie-graph"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+            <!-- /.row -->
+            <!-- Main row -->
+            <div class="row">
+                <!-- Left col -->
+                <section class="col-lg-3 connectedSortable">
+                    <!-- Custom tabs (Charts with tabs)-->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-chart-pie mr-1"></i>
+                                Comenzi
+                            </h3>
+                        </div><!-- /.card-header -->
+                        <div class="card-body">
+                            <canvas id="revenue-chart-canvas" height="200" style="height: 200px;"></canvas>
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+
+
+                </section>
+                <!-- /.Left col -->
+                <!-- right col (We are only adding the ID to make the widgets sortable)-->
+                <section class="col-lg-5 connectedSortable">
+
+                </section>
+                <!-- right col -->
+            </div>
+            <!-- /.row (main row) -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<div class="container-fluid">
+    <canvas id="myChart" style="width: 100%;height: 400px"></canvas>
+</div>
+<script>
+    function init_komponent(k) {
+        var DateTime = luxon.DateTime;
+        k.$el.find("#testApp").apiator({resourcetype:"item",url:apiRoot+"/orders/46"});
+        const chartconfig = {
+            type: 'line',
+            data:{},
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: "minute"
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'value'
+                        }
+                    }
+                },
+            },
+        };
+        let ctx = document.getElementById('myChart').getContext('2d');
+        $("<span>").apiator({returninstance:true,resourcetype: "collection",type:"timetracking_active_employees"}).setUrl(apiRoot+"/timetracking_active_employees?sort=-ts").loadFromRemote()
+            .then(function (collection) {
+                console.log(collection);
+                let dataSeries = [];
+
+
+                collection.items.forEach(function (item) {
+                    // console.log(item.attributes.ts,DateTime.fromISO(item.attributes.ts));
+                    dataSeries.push({
+                        x: moment(item.attributes.ts).unix()*1000,
+                        y: item.attributes.cnt,
+                    });
+                });
+                chartconfig.data = {
+                    datasets: [
+                        {
+                            label: 'Dataset with point data',
+                            fill: false,
+                            borderColor: 'rgb(255, 99, 132)',
+                            data:dataSeries
+                        }
+                    ]
+                };
+
+                const myChart = new Chart(ctx,chartconfig);
+            });
+    }
+</script>
+

@@ -15,8 +15,8 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <div class="app-header__logo">
         <a href="index.html" class="brand-link">
-            <img class="logo-src" src="assets/images/spaleck.png" style="width: 50px; border-radius: 50%">
-            <span class="brand-text font-weight-light">Spaleck</span>
+<!--            <img class="logo-src" src="assets/images/spaleck.png" style="width: 50px; border-radius: 50%">-->
+            <span class="brand-text font-weight-light"><i class="fa fa-skiing"></i> SportsGames</span>
         </a>
     </div>
     <div class="app-header__mobile-menu">
@@ -25,7 +25,10 @@
     </div>
     <!-- Sidebar -->
     <div class="sidebar">
-        <nav class="mt-2">
+        <nav id="mainSubMenu">
+
+        </nav>
+        <nav class="mt-2 d-none">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item module-home">
                     <a href="#" title="" class="nav-link">
@@ -34,18 +37,17 @@
                     </a>
                 </li>
                 <li class="nav-header">Operational</li>
-                <li class="nav-item ">
+                <li class="nav-item d-none">
                     <a href="#/views/orders" class="nav-link checkRead">
                         <i class="metismenu-icon fa fa-funnel-dollar"></i> <p>Comenzi</p>
                     </a>
                 </li>
 
-                <li class="nav-item module-livrari">
+                <li class="nav-item module-livrari d-none">
                     <a href="#/views/deliveries" class="nav-link checkRead">
                         <i class="metismenu-icon fa fa-truck"></i> <p>Livrari</p>
                     </a>
                 </li>
-
 
                 <li class="nav-item module-timetracking" id="pontaj">
                     <a data-toggle="collapse" href="#pontajMenu" role="button" class="nav-link">
@@ -59,7 +61,7 @@
                             </a>
                         </li>
                         <li class="nav-item ">
-                            <a href="#/views/pontaj/reportwrapper" class="nav-link checkRead">
+                            <a href="#/views/pontaj/reportwrapper_sg" class="nav-link checkRead">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Rapoarte</p>
                             </a>
@@ -68,7 +70,7 @@
                 </li>
 
                 <li class="nav-header module-admin">Administrativ</li>
-                <li class="nav-item ">
+                <li class="nav-item d-none">
                     <a href="#/views/partners" class="nav-link checkRead">
                         <i class="fas fa-handshake"></i> <p>Parteneri</p>
                     </a>
@@ -99,13 +101,13 @@
                     </ul>
                 </li>
 
-                <li class="nav-item module-units">
+                <li class="nav-item module-units d-none">
                     <a href="#/views/units" class="nav-link checkRead">
                         <i class="metismenu-icon fa fa-balance-scale"></i> <p>Unitati de masura</p>
                     </a>
                 </li>
 
-                <li class="nav-item module-catalog">
+                <li class="nav-item module-catalog d-none">
                     <a href="#/views/catalog" class="nav-link checkRead">
                         <i class="metismenu-icon fa fa-book"></i> <p>Catalog</p>
                     </a>
@@ -123,6 +125,28 @@
     </div>
     <!-- /.sidebar -->
 </aside>
+<template id="menuTemplate">
+    <ul>{{groups}}</ul>
+</template>
+<template id="groupTemplate">
+    <li class="nav-header">{{name}}</li>
+    {{items}}
+</template>
+<template id="itemTemplate">
+    <li class="nav-item">
+        <a href="{{link}}" class="nav-link checkRead">
+            <i class="metismenu-icon fa fa-{{faIcon}}"></i> <p>{{title}}}</p>
+        </a>
+        <ul>{{subItems}}</ul>
+    </li>
+</template>
+<template id="subItemTemplate">
+    <li class="nav-item">
+        <a href="{{link}}" class="nav-link checkRead">
+            <i class="metismenu-icon fa fa-{{faIcon}}"></i> <p>{{title}}}</p>
+        </a>
+    </li>
+</template>
 <!--</div>-->
 <script>
     function init_komponent(k) {
@@ -138,8 +162,59 @@
         //     $("#personal").addClass("d-none");
         // }
 
-        k.exec = function (options) {
-            console.log(options);
-        };
+        let menu = [
+            {
+                items:[
+                    {name: "Home",link: ""}
+                ]
+            },
+            {
+                name: "Operational",
+                items:[
+                    {name: "Comenzi",link: ""},
+                    {name: "Pontaj",link: ""},
+                    {name: "Livrari",link: ""}
+                ]
+            },
+            {
+                name: "Administrativ",
+                items:[
+                    {name: "Parteneri",link: ""},
+                    {name: "Personal",items:[
+                            {name: "Angajati",link: ""},
+                            {name: "Echipe",link: ""},
+                        ]},
+                    {name: "Altceva",link: ""}
+                ]
+            }
+        ];
+
+        menu.reduce(function (carry,group) {
+            if(typeof group.items==="undefined") return;
+            let menuTpl =  $("#menuTemplate").html();
+            let groupTpl = $("#groupTemplate").html();
+            let itemTpl = $("#itemTemplate").html();
+            let subItemTpl = $("#subItemTemplate").html();
+
+            let contents = group.items.reduce(function (carry,item) {
+                let subItems = !item.hasOwnProperty("items") ? null :
+                    item.items.reduce(function (carry,subitem) {
+                        let subItemView = subItemTpl+"";
+                        return carry+subItemView
+                            .replace("{{link}}",subitem.link)
+                            .replace("{{name}}",subitem.name);
+                    });
+
+                let itemView = itemTpl+"";
+                itemView
+                    .replace("{{link}}",subitem.link)
+                    .replace("{{name}}",subitem.name);
+                    .replace("{{subItems}}",subItems);
+                ite
+            });
+
+            return carry+
+        });
+
     }
 </script>

@@ -1,8 +1,10 @@
 
 <!--<div class="app-container app-theme-white body-tabs-shadow fixed-header" id="mainc">-->
 <!--<div class="app-container app-theme-white body-tabs-shadow fixed-header sidebar-mini layout-fixed" >-->
-    <div is='komponent' data-url="/common/header" id="mainc" data-replace="true"></div>
-    <div is='komponent' data-url="/common/sidebar" id="sidebar" data-replace="true"></div>
+<!--    <div is='komponent' data-url="/common/header" id="mainc" data-replace="true"></div>-->
+    <div is='komponent' data-url="" id="mainc" data-replace="true"></div>
+<!--    <div is='komponent' data-url="/common/sidebar" id="sidebar" data-replace="true"></div>-->
+    <div is='komponent' data-url="/common/sidebarsg" id="sidebar" data-replace="true"></div>
     <div class="content-wrapper" id="pageContent"></div>
 <!--</div>-->
 <script>
@@ -11,24 +13,26 @@
         const pageContentContainer = '#pageContent';
         // load static defined komponents
 
-        komponentor.loadKomponents(k.$el);
-
+        let headerUrl = typeof environment.header!=="undefined" && environment.header ? environment.header : "/common/header";
+        $("#mainc").komponent(headerUrl);
+        let sideBarUrl = typeof environment.sideBar!=="undefined" && environment.sideBar ? environment.sideBar : "/common/sidebar";
+        $("#sidebar").komponent(sideBarUrl);
 
         // load main app according to routing path
-        let url = typeof defaultView!=="undefined" ? defaultView : null;
+        let defaultViewUrl = typeof environment.defaultView!=="undefined" && environment.defaultView ? environment.defaultView : "/views/dashboard";
         let paras;
 
         if(komponentor.routing.path) {
-            url = komponentor.routing.path;
+            defaultViewUrl = komponentor.routing.path;
             paras = komponentor.routing.paras;
         }
 
-        if(!url) {
+        if(!defaultViewUrl) {
             return;
         }
 
         $(pageContentContainer).komponent({
-            url: url,
+            url: defaultViewUrl,
             paras: paras
         }).catch(function (e) {
             console.log(e);

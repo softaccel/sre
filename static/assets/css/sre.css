@@ -1,7 +1,13 @@
 
+@font-face {
+    font-family: 'Poppins';
+    font-display: fallback;
+    src: url("../../assets/fonts/Poppins-Light.ttf") ;
+}
+
 body {
     font-size: 0.9rem;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', Serif;
 }
 .card-header{
     display: flex;

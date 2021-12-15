@@ -1309,8 +1309,10 @@
 		 * @param data
 		 */
 		_collection.loadFromData = function (data) {
-			if (data.constructor !== Array)
+			if (data.constructor !== Array) {
+				console.log(data);
 				throw "Invalid data type received. Should be an array.";
+			}
 
 			if(_collection.navtype==="page")
 				_collection.items = [];
@@ -1684,6 +1686,7 @@
 	{
 
 		if(!this.length) {
+			console.log(this);
 			throw "Invalid element for apiator";
 			// return console.log("Invalid element", opts, this);
 		}

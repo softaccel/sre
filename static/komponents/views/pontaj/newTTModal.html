@@ -50,28 +50,30 @@
                             <div class="col-3">Comanda - Operatie</div>
                             <div class="col-9"><select id="selectComm" name="operation" form="newTTForm" class="form-control"></select></div>
                         </div>
+                        <div class="row hide-till-empl">
+                            <div class="col-3">Start</div>
+                            <div class="col-9"><input type="datetime-local" value="" name="start" id="datetimeStart" form="newTTForm" class="form-control"></div>
+                        </div>
+                        <div class="row hide-till-empl">
+                            <div class="col-3">Stop</div>
+                            <div class="col-9"><input type="datetime-local" name="stop" id="datetimeStop" form="newTTForm" class="form-control"></div>
+                        </div>
+                        <div class="row hide-till-empl">
+                            <div class="col-3">Durata (min)</div>
+                            <div class="col-9"><input type="number" name="duration" id="durationInput" form="newTTForm" class="form-control" pattern="[1-9][0-9]*"></div>
+                        </div>
                         <div class="">
                         </div>
 
-                        <div id="newTTData">
-                            <div class="row hide-till-comm">
-                                <div class="col-3">Start</div>
+                        <div id="newTTData ">
+                            <!--
                                 <% let today_date = new Date(); %>
                                 <% let time_offset = today_date.getTimezoneOffset()/60; %>
                                 <% today_date.setHours(8-time_offset);  %>
                                 <% today_date.setMinutes(0);  %>
                                 <% today_date.setSeconds(0);  %>
                                 <% today_date.setMilliseconds(0);  %>
-                                <div class="col-9"><input type="datetime-local" value="<%= (today_date).toISOString().split('.')[0] %>" name="start" id="datetimeStart" form="newTTForm" class="form-control"></div>
-                            </div>
-                            <div class="row hide-till-comm">
-                                <div class="col-3">Stop</div>
-                                <div class="col-9"><input type="datetime-local" name="stop" id="datetimeStop" form="newTTForm" class="form-control"></div>
-                            </div>
-                            <div class="row hide-till-comm">
-                                <div class="col-3">Durata (min)</div>
-                                <div class="col-9"><input type="number" name="duration" id="durationInput" form="newTTForm" class="form-control" pattern="[1-9][0-9]*"></div>
-                            </div>
+                                -->
                             <div class="row hide-till-comm">
                                 <div class="col-3">Tarif Orar</div>
                                 <div class="col-9"><input type="number" name="hourly_rate" id="numberTarif" form="newTTForm" class="form-control" pattern="[1-9][0-9]*"></div>
@@ -80,8 +82,8 @@
                                 <div class="col-3">Moneda</div>
                                 <div class="col-9"><select name="currency" id="selectCurrency" form="newTTForm" class="form-control"></select></div>
                             </div>
-                            <button class="btn btn-warning btn-save hide-till-comm" type="submit" form="newTTForm" style="margin-top: 10px;">Salveaza</button>
                         </div>
+                        <button class="btn btn-warning btn-save hide-till-empl" type="submit" form="newTTForm" style="margin-top: 10px;">Salveaza</button>
                     </div>
                 </div>
             </div>
@@ -119,6 +121,7 @@
         // console.log($("input[name=start]"));
         // console.log(date.toISOString().slice(0, -1))
 
+        k.$el.find("#datetimeStart").val(moment().format("YYYY-MM-DDThh:mm"));
         $selectAng.select2wrapper({placeholder: null, url:apiRoot+"/employees_names", labelfld: "fullname"});
 
         $selectAng.on("select2:select", function (e){
@@ -247,11 +250,13 @@
 
 
         util.captureFormSubmit(form, function (data) {
-            if (data.currency && data.hourly_rate && data.start && data.employee && data.operation){
+            if ( data.start && data.employee){
                 let op_cpy = data.operation;
                 delete data.operation;
-                data["operation"] = op_cpy.split("-")[0];
-                data["order"] = op_cpy.split("-")[1];
+                if(op_cpy) {
+                    data["operation"] = op_cpy.split("-")[0];
+                    data["order"] = op_cpy.split("-")[1];
+                }
                 data.start = data.start.replace("T", " ");
                 data.start = data.start.split(".")[0];
                 data.stop = data.stop.replace("T", " ");
