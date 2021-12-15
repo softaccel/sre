@@ -13,7 +13,7 @@
 
         let searchfld = options.searchfld ? options.searchfld : options.labelfld;
 
-        this.select2({
+        let opts = {
             placeholder: options.placeholder?options.placeholder:"",
             allowClear: options.allowClear?options.allowClear:true,
             ajax:{
@@ -50,7 +50,11 @@
                     return result;
                 }
             }
-        });
+        };
+        if(typeof options.disableSearch!=="undefined" && options.disableSearch) {
+            opts.minimumResultsForSearch = -1;
+        }
+        this.select2(opts);
         return this;
     }
 })($);

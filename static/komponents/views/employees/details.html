@@ -80,6 +80,14 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-3">Operatie implicita</div><% console.log( relationships.default_operation) %>
+                <div class="col-9"><%= relationships.default_operation.attributes.name %></div>
+                <div class="col-9">
+                    <select class="form-control" required name="default_operation" data-source="<%= apiRoot+'/catalog?filter=type=service' %>" data-type="catalog" data-labelfld="name"></select>
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col-3">Echipa</div>
                 <div class="col-9"><%= relationships.team?relationships.team.attributes.name:"-" %></div>
                 <div class="col-9">
@@ -256,6 +264,7 @@
             let form = k.$el.find("#employeeForm")[0];
 
             let $jobtitle = $(form.jobtitle).empty();
+            let $defaultOp = $(form.default_operation).empty();
             let $team = $(form.team).empty();
 
             let util = instance.getUtilities();
@@ -300,11 +309,21 @@
             if(!instance.hasOwnProperty("items")) {
                 util.fillForm(form,instance);
 
-                if(instance.relationships.jobtitle)
+                if(instance.relationships.jobtitle) {
                     $("<option>")
                         .text(instance.relationships.jobtitle.attributes.name)
-                        .attr('value',instance.relationships.jobtitle.id)
+                        .attr('value', instance.relationships.jobtitle.id)
                         .appendTo($jobtitle);
+                }
+
+                if(instance.relationships.default_operation) {
+                    $("<option>")
+                        .text(instance.relationships.default_operation.attributes.name)
+                        .attr('value', instance.relationships.default_operation.id)
+                        .appendTo($defaultOp);
+                }
+
+
 
                 if(instance.relationships.team)
                     $("<option>")
@@ -318,6 +337,12 @@
             if(!$jobtitle.data("select2-id")) {
                 $jobtitle.select2wrapper({url: apiRoot+"/jobs",placeholder:"Alege functia",labelfld:"name"});
             }
+
+            if(!$defaultOp.data("select2-id")) {
+                $defaultOp.select2wrapper({url: apiRoot+"/catalog?filter=type=service",placeholder:"Alege operatia",labelfld:"name",disableSearch:true});
+            }
+
+
 
 
             if(!$team.data("select2-id")) {
@@ -371,7 +396,7 @@
 
         if(k.data.emplId) {
             $('#employeeSummary').apiator({
-                url: apiRoot+"/employees/"+k.data.emplId+"?include=team,jobtitle",
+                url: apiRoot+"/employees/"+k.data.emplId+"?include=team,jobtitle,default_operation",
                 resourcetype: "item",
                 type: "employees"
             });

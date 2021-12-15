@@ -109,6 +109,7 @@ Promise.all([p1,p2])
         authUrl = environments[active].authUrl;
         fileApiUrl = environments[active].fileApiUrl;
 
+
         if(typeof appUrl==="undefined") {
             appUrl = defaultAppUrl;
         }
@@ -116,10 +117,15 @@ Promise.all([p1,p2])
         if(!userData && (typeof guestOk==="undefined" || !guestOk)) {
             appUrl = loginAppUrl;
         }
+        // return;
 
-        $("#page").komponent({url:appUrl,replace:false}).finally(function () {
+        if(appUrl!=="")
+            $("#page").komponent({url:appUrl,replace:false}).finally(function () {
+                $(".pageOverlay").remove();
+            });
+        else
             $(".pageOverlay").remove();
-        });
+
     })
     .catch((a)=>{
         console.log(a);

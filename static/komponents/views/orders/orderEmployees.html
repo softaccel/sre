@@ -21,7 +21,7 @@
     <hr>
     <div class="row" id="allocatedEmployees">
         <div class="col-3 mb-4 ">
-            <div class="employee shadow bg-light-me rounded p-2" >
+            <div class="employee shadow-sm <%= attributes.allow_clocking==='1' ? 'bg-secondary' : 'bg-light' %> rounded p-2" >
                 <button class="btn employeeIcon rounded-circle bg-primary text-center float-left p-1 mr-2" style="width: 50px; height: 50px; color: white; font-size: 25px"><i class="fa fa-user"></i></button>
                 <div>
                     <button class="employeeIconDelete btn rounded-circle bg-danger text-center float-left p-1 mr-2" onclick="remove_employee_from_order(this)"
@@ -33,6 +33,8 @@
                     <%= relationships.emplid.attributes.fname+" "+relationships.emplid.attributes.lname %>
                 </span><br>
                 <%= relationships.operation.attributes.name %>
+                <br>
+                <span class="badge <%= attributes.allow_clocking==='1' ? 'badge-light' : 'badge-secondary' %> badg">Pontaj: <%= attributes.allow_clocking==='1' ? 'activ' : 'inactiv' %></span>
                 <div style="clear: left"></div>
             </div>
         </div>
