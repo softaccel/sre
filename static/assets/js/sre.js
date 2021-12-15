@@ -6,6 +6,17 @@ function logout() {
     location = location.pathname;
 }
 
+
+function reloadApiator(src) {
+    $($(src).data("target")).data("instance").loadFromRemote().then(function () {
+        let onload = $(src).data("onload");
+        if(onload && typeof onload===Function) {
+            onload(src);
+        }
+    });
+}
+
+
 function checkAuth() {
     let localData = {
 

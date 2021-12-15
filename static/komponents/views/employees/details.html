@@ -81,7 +81,7 @@
             </div>
             <div class="row">
                 <div class="col-3">Operatie implicita</div><% console.log( relationships.default_operation) %>
-                <div class="col-9"><%= relationships.default_operation.attributes.name %></div>
+                <div class="col-9"><%= relationships.default_operation ? relationships.default_operation.attributes.name : "-" %></div>
                 <div class="col-9">
                     <select class="form-control" required name="default_operation" data-source="<%= apiRoot+'/catalog?filter=type=service' %>" data-type="catalog" data-labelfld="name"></select>
                 </div>

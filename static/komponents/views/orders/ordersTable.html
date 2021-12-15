@@ -39,11 +39,17 @@
                         <br>
                         <select id="docNumFilter" name="doc_id" form="ordersListFilter" data-operator="=" style="width: 100%"><option> </option></select>
                     </th>
-                    <th class="align-top" width="150">
+                    <th class="align-top" style="width: 100px" >
                         <a class="text-white" data-sortfld="label">Denumire
                             <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                         <input type="text" name="label"  form="ordersListFilter" data-operator="~=~">
                     </th>
+                    <th class="align-top"  style="width: 80px">
+                        <a class="text-white" data-sortfld="label">Echipa
+                            <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
+                        <select id="teamIdFilter" name="team" form="ordersListFilter" data-operator="=" style="width: 100%"></select>
+                    </th>
+
                     <th class="customerColumn align-top" style="min-width: 150px">
                         <a class="text-white" data-sortfld="partner_id">Client
                             <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
@@ -102,6 +108,7 @@
                         <span class="auftragNumLbl <%= relationships.doc_id.attributes.docnum %> bnt btn-sm btn-secondary"><%= relationships.doc_id.attributes.docnum %></span>
                     </td>
                     <td><%= attributes.label %><div style="font-size: 0.8rem"><%= attributes.comments %></div> </td>
+                    <td class=""><%= relationships.team ? relationships.team.attributes.name : "" %></td>
                     <td class="customerColumn"><%= relationships.partner_id.attributes.name %></td>
                     <td class="state"><span class="badge badge-pill <%= attributes.state %>"> </span></td>
                     <td>
@@ -209,20 +216,20 @@
 
 
 
-        let url = apiRoot+ "/orders?include=doc_id,partner_id,orders_working_hours&sort=-created_on";
+        let url = apiRoot+ "/orders?include=doc_id,partner_id,orders_working_hours,team&sort=-created_on";
 
         if (k.data && k.data.instance && k.data.instance.type==="partners") {
             k.$el.find(".customerColumn").remove();
             $("#newOrderButtons").remove();
             url = apiRoot+"/orders?filter=partner_id="+k.data.instance.id+
-                "&include=doc_id,partner_id,orders_working_hours&sort=-created_on";
+                "&include=doc_id,partner_id,orders_working_hours,team&sort=-created_on";
         }
 
         if (k.data && k.data.instance && k.data.instance.type==="teams") {
             // k.$el.find(".customerColumn").remove();
             $("#newOrderButtons").remove();
             url = apiRoot+"/orders?filter=team="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10"
-                +"&include=doc_id,partner_id,orders_working_hours&sort=-created_on";
+                +"&include=doc_id,partner_id,orders_working_hours,team&sort=-created_on";
             // insertUrl = apiRoot+"/orders_extended?filter=partner_id="+k.data.instance.id+"&page[orders_extended][offset]=0&page[orders_extended][limit]=10";
         }
 
@@ -271,6 +278,7 @@
             }
         });
 
+
         k.$el.find("#docNumFilter").select2({
             allowClear: true,
             placeholder: "",
@@ -303,6 +311,46 @@
                 }
             }
         });
+        k.$el.find("#teamIdFilter").select2wrapper({
+            // url: apiRoot+"/employees/"+instance.attributes.employee+"/emplToOrdAssoc?filter=status=ord",
+            // url: apiRoot+"/emplToOrdAssoc?filter=status!><offer,ready,dlvd",
+            url: apiRoot+"/teams",
+            labelfld: "name",
+            idfld: "tid",
+            placeholder: "Echipa"
+        });
+        // k.$el.find("#teamIdFilter").select2({
+        //     allowClear: true,
+        //     placeholder: "",
+        //     ajax:{
+        //         url: apiRoot+"/teams",
+        //         minimumInputLength: 2,
+        //         dataType: 'json',
+        //         data: (params)=>{
+        //             let limit = 5;
+        //             let p = {
+        //                 "page[teams][offset]":params.page?(params.page-1)*limit:0,
+        //                 "page[teams][limit]":limit
+        //             };
+        //             if(params.term) {
+        //                 p.filter = "name~=~" + params.term;
+        //             }
+        //             return p;
+        //         },
+        //         processResults: function (data) {
+        //             let result = {results:[]};
+        //             data.data.forEach(function (item) {
+        //                 result.results.push({
+        //                     id: item.id,
+        //                     text: item.attributes.name,
+        //                     // data: item
+        //
+        //                 })
+        //             });
+        //             return result;
+        //         }
+        //     }
+        // });
 
         k.$el.find("#stateFilter").select2({
             allowClear: true,
@@ -371,10 +419,6 @@
         }
 
 
-    }
-
-    function reloadApiator(src) {
-        $($(src).data("target")).data("instance").loadFromRemote();
     }
 
 </script>

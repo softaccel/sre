@@ -75,7 +75,18 @@
                             <br>
                             <strong><%=attributes.fname%> <%=attributes.lname%></strong>
                             <br>
+                            <% if(relationships.team) { %>
+                            <span class="badge badge-light badge-dark"><%=relationships.team.attributes.name%></span>
+                            <br>
+                            <% } %>
+                            <% if(relationships.jobtitle) { %>
                             <span class="font-weight-normal"><%=relationships.jobtitle.attributes.name%></span>
+                            <br>
+                            <% } %>
+                            <% if(relationships.default_operation) { %>
+                            <span class="badge badge-danger"><%=relationships.default_operation.attributes.name%></span>
+                            <br>
+                            <% } %>
                             <div class="">
                                 <button class="btn btn-sm btn-danger deallocateBtn" onclick="removeEmplFromTeam(event)"><i class="fa fa-trash"></i> Dealoca</button>
                             </div>

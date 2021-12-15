@@ -17,10 +17,22 @@
 <div class="checkRequired" data-module="orders" data-level="1">
     <div>
         <button class="btn btn-primary checkUpdate" id="allocateEmpl"><i class="fa fa-user-plus"></i> Adauga</button>
+        <button class="btn btn-primary btn-sm mr-1" onclick="reloadApiator(this)" data-target="#allocatedEmployees"><i class="fa fa-retweet"></i> Reincarca</button>
     </div>
     <hr>
-    <div class="row" id="allocatedEmployees">
-        <div class="col-3 mb-4 ">
+    <div id="allocatedEmployees" style="display: flex; flex-flow: row wrap;">
+        <% op = relationships.operation ? relationships.operation.attributes.name : "operatie nealocata" %>
+        <% if(!jobTypes[op]) {%>
+        <%
+        let max = 0;
+        for(let k in jobTypes) {
+            max = jobTypes[k]>max?jobTypes[k]:max;
+        };
+        jobTypes[op] = max+1;
+        %>
+        <div style="width: 100%; clear: left;clear: right; border-bottom: solid silver 1px" class="m-1"> <%= op %></div>
+        <% } %>
+        <div style="width: 200px;" class="m-1">
             <div class="employee shadow-sm <%= attributes.allow_clocking==='1' ? 'bg-secondary' : 'bg-light' %> rounded p-2" >
                 <button class="btn employeeIcon rounded-circle bg-primary text-center float-left p-1 mr-2" style="width: 50px; height: 50px; color: white; font-size: 25px"><i class="fa fa-user"></i></button>
                 <div>
@@ -32,7 +44,7 @@
                 <span class="employeeName" onclick="edit_employee_association(this)">
                     <%= relationships.emplid.attributes.fname+" "+relationships.emplid.attributes.lname %>
                 </span><br>
-                <%= relationships.operation.attributes.name %>
+                <%= relationships.operation ? relationships.operation.attributes.name : "--" %>
                 <br>
                 <span class="badge <%= attributes.allow_clocking==='1' ? 'badge-light' : 'badge-secondary' %> badg">Pontaj: <%= attributes.allow_clocking==='1' ? 'activ' : 'inactiv' %></span>
                 <div style="clear: left"></div>
@@ -42,7 +54,7 @@
 </div>
 
 <script>
-
+    jobTypes = {};
     function remove_employee_from_order(src) {
         let emplid = ($(src).data("instance")).relationships.emplid;
         komponentor.intent("/common/messagemodal").data({
@@ -86,6 +98,9 @@
         try {
             let allocatedEmployees = $("#allocatedEmployees")
                 .apiator({url: url, type: "orders_2_employees", resourcetype: "collection"})
+                .data("onload",function (src) {
+                    jobTypes = {};
+                })
                 .data("instance");
 
             $("#allocateEmpl").on("click",function () {
