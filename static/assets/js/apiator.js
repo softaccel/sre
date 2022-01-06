@@ -158,72 +158,6 @@
 
 	/**
 	 *
-	 * @param eventNames
-	 * @returns {{}}
-	 * @constructor
-	 */
-	function EventsEmitter(eventNames)
-	{
-		if(typeof eventNames!=="object" )
-			throw "Invalid Events Emiter initializer";
-
-		let ee = {
-		};
-
-		let events = {};
-		if(eventNames.constructor===Array)
-			eventNames.forEach(function(eventName){
-				events[eventName] = [];
-			});
-		else
-			Object.getOwnPropertyNames(eventNames).forEach(function(eventName){
-				events[eventName] = eventNames[eventName];
-			});
-
-		/**
-		 *
-		 * @param eventName
-		 * @param event
-		 */
-		ee.dispatch = function (eventName,event) {
-
-			if(!events.hasOwnProperty(eventName))
-				return;
-			event.type = eventName;
-			events[eventName].forEach(function (listener) {
-				(async function(listener) {
-					listener(event);
-				})(listener);
-			});
-		};
-
-		/**
-		 *
-		 * @param eventName
-		 * @param listener
-		 */
-		ee.on = function (eventName,listener) {
-			if(!events.hasOwnProperty(eventName))
-				return;
-			events[eventName].push(listener);
-		};
-
-		/**
-		 *
-		 * @param eventName
-		 */
-		ee.off = function (eventName) {
-			if(!ee.hasOwnProperty(eventName))
-				return;
-			events[eventName] = [];
-		};
-
-		return ee;
-	}
-
-
-	/**
-	 *
 	 * @param options
 	 * @returns {{}|*}
 	 */
@@ -436,10 +370,6 @@
 			deleteUrl: null,
 			strict: false
 		};
-
-
-		let eventTypes = ['load'];
-		Object.assign(_item,EventsEmitter(eventTypes));
 
 		Object.assign(_item,parseOptions(options));
 		let storage = Storage();
@@ -1004,10 +934,6 @@
 			throw "Invalid ItemView template";
 		}
 
-		let eventTypes = ['render','reset'];
-		Object.assign(_itemview,EventsEmitter(eventTypes));
-
-
 		function createElementFromTemplate() {
 			let el = $(_itemview.template(_itemview.item))
 				.attr("data-type","item")
@@ -1158,9 +1084,46 @@
 			return paras.join("&");
 		};
 
+
 		return urlObj;
 	}
 
+	function CustomEvent(type,target,other) {
+		this.target = target;
+		this.type = type;
+		if(other && typeof other==='object' && other.constructor===Object) {
+			Object.assign(this,other);
+		}
+	}
+
+	/**
+	 *
+	 * @constructor
+	 */
+	function EventEmitter() {
+		let eventListeners = {};
+
+		this.on = function (eventName,cb) {
+			if(!eventListeners.hasOwnProperty(eventName)) {
+				eventListeners[eventName] = [];
+			}
+			eventListeners[eventName].push(cb);
+			return this;
+		};
+
+		this.trigger = function(eventName,other) {
+			// console.log('inplaceofevent',this);
+			let instance = this;
+
+			if(!eventListeners.hasOwnProperty(eventName)) {
+				return;
+			}
+
+			eventListeners[eventName].forEach(function (cb) {
+				cb(new CustomEvent(eventName,instance,other))
+			});
+		}
+	}
 	/**
 	 *
 	 * @param opts
@@ -1168,6 +1131,7 @@
 	 */
 	function Collection(opts)
 	{
+
 		let _collection = {
 			url: null,
 			deleteUrl: null,
@@ -1184,6 +1148,8 @@
 			emptyview: null,
 			items: [],
 		};
+
+		EventEmitter.call(_collection);
 
 		_collection.setPageSize = function(val) {
 			if(/^\d+$/.test(val)) {
@@ -1232,9 +1198,6 @@
 		};
 		opts = parseOptions(opts);
 
-
-		let eventTypes = ['load'];
-		Object.assign(_collection,EventsEmitter(eventTypes));
 
 		Object.assign(_collection,opts);
 
@@ -1287,11 +1250,13 @@
 					appendItemToCollection(_collection,_collection.loadItem(item));
 				});
 
+				this.trigger("load",{data: data});
 				return _collection.render();
 			}
 
 			// received data is an item => add it
 			if(data.constructor===Object) {
+				this.trigger("load",{data: data});
 				return  appendItemToCollection(_collection,_collection.loadItem(data),true);
 			}
 
@@ -1322,6 +1287,7 @@
 			});
 
 			_collection.view.render();
+			this.trigger("load",{data: data});
 			return _collection;
 		};
 
@@ -1329,6 +1295,7 @@
 			_collection.items = [];
 			_collection.render();
 		};
+
 
 		/**
 		 *
@@ -1586,10 +1553,6 @@
 		};
 
 
-
-		let eventTypes = ['reset','render'];
-
-		Object.assign(_collectionView,EventsEmitter(eventTypes));
 
 		Object.assign(_collectionView,parseOptions(options));
 
@@ -2117,6 +2080,7 @@
 		filterForm
 			.data("instance",collection)
 			.on("submit",function (e) {
+				console.log("Filter form was submited");
 				e.preventDefault();
 				let filter = [];
 				let frm = filterForm[0];

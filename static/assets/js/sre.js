@@ -66,18 +66,6 @@ function toggleSelect(src,state) {
  * Evident "denumire_environment" trebuie sa se regaseasca in env_config de mai jos
  */
 
-const localStorageLabel = "spaleck";
-
-
-
-
-// const vPath = _kPath+"views/";
-const _kPath = "komponents";
-const _kExt = ".html";
-const envsFile = "../environments.json";
-const activeEnvFile = "../active_env.json";
-const defaultAppUrl = "/views/app";
-const loginAppUrl = "/views/login";
 
 let environment;
 

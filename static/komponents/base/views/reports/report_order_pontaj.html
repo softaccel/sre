@@ -1,0 +1,123 @@
+<div class="card bg-light mt-2">
+    <div class="card-body ">
+        <div class="row">
+            <div class="col-md-4"><select style="width: 100%" name="orderSel"></select></div>
+            <div class="col-md-4"><select style="width: 100%" name="operationSel"></select></div>
+            <div class="col-md-4">
+                <div name="reportrange" style="width: 100%;background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; display: inline-block">
+                    <i class="fa fa-calendar"></i>&nbsp;
+                    <span></span> <i class="fa fa-caret-down"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table" style="display: none">
+    <thead class="bg-secondary">
+    <tr>
+        <th>Comanda</th>
+        <th>Operatie</th>
+        <!--        <th>Denumire comanda</th>-->
+        <th>Durata (ore)</th>
+        <th>Tarif orar</th>
+        <th>Valoare totala</th>
+    </tr>
+    </thead>
+    <tbody data-resourcetype="collection">
+    <tr>
+        <td><%=attributes.docnum%></td>
+        <td><%=attributes.opname%></td>
+        <!--        <td><%=attributes.label%></td>-->
+        <td><%=attributes.duration%><%this.item.collection.minsTotal += attributes.duration*1%></td>
+        <td><%=attributes.hourly_rate%></td>
+        <td>
+            <%=Math.round(attributes.hourly_rate * attributes.duration*100)/100%>
+            <%this.item.collection.valTotal += 1*(attributes.hourly_rate * attributes.duration)%>
+        </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr class="bg-light">
+        <td colspan="2">Total</td>
+        <td name="duration">0</td>
+        <td></td>
+        <td name="value">0</td>
+    </tr>
+    </tfoot>
+</table>
+<script>
+    function init_komponent(k) {
+        let currentOperationId = null;
+        let currentOrderId = null;
+
+        k.$el.find("[name=operationSel]")
+            .select2wrapper({
+                url: apiRoot+"/catalog?filter=type=service",
+                labelfld: "name",
+                placeholder: "Operatii"
+            })
+            .on("change",function () {
+                currentOperationId = $(this).val();
+                loadreport();
+            });
+
+        k.$el.find("[name=orderSel]")
+            .select2wrapper({
+                url: apiRoot+"/orders_extended",
+                labelfld: "docnum",
+                idfld: "oid",
+                placeholder: "Comenzi"
+            })
+            .on("change",function () {
+                currentOrderId = $(this).val();
+                loadreport();
+
+            });
+
+
+        var start = moment().subtract(29, 'days');
+        var end = moment();
+
+        function loadreport() {
+            $('[name=reportrange] span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+
+            let inst = k.$el.find("table").show().find("tbody")
+                .apiator({returninstance: true});
+            inst.minsTotal = 0;
+            inst.valTotal = 0;
+
+            let url = apiRoot + "/report_tt_agg_by_order/?filter=";
+            if(currentOrderId) {
+                url += ",order="+currentOrderId;
+            }
+            if(currentOperationId) {
+                url += ",operation="+currentOperationId;
+            }
+
+            inst.setUrl(url)
+                .loadFromRemote()
+                .then(function () {
+                    k.$el.find("table tfoot td[name=duration]").text(Math.round(inst.minsTotal*100)/100);
+                    k.$el.find("table tfoot td[name=value]").text(Math.round(inst.valTotal*100)/100);
+                });
+
+        }
+        //
+        // $('#reportrange').daterangepicker({
+        //     startDate: start,
+        //     endDate: end,
+        //     ranges: {
+        //         'Azi': [moment(), moment()],
+        //         'Ieri': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        //         'Ultimele 7 zile': [moment().subtract(6, 'days'), moment()],
+        //         'Ultimele 30 de zile': [moment().subtract(29, 'days'), moment()],
+        //         'Luna aceasta': [moment().startOf('month'), moment().endOf('month')],
+        //         'Luna trecuta': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        //     }
+        // }, (s,e)=>{start=s;end=e;loadreport()});
+
+        loadreport();
+
+    }
+</script>

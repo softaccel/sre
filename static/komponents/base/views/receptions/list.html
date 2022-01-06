@@ -1,0 +1,129 @@
+<div  class="card">
+    <form id="receptionsListFilter"></form>
+    <div class="card-body">
+        <button class="btn btn-primary" onclick="$(this).data().komponent.addNewForm()"><i class="fa fa-plus-circle"></i> Receptie noua</button>
+
+        <table class="table table-sm m-2">
+            <thead>
+            <tr>
+                <th>NRI</th>
+                <th>Data</th>
+                <th>Furnizor</th>
+                <th>Nr. document</th>
+                <th>Valoare</th>
+            </tr>
+            </thead>
+            <tbody id="receptionsList" data-type="receptions" data-resourcetype="collection"
+                   data-paging="#receptionsListPaging" data-filter="#receptionsListFilter">
+            <tr onclick="openReceptionModal(this)">
+                <td><%=attributes.docnum%></td>
+                <td><%=attributes.issued_date.substr(0,10)%></td>
+                <td><a onclick="openPartnerModal(event)"><%=relationships.partners_id.attributes.name%></a></td>
+                <td><%=attributes.external_docnum%></td>
+                <td></td>
+            </tr>
+            </tbody>
+            <tfoot id="receptionsListPaging">
+            <tr>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<script>
+    function openPartnerModal(event) {
+        let inst = $(event.target).data().instance;
+        console.log(inst.relationships.partners_id.id,"inst.relationships.partners_id.attributes");
+        event.stopPropagation();
+        komponentor.intent('/views/partners/partner')
+            .data({partner_id: inst.relationships.partners_id.id})
+            .send()
+            .then(function (k) {
+                //console.log("**************",k);
+            })
+    }
+    function openReceptionModal(src) {
+        let inst = $(src).data("instance");
+        let data = {
+            title: "NRI "+inst.attributes.docnum,
+            size: "xl",
+            tabs: [
+                {
+                    label: "Detalii",
+                    type: "komponent",
+                    url: "/views/receptii/details",
+                    // data: inst,
+                    active: true
+                },
+                {
+                    label: "Comenzi",
+                    type: "komponent",
+                    url: "/views/receptii/items",
+                    // data: inst,
+                },
+            ]
+        };
+
+        komponentor.intent("/common/tabbed_modal")
+            .data(data).send();
+    }
+
+    function init_komponent(k) {
+        let inst = k.$el.find("#receptionsList").apiator({returninstance:true})
+            .setUrl(apiRoot+"/documents?include=partners_id&filter=type=reception");
+        inst.loadFromRemote();
+        k.addNewForm = function () {
+            let formModalData = {
+                title: "Membru nou",
+                fields: [
+                    {
+                    },
+                    {
+                        label: "Numar NRI",
+                        type: "text",
+                        name: "docnum",
+                        required: false,
+                        placeholder: "numarul se genereaza automat daca nu se completeaza",
+                    },
+                    {
+                        label: "Furnizor",
+                        type: "select",
+                        name: "partners_id",
+                        url: "/partners?filter=is_supplier=1",
+                        labelfnc: "name",
+                        idfnc: "id",
+                        required: true,
+
+                    },
+                    {
+                        label: "Nr document extern (ex. serie factura)",
+                        type: "text",
+                        name: "external_docnum",
+                        required: true,
+                        invalidMessage: "Completeaza numarul documentului extern"
+                    },
+                    {
+                        label: "Data receptiei",
+                        type: "date",
+                        name: "issued_date",
+                        required: true,
+                        default: moment().format("Y-MM-DD")
+                    }
+
+                ],
+                callback: function (data) {
+                    data = data.data;
+                    data.user_id = userData.sub;
+                    data.type = "reception";
+                    if(data.docnum==="") {
+                        delete data.docnum;
+                    }
+                    inst.append(data);
+                }
+            };
+
+            komponentor.intent("/common/formmodal").data(formModalData).send();
+        }
+    }
+</script>

@@ -1,0 +1,88 @@
+<style>
+
+    .offer .state .badge{
+        background: #6C757D;
+        width: 60%;
+        color: white;
+    }
+    .offer .state .badge::after{
+        content: "OFERTA"
+    }
+
+    .canceled .state .badge{
+        background: #6C757D;
+        width: 60%;
+        color: white;
+    }
+    .canceled .state .badge::after{
+        content: "ANULAT"
+    }
+
+    .ord .state .badge{
+        background: #17A2B8;
+        width: 60%;
+        color: white;
+    }
+    .ord .state .badge::after{
+        content: "COMANDAT"
+    }
+
+    .proc .state .badge{
+        background: #DC3545;
+        width: 60%;
+        color: white;
+    }
+    .proc .state .badge::after{
+        content: "IN LUCRU"
+    }
+
+
+    .ready .state .badge{
+        background: #FEC108;
+        width: 60%;
+        color: black;
+    }
+    .ready .state .badge::after{
+        content: "GATA DE LIVRARE"
+    }
+
+    .dlvd .state .badge{
+        background: #2AA744;
+        width: 60%;
+        color: white;
+    }
+    .dlvd .state .badge::after{
+        content: "LIVRAT"
+    }
+
+</style>
+
+<div class="container-fluid">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Comenzi</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6 ">
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div is="komponent" data-url="/views/orders/ordersTable" data-replace="true"></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+
+    function init_komponent(k) {
+        komponentor.loadKomponents(k.$el);
+    }
+
+</script>

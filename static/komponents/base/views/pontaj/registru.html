@@ -1,0 +1,804 @@
+<style>
+    #timeTrackingTable .inputs, #timeTrackingTable button.edit{
+        display: none;
+    }
+
+    #timeTrackingTable tr.edit .inputs,#timeTrackingTable tr.edit button.edit{
+        display: unset;
+    }
+
+    #timeTrackingTable tr.edit .values, #timeTrackingTable tr.edit button  {
+        display: none;
+    }
+    #timeTrackingTable tr.edit button.edit{
+        display: unset;
+    }
+
+
+    .employeeView .emplCol{
+        display: none;
+    }
+
+    .orderView .orderCol{
+        display: none;
+    }
+    .mytable{
+        width: 100%;
+    }
+
+    .someSelect{
+        list-style: none;
+        padding: 0px;
+        margin: 0px;
+        margin-top: 5px;
+        background: rgba(239, 239, 239, 0.04);
+        max-height: 300px;
+        overflow: auto;
+    }
+    .someSelect li{
+        border-bottom: dashed 1px silver;
+        cursor: pointer;
+        padding: 2px 0 2px 10px;
+        margin: 0;
+    }
+    .someSelect li:hover{
+        background: #dddddd;
+    }
+    .someSelect a{
+
+    }
+
+    .included .not-visibile-when-included{
+        display: none;
+    }
+
+    .clickableItem:hover{
+        text-decoration: underline;
+    }
+
+</style>
+
+<div class="checkRequired" data-module="timetracking" data-level="1">
+    <div class="checkRead">
+        <div class="alert" style="background: #efefef">
+            <div class="row">
+                <div class="col-9">
+
+                    <div class="btn-group btn-group-sm filtercomponent">
+                        <input type="text" id="dateRange" style="max-width: 200px" class="form-control form-control-sm" value="Interval">
+                        <div class="btn-group btn-group-sm">
+                            <div class="dropdown-menu" style="min-width: 500px;">
+                                <div class="row">
+                                    <div class="col-5 border-right">
+                                        <ul class="someSelect">
+                                            <li>Astazi</li>
+                                            <li>Ieri</li>
+                                            <li>Saptamana aceasta</li>
+                                            <li>Saptamana trecuta</li>
+                                            <li>Luna aceasta</li>
+                                            <li>Luna trecuta</li>
+                                            <li>Anul acesta</li>
+                                            <li>Anul trecut</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-7">
+                                        <div class="drp-calendar left"><div class="calendar-table"><table class="table-condensed"><thead><tr><th class="prev available"><span></span></th><th colspan="5" class="month">Sep 2021</th><th></th></tr><tr><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th><th>Su</th></tr></thead><tbody><tr><td class="off ends available" data-title="r0c0">30</td><td class="off ends available" data-title="r0c1">31</td><td class="available" data-title="r0c2">1</td><td class="available" data-title="r0c3">2</td><td class="available" data-title="r0c4">3</td><td class="weekend available" data-title="r0c5">4</td><td class="weekend available" data-title="r0c6">5</td></tr><tr><td class="available" data-title="r1c0">6</td><td class="available" data-title="r1c1">7</td><td class="available" data-title="r1c2">8</td><td class="active start-date available" data-title="r1c3">9</td><td class="today in-range available" data-title="r1c4">10</td><td class="weekend in-range available" data-title="r1c5">11</td><td class="weekend in-range available" data-title="r1c6">12</td></tr><tr><td class="in-range available" data-title="r2c0">13</td><td class="in-range available" data-title="r2c1">14</td><td class="in-range available" data-title="r2c2">15</td><td class="in-range available" data-title="r2c3">16</td><td class="in-range available" data-title="r2c4">17</td><td class="weekend in-range available" data-title="r2c5">18</td><td class="weekend in-range available" data-title="r2c6">19</td></tr><tr><td class="in-range available" data-title="r3c0">20</td><td class="in-range available" data-title="r3c1">21</td><td class="in-range available" data-title="r3c2">22</td><td class="in-range available" data-title="r3c3">23</td><td class="in-range available" data-title="r3c4">24</td><td class="weekend active end-date in-range available" data-title="r3c5">25</td><td class="weekend available" data-title="r3c6">26</td></tr><tr><td class="available" data-title="r4c0">27</td><td class="available" data-title="r4c1">28</td><td class="available" data-title="r4c2">29</td><td class="available" data-title="r4c3">30</td><td class="off ends available" data-title="r4c4">1</td><td class="weekend off ends available" data-title="r4c5">2</td><td class="weekend off ends available" data-title="r4c6">3</td></tr><tr><td class="off ends available" data-title="r5c0">4</td><td class="off ends available" data-title="r5c1">5</td><td class="off ends available" data-title="r5c2">6</td><td class="off ends available" data-title="r5c3">7</td><td class="off ends available" data-title="r5c4">8</td><td class="weekend off ends available" data-title="r5c5">9</td><td class="weekend off ends available" data-title="r5c6">10</td></tr></tbody></table></div><div class="calendar-time" style="display: none;"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="btn-group btn-group-sm filtercomponent">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle employeeRelated" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-filter" style="visibility: hidden"></i>
+                            Angajat
+                            <i class="fa" style="visibility: hidden"></i>
+                        </button>
+                        <div class="dropdown-menu p-3">
+                            <form id="employeeSelectSearch" data-searchfld="employee" data-searchform="#timeTrackingEntriesFiltering">
+                                <input type="text" name="fullname" data-operator="~=~" placeholder="Nume angajat" onkeyup="$(this.form).submit()" autocomplete="false">
+                                <ul class="someSelect" data-resourcetype="collection" data-filter="#employeeSelectSearch">
+                                    <li data-value="<%= id %>" onclick="performSearch(this)"><%= attributes.fullname%></li>
+                                </ul>
+                                <button class="btn btn-secondary btn-sm mt-2" type="reset" onclick="performSearch(this)">Sterge filtru</button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div class="btn-group btn-group-sm filtercomponent">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle employeeRelated" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-filter" style="visibility: hidden"></i>
+                            Echipa
+                            <i class="fa" style="visibility: hidden"></i>
+                        </button>
+
+                        <div class="dropdown-menu p-3">
+                            <form id="teamSelectSearch" data-searchfld="team" data-searchform="#timeTrackingEntriesFiltering">
+                                <input type="text" name="name" data-operator="~=~" placeholder="Nume echipa" onkeyup="$(this.form).submit()" autocomplete="false">
+                                <ul class="someSelect" data-resourcetype="collection" data-filter="#teamSelectSearch">
+                                    <li data-value="<%= id %>" onclick="performSearch(this)"><%= attributes.name%></li>
+                                </ul>
+                                <button class="btn btn-secondary btn-sm mt-2" type="reset" onclick="performSearch(this)">Sterge filtru</button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div class="btn-group btn-group-sm filtercomponent">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-filter" style="visibility: hidden"></i>
+                            Comanda
+                            <i class="fa" style="visibility: hidden"></i>
+                        </button>
+                        <div class="dropdown-menu p-3">
+                            <form id="orderSelectSearch" data-searchfld="order" data-searchform="#timeTrackingEntriesFiltering">
+                                <input type="text" name="docnum" data-operator="~=~" placeholder="ID Comanda" onkeyup="$(this.form).submit()" autocomplete="false">
+                                <ul class="someSelect" data-resourcetype="collection" data-filter="#orderSelectSearch">
+                                    <li data-value="<%= id %>" onclick="performSearch(this)"><%= attributes.docnum%></li>
+                                </ul>
+                                <button class="btn btn-secondary btn-sm mt-2" type="reset" onclick="performSearch(this)">Sterge filtru</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="btn-group btn-group-sm filtercomponent">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-filter" style="visibility: hidden"></i>
+                            Audit
+                            <i class="fa" style="visibility: hidden"></i>
+                        </button>
+                        <div class="dropdown-menu p-3" style="min-width: 350px">
+                            <ul class="someSelect" id="" data-resourcetype="collection" data-filter="#orderSelectSearch">
+                                <li onclick="$('#longerThanCheck')[0].click();">
+                                    <input type="checkbox" id="longerThanCheck" onclick="event.stopPropagation();filterLongerThen(this.checked,$(this).parent().find('input[type=number]').val()); "> Durata mai mare de
+                                    <input type="number" style="width: 40px" onclick="event.stopPropagation();" value="8"> ore
+                                </li>
+                                <li onclick="$('#unallocatedCheck')[0].click();">
+                                    <input type="checkbox" id="unallocatedCheck" onclick="event.stopPropagation();filterUnallocated(this.checked); "> Comanda tampon
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col" style="text-align: right">
+                    <button class="btn btn-primary btn-sm mr-1" onclick="reloadApiator(this)" data-target="#timeTrackingEntries"><i class="fa fa-retweet"></i> Reincarca</button>
+                    <button class="btn btn-sm btn-primary checkCreate float-right not-visibile-when-included"  id="newTTBtn"><i class="fa fa-plus-square"></i> Introducere</button>
+                </div>
+
+            </div>
+        </div>
+        <form id="timeTrackingEntriesFiltering" class="d-none">
+<!--            <button type="submit" name="submit" id="submitBtn"></button>-->
+            <input name="order" type="text" data-operator="=">
+            <input name="employee" type="text" data-operator="=">
+            <input name="operation" type="text" data-operator="=">
+            <input name="team" type="text" data-operator="=">
+            <input name="start" type="text" id="startFrom" data-operator=">=">
+            <input name="start" type="text" id="startTo" data-operator="<=">
+        </form>
+        <table class="table" id="timeTrackingTable">
+            <thead class="thead-dark none" id="pontajListHeader">
+                <tr>
+                    <th class="emplCol align-top">
+                        Angajat
+                    </th>
+                    <th class="orderCol align-top">
+                        Comanda
+                    </th>
+                    <th class="align-top" >
+                        Operatie
+                    </th>
+                    <th class="align-top" >
+                        Tarif
+                    </th>
+                    <th class="align-top" >
+                        <a class="text-white" data-sortfld="start">Start
+                            <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+                        </a>
+                    </th>
+                    <th class="align-top" style="min-width: 160px">
+                        <a class="text-white" data-sortfld="duration">Durata (hh:mm)
+                            <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i>
+                        </a>
+
+                    </th>
+                    <th width="150px"></th>
+                </tr>
+            </thead>
+            <tbody id="timeTrackingEntries" data-type="timetracking" data-emptyview="#timeTrackingEntriesEmpty" data-resourcetype="collection" data-paging="#timeTrackingEntriesPaging"
+                   data-filter="#timeTrackingEntriesFiltering" data-sort="#pontajListHeader"
+                   data-pagesizeinp="#timeTrackingEntriesLimit" data-offsetinp="#timeTrackingEntriesOffset" data-totalrecscount="#timeTrackingTotalCount">
+            <tr>
+                <td class="emplCol">
+                    <a onclick="openRelatedEmployeeModal(this)" class="clickableItem" style="cursor: pointer"><%= relationships.employee.attributes.fname %> <%= relationships.employee.attributes.lname %></a> <br>
+                    <% if(relationships.team) { %>
+                    <span class="badge badge-secondary"><%= relationships.team.attributes ? relationships.team.attributes.name : 0 %></span>
+                    <% } %>
+
+                </td>
+                <td style="max-width: 100px">
+                    <div class="values"><a class="clickableItem" onclick="openOrderModal(this)" style="cursor: pointer"><%= relationships.order ? relationships.order.relationships.doc_id.attributes.docnum : "nealocat" %></a></div>
+                    <div class="inputs">
+                        <select name="order"  style="width: 100%"></select>
+                    </div>
+                </td>
+                <td class="orderCol" style="width: 150px">
+                    <div class="values">
+                        <%= relationships.operation ? relationships.operation.attributes.name : "-" %>
+                    </div>
+                    <div class="inputs">
+                        <select name="op"  style="width: 100%">
+                            <% if(relationships.operation){ %>
+                            <option value="<%= relationships.operation.id %>"><%= relationships.operation.attributes.name %></option>
+                            <% } %>
+                        </select>
+
+                    </div>
+                </td>
+                <td>
+                    <div class="values"><%= attributes.hourly_rate %> <%= relationships.currency?relationships.currency.id:"" %></div>
+                    <div style="white-space: nowrap" class="inputs">
+                        <input type="number" name="hourly_rate" value="<%= attributes.hourly_rate %>" style="max-width: 60px">
+                        <br>
+                        <select name="currency" style="width: 60px">
+                            <% if(relationships.currency) { %>
+                            <option><%= relationships.currency.id %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <%
+                    let startD = attributes.start.split(' ');
+                    let startT = startD[1].substr(0,5);
+                    startD = startD[0];
+
+                    let stopD = attributes.stop ? attributes.stop.split(' ') : null;
+                    let stopT = stopD ? stopD[1].substr(0,5) : null;
+                    stopD = stopD ? stopD[0] : null;
+                    %>
+                    <div class="values badge badge-dark"><%= startD %></div>
+                    <div class="values" style="min-width: 100px; "><%= startT %> - <%= stopT %></div>
+<!--                    <div class="inputs">-->
+<!--                        <div class="d-inline">De la<br><input type="datetime-local" style="max-width: 220px" class="form-control form-control-sm" id="inputStart" name="start" value="<%= (new Date(attributes.start)).toISOString().slice(0,-1) %>"></div>-->
+<!--                        <div class="d-inline">Pana la<br><input type="datetime-local" style="max-width: 220px" class="form-control form-control-sm" id="inputStop" name="stop" value="<%= attributes.stop?(new Date(attributes.stop)).toISOString().slice(0,-1):'' %>"></div>-->
+<!--                    </div>-->
+                    <div class="inputs">
+                        <div class="form-row">
+                            <div class="col">
+                                <input type="text" name="startDate" value="<%= startD %>" size="5" class="form-control form-control-sm text-center">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-6">
+                                <input type="time" name="startTime" value="<%= startT %>" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-6">
+                                <input type="time" name="stopTime" value="<%= stopT %>" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td style="width: 100px">
+                    <div class="values"><%= attributes.duration ? Math.floor(attributes.duration/60)+":"+attributes.duration%60 : "-"  %></div>
+                    <div class="inputs">
+                        <input type="text" name="duration" pattern="[0-9]{1,3}(:([0-9]{1,2}))?" value="<%= attributes.duration ? Math.floor(attributes.duration/60)+':'+attributes.duration%60 : ''  %>" style="max-width: 100px" onkeyup="updateStopTime(this)">
+                    </div>
+                </td>
+                <td style="width: 100px;">
+                    <div class="btn-group" role="group" aria-label="Basic example" style="display: flex; justify-content: flex-end; width: 100%">
+<!--                        <button class="btn btn-secondary btn-sm checkCreate" onclick="duplicateItem(this);"><i class="fa fa-copy" title="Duplicare"></i></button>-->
+                        <% if(!stopD) { %>
+                        <button class="btn btn-dark btn-sm checkUpdate" style="flex: 0 1" onclick="stopCurrentTT(this)" title="Stop"><i class="fa fa-ban"></i> </button>
+                        <% } %>
+                        <button class="btn btn-warning btn-sm checkUpdate" style="flex: 0 1" onclick="edit(this)" title="Editare"><i class="fa fa-edit"></i> </button>
+                        <button class="btn btn-danger btn-sm checkDelete" style="flex: 0 1" onclick="deleteUnit(this);" title="Stergere"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-primary btn-sm edit" style="flex: 0 1" onclick="save(this)" title="Salvare"><i class="fa fa-save"></i> </button>
+                        <button class="btn btn-secondary btn-sm edit" style="flex: 0 1" onclick="cancelEdit(this)" title="Anulare"><i class="fa fa-window-close"></i> </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody >
+            <tbody class="d-none">
+            <tr id="timeTrackingEntriesEmpty"><td colspan="7" class="p-3 text-center">Nu exista inregistrari care sa corespunda criteriilor de filtrare</td></tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="7">
+                    <div class="btn-group"  id="timeTrackingEntriesPaging" data-pagesize="20">
+                        <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+                        <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+                        <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+                        <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+                        <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+                    </div>
+                    <select id="timeTrackingEntriesLimit">
+                        <option selected>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                        <option>75</option>
+                    </select> inregistrari pe pagina. Total <span id="timeTrackingTotalCount"></span>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+
+    </div>
+</div>
+
+<script>
+
+    function stopCurrentTT(src) {
+
+        komponentor.intent("/common/messagemodal").data({
+            body: "Sunteti sigur ca doriti oprirea operatiunii?",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    },
+                    callback: function () {
+                        let instance = $(src).data("instance");
+                        let currentDateTime = new Date();
+                        let time_offset = currentDateTime.getTimezoneOffset()/60;
+                        currentDateTime.setHours(currentDateTime.getHours() - time_offset);
+
+                        let formatted_time = (currentDateTime).toISOString().split('.')[0].replace("T", " ");
+
+                        instance.update({stop: formatted_time}).catch(function(data){
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss":"modal"
+                    }
+                }
+            ]
+        }).send();
+    }
+
+    function updateStopTime(src) {
+        let x = /^([0-9]{1,3})(:([0-9]{1,2}))?$/.exec(src.value);
+        if(x===null)
+            return;
+
+        let minutes = (x[2]===undefined) ? x[1] : x[1]*60+x[3]*1;
+
+        let startT = $(src).parents("tr").find("input[name=startTime]");
+        let startD = $(src).parents("tr").find("input[name=startDate]");
+        let t = new Date();
+        t.setTime(Date.parse(startD.val()+" "+startT.val()));
+        t.setTime(t.getTime()+minutes*60000);
+        let time = (t.getHours()+"").padStart(2,"0")+":"+(t.getMinutes()+"").padStart(2,"0");
+        $(src).parents("tr").find("input[name=stopTime]").val(time);
+    }
+
+    function openOrderModal(src) {
+
+        if ($(src).data("locked")) {
+            return;
+        }
+        $(src).data("locked",true);
+
+        komponentor.intent('/views/orders/order')
+            .data({
+                orderId:  $(src).data("instance").relationships.order.id,
+            })
+            .send()
+            .finally(function () {
+                $(src).removeData("locked");
+            })
+    }
+
+    function openRelatedEmployeeModal(src) {
+        if ($(src).data("locked")) {
+            return;
+        }
+
+        $(src).data("locked",true);
+
+        let emplId = $(src).data("instance").relationships.employee.id;
+        komponentor.intent('/views/employees/employee')
+            .data({
+                emplId: emplId,
+                source: "pontaj"
+            })
+            .send()
+            .finally(function () {
+                $(src).removeData("locked");
+            })
+    }
+
+    function filterUnallocated(toggleOn) {
+        $($("#timeTrackingEntriesFiltering")[0].order).val(toggleOn ? 1 : "").form().submit();
+    }
+
+    function filterLongerThen(toggleOn,val) {
+        console.log("filterLongerThen",toggleOn,val)
+        let instance = $("#timeTrackingEntries").data("instance");
+        if(toggleOn) {
+            instance.url.parameters["filter_advanced"] = encodeURIComponent("TIMESTAMPDIFF(MINUTE,start,stop)>"+val*60)
+        }
+        else {
+            delete instance.url.parameters["filter_advanced"];
+        }
+
+        instance.loadFromRemote();
+    }
+
+    function doSearch(src) {
+        console.log("----------------",src);
+    }
+
+    // timeRegex = /(\d+):(\d+):(\d+)/;
+
+    function performSearch(src) {
+        let $src = $(src);
+
+        let $frm = $src.parents("form");
+        if($src.attr("type")==="reset") {
+            $($src.parents(".filtercomponent").children("[data-toggle]").children("i")[0]).css("visibility","hidden");
+            return $($($frm.data("searchform"))[0].elements[$frm.data("searchfld")])
+                .val("")
+                .form().submit();
+        }
+
+        $($src.parents(".filtercomponent").children("[data-toggle]").children("i")[0]).css("visibility","unset");
+
+        $frm.find("input[type=text]").val($src.text()).form().submit();
+
+        $($($frm.data("searchform"))[0].elements[$frm.data("searchfld")])
+            .val($src.data("value"))
+            .form().submit();
+    }
+
+    function cancelEdit(src) {
+        $(src).parents('tr').removeClass('edit')
+            .find("select[name=op]").select2("destroy");
+        $(src).parents('tr').find("select[name=order]").select2("destroy");
+        $(src).parents('tr').find("select[name=currency]").select2("destroy");
+    }
+
+    function save(src) {
+        let itemContainer = $(src).parents("tr");
+        let orderSel = itemContainer.find("select[name=order]").val();
+        let opSel = itemContainer.find("select[name=op]").val();
+
+        let startDate = itemContainer.find("input[name=startDate]").val();
+        let startTime = itemContainer.find("input[name=startTime]").val();
+        let stopTime = itemContainer.find("input[name=stopTime]").val();
+        let hourly_rate = itemContainer.find("input[name=hourly_rate]").val();
+        let currency = itemContainer.find("select[name=currency]").val();
+
+        let startTS = startDate+" " +startTime+":00";
+        let stopTS = null;
+        if(stopTime) {
+            if (Date.parse(startDate + " " + startTime) > Date.parse(startDate + " " + stopTime)) {
+                let m = new Date();
+                m.setTime(Date.parse(startDate));
+                m.setDate(m.getDate() + 1);
+                stopTS = m.getFullYear() + "-" + (m.getMonth() + 1) + "-" + m.getDate() + " " + stopTime + ":00";
+            } else {
+                stopTS = startDate + " " + stopTime + ":00";
+            }
+        }
+
+        let instance = $(src).data("instance");
+
+        if( startTime.length === 0){
+            komponentor.intent("/common/messagemodal").data({
+                body: "Completati operatia pentru a continua.",
+                buttons: [
+                    {
+                        label: "Ok",
+                        class: "btn-secondary",
+                        attrs: {
+                            "data-dismiss":"modal"
+                        }
+                    }
+                ]
+            }).send();
+            return;
+        }
+
+        let data = {
+            order: orderSel,
+            operation: opSel,
+            start: startTS,
+            stop: stopTS,
+            currency: currency,
+            hourly_rate: hourly_rate
+        };
+
+
+        instance.update(data).catch(function (e) {
+            komponentor.intent("/common/errormodal").data({body: "Eroare: <pre>" + e.jqXHR.responseText + "</pre>"}).send();
+        });
+    }
+
+    function edit(src) {
+        let itemContainer = $(src).parents("tr").addClass("edit");
+        let opSel = itemContainer.find("select[name=op]");
+        let orderSel = itemContainer.find("select[name=order]");
+        let currencySel = itemContainer.find("select[name=currency]");
+        let instance = $(src).data("instance");
+
+        if(opSel.hasClass("select2")) opSel.select2("destroy");
+        if(orderSel.hasClass("select2")) orderSel.select2("destroy");
+
+        if(instance.relationships.order) {
+            orderSel.empty().append("<option value='" + instance.relationships.order.id + "'>"
+                + instance.relationships.order.relationships.doc_id.attributes.docnum + "</option>");
+        }
+
+        opSel.select2wrapper({
+            // url: apiRoot+"/employees/"+instance.attributes.employee+"/emplToOrdAssoc?filter=status=ord",
+            // url: apiRoot+"/emplToOrdAssoc?filter=status!><offer,ready,dlvd",
+            url: apiRoot+"/catalog?filter=type=service",
+            labelfld: "name",
+            placeholder: "Comanda/proiect"
+        });
+
+        opSel.on("select2:select", function (val) {
+            opSel.val(val.params.data.id);
+        });
+
+        orderSel.select2wrapper({
+            url: apiRoot + "/orders_extended",
+            labelfld: "docnum",
+            idfld: "oid",
+            placeholder: "Doc num"
+        });
+
+        orderSel.on("select2:select", function (val) {
+            console.log(val.params.data.id);
+            orderSel.val(val.params.data.id);
+        });
+
+        currencySel.select2wrapper({
+            url: apiRoot + "/currencies",
+            labelfld: "id",
+        });
+
+        currencySel.on("select2:select", function (val) {
+            currencySel.val(val.params.data.id);
+        });
+
+
+        itemContainer.find("input[name=submit]");
+    }
+
+    function deleteUnit(src) {
+
+        komponentor.intent("/common/messagemodal").data({
+            body: "Esti sigur ca vrei sa stergi pontajul lui <br><strong>" + $(src).data("instance").relationships.employee.attributes.fname + " " + $(src).data("instance").relationships.employee.attributes.lname + "</strong> de <strong>" + $(src).data("instance").attributes.duration + " minute?</strong>",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss": "modal"
+                    },
+                    callback: function () {
+                        $(src).data('instance').delete().catch(function (data) {
+                            komponentor.intent("/common/errormodal").data({
+                                body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
+                            }).send();
+                        });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss": "modal"
+                    }
+                }
+            ]
+        }).send();
+    }
+
+    function duplicateItem(src) {
+
+        let itemInstance = $(src).data("instance");
+        komponentor.intent("/common/messagemodal").data({
+            body: "Esti sigur ca vrei sa creezi o dublura pontajului lui <br><strong>" + itemInstance.relationships.employee.attributes.fname + " " + $(src).data("instance").relationships.employee.attributes.lname + "</strong> de <strong>" + $(src).data("instance").attributes.duration + "ore?</strong>",
+            buttons: [
+                {
+                    label: "Da",
+                    class: "btn-danger",
+                    attrs: {
+                        "data-dismiss": "modal"
+                    },
+                    callback: function () {
+                        let data = itemInstance.attributes;
+                        data.employee = itemInstance.relationships.employee.id;
+                        data.operation = itemInstance.relationships.operation.id;
+                        data.order = itemInstance.relationships.order.id;
+                        data.currency = itemInstance.relationships.currency.id;
+                        delete data.id;
+                        itemInstance.collection.createItem(data)
+                            .catch(function (data) {
+                                komponentor.intent("/common/errormodal")
+                                    .data({
+                                        body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
+                                    })
+                                    .send();
+                            });
+                    }
+                },
+                {
+                    label: "Nu",
+                    class: "btn-secondary",
+                    attrs: {
+                        "data-dismiss": "modal"
+                    }
+                }
+            ]
+        }).send();
+    }
+
+    function customUrl(k) {
+        if (!k.data) {
+            throw "Empty data";
+        }
+
+        let data = k.data;
+
+        if(data.instance) {
+            switch (data.instance.type) {
+                case "employees":
+                    k.$el.find("#timeTrackingTable").addClass("employeeView");
+                    return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team&filter=employee="+data.instance.id;
+                case "orders":
+                    k.$el.find("#timeTrackingTable").addClass("orderView");
+                    return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team&filter=order="+data.instance.id;
+                default:
+                    console.log(data.instance);
+                    throw "Unknown type";
+            }
+        }
+
+        if(data.emplid) {
+            console.log("Emplid is present");
+            return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team&filter=employee="+data.emplid;
+        }
+
+        if(data.orderid) {
+            console.log("orderid is present");
+            return apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team&filter=order="+data.orderid;
+        }
+
+    }
+
+    function init_komponent(k) {
+
+        if (k.data && ((k.data.instance && k.data.instance.type === "employees") || k.data.emplId)) {
+            k.$el.find(".employeeRelated").remove();
+            k.$el.find("#newTTBtn").remove();
+        }
+
+        k.$el.find("#dateRange").daterangepicker({showDropdowns:true,startDate:"05/01/2021"})
+            .on("apply.daterangepicker",function (e) {
+                let[start,stop] = k.$el.find(e.target).val().split(" - ");
+                start = new Date(start);
+                stop = new Date(stop);
+                stop.setDate(stop.getDate()+1);
+                console.log(start,stop);
+                k.$el.find("#startFrom").val(start.toISOString());
+                k.$el.find("#startTo").val(stop.toISOString());
+                k.$el.find("#timeTrackingEntriesFiltering").submit();
+            })
+            .on("cancel.daterangepicker",function () {
+                k.$el.find("#startFrom").val("");
+                k.$el.find("#startTo").val("");
+                k.$el.find("#timeTrackingEntriesFiltering").submit();
+            });
+
+
+
+        let url = apiRoot + "/timetracking?sort=-start&include=employee,order,order.doc_id,operation,team";
+
+        try {
+            url = customUrl(k);
+        } catch (e) {
+            console.log(e)
+        }
+
+        let instance = k.$el.find("#timeTrackingEntries").apiator({
+            url: url,
+            returninstance: true
+        });
+
+        k.$el.find("#employeeSelectSearch").find("ul").apiator({returninstance: true})
+            .setUrl(apiRoot+"/employees_names?page[employees_names][limit]=20").loadFromRemote();
+
+        k.$el.find("#teamSelectSearch").find("ul").apiator({returninstance: true})
+            .setUrl(apiRoot+"/teams?page[teams][limit]=20").loadFromRemote();
+
+        k.$el.find("#orderSelectSearch").find("ul").apiator({returninstance: true})
+            .setUrl(apiRoot+"/orders_extended?page[orders_extended][limit]=20").loadFromRemote();
+
+
+
+        k.$el.find("#newTTBtn").on("click", function () {
+            komponentor.intent("/views/pontaj/newTTModal")
+                .data({instance: instance})
+                .send();
+        });
+
+
+        let util = instance.getUtilities();
+        let form = k.$el.find("#newTTForm")[0];
+
+        util.captureFormSubmit(form, function (data) {
+            addNewTT(data);
+        });
+
+        function addNewTT(data) {
+
+            if (data.employee === null || data.docnum === null || data.start.length === 0 || data.stop.length === 0 || data.hourly_rate.length === 0 || data.currency === null) {
+
+                komponentor.intent("/common/messagemodal").data({
+                    body: "Completati toate campurile pentru a continua.",
+                    buttons: [
+                        {
+                            label: "Ok",
+                            class: "btn-secondary",
+                            attrs: {
+                                "data-dismiss": "modal"
+                            }
+                        }
+                    ]
+                }).send();
+                return;
+            }
+            data.start = data.start.replace("T", " ");
+            data.stop = data.stop.replace("T", " ");
+
+            data.operation = data.docnum.split("/")[1];
+            data.order = data.docnum.split("/")[0];
+
+            delete data.docnum;
+            instance.createItem(data).then(function () {
+                k.$el.find("[name=newTT]").toggle();
+                instance.loadFromRemote();
+            })
+                .catch(function (data) {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
+                    }).send();
+                });
+
+
+            k.exec = function (b) {
+                console.log("exec order", k, b);
+            }
+        }
+
+        if(!komponentor.routing.paras.filter){
+            return;
+        }
+
+        if(komponentor.routing.paras.filter==="overtime") {
+            setTimeout(()=>filterLongerThen(true,8),50);
+        }
+
+        if(komponentor.routing.paras.filter==="buffer") {
+            setTimeout(()=>filterUnallocated(true),50);
+
+        }
+    }
+
+</script>

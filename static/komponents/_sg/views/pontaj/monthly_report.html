@@ -1,0 +1,93 @@
+<div style="overflow: scroll" class="">
+    <form onsubmit="loadData(event)">
+        <select id="availMonths" data-resourcetype="collection" name="month">
+            <option><%=attributes.d%></option>
+        </select>
+        <button type="submit">Afiseaza</button>
+    </form>
+    <button onclick="exportTableToExcel($('#pontajTable'),'pontaj')" class="mt-2 btn btn-success btn-sm"><i class="fa fa-file-excel"></i> Export XLS</button>
+    <table class="d-none" id="pontajTableProto">
+        <thead>
+        <tr><th></th></tr>
+        <tr><th></th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <table id="pontajTable" class="table mt-2"></table>
+</div>
+<script src="assets/js/export2excel.js"></script>
+<script>
+    function init_komponent(k) {
+        $("#availMonths").apiator(apiRoot+"/avail_tt_months?sort=d");
+    }
+
+    function loadData(event) {
+        event.preventDefault();
+        console.log(event.target);
+        // return;
+        let mon = event.target.month.value;
+        let $table = $("#pontajTable").html($("#pontajTableProto").html());
+        let url = apiRoot+"/timetracking_duration_report_wnames?filter=date=~"+mon+"&page[timetracking_duration_report_wnames][limit]=1000&sort=date";
+        $("<span>").apiator({returninstance:true,resourcetype:"collection"}).setUrl(url).loadFromRemote().then(function (d) {
+            let tbl = [];
+            let cidx = [];
+            let ridx = [];
+            let emplMap= {};
+            let dateMap= {};
+            let wdays = ["D","L","M","M","J","V","S","D"];
+            let weekendStyle = "background: #ccc";
+            d.items.forEach(function (i) {
+                let row = ridx.indexOf(i.attributes.empl_id);
+                if(row===-1) {
+                    row = ridx.length;
+                    ridx.push(i.attributes.empl_id);
+                    emplMap[i.attributes.empl_id] = i.attributes.fname+ " " + i.attributes.lname;
+                }
+
+                let col = cidx.indexOf(i.attributes.date);
+                if(col===-1) {
+                    col = cidx.length;
+                    cidx.push(i.attributes.date);
+                    dateMap[i.attributes.date] = moment(i.attributes.date);
+                }
+
+                if(typeof tbl[row]==="undefined") {
+                    tbl[row] = [];
+                }
+
+                tbl[row][col] = i.attributes.duration;
+            });
+            let $theadRows = $table.find("thead>tr");
+
+            let $theadRowMDays = $($theadRows[0]);
+            let $theadRowWDays = $($theadRows[1]);
+
+            let $tbody = $table.find("tbody");
+            for(let j=0;j<cidx.length;j++) {
+                let wday = dateMap[cidx[j]].weekday();
+                let style = wday>5 && wday<8 ? weekendStyle : "";
+                // let style = "";
+                console.log(cidx[j].substr(-2));
+                $("<th>").appendTo($theadRowMDays).text(cidx[j].substr(-2)).attr("style",style);
+                $("<th>").appendTo($theadRowWDays).text(wdays[wday]).attr("style",style);
+            }
+            $("<th>").appendTo($theadRowMDays).attr("rowspan",2).text("Total");
+
+            for(let i=0;i<ridx.length;i++) {
+                let $tbodyRow = $("<tr>").appendTo($tbody).append($("<td>").text(emplMap[ridx[i]]));
+                let total = 0;
+                for(let j=0;j<cidx.length;j++) {
+                    let wday = dateMap[cidx[j]].weekday();
+                    let style = wday>5 && wday<8 ? weekendStyle : "";
+
+                    let duration = typeof tbl[i][j] === "undefined"?"0":tbl[i][j];
+                    durationString = Math.floor(duration/60)+":"+duration%60;
+                    $("<td>").text(durationString).appendTo($tbodyRow).attr("style",style);
+                    total += 1*duration;
+                }
+                $("<td>").text( Math.floor(total/60)+":"+total%60).appendTo($tbodyRow);
+
+            }
+        })
+    }
+</script>

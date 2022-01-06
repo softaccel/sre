@@ -1,0 +1,159 @@
+
+<div class="card bg-light mt-2">
+    <div class="card-body ">
+        <form id="reportEmplTTFiltering"></form>
+
+        <div class="d-flex flex-row">
+            <div class="p-1" style="width: 200px">
+                <select style="width: 100%" id="emplSel" name="employee" form="reportEmplTTFiltering" data-operator="=" onchange="$(this.form).submit()"></select>
+            </div>
+            <div class="p-1" style="width: 200px">
+                <select style="width: 100%" id="orderSel" name="order" form="reportEmplTTFiltering" data-operator="=" onchange="$(this.form).submit()"></select>
+            </div>
+            <div class="p-1" id="reportrangeDiv">
+                <div name="reportrange" class="" style="background: #fff; cursor: pointer; padding: 2px 10px; border: 1px solid #ccc; border-radius: 5px">
+                    <i class="fa fa-calendar"></i>&nbsp
+                    <span></span> <i class="fa fa-caret-down"></i>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="display: inline-block; border: solid silver 1px; background: #fcfcfc; border-radius: 5px" class="p-2">
+                Exporta date in format
+                <button class="btn btn-success btn-sm" onclick="exportFile(this,'xls')"><i class="fa fa-file-excel"></i> Excel</button>
+                <button class="btn btn-success btn-sm" onclick="exportFile(this,'csv')"><i class="fa fa-file-csv"></i> CSV</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table" id="aggrEmplTTTable">
+    <thead class="bg-secondary">
+    <tr>
+        <th data-name="emplName">Angajat</th>
+        <th data-name="order">Comanda</th>
+        <th data-name="operation">Operatie</th>
+        <th data-name="date">Data</th>
+        <th data-name="wday">Ziua saptamanii</th>
+        <th data-name="duration">Durata</th>
+    </tr>
+    </thead>
+    <tbody id="aggrEmplTTColection" data-resourcetype="collection" data-paging="#reportEmplTTPaging" data-type="report_tt_agg_byempl"
+           data-filter="#reportEmplTTFiltering" data-pagesizeinp="#reportEmplTTPageSize">
+    <tr>
+        <td data-name="emplName"><%=attributes.fname%> <%=attributes.lname%></td>
+        <td data-name="order"><%=attributes.docnum%></td>
+        <td data-name="operation"><%=attributes.opname%></td>
+        <td data-name="date"><%=attributes.date%></td>
+        <td data-name="wday"><%= ['duminica','luni','marti','miercuri','joi','vineri','sambata'][(new Date(attributes.date)).getDay()]%></td>
+        <td data-name="duration"><%=Math.round(attributes.duration/60)%>:<%=(attributes.duration%60+"").padStart(2,0)%></td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr class="bg-light font-weight-bold">
+        <td>Total (ore)</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td id="minsTotal">0</td>
+    </tr>
+    <tr>
+        <td>
+            <div class="btn-group"  id="reportEmplTTPaging" data-pagesize="10">
+                <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+                <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+                <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+                <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+                <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+            </div>
+            <select id="reportEmplTTPageSize" class="custom-select" style="display: inline; width: 100px">
+                <option>10</option>
+                <option selected>25</option>
+                <option>50</option>
+                <option>75</option>
+                <option>100</option>
+                <option>150</option>
+            </select> inregistrari pe pagina
+        </td>
+    </tr>
+    </tfoot>
+</table>
+<script>
+
+    function exportFile(src,type) {
+        let url = {};
+        let instance = $(src).data().komponent.$el.find("#aggrEmplTTColection").data().instance;
+        Object.assign(url,instance.url);
+        url.parameters["page["+instance.type+"][limit]"] = 10000;
+        url.parameters["outputFormat"] = type;
+        url.parameters["includetablehead"] = true;
+
+        $("<a>").attr("href",url.toString()).appendTo("body")[0].click();
+    }
+
+    function init_komponent(k) {
+        let url = apiRoot + "/report_tt_agg_byempl/?sort=-date&filter=";
+
+        k.$el.find("#emplSel")
+            .select2wrapper({
+                url: apiRoot+"/employees_names",
+                labelfld: "fullname",
+                placeholder: "Angajati"
+            });
+
+        // k.$el.find("#orderSel")
+        //     .select2wrapper({
+        //         url: apiRoot+"/employees_names",
+        //         labelfld: "fullname",
+        //         placeholder: "Angajati"
+        //     });
+
+
+
+        let inst = k.$el.find("table tbody").apiator({returninstance: true})
+            .setUrl(url)
+            .on("load",function (ev) {
+                let minsTotal = 0;
+                ev.target.items.forEach(function (item) {
+                    console.log(item);
+                    minsTotal += item.attributes.duration*1;
+                });
+                k.$el.find("#minsTotal").text(Math.round(minsTotal/60)+":" + (minsTotal%60+"").padStart(2,0));
+            });
+
+        var start = moment().subtract(29, 'days');
+        var end = moment();
+        $('[name=reportrange]').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                'Azi': [moment(), moment()],
+                'Ieri': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Ultimele 7 zile': [moment().subtract(6, 'days'), moment()],
+                'Ultimele 30 de zile': [moment().subtract(29, 'days'), moment()],
+                'Luna aceasta': [moment().startOf('month'), moment().endOf('month')],
+                'Luna trecuta': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        },
+            function(start,end){
+                let tmp = inst.url.parameters.filter;
+                tmp = tmp.split(",");
+                for(let i=0;i<tmp.length;i++) {
+                    if(tmp[i].substr(0,4)==="date") {
+                        delete tmp[i];
+                    }
+                }
+                tmp.push("date>="+ start.format('YYYY-MM-DD'));
+                tmp.push("date<=" + end.format('YYYY-MM-DD'));
+                inst.url.parameters.filter = tmp.join(",");
+                inst.loadFromRemote();
+            });
+
+        $('[name=reportrange] span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+
+
+
+        inst.loadFromRemote()
+    }
+</script>
