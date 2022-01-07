@@ -1,5 +1,5 @@
 <div style="overflow: scroll" class="">
-    <form onsubmit="loadData(event)">
+    <form onsubmit="callUpdate(event)">
         <select id="availMonths" data-resourcetype="collection" name="month">
             <option><%=attributes.d%></option>
         </select>
@@ -21,11 +21,23 @@
         $("#availMonths").apiator(apiRoot+"/avail_tt_months?sort=d");
     }
 
-    function loadData(event) {
+    function callUpdate(event) {
         event.preventDefault();
-        console.log(event.target);
+        let month = event.target.month.value;
+        $.ajax({
+            url: apiRoot+"/__call__/update_tt_dur_rep",
+            contentType: "application/json",
+            method: "POST",
+            data: '[]',
+            complete: function () {
+                console.log("loading data");
+                loadData(month);
+            }
+        });
+    }
+
+    function loadData(mon) {
         // return;
-        let mon = event.target.month.value;
         let $table = $("#pontajTable").html($("#pontajTableProto").html());
         let url = apiRoot+"/timetracking_duration_report_wnames?filter=date=~"+mon+"&page[timetracking_duration_report_wnames][limit]=1000&sort=date";
         $("<span>").apiator({returninstance:true,resourcetype:"collection"}).setUrl(url).loadFromRemote().then(function (d) {
