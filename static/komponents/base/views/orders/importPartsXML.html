@@ -48,9 +48,9 @@
                                 <td onmouseover="show(this)">
                                     <div class="d-none">
                                         <ul>
-                                            <% for(let i in others.fields) { %>
-                                            <% if (others.fields[i].type=='data') %>
-                                            <li><strong><%= i %> :</strong> <%= others.fields[i].data %></li>
+                                            <% for(let i in fields) { %>
+                                            <% if (fields[i].type=='data') %>
+                                            <li><strong><%= i %> :</strong> <%= fields[i].data %></li>
                                             <% }%>
                                         </ul>
                                     </div>
@@ -139,9 +139,9 @@
             let total = 0;
             let entries = [];
             let targetDateSet = false;
+            let lastPaSection;
             Object.getOwnPropertyNames(response.sections).forEach(function (sectionId) {
                 let entry = response.sections[sectionId];
-
 
                 if (entry.SectionKey==="P.A") {
                     let desc = [];
@@ -159,7 +159,6 @@
                     }
 
                     let entryData = {
-                        cod: entry.fields["P.A.P_ZeichnungSpr.Zeichnung"].data,
                         desc: desc.join(" / "),
                         unit_price: entry.fields["P.A.E_BelegPos.Einzelpreis"].data.replaceAll(".","").replaceAll(",",".")*1,
                         qty: entry.fields["P.A.E_BelegPos.Menge"].data.replaceAll(".","").replaceAll(",",".")*1,
@@ -168,10 +167,25 @@
                             ? valuesMap[entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data]
                             :entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data,
                         total: entry.fields["P.A.E_BelegPos.Warenwert"].data.replaceAll(".","").replaceAll(",",".")*1,
-                        others: entry
+                        fields: entry.fields
                     };
-                    entries.push(entryData);
+
+                    if(entry.fields["P.A.P_ZeichnungSpr.Zeichnung"] && entry.fields["P.A.P_ZeichnungSpr.Zeichnung"].data) {
+                        entryData.cod = entry.fields["P.A.P_ZeichnungSpr.Zeichnung"].data;
+                    }
+
+                    let len = entries.push(entryData);
+                    lastPaSection =  entries[len-1];
+
                     total += entryData.total;
+                }
+
+                if(entry.SectionKey==="P.XZE" && lastPaSection) {
+                    Object.assign(lastPaSection.fields,entry.fields);
+
+                    if(entry.fields["P.XZE.PP_Zeichnung.Zeichnung"]) {
+                        lastPaSection.cod = entry.fields["P.XZE.PP_Zeichnung.Zeichnung"].data;
+                    }
                 }
             });
 
@@ -251,25 +265,37 @@
                     orders_items_meta: []
                 };
 
-                if (data.others.fields["P.A.E_BelegPos.Artikel"].data!=="") {
+                if (data.fields["P.A.E_BelegPos.Artikel"].data!=="") {
                     order_part.orders_items_meta.push({
                         type: "orders_items_meta",
                         attributes: {
-                            meta_key: "P.A.E_BelegPos.Artikel",
-                            meta_val: data.others.fields["P.A.E_BelegPos.Artikel"].data
+                            meta_key: "cod_articol",
+                            meta_val: data.fields["P.A.E_BelegPos.Artikel"].data
                         }
                     });
                 }
 
-                if (data.others.fields["P.A.P_ZeichnungSpr.Zeichnung"].data!=="") {
+                if (data.fields["P.A.P_ZeichnungSpr.Zeichnung"].data!=="") {
                     order_part.orders_items_meta.push({
                         type: "orders_items_meta",
                         attributes: {
-                            meta_key: "P.A.P_ZeichnungSpr.Zeichnung",
-                            meta_val: data.others.fields["P.A.P_ZeichnungSpr.Zeichnung"].data
+                            meta_key: "numar_desen",
+                            meta_val: data.fields["P.A.P_ZeichnungSpr.Zeichnung"].data
                         }
                     });
                 }
+
+                if (data.fields["P.XZE.PP_Zeichnung.Zeichnung"].data!=="") {
+                    order_part.orders_items_meta.push({
+                        type: "orders_items_meta",
+                        attributes: {
+                            meta_key: "numar_desen",
+                            meta_val: data.fields["P.XZE.PP_Zeichnung.Zeichnung"].data
+                        }
+                    });
+                }
+
+
 
                 orderParts.push(order_part);
                 total += data.qty*data.unit_price;
@@ -291,11 +317,9 @@
                 reqData.data.push(reqPart);
             }
 
-            let reqUrl = "";
-            with (k.data.instance.insertUrl) {
-                path = path.replace("orders_items_wmeta", "orders_items");
-            }
+            k.data.instance.insertUrl.path = k.data.instance.insertUrl.path.replace("orders_items_wmeta", "orders_items");
 
+            // return;
             $.ajax({
                 url : k.data.instance.insertUrl.toString(),
                 type : 'POST',
@@ -307,7 +331,7 @@
                     modal.modal("hide");
                 },
                 fail: function (data) {
-                    console.log(data);
+                    console.log('failed to import order items',data);
                 }
             });
 
