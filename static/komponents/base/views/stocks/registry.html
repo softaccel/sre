@@ -1,0 +1,162 @@
+
+<div class="container-fluid">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Registru stocuri</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6 text-right">
+                    <button class="btn btn-secondary" onclick="openReceptionForm(this)"><i class="fa fa-truck-loading"></i> Receptie</button>
+                    <button class="btn btn-secondary" onclick="openConsumForm(this)"><i class="fa fa-industry"></i> Consum</button>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>ID</th>
+                        <th>Data</th>
+                        <th>Reper</th>
+                        <th>Cont contabil</th>
+                        <th>Locatie</th>
+                        <th>Tip</th>
+                        <th>Cantitate</th>
+                        <th>Pret intrare</th>
+                        <th>Pret iesire</th>
+                        <th>Document</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody class="" data-resourcetype="collection" id="stocks_registry_table" data-type="stocks_registry" data-paging="#stocks_registry_paging"
+                           data-totalrecscount="#stocks_registry_totalcnt" data-pagesizeinp="#stocks_registry_paging_pagesize">
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td><%=id%></td>
+                        <td><%=attributes.date.substr(0,10)%></td>
+                        <td><%=relationships.product_id.attributes.name%></td>
+                        <td><%=relationships.cont_contabil.attributes.cont%></td>
+                        <td><%=relationships.locatie.attributes.name%></td>
+                        <td><%=relationships.type.id%></td>
+                        <td><%=attributes.qty%></td>
+                        <td><%=attributes.in_price%></td>
+                        <td><%=attributes.out_price%></td>
+                        <td><%=relationships.doc_id.attributes.docnum%></td>
+                        <td><button class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> Edit</button></td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="12">
+                            <div class="btn-group"  id="stocks_registry_paging" data-pagesize="20">
+                                <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+                                <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+                                <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+                                <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+                                <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+                            </div>
+                            <select id="stocks_registry_paging_pagesize">
+                                <option selected>10</option>
+                                <option>25</option>
+                                <option>50</option>
+                                <option>75</option>
+                            </select> inregistrari pe pagina. Total <span id="stocks_registry_totalcnt"></span>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+<script>
+    function openReceptionForm(src) {
+        let instance = $(src).data().komponent.$el.find("#stocks_registry_table").data().instance;
+        komponentor.intent("/common/formmodal").data({
+            callback:function (data) {
+                let formModal = data.k;
+                data = data.data;
+
+                if (data.partner_id === null) {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "Selectarea clientului este obligatorie."
+                    }).send();
+                    return;
+                }
+
+                if (data.label === "") {
+                    komponentor.intent("/common/errormodal").data({
+                        body: "Denumirea comenzii este obligatorie."
+                    }).send();
+                    return;
+                }
+
+                let orderMeta = [];
+                orderMeta.push({meta_key: "bestellung", meta_val: data.bestellung});
+                orderMeta.push({meta_key: "belegnummer", meta_val: data.belegnummer});
+                orderMeta.push({meta_key: "estimated_delivery", meta_val: data.estimated_delivery});
+                orderMeta.push({meta_key: "estimated_work", meta_val: data.estimated_work});
+
+
+                let order = {
+                    attributes: {
+                        label: data.label,
+                        partner_id: data.partner_id,
+                        comments: data.comments,
+                        cust_int_ref: data.bestellung,
+                        user_id: jsonDec,
+                        calculated_value: data.order_value,
+                        orders_items: [],
+                        orders_meta: orderMeta,
+
+                    }
+                };
+
+                if(data.docnum!=="" || data.docnum!==null) {
+                    order.attributes.doc_id = {
+                        docnum: data.docnum,
+                        user_id: userData.sub,
+                        partners_id: data.partner_id,
+                        type: "order"
+                    };
+                }
+
+                k.data.instance.createItem(order)
+                    .then(function () {
+                        k.data.instance.view.el.children().last().click();
+                        formModal.hide();
+                    })
+                    .catch(function(data){
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
+                        }).send();
+                    });
+
+            },
+            title:"Adauga Comanda Noua",
+            size: "lg",
+            autoClose: false,
+            fields:[
+                {type: "select", name: "product_id", label: "Produs", url: "/catalog", labelfnc: "name", idfnc: "id"},
+                {type: "text", name: "product_id", label: "Reper"},
+                {type: "text", name: "label", label: "Denumire"},
+                {type: "text", name: "comments", label: "Descriere"},
+                {type: "text", name: "bestellung", label: "Auftrag"},
+                {type: "text", name: "belegnummer", label: "Bestellung"},
+                {type: "date", name: "estimated_delivery", label: "Data estimata livrare"},
+                {type: "number", name: "order_value", label: "Valoare factura"},
+                {type: "number", name: "estimated_work", label: "Timp estimat (ore)"}
+            ],
+        }).send();
+    }
+
+
+    function init_komponent(k) {
+        k.$el.find("tbody").apiator(apiRoot+"/stocks_registry?include=product_id,cont_contabil,locatie,doc_id");
+    }
+</script>

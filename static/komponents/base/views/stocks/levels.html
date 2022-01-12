@@ -1,0 +1,72 @@
+
+<div class="container-fluid">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Registru stocuri</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6 ">
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>ID</th>
+                        <th>Reper</th>
+                        <th>Cont contabil</th>
+                        <th>Locatie</th>
+                        <th>Cantitate</th>
+                        <th>Ultima actualizare</th>
+                    </tr>
+                    </thead>
+                    <tbody class="" data-resourcetype="collection" data-type="stocks_levels" data-paging="#stocks_levels_paging"
+                           data-totalrecscount="#stocks_levels_totalcnt" data-pagesizeinp="#stocks_levels_pagesize">
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td><%=id%></td>
+                        <td><%=relationships.product_id.attributes.name%></td>
+                        <td><%=relationships.cont_contabil.attributes.cont%></td>
+                        <td><%=relationships.locatie.attributes.name%></td>
+                        <td><%=attributes.qty%></td>
+                        <td><%=attributes.last_update.substr(0,10)%></td>
+                        <td><button class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> Edit</button></td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="12">
+                            <div class="btn-group"  id="stocks_levels_paging" data-pagesize="20">
+                                <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+                                <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+                                <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+                                <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+                                <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+                            </div>
+                            <select id="stocks_levels_pagesize">
+                                <option selected>10</option>
+                                <option>25</option>
+                                <option>50</option>
+                                <option>75</option>
+                            </select> inregistrari pe pagina. Total <span id="stocks_levels_totalcnt"></span>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    function init_komponent(k) {
+        k.$el.find("tbody").apiator(apiRoot+"/stocks_levels?include=product_id,cont_contabil,locatie");
+    }
+</script>

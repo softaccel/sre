@@ -1,0 +1,73 @@
+
+<div class="container-fluid">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Documente</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6 text-right">
+<!--                    <button class="btn btn-secondary" onclick="openReceptionForm(this)"><i class="fa fa-truck-loading"></i> Receptie</button>-->
+<!--                    <button class="btn btn-secondary" onclick="openConsumForm(this)"><i class="fa fa-industry"></i> Consum</button>-->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>ID</th>
+                        <th>Numar document</th>
+                        <th>Tip</th>
+                        <th>Data</th>
+                        <th>Utilizator</th>
+                        <th>Partener</th>
+                    </tr>
+                    </thead>
+                    <tbody class="" data-resourcetype="collection" id="documents_table" data-type="documents" data-paging="#documents_paging"
+                           data-totalrecscount="#documents_totalcnt" data-pagesizeinp="#documents_paging_pagesize">
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td><%=id%></td>
+                        <td><%=attributes.docnum%></td>
+                        <td><%=relationships.type.id%></td>
+                        <td><%=attributes.issued_date.substr(0,10)%></td>
+                        <td><%=relationships.user_id.id%></td>
+                        <td><%=relationships.partners_id?relationships.partners_id.attributes.name:null%></td>
+                        <td><button class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> Edit</button></td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="12">
+                            <div class="btn-group"  id="documents_paging" data-pagesize="20">
+                                <button name="first" class="btn btn-outline-secondary" title="0">&lt;&lt;</button>
+                                <button name="prev" class="btn btn-outline-secondary" title="-20">&lt;</button>
+                                <button name="page" class="btn btn-outline-secondary" title="0">1</button>
+                                <button name="next" class="btn btn-outline-secondary" title="20">&gt;</button>
+                                <button name="last" class="btn btn-outline-secondary" title="140">&gt;&gt;</button>
+                            </div>
+                            <select id="documents_paging_pagesize">
+                                <option selected>10</option>
+                                <option>25</option>
+                                <option>50</option>
+                                <option>75</option>
+                            </select> inregistrari pe pagina. Total <span id="documents_totalcnt"></span>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+<script>
+
+    function init_komponent(k) {
+        k.$el.find("tbody").apiator(apiRoot+"/documents?include=partners_id");
+    }
+</script>
