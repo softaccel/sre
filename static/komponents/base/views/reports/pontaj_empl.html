@@ -20,8 +20,8 @@
         <div>
             <div style="display: inline-block; border: solid silver 1px; background: #fcfcfc; border-radius: 5px" class="p-2">
                 Exporta date in format
-                <button class="btn btn-success btn-sm" onclick="exportFile(this,'xls')"><i class="fa fa-file-excel"></i> Excel</button>
-                <button class="btn btn-success btn-sm" onclick="exportFile(this,'csv')"><i class="fa fa-file-csv"></i> CSV</button>
+                <button class="btn btn-success btn-sm" onclick="exportInstanceDataAsFile($('#aggrEmplTTColection'),'xls')"><i class="fa fa-file-excel"></i> Excel</button>
+                <button class="btn btn-success btn-sm" onclick="exportInstanceDataAsFile($('#aggrEmplTTColection'),'csv')"><i class="fa fa-file-csv"></i> CSV</button>
 
             </div>
         </div>
@@ -81,16 +81,6 @@
 </table>
 <script>
 
-    function exportFile(src,type) {
-        let url = {};
-        let instance = $(src).data().komponent.$el.find("#aggrEmplTTColection").data().instance;
-        Object.assign(url,instance.url);
-        url.parameters["page["+instance.type+"][limit]"] = 10000;
-        url.parameters["outputFormat"] = type;
-        url.parameters["includetablehead"] = true;
-
-        $("<a>").attr("href",url.toString()).appendTo("body")[0].click();
-    }
 
     function init_komponent(k) {
         let url = apiRoot + "/report_tt_agg_byempl/?sort=-date&filter=";

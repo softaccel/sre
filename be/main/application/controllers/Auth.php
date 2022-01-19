@@ -78,7 +78,8 @@ class Auth extends CI_Controller
 		$server_output = curl_exec($ch);
 		curl_close ($ch);
 		$res = json_decode($server_output);
-		if($res->cnt!=="1") {
+//		print_r($url);
+		if(!$res || $res->cnt!=="1") {
 			log_message("debug",$server_output);
 			log_message("debug",$url);
 			log_message("debug",json_encode($reqParams));

@@ -282,12 +282,14 @@
         let instance_lastissued = $("<span></span>").apiator({resourcetype: "collection", returninstance: true});
 
         instance_lastissued.setUrl(apiRoot+"/settings_document_numbers/?filter=label=order").loadFromRemote().then(function () {
-            let lastdocnum = instance_lastissued.items[0].attributes.series + instance_lastissued.items[0].attributes.lastissued;
-            instance.items.forEach(function (item){
-                if(item.relationships.doc_id.attributes.docnum === lastdocnum){
-                    $(`.${lastdocnum}`).addClass("first");
-                }
-            });
+            if(instance_lastissued.items.length) {
+                let lastdocnum = instance_lastissued.items[0].attributes.series + instance_lastissued.items[0].attributes.lastissued;
+                instance.items.forEach(function (item) {
+                    if (item.relationships.doc_id.attributes.docnum === lastdocnum) {
+                        $(`.${lastdocnum}`).addClass("first");
+                    }
+                });
+            }
         });
 
 

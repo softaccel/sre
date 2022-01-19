@@ -42,6 +42,7 @@
                     attributes: {
                         label: data.label,
                         partner_id: data.partner_id,
+                        team: data.team,
                         comments: data.comments,
                         cust_int_ref: data.bestellung,
                         user_id: jsonDec,
@@ -81,6 +82,15 @@
                 {type: "select", name: "partner_id", label: "Client", url: "/partners", labelfnc: "name", idfnc: "id"},
                 {type: "text", name: "label", label: "Denumire"},
                 {type: "text", name: "comments", label: "Descriere"},
+                {
+                    label: "Echipa",
+                    type: "select",
+                    name: "team",
+                    url: "/teams",
+                    labelfnc: "name",
+                    idfnc: "tid",
+                    required: true,
+                },
                 {type: "text", name: "bestellung", label: "Auftrag"},
                 {type: "text", name: "belegnummer", label: "Bestellung"},
                 {type: "date", name: "estimated_delivery", label: "Data estimata livrare"},

@@ -6,9 +6,16 @@
     <table class="table table-hover">
         <thead>
         <tr>
-            <th colspan="2">Comanda</th>
+            <th colspan="2">
+                Comanda<br>
+                <select name=""></select>
+            </th>
             <th>Operatie</th>
+            <th>Ore lucrate</th>
             <th>Tarif orar</th>
+            <th>
+                <button class="btn btn-success btn-sm" onclick="exportInstanceDataAsFile($('#emplAllocOrders'),'xls')"><i class="fa fa-file-excel"></i> Excel</button>
+            </th>
         </tr>
         </thead>
         <tbody id="emplAllocOrders" >
@@ -18,6 +25,7 @@
 <!--            <td><%=attributes.status%></td>-->
             <td><%=attributes.opname%></td>
             <td><%=attributes.hourlyrate%> <%=attributes.currency%></td>
+            <td><%=Math.floor(attributes.duration/60)%>:<%=attributes.duration%60%></td>
         </tr>
         </tbody>
         <tbody id="emplAllocOrdersEmpty">

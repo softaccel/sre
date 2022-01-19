@@ -1,3 +1,15 @@
+function exportInstanceDataAsFile(src, type) {
+    let url = {};
+    console.log(src,$(src).data());
+    let instance = $(src).data().instance;
+    Object.assign(url,instance.url);
+    url.parameters["page["+instance.type+"][limit]"] = 10000;
+    url.parameters["outputFormat"] = type;
+    url.parameters["includetablehead"] = true;
+
+    $("<a>").attr("href",url.toString()).appendTo("body")[0].click().remove();
+}
+
 
 function logout() {
     userData = null;

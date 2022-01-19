@@ -689,7 +689,9 @@
             k.$el.find("#newTTBtn").remove();
         }
 
-        k.$el.find("#dateRange").daterangepicker({showDropdowns:true,startDate:"05/01/2021"})
+        // var start = moment().subtract(30, 'days');
+        // var end = moment();
+        k.$el.find("#dateRange").daterangepicker({showDropdowns:true,startDate:moment().subtract(30, 'days')})
             .on("apply.daterangepicker",function (e) {
                 let[start,stop] = k.$el.find(e.target).val().split(" - ");
                 start = new Date(start);

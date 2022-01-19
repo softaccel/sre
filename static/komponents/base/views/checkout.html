@@ -1,6 +1,6 @@
 <style>
 
-    .scanModal ul, .scanModal li {
+    .checkIn ul, .checkIn li {
         padding: 0px;
         list-style: none;
     }
@@ -28,25 +28,10 @@
 </style>
 <script src="assets/js/jquery.scannerdetection.js"></script>
 
-<div>
-    <div class="modal scanModal" id="scanModal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    Scaneaza
-                </div>
-                <div class="modal-body" style="background: url('assets/img/barcode-scan.gif') no-repeat center;min-height: 500px">
-                    <div style="background-color:rgba(255, 255, 255, 0.7);">
-                        <div id="alertSpace"></div>
-                        <ul id="checkOutList"></ul>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-success" id="checkoutItemsButt">OK</button>
-                    <button class="btn btn-secondary" data-dismiss="modal">Anuleaza</button>
-                </div>
-            </div>
-        </div>
+<div id="checkIn">
+    <div style="background-color:rgba(255, 255, 255, 0.7);">
+        <div id="alertSpace"></div>
+        <ul id="checkInList"></ul>
     </div>
     <div class="d-none">
         <div class="alert alert-default-danger alert-dismissible fade show" role="alert" id="alertTpl">
@@ -137,11 +122,11 @@
             });
             let tmp = $("<div>").apiator({resourcetype: "collection",returninstance:true});
             $.ajax({
-                    url: apiRoot+"/deliveries_contents",
-                    method: "PATCH",
-                    contentType:"application/vnd.api+json",
-                    data: JSON.stringify({data: data})
-                })
+                url: apiRoot+"/deliveries_contents",
+                method: "PATCH",
+                contentType:"application/vnd.api+json",
+                data: JSON.stringify({data: data})
+            })
                 .done(function(data){
                     modal.modal("hide");
                 })

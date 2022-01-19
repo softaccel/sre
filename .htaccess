@@ -1,3 +1,3 @@
 RewriteEngine On
 
-Redirect /spaleck/index.html /spaleck/static
+RewriteRule (.*)/spaleck/index.html /$1/spaleck/static/

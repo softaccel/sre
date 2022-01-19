@@ -7,6 +7,6 @@
         "components/jqueryui": "^1.12",
         "fortawesome/font-awesome": "^5.15",
         "moment/moment": "^2.29",
-        "timrwood/moment": "^2.29"
+        "nnnick/chartjs": "^3.7"
     }
 }

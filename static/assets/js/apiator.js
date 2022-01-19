@@ -1125,15 +1125,16 @@
 			throw "URL is not a string: " + url.toString();
 		}
 
-		let regExp = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
+		let regExp = /^(?:([A-Za-z]+):)?[\/]{0,3}([\w\.\-\_]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/i;
 		let parts = regExp.exec(url);
+		console.log(url,parts)
 		let urlObj = {
 			protocol: parts[1],
-			fqdn: parts[3],
-			port: parts[4],
-			path: parts[5],
-			parameters: parts[6]?parts[6]:"",
-			fragment: parts[7],
+			fqdn: parts[2],
+			port: parts[3],
+			path: parts[4],
+			parameters: parts[5]?parts[5]:"",
+			fragment: parts[6]?parts[6]:"",
 			toString: function () {
 				let str = "";
 				if(this.protocol && this.fqdn)
@@ -1496,6 +1497,9 @@
 			// if(!itemData.hasOwnProperty("type") && !itemData.hasOwnProperty("attributes") ) {
 			if(!itemData.hasOwnProperty("attributes") ) {
 				let tmp = {attributes:{}};
+				if(itemData.hasOwnProperty("type")) {
+					tmp.type = itemData.type;
+				}
 				Object.assign(tmp.attributes, itemData);
 				itemData = tmp;
 			}
@@ -1536,6 +1540,9 @@
 
 		_collection.append = function(itemData) {
 			let jsonApiDoc = {data: parseData4InsertUpdate(itemData)};
+			if(_collection.type) {
+				jsonApiDoc.type = _collection.type;
+			}
 			let _self = this;
 
 			return new Promise(function (resolve,reject) {

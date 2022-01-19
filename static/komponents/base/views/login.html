@@ -76,7 +76,7 @@
         };
 
         // auth against backend
-        $.post(authUrl,loginData)
+        $.post(backendUrl+"/main/auth/login",loginData)
             .done(function (data,b,xhr) {
                 if(!saveToken(data,xhr)) {
                     return $("#failedLoginFeedback").empty().show().text("Server error: invalid token. Please contact administrator");
