@@ -1125,42 +1125,62 @@
 			throw "URL is not a string: " + url.toString();
 		}
 
-		let regExp = /^(?:([A-Za-z]+):)?[\/]{0,3}([\w\.\-\_]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/i;
+		let regExp = /^((?:([a-z]+):)([\/]{2,3})([\w\.\-\_]+)(?::(\d+))?)?(?:(\/?[^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/i;
 		let parts = regExp.exec(url);
-		console.log(url,parts)
+
 		let urlObj = {
-			protocol: parts[1],
-			fqdn: parts[2],
-			port: parts[3],
-			path: parts[4],
-			parameters: parts[5]?parts[5]:"",
-			fragment: parts[6]?parts[6]:"",
+			protocol: null,
+			fqdn: null,
+			port: null,
+			path: null,
+			parameters: null,
+			fragment: null,
 			toString: function () {
+				// return url;
 				let str = "";
-				if(this.protocol && this.fqdn)
+				if(this.protocol && this.fqdn) {
 					str += this.protocol+"://"+this.fqdn;
-				if(this.port)
-					str += this.port;
-				if(this.fqdn)
-					str +=  "/";
-				if(this.path)
+					if(this.port) {
+						str += this.port;
+					}
+				}
+
+				if(this.path) {
 					str += this.path;
+				}
 				if(this.parameters) {
 					str += "?" + this.parameters.toString();
 				}
-				if(this.fragment)
-					str += "#"+this.fragment;
+				if(this.fragment) {
+					str += "#" + this.fragment;
+				}
 				return str;
 			}
 		};
 
-
-		if(parts[1]===undefined) {
-			urlObj.path = parts[2]+parts[3]+"/"+parts[5];
-			urlObj.protocol = null;
-			urlObj.fqdn = null;
-			urlObj.port = null;
+		if(typeof parts[2]!=="undefined") {
+			urlObj.protocol = parts[2];
 		}
+		if(typeof parts[4]!=="undefined") {
+			urlObj.fqdn = parts[4];
+		}
+		if(typeof parts[5]!=="undefined") {
+			urlObj.port = parts[5];
+		}
+		if(typeof parts[6]!=="undefined") {
+			console.log("path found",parts[6])
+			urlObj.path = parts[6];
+		}
+		if(typeof parts[7]!=="undefined") {
+			urlObj.parameters = parts[7];
+		}
+		if(typeof parts[8]!=="undefined") {
+			urlObj.fragment = parts[8];
+		}
+
+
+
+		// if(urlObj.)
 
 		if(urlObj.parameters) {
 			let tmp = urlObj.parameters.split("&");
