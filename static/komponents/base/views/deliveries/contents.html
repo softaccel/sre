@@ -41,7 +41,7 @@
     <form id="deliveryContentsFilter" class="d-none"><input type="submit"></form>
     <div class="hide-not-created">
         <button class="btn btn-primary btn-sm mb-3 checkUpdate" id="addContentBtn"><i class="fa fa-truck-loading"></i> Adauga elemente la livrare</button>
-        <button class="btn btn-primary btn-sm mb-3" id="refreshButt"><i class="fa fa-retweet"></i> Reincarca</button>
+        <button class="btn btn-primary btn-sm mb-3" id="refreshButt"><i class="fa fa-retweet"></i> Refresh</button>
     </div>
     <div style="max-height: 500px; overflow: auto">
         <div class="alert alert-default-secondary">
@@ -227,16 +227,25 @@
 
 
 
+    function localAlert(msg) {
+        return;
+        let alert = $("#alertTpl").clone(true).attr("id",null).appendTo($("#alertSpace")).alert();
+        alert.find("[name=message]").html(msg).alert('open');
+        setTimeout(()=>alert.alert('close'),1500);
+    }
 
     function scanForCheckIn(code,currentDeliveryId) {
         console.log("search triggered",code,currentDeliveryId);
+        // return;
         let  $checkInList = $("#checkInList");
 
         // return;
         $.get(apiRoot+"/deliveries_contents/"+code+"?include=item")
             .done(function (data) {
+
                 let item = data.data;
                 console.log(item,item.attributes.checkout*1===1);
+                return;
                 if(item.attributes.checkout*1===1) {
                     localAlert("Elementul scanat este deja livrat ");
                     return;

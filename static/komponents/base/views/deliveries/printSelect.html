@@ -146,28 +146,77 @@
                     });
                     let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
 
-                    let ajx = $
-                        .ajax({
-                            url: urlPrint,
-                            data: JSON.stringify({labels: temp_arr}),
-                            type: "POST",
-                            contentType: 'application/json',
-                        })
-                        .done(function (xhr) {
-                            $modal.modal("hide");
-                        })
-                        .fail(function(jqXHR){
-                            let errMsg = jqXHR.status===404 ? "Imprimanta nu este configurata corect." : jqXHR.responseText;
 
-                            komponentor.intent("/common/errormodal").data({
-                                body: "A aparut o eroare:<pre>"+errMsg+"</pre>"
-                            }).send();
+                    $.ajax({
+                        url: urlPrint,
+                        data: JSON.stringify({labels: temp_arr}),
+                        type: "POST",
+                        contentType: 'application/json',
+                    })
+                    .done(function () {
+                        // update label_printed
+                        let ps = [];
+                        instance_labels.items.forEach(function (item) {
+                            let itm = $().apiator({returninstance:true,resourcetype:'item'})
+                                .setUrl(apiRoot+"/deliveries_contents/"+item.barcode);
+                            itm.id = item.barcode;
+                            ps.push(itm.update({label_printed:1}));
+                        });
+                        Promise.all(ps).then(function () {
+                            k.data.instance.loadFromRemote();
+                            $modal.modal("hide");
+                        });
+                    })
+                    .fail(function(jqXHR){
+                        let errMsg = jqXHR.status===404 ? "Imprimanta nu este configurata corect." : jqXHR.responseText;
+
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare:<pre>"+errMsg+"</pre>"
+                        }).send();
+                    });
+
+
+
+
+                    return;
+                    instance_labels.loadFromRemote().then(function (data) {
+                        console.log("data",data);
+                        let temp_arr = [];
+                        util_labels.captureFormSubmit($form_labels,function (data){
+                            $(".labelTextArea[name=label]").map(function (index, value){
+                                temp_arr.push($(value).val());
+                            });
+                            let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
+
+                            let ajx = $.ajax({
+                                url: urlPrint,
+                                data: JSON.stringify({labels: temp_arr}),
+                                type: "POST",
+                                contentType: 'application/json',
+                            }).done(function (xhr) {
+                                $modal.modal("hide");
+                            }).fail(function(jqXHR){
+                                let errMsg = jqXHR.status===404 ? "Imprimanta nu este configurata corect." : jqXHR.responseText;
+
+                                komponentor.intent("/common/errormodal").data({
+                                    body: "A aparut o eroare:<pre>"+errMsg+"</pre>"
+                                }).send();
+                            });
+
+                            instance_labels.items.forEach(function (item) {
+                                item.update({label_printed: 1});
+                            });
                         });
 
-                    instance_labels.items.forEach(function (item) {
-                        item.update({label_printed: 1});
+                        // $("#sendAjaxReqBtn").click();
                     });
+
                 });
+
+
+
+
+
         });
     }
 
