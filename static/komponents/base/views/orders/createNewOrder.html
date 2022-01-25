@@ -1,10 +1,3 @@
-<style>
-
-</style>
-
-<div>
-
-</div>
 
 <script>
 
@@ -33,7 +26,7 @@
 
                 let orderMeta = [];
                 orderMeta.push({meta_key: "bestellung", meta_val: data.bestellung});
-                orderMeta.push({meta_key: "belegnummer", meta_val: data.belegnummer});
+                orderMeta.push({meta_key: "auftrag", meta_val: data.auftrag});
                 orderMeta.push({meta_key: "estimated_delivery", meta_val: data.estimated_delivery});
                 orderMeta.push({meta_key: "estimated_work", meta_val: data.estimated_work});
 
@@ -79,8 +72,8 @@
             autoClose: false,
             fields:[
                 {type: "text", name: "docnum", label: "Nr. comanda intern"},
-                {type: "select", name: "partner_id", label: "Client", url: "/partners", labelfnc: "name", idfnc: "id"},
-                {type: "text", name: "label", label: "Denumire"},
+                {type: "select", name: "partner_id", label: "Client", url: "/partners", labelfnc: "name", idfnc: "id",required: true},
+                {type: "text", name: "label", label: "Denumire",required:true},
                 {type: "text", name: "comments", label: "Descriere"},
                 {
                     label: "Echipa",
@@ -91,11 +84,11 @@
                     idfnc: "tid",
                     required: true,
                 },
-                {type: "text", name: "bestellung", label: "Auftrag"},
-                {type: "text", name: "belegnummer", label: "Bestellung"},
+                {type: "text", name: "auftrag", label: "Auftrag",required:true},
+                {type: "text", name: "bestellung", label: "Bestellung",required:true},
                 {type: "date", name: "estimated_delivery", label: "Data estimata livrare"},
                 {type: "number", name: "order_value", label: "Valoare factura"},
-                {type: "number", name: "estimated_work", label: "Timp estimat (ore)"}
+                {type: "number", name: "estimated_work", label: "Timp estimat (ore)",required:true}
             ],
         }).send();
 

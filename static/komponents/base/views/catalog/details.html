@@ -205,6 +205,6 @@
 
     function init_komponent(k) {
         let instance = k.data.instance;
-        instance.bindView($("#productSummary")).loadFromRemote();
+        instance.bindView($("#productSummary"),true).render();
     }
 </script>

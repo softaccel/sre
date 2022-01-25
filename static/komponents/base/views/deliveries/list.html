@@ -165,13 +165,11 @@
 
     function openDeliveryModal(src) {
         let instance = $(src).data("instance");
-        console.log(instance.url);
         delete instance.url.parameters.filter_advanced;
         komponentor.intent("/views/deliveries/deliveryModal").data({instance:instance}).send();
     }
 
     function init_komponent(k) {
-
         if(k.data){
             k.$el.find("#deliveriesList").apiator({url:k.data,returninstance:true});
             // k.$el.find("#newDlvrButt").remove();

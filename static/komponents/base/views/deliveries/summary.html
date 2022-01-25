@@ -248,13 +248,6 @@
         k.$el.addClass(k.data.instance.attributes.status);
 
 
-        k.data.instance.bindView($("#deliveryForm")).loadFromRemote().then(function (d) {
-            // ?????
-        }).catch(function(data){
-            console.log(data);
-            komponentor.intent("/common/errormodal").data({
-                body: "A aparut o eroare:<pre>"+(data.responseText)+"</pre>"
-            }).send();
-        });
+        k.data.instance.bindView($("#deliveryForm"),true).render();
     }
 </script>

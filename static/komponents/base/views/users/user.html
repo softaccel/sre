@@ -236,14 +236,8 @@
             }
         });
 
-        instance.bindView("#userDetails").loadFromRemote().then(function () {
-            $("#userSummeryTab").tab("show");
-        })
-        .catch(function(data){
-            komponentor.intent("/common/errormodal").data({
-                body: "A aparut o eroare:<pre>"+JSON.stringify(data.jqXHR.responseText)+"</pre>"
-            }).send();
-        });
+        instance.bindView("#userDetails",true).render();
+        $("#userSummeryTab").tab("show");
 
         $("#userRights").komponent({data:k.data});
 

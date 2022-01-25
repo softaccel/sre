@@ -275,6 +275,7 @@
                     });
                 }
 
+
                 if (data.fields["P.A.P_ZeichnungSpr.Zeichnung"].data!=="") {
                     order_part.orders_items_meta.push({
                         type: "orders_items_meta",
@@ -284,7 +285,6 @@
                         }
                     });
                 }
-
                 if (data.fields["P.XZE.PP_Zeichnung.Zeichnung"].data!=="") {
                     order_part.orders_items_meta.push({
                         type: "orders_items_meta",
@@ -294,6 +294,17 @@
                         }
                     });
                 }
+
+                //
+                // if (data.fields["P.XZE.PP_Zeichnung.Zeichnung"].data!=="") {
+                //     order_part.orders_items_meta.push({
+                //         type: "orders_items_meta",
+                //         attributes: {
+                //             meta_key: "numar_desen",
+                //             meta_val: data.fields["P.XZE.PP_Zeichnung.Zeichnung"].data
+                //         }
+                //     });
+                // }
 
 
 

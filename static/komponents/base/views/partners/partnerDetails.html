@@ -215,11 +215,8 @@
 
 
         if(k.data.instance && !k.data.partner_id)  {
-            k.data.instance.bindView(k.$el).loadFromRemote().then(function () {
-                // checkUserRights(k.$el, "partners");
-            });
+            k.data.instance.bindView(k.$el,true).render();
             return;
-
         }
 
         if(k.data.partner_id) {
@@ -229,10 +226,6 @@
 
         throw "no Partner Instance  or ID provided";
 
-
-        // console.log(instance);
-
-        // instance.bindView(k.$el)
     }
 
 </script>

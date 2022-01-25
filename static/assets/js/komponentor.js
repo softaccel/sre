@@ -139,7 +139,7 @@
 
         function checkRights (module) {
             let rights = allRights[module];
-            console.log("rights",module,rights);
+            // console.log("rights",module,rights);
             if (rights.indexOf("r") === -1) {
                 // todo: show not enough rights
                 return;
@@ -272,7 +272,7 @@
 
         function checkAccess() {
             return new Promise((resolve, reject) => {
-                console.log("check access");
+                // console.log("check access");
                 if (userId === null)
                     resolve(true);
 
@@ -304,7 +304,6 @@
         function initKomponent () {
             return new Promise(function(resolve) {
                 let initFunc = typeof init_komponent==="function" ? init_komponent : new Function();
-                delete init_komponent;
 
                 if(k.$el && $renderedKomponent.length) {
                     if(k.replace) {

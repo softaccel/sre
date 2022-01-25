@@ -576,10 +576,9 @@
 		 *
 		 * @param view
 		 */
-		_item.bindView = function(view) {
+		_item.bindView = function(view,returnView) {
 
 			view = ItemView(view);
-			// console.log("55555555555555555",view);
 
 			let bound = false;
 			_item.views.forEach(function (v) {
@@ -594,7 +593,9 @@
 			}
 			view.item = _item;
 			_item.views.push(view);
-			return this;
+			if(returnView)
+				return view;
+			return  this;
 		};
 
 		/**
@@ -995,6 +996,7 @@
 				.replace(/%&gt;/gi, "%>")
 				.replace(/&amp;/gi, "&");
 
+			// console.log("bindview",html);
 			params = {
 				// template: template(html),
 				template: _.template(html),
@@ -1033,11 +1035,15 @@
 		Object.assign(tmp,_itemview);
 
 		// todo: remove this check in future release
-		if (!_itemview.template) {
-			throw "Invalid ItemView template";
-		}
+		// if (!_itemview.template) {
+		// 	throw "Invalid ItemView template";
+		// }
 
 		function createElementFromTemplate() {
+			if(_itemview.template==null) {
+				console.log('Warning: no template defined. Nothing to render');
+				return null;
+			}
 			let el = $(_itemview.template(_itemview.item))
 				.attr("data-type","item")
 				.attr("id", _itemview.id)
@@ -1067,6 +1073,9 @@
 		_itemview.render = function (returnView) {
 
 			let renderedEl = createElementFromTemplate();
+			if(!renderedEl) {
+				return null;
+			}
 
 			if(returnView) {
 				this.el = renderedEl;
@@ -1079,6 +1088,7 @@
 				console.log("Invalid item view element");
 				return null;
 			}
+
 
 			renderedEl.insertBefore(this.el[0]);
 
@@ -1168,7 +1178,6 @@
 			urlObj.port = parts[5];
 		}
 		if(typeof parts[6]!=="undefined") {
-			console.log("path found",parts[6])
 			urlObj.path = parts[6];
 		}
 		if(typeof parts[7]!=="undefined") {
@@ -1292,6 +1301,14 @@
 
 		};
 
+		/**
+		 * bulk update
+		 * @param data
+		 */
+		_collection.update = function(data) {
+			throw "Not implemented... yet";
+		};
+
 		_collection.setUrl = function(url) {
 			if(!url) {
 				return ;
@@ -1411,7 +1428,6 @@
 			});
 
 			_collection.view.render();
-			this.trigger("load",{data: data});
 			return _collection;
 		};
 
@@ -1780,7 +1796,7 @@
 
 		if(!this.length) {
 			console.log(this);
-			throw "Invalid element for apiator";
+			console.log("Warning: no DOM element bound with apiator");
 			// return console.log("Invalid element", opts, this);
 		}
 
@@ -1819,9 +1835,10 @@
 		}
 
 		// resource type unknown
-		if (!options.hasOwnProperty("resourcetype"))
-			throw new Error("Invalid resource type for APIATOR.JS (should be item or collection). " +
-				"Please define a valid resource on element "+this.attr("id"));
+		if (!options.hasOwnProperty("resourcetype")) {
+			options.resourcetype = "collection";
+			console.log("WARNING: no resourcetype specified. Assumed it's a collection");
+		}
 
 
 
@@ -1879,7 +1896,9 @@
 		// extract template
 		// set default to innerHTML
 
-		let templateTxt = this[0].innerHTML;
+		let templateTxt = this.length ? this[0].innerHTML : null;
+		// console.log(templateTxt);
+		options.templateTxt = templateTxt;
 
 		if(options.hasOwnProperty("template")) {
 			let $tpl = $(options.template);
@@ -1890,16 +1909,17 @@
 			$tpl.remove();
 		}
 
-		templateTxt = templateTxt
-			.replace(/&lt;/gi, '<')
-			.replace(/&gt;/gi, ">")
-			.replace(/&apos;/gi, "'")
-			.replace(/&quot;/gi, '"')
-			.replace(/&nbsp;/gi, " ")
-			.replace(/&amp;/gi, "&");
-		options.template = _.template(templateTxt);
-		// options.template = template(templateTxt);
-
+		options.template = null;
+		if(templateTxt!==null) {
+			templateTxt = templateTxt
+				.replace(/&lt;/gi, '<')
+				.replace(/&gt;/gi, ">")
+				.replace(/&apos;/gi, "'")
+				.replace(/&quot;/gi, '"')
+				.replace(/&nbsp;/gi, " ")
+				.replace(/&amp;/gi, "&");
+			options.template = _.template(templateTxt);
+		}
 
 		let collectionConfig = {
 			el: this,
@@ -2044,14 +2064,17 @@
 		let container = options.hasOwnProperty("container") ? $(options.container) : this;
 
 		// extract template
-		let templateTxt = this[0].outerHTML
-			.replace(/&lt;/gi, '<')
-			.replace(/&gt;/gi, ">")
-			.replace(/&apos;/gi, "'")
-			.replace(/&quot;/gi, '"')
-			.replace(/&nbsp;/gi, " ")
-			.replace(/&amp;/gi, "&");
-		options.template = _.template(templateTxt);
+		options.template = null;
+		if(this.length) {
+			let templateTxt = this[0].outerHTML
+				.replace(/&lt;/gi, '<')
+				.replace(/&gt;/gi, ">")
+				.replace(/&apos;/gi, "'")
+				.replace(/&quot;/gi, '"')
+				.replace(/&nbsp;/gi, " ")
+				.replace(/&amp;/gi, "&");
+			options.template = _.template(templateTxt);
+		}
 		// options.template = template(templateTxt);
 
 		return Item(options).bindView(ItemView({

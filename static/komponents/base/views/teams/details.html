@@ -150,7 +150,7 @@
         let teamDiv = $("#teamEditDiv");
         console.log("instasdasdasdasd", k.data.instance)
         k.data.instance.url.parameters.include = "teamlead";
-        k.data.instance.bindView("#teamEditDiv").loadFromRemote();
+        k.data.instance.bindView("#teamEditDiv",true).render();
 
     }
 </script>

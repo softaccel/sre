@@ -55,7 +55,7 @@
         });
         console.log("2222222222222222",k);
 
-        k.data.instance.bindView($modal.find('.modal-title')).loadFromRemote();
+        k.data.instance.bindView($modal.find('.modal-title'),true).render()
 
         $("#teamMembersList").komponent({data: k.data});
         $("#editTeam").komponent({data: k.data});

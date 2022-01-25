@@ -36,10 +36,11 @@ if(!empty($tmp[0])) {
     die("Invalid call path");
 }
 
-//print_r($tmp);
 $file = empty($tmp[1]) ? "index.html" : explode("?",$tmp[1])[0];
-//echo $file;
+
 if(file_exists($file)) {
-    echo file_get_contents($file);
+    die(file_get_contents($file));
 }
+
+http_response_code(400);
 

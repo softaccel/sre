@@ -1,0 +1,156 @@
+<style>
+    #unassingedItems tr.selected{
+        background: #d6d6d6;
+    }
+    #unassingedItems tr.highlight{
+        background: yellow;
+    }
+
+</style>
+<div class="modal fade">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Adauga elemente la livrare</div>
+            </div>
+            <div class="modal-body ">
+                <div class="form-group">
+                    <label>Comanda</label>
+                    <select class="custom-select" id="orderSelect" class="js-example-basic-single" style="width: 100%;">
+                    </select>
+                </div>
+                <div class="form-group" id="selectElementsGrp">
+                    <form id="addToDlvrForm">
+                    <label>Elemente</label>
+                    <div style="padding: 5px; border-radius: 5px 5px 5px 5px; border: solid silver 1px; background: #fff" class="mb-3">
+                        <div style="max-height: 70%; overflow: scroll; ">
+                            <form id="filterUnassingedItems">
+                                <table class="items">
+                                    <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="checkAllUnassingedItems" data-connected="#unassingedItems" onclick="toggleAll(this)" tabindex="-1"></th>
+                                        <th>Nr. desen<br><input type="text" size="10" oninput="$(this.form).submit()" name="design" data-operator="~=~" autocomplete="off"> </th>
+                                        <th>Cod element<br><input type="text" size="10" oninput="$(this.form).submit()" name="partid" data-operator="~=~" autocomplete="off"> </th>
+                                        <th>Denumire<br><input type="text" size="10" oninput="$(this.form).submit()"  name="name" data-operator="~=~" autocomplete="off"> </th>
+                                        <th>Cantitate disponibila</th>
+                                        <th>Cantitate selectata</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="unassingedItems" data-resourcetype="collection" data-filter="#filterUnassingedItems">
+                                    <tr>
+                                        <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="toggleSelect($(this).parents('tr'))" data-connected="#checkAllUnassingedItems" tabindex="-1"></td>
+                                        <td><%= attributes.design %></td>
+                                        <td><%= attributes.partid %></td>
+                                        <td><%= attributes.name %></td>
+                                        <td><%=attributes.qty-attributes.dlvd_qty%></td>
+                                        <td><input type="number" name="qtys[]" size="4" max="<%=attributes.qty-attributes.dlvd_qty%>" min="0"
+                                                   onfocus="highlightRow(this)" onblur="unHighlightRow(this)" value="<%=attributes.qty-attributes.dlvd_qty%>" onclick="event.stopPropagation();"> </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="addToDlvrBtn" class="btn btn-sm btn-success" style="display: none" form="addToDlvrForm" type="submit">Adauga elementele selectate</button>
+                <button id="cancelAddToDlvrBtn" data-dismiss="modal" class="btn btn-sm btn-secondary">Anuleaza</button>
+<!--                <button data-dismiss="modal" class="btn btn-secondary">Inchide</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function unHighlightRow(src) {
+        $(src).parents("tr").removeClass("highlight")
+    }
+    function highlightRow(src) {
+        $(src).parents("tr").addClass("highlight")
+    }
+    function init_komponent(k) {
+        console.log(k);
+        let modal = k.$el.not("script").appendTo("body").filter(".modal")
+            .on("hide.bs.modal",function () {
+                k.$el.remove();
+            })
+            .modal("show");
+
+        let unassignedItemsInstance = k.$el.find("#unassingedItems").apiator({returninstance: true});
+        let $unassignedItems = k.$el.find("#unassingedItems");
+        let $unassignedItemsContainer = $unassignedItems.parents(".form-group").hide();
+
+        let $select = k.$el.find("#orderSelect");
+
+        if(!$select.hasClass("select2")) {
+            $select.select2wrapper({url: apiRoot+"/orders_totalcnt_item?filter=cnt>0",placeholder:"Alege comanda",labelfld:"docnum"});
+            $select
+                .on('select2:select', function (e) {
+                    $('#addToDlvrBtn').show();
+                    $unassignedItemsContainer.show(400);
+                    let data = e.params.data;
+                    console.log(data);
+                    unassignedItemsInstance
+                        .setUrl(apiRoot+"/orders/"+data.id+"/orders_items_wmeta_notdlvd")
+                        .loadFromRemote();
+                })
+                .on("select2:clear",function () {
+                    $('#addToDlvrBtn').hide();
+                    $unassignedItemsContainer.hide(200);
+                });
+        }
+
+        $select.val(null).trigger('change');
+
+        console.log(k.data)
+
+        k.$el.find("#addToDlvrForm").on("submit",addToDelivery);
+
+        function addToDelivery(event) {
+            event.preventDefault();
+            let contentItems = k.data.contentItems;
+            let deliveryId = k.data.instance.id;
+            let $uai = $('#unassingedItems');
+            let cbs = $uai.find("input[type=checkbox]");
+            let qtys = $uai.find("input[type=number]");
+            let toAdd = [];
+            for(let i=0;i<cbs.length;i++) {
+                if(!cbs[i].checked)
+                    continue;
+                toAdd.push([cbs[i].value,qtys[i].value,deliveryId]);
+            }
+
+            let errors =[];
+            let insData = [];
+
+            toAdd.forEach(function (el) {
+                let [item,qty,delivery] = el;
+                for(let i = 0; i < qty; i++){
+                    insData.push({
+                        item: item,
+                        delivery: delivery
+                    });
+                }
+            });
+
+            $("<div>").apiator({resourcetype: "collection",returninstance:true})
+                .setUrl(apiRoot + "/deliveries_contents")
+                .createItem(insData)
+                .finally(function () {
+                    contentItems.loadFromRemote();
+                    unassignedItemsInstance.loadFromRemote();
+                    if(errors.length) {
+                        komponentor.intent("/common/errormodal").data({
+                            body: "A aparut o eroare:<pre>"+JSON.stringify(errors,null, "\t")+"</pre>"
+                        }).send();
+                        return;
+                    }
+                    modal.modal("hide")
+                });
+
+        }
+
+    }
+</script>

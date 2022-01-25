@@ -81,28 +81,12 @@
                                 class="fa fa-save"></i></button>
                     </td>
                 </tr>
-                <tr class="notA000">
-                    <td>Auftrag</td>
-                    <td>
-                        <span class="display"><%= attributes.cust_int_ref %></span>
-                            <span class="edit" style="min-width: 200px">
-                            <input type="text" name="cust_int_ref" class="form-control form-control-sm" value="<%= attributes.cust_int_ref %>">
-                        </span>
-                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate" onClick="editFld(this)">
-                            <i class="fa fa-edit"></i>
-                        </button>
-                        <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i class="fa fa-save"></i></button>
-                    </td>
-                </tr>
-<!--                <tr class="notA000">-->
-<!--                    <td>Bestellung</td>-->
-<!--                    <td><%= attributes.cust_int_ref %></td>-->
-<!--                </tr>-->
+
                 <tr class="notA000">
                     <td>Stadiu</td>
                     <td>
                         <div class="btn-group">
-                            <% if(attributes.state === "offer") { %>
+                            <% if(attributes.state==="offer") { %>
                             <button type="button" class="btn btn-sm btn-secondary dropdown-toggle checkUpdate orderStageBtn"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Oferta
                             </button>
@@ -112,7 +96,8 @@
                                 <a class="dropdown-item" style="cursor:pointer; color: red" onclick="changeState(this, `canceled`)"
                                    value="canceled">Anulat</a>
                             </div>
-                            <% } else if(attributes.state === "ord") { %>
+                            <% } %>
+                            <% if(attributes.state==="ord") { %>
                             <button type="button" class="btn btn-sm btn-info dropdown-toggle checkUpdate orderStageBtn"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Comandat
                             </button>
@@ -124,7 +109,8 @@
                                 <a class="dropdown-item" style="cursor:pointer; color: red" onclick="changeState(this, `canceled`)"
                                    value="canceled">Anulat</a>
                             </div>
-                            <% } else if(attributes.state === "proc") { %>
+                            <% } %>
+                            <% if(attributes.state==="proc") { %>
                             <button type="button" class="btn btn-sm btn-danger dropdown-toggle checkUpdate orderStageBtn"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">In Lucru
                             </button>
@@ -134,7 +120,8 @@
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ord`)"
                                    value="ord">Comandat</a>
                             </div>
-                            <% } else if(attributes.state === "ready") { %>
+                            <% } %>
+                            <% if(attributes.state==="ready") { %>
                             <button type="button"
                                     class="btn btn-sm btn-warning dropdown-toggle checkUpdate orderStageBtn"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gata de Livrare
@@ -145,7 +132,8 @@
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `proc`)"
                                    value="proc">In Lucru</a>
                             </div>
-                            <% } else if(attributes.state === "dlvd") { %>
+                            <% } %>
+                            <% if(attributes.state==="dlvd") { %>
                             <button type="button" class="btn btn-sm btn-success dropdown-toggle"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Livrat
                             </button>
@@ -153,13 +141,12 @@
                                 <a class="dropdown-item" style="cursor:pointer;" onclick="changeState(this, `ready`)"
                                    value="ctc">Gata de Livrare</a>
                             </div>
-
-                            <% } else if(attributes.state === "canceled") { %>
+                            <% } %>
+                            <% if(attributes.state==="canceled") { %>
                             <button disabled type="button" class="btn btn-sm btn-secondary dropdown-toggle"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anulat
                             </button>
                             <% } %>
-
                         </div>
                     </td>
                 </tr>
@@ -183,22 +170,73 @@
                             <i class="fa fa-save"></i>
                         </button>
                     </td>
-
                 </tr>
                 <tr class="notA000">
                     <td>Timp estimat (ore)</td>
-                    <% let id_est_work = relationships.orders_meta.map(function(item) { if (item.attributes.meta_key === "estimated_work") {return item.id;}}).find(function(item) {if (item) {return item;}}); %>
-                    <% let est_work_specific = relationships.orders_meta.map(function(item) { if (item.attributes.meta_key === "estimated_work") {return item.attributes.meta_val;}}).find(function(item) {if (item) {return item;}}); %>
-                    <td id="ordersMetaEstimatedWork" name="<%= id_est_work %>">
-                        <span id="estTimeText" class="display"><%= est_work_specific ? est_work_specific + " h" : "-" %></span>
+                    <td>
+                        <% let item_est_work = relationships.orders_meta.find(function(item){return item.attributes.meta_key==='estimated_work'}); if(item_est_work) {%>
+
+                        <span class="display"><%= item_est_work ? item_est_work.attributes.meta_val + " h" : "-" %></span>
                         <span class="edit" style="min-width: 200px">
-                            <input type="text" id="estTimeChange" class="form-control form-control-sm" name="orders_meta.<%=id_est_work%>.meta_val" value="<%= est_work_specific ? est_work_specific : '' %>">
+                            <input type="text" class="form-control form-control-sm" name="orders_meta.<%=item_est_work.id%>.meta_val" value="<%= item_est_work ? item_est_work.attributes.meta_val : '' %>">
                         </span>
                         <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
                                 onClick="editFld(this)"><i class="fa fa-edit"></i></button>
                         <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i class="fa fa-save"></i></button>
+                        <% } %>
                     </td>
                 </tr>
+
+                <tr class="notA000">
+                    <td>Bestellung</td>
+                    <td>
+                        <% let bestellung = relationships.orders_meta.find(function(item){return item.attributes.meta_key==='bestellung'});if(bestellung){ %>
+
+                        <span class="display"><%= bestellung.attributes.meta_val %></span>
+                        <span class="edit" style="min-width: 200px">
+                            <input type="text" class="form-control form-control-sm" name="orders_meta.<%=bestellung.id%>.meta_val" value="<%= bestellung.attributes.meta_val %>">
+                            <input type="hidden" class="form-control form-control-sm" name="orders_meta.<%=bestellung.id%>.meta_key" value="bestellung">
+                        </span>
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
+                                onClick="editFld(this)"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i class="fa fa-save"></i></button>
+                        <% } %>
+                    </td>
+                </tr>
+
+
+
+                <tr class="notA000">
+                    <td>Auftrag</td>
+                    <td>
+                        <% let auftrag = relationships.orders_meta.find(function(item){return item.attributes.meta_key==='auftrag'});%>
+                        <%if(typeof auftrag!=='undefined') {%>
+                        <span class="display"><%= auftrag.attributes.meta_val %></span>
+                        <span class="edit" style="min-width: 200px">
+                            <input type="text" class="form-control form-control-sm" name="orders_meta.<%=auftrag.id%>.meta_val" value="<%= auftrag.attributes.meta_val %>">
+                        </span>
+                        <% } else { %>
+                        no auftrag
+                        <% } %>
+
+                        <button class="btn btn-warning notA000 float-right btn-sm edit checkUpdate"
+                                onClick="editFld(this)"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i class="fa fa-save"></i></button>
+                    </td>
+
+
+
+                </tr>
+
+
+
+
+
+
+
+
+
+
             </table>
         </div>
         <div class="col-6 notA000">
@@ -245,7 +283,6 @@
                                 onClick="editFld(this)"><i class="fa fa-edit"></i></button>
                         <button class="btn btn-success float-right btn-sm save" onClick="saveFld(this)"><i
                                 class="fa fa-save"></i></button>
-
                     </td>
                 </tr>
                 <tr>
@@ -270,6 +307,30 @@
             </table>
         </div>
     </div>
+    <div class="row">
+        <div class="col-6">
+            <table class="table table-sm">
+                <thead class="thead-light">
+                <tr>
+                    <th>Atribut</th>
+                    <th>Valoare</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><select name="key"></select></td>
+                        <td><input type="text" name="value"></td>
+                    </tr>
+                </tbody>
+                <tbody id="orderMeta">
+                <tr>
+                    <td><%=attributes.key%></td>
+                    <td><%=attributes.value%></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -277,6 +338,9 @@
     // function updateMetaVal(instance) {
     // }
 
+    function orderMetaModal(src) {
+        console.log(src);
+    }
     function editFld(src) {
         $(src).parent().parent().addClass('editMode');
     }
@@ -308,7 +372,7 @@
         if(res[5]!==undefined) {
             console.log('update 1:n relation');
             reload = true;
-            instanceToUpdate = $("<span>")
+            instanceToUpdate = $()
                 .apiator({
                     resourcetype: "item",
                     id: res[3],
@@ -407,6 +471,8 @@
             $("#firstColOrdersDetails").removeClass("col-6").addClass("col-12")
         }
 
+        // $("#orderMeta").apiator({url:apiRoot+"/orders/"+k.data.instance.id+"/orders_meta"});
+
         // todo: fix check update
 
         // k.$el.find(".orderStageBtn").each(function () {
@@ -422,9 +488,9 @@
                 // updateMetaVal(k.data.instance);
             })
             .catch(function (data) {
-                // console.log(data);
+                console.log(data);
                 komponentor.intent("/common/errormodal").data({
-                    body: "A aparut o eroare:<pre>" + data.jqXHR.responseText + "</pre>"
+                    body: "A aparut o eroare:<pre>" + data.toString() + "</pre>"
                 }).send();
             });
     }

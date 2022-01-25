@@ -258,14 +258,9 @@
             }
         });
 
-        instance.bindView("#orderPart").loadFromRemote().then(function () {
-            $("#sumarReperePanel").tab("show");
-        })
-        .catch(function(data){
-            komponentor.intent("/common/errormodal").data({
-                body: "A aparut o eroare:<pre>"+data.jqXHR.responseText+"</pre>"
-            }).send();
-        });
+        instance.bindView("#orderPart",true).render();
+        $("#sumarReperePanel").tab("show");
+
 
         $("#imageGallery").komponent({data:k.data});
         $("#partDetails").komponent({data:k.data});
