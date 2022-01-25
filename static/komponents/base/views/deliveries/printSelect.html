@@ -25,10 +25,10 @@
                 <br>
                 <button type="submit" class="btn btn-success">Print</button>
                 </form>
-                <form id="textAreasForm">
+                <form id="textAreasForm" class="d-none">
                     <textarea name="label" form="textAreasForm" class="labelTextArea d-block w-100" onchange="updateTemplate(this)"><%= attributes.value %></textarea>
                 </form>
-                <button type="submit" form="textAreasForm" id="sendAjaxReqBtn" class="btn btn-success">Save</button>
+                <button type="submit" form="textAreasForm" id="sendAjaxReqBtn" class="btn btn-success d-none">Save</button>
             </div>
 
             <div class="modal-footer">
@@ -168,47 +168,6 @@
                         item.update({label_printed: 1});
                     });
                 });
-
-
-
-
-
-
-            return;
-            instance_labels.loadFromRemote().then(function (data) {
-                console.log("data",data);
-                let temp_arr = [];
-                util_labels.captureFormSubmit($form_labels,function (data){
-                    $(".labelTextArea[name=label]").map(function (index, value){
-                        temp_arr.push($(value).val());
-                    });
-                    let urlPrint = localStorage.getItem(localStorageLabel+".lblPrintApi");
-
-                    let ajx = $.ajax({
-                        url: urlPrint,
-                        data: JSON.stringify({labels: temp_arr}),
-                        type: "POST",
-                        contentType: 'application/json',
-                    }).done(function (xhr) {
-                        $modal.modal("hide");
-                    }).fail(function(jqXHR){
-                        let errMsg = jqXHR.status===404 ? "Imprimanta nu este configurata corect." : jqXHR.responseText;
-
-                        komponentor.intent("/common/errormodal").data({
-                            body: "A aparut o eroare:<pre>"+errMsg+"</pre>"
-                        }).send();
-                    });
-
-                    instance_labels.items.forEach(function (item) {
-                        item.update({label_printed: 1});
-                    });
-                });
-
-                // $("#sendAjaxReqBtn").click();
-            });
-            let $form_labels = $("#textAreasForm");
-            let util_labels = instance_labels.getUtilities();
-
         });
     }
 
