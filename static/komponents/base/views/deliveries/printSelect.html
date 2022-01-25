@@ -115,6 +115,12 @@
                             genData.bstlg = meta.attributes.meta_val;
                         }
                     });
+                    item.relationships.order.relationships.orders_meta.forEach(function (meta) {
+                        if(meta.attributes.meta_key==="auftrag") {
+                            genData.auftrag = meta.attributes.meta_val;
+                        }
+                    });
+
 
                     if(!item.relationships.deliveries_contents) {
                         return ;
