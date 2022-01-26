@@ -16,11 +16,6 @@
                     <li class="nav-item">
                         <a data-toggle="tab" href="#deliveryContentPanel" class="nav-link  active">Continut</a>
                     </li>
-                    <li class="nav-item">
-                        <a id="startCheckOutBut" class="nav-link" style="cursor: pointer">Checkout</a>
-                    </li>
-<!--                    <li class="nav-item"><a id="startCheckIn" class="nav-link" style="cursor: pointer">Checkin</a></li>-->
-
                 </ul>
             </div>
             <div class="modal-body ">
@@ -48,9 +43,6 @@
             k.$el.remove();
         });
 
-        $("#startCheckOutBut").on("click",function () {
-            komponentor.intent("/views/deliveries/scan").data(k.data).send();
-        });
         $("#startCheckInBut").on("click",function () {
             komponentor.intent("/views/deliveries/checkin").data(k.data).send();
         });

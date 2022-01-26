@@ -14,12 +14,11 @@
         background: white;
 
     }
-    .items * {
+    .items td {
         font-size: 0.8rem;
         vertical-align: top;
     }
-    .items td{
-
+    .items td,.items th{
         border-bottom: dashed silver 1px;
     }
     .items thead{
@@ -41,7 +40,6 @@
     <form id="deliveryContentsFilter" class="d-none"><input type="submit"></form>
     <div class="hide-not-created">
         <button class="btn btn-primary btn-sm mb-3 checkUpdate" id="addContentBtn"><i class="fa fa-truck-loading"></i> Adauga elemente la livrare</button>
-        <button class="btn btn-primary btn-sm mb-3" id="refreshButt"><i class="fa fa-retweet"></i> Refresh</button>
     </div>
     <div style="max-height: 500px; overflow: auto">
         <div class="alert alert-default-secondary">
@@ -105,7 +103,10 @@
                     <a data-sortfld="checkout">Scanate
                         <i class="fa fa-sort-up sort-up" style="display: none"></i><i class="fa fa-sort-down sort-down" style="display: none"></i><i class="fa fa-sort sort-default text-light"></i></a>
                 </th>
-                <th width="70"></th>
+                <th width="70">
+                    <button class="btn btn-success shadow" id="refreshButt"><i class="fa fa-retweet"></i></button>
+
+                </th>
             </tr>
             </thead>
             <tbody id="deliveryContentsList" data-paging="#deliveryContentsListPaging" data-type="delivery_items_aggregated" data-resourcetype="collection"
@@ -154,6 +155,7 @@
 </div>
 
 <script>
+
 
     function filterByCheckoutStatus(src) {
         let sel = $(src);
@@ -227,80 +229,6 @@
 
 
 
-    function localAlert(msg) {
-        return;
-        let alert = $("#alertTpl").clone(true).attr("id",null).appendTo($("#alertSpace")).alert();
-        alert.find("[name=message]").html(msg).alert('open');
-        setTimeout(()=>alert.alert('close'),1500);
-    }
-
-    function scanForCheckIn(code,currentDeliveryId) {
-        console.log("search triggered",code,currentDeliveryId);
-        // return;
-        let  $checkInList = $("#checkInList");
-
-        // return;
-        $.get(apiRoot+"/deliveries_contents/"+code+"?include=item")
-            .done(function (data) {
-
-                let item = data.data;
-                console.log(item,item.attributes.checkout*1===1);
-                return;
-                if(item.attributes.checkout*1===1) {
-                    localAlert("Elementul scanat este deja livrat ");
-                    return;
-                }
-
-                item.relationships.delivery = item.relationships.delivery.data;
-                item.relationships.item = data.includes[0];
-                // if(item.relationships.delivery.id!==currentDeliveryId) {
-                //     localAlert("Elementul scanat face parte din alta livrare");
-                //     return;
-                // }
-
-
-                let itemEl = $checkInList.find("#item_"+currentDeliveryId+"_"+item.relationships.item.id);
-                if(itemEl.length==0) {
-                    let templateTxt = $("#groupTemplate")[0].outerHTML
-                        .replace(/&lt;/gi, '<')
-                        .replace(/&gt;/gi, ">")
-                        .replace(/&apos;/gi, "'")
-                        .replace(/&quot;/gi, '"')
-                        .replace(/&nbsp;/gi, " ")
-                        .replace(/&amp;/gi, "&");
-                    let tpl = _.template(templateTxt);
-                    itemEl = $(tpl(item)).appendTo($checkInList).attr("id","item_"+currentDeliveryId+"_"+item.relationships.item.id);
-                }
-
-                let dlvrItem = itemEl.find("[data-name='"+item.id+"']");
-                if(dlvrItem.length) {
-                    localAlert("Elementul scanat se afla deja in lista");
-                    return;
-                }
-
-                let templateTxt = $("#liTemplate")[0].outerHTML
-                    .replace(/&lt;/gi, '<')
-                    .replace(/&gt;/gi, ">")
-                    .replace(/&apos;/gi, "'")
-                    .replace(/&quot;/gi, '"')
-                    .replace(/&nbsp;/gi, " ")
-                    .replace(/&amp;/gi, "&");
-                let tpl = _.template(templateTxt);
-
-                $(tpl(item)).appendTo(itemEl.find("ul")).attr("id",null);
-
-                itemEl.find("[name=qty]").val(itemEl.find("li").length);
-
-
-
-            })
-            .fail(function (xhr) {
-                if(xhr.status===404) {
-                    localAlert("Elementul scanat nu a fost gasit in baza de date");
-                }
-            })
-    }
-
     function init_komponent(k) {
 
         console.log("run again");
@@ -315,44 +243,58 @@
         let contentItems = k.$el.find("#deliveryContentsList").apiator({returninstance:true}).setUrl(url);
 
         let currentDeliveryId = k.data.instance.id;
-        k.activate = function() {
-            contentItems.loadFromRemote().then(function () {
-                $(document).scannerDetection({
+
+        function enableScanning() {
+            if(typeof document.scannerDetectionOff!=="undefined") {
+                $(document).scannerDetection(false);
+            }
+            $(document)
+                .scannerDetection({
                     timeBeforeScanTest: 200, // wait for the next character for upto 200m0006075014s
                     endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
                     avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
                     ignoreIfFocusOn: 'input', // turn off scanner detection if an input has focus
-                    onComplete: (code)=>scanForCheckIn(code,currentDeliveryId), // main callback function
+                    // onComplete: (code)=>scanForCheckIn(code,currentDeliveryId), // main callback function
+                    onComplete: (code)=>startScanning(code), // main callback function
                     scanButtonKeyCode: 116, // the hardware scan button acts as key 116 (F5)
                     scanButtonLongPressThreshold: 5, // assume a long press if 5 or more events come in sequence
                     // onScanButtonLongPressed: longPress, // callback for long pressing the scan button
                     minLength: 2,
                     onError: function(string){alert('Error ' + string);}
                 });
-            });
+        }
+
+        function startScanning(code) {
+            let data = {
+                deliveryId:currentDeliveryId,
+                scanCode:code,
+                onclose: function () {
+                    console.log("callback scanning");
+                    contentItems.loadFromRemote();
+                    enableScanning();
+                }
+            };
+            komponentor.intent("/views/deliveries/scan").data(data).send();
+        }
+
+        k.activate = function() {
+            contentItems.loadFromRemote()
+                .then(function () {
+                    enableScanning();
+                });
         };
         k.activate();
-
-        k.deactivate = function () {
-            $(document).scannerDetection(false);
-        };
-
-
-
-
 
         k.$el.find("#startScanBut").on("click",function () {
             komponentor.intent("/views/deliveries/scan").data({data:k.data}).send();
         });
+
         $('#refreshButt').on("click",function () {
             contentItems.loadFromRemote();
         });
-        k.$el.find("#addContentBtn").on("click",function (e) {
-            // komponentor.intent("/views/deliveries/scan").data({data:k.data}).send();
 
+        k.$el.find("#addContentBtn").on("click",function (e) {
             komponentor.intent("/views/deliveries/selectContent").data({instance:k.data.instance,contentItems:contentItems}).send();
-            // selectContent();
-            // $(e.target).hide();
         });
 
     }

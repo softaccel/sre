@@ -90,12 +90,16 @@
 
     function init_komponent(k) {
 
-        let currentDelivery = k.data.instance;
+        let currentDeliveryId = k.data.deliveryId;
         let modal = k.$el.appendTo("body").find(".modal")
             .modal("show")
             .on("hidden.bs.modal",function () {
                 k.$el.remove();
                 $(document).scannerDetection(false);
+                if(typeof k.data.onclose==="function") {
+                    k.data.onclose();
+                }
+
             });
 
         function localAlert(msg) {
@@ -105,6 +109,9 @@
             setTimeout(()=>alert.alert('close'),1500);
         }
 
+        if(typeof document.scannerDetectionOff!=="undefined") {
+            $(document).scannerDetection(false);
+        }
         $(document).scannerDetection({
             timeBeforeScanTest: 200, // wait for the next character for upto 200m0006075014s
             endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
@@ -151,6 +158,7 @@
         });
 
         function search(code) {
+            console.log("search code");
             $.get(apiRoot+"/deliveries_contents/"+code+"?include=item")
                 .done(function (data) {
                     let item = data.data;
@@ -162,12 +170,12 @@
 
                     item.relationships.delivery = item.relationships.delivery.data;
                     item.relationships.item = data.includes[0];
-                    if(item.relationships.delivery.id!==currentDelivery.id) {
+                    if(item.relationships.delivery.id*1!==currentDeliveryId*1) {
                         localAlert("Elementul scanat face parte din alta livrare");
                         return;
                     }
 
-                    let itemEl = $checkoutList.find("#item_"+currentDelivery.id+"_"+item.relationships.item.id);
+                    let itemEl = $checkoutList.find("#item_"+currentDeliveryId+"_"+item.relationships.item.id);
                     if(itemEl.length==0) {
                         let templateTxt = k.$el.find("#groupTemplate")[0].outerHTML
                             .replace(/&lt;/gi, '<')
@@ -177,7 +185,7 @@
                             .replace(/&nbsp;/gi, " ")
                             .replace(/&amp;/gi, "&");
                         let tpl = _.template(templateTxt);
-                        itemEl = $(tpl(item)).appendTo($checkoutList).attr("id","item_"+currentDelivery.id+"_"+item.relationships.item.id);
+                        itemEl = $(tpl(item)).appendTo($checkoutList).attr("id","item_"+currentDeliveryId+"_"+item.relationships.item.id);
                     }
 
                     let dlvrItem = itemEl.find("[data-name='"+item.id+"']");
@@ -198,15 +206,15 @@
                     $(tpl(item)).appendTo(itemEl.find("ul")).attr("id",null);
 
                     itemEl.find("[name=qty]").val(itemEl.find("li").length);
-
-
-
                 })
                 .fail(function (xhr) {
                     if(xhr.status===404) {
                         localAlert("Elementul scanat nu a fost gasit in baza de date");
                     }
                 })
+        }
+        if(typeof k.data.scanCode!=="undefined") {
+            search(k.data.scanCode);
         }
     }
 

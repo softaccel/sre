@@ -138,6 +138,7 @@
 
         $("<span>").apiator({returninstance:true,resourcetype: "collection"}).setUrl(apiRoot+"/orders_states_cnt").loadFromRemote()
             .then(function (collection) {
+                console.log(collection)
                 let data = [];
                 let backgroundColor = [];
                 let labels = [];
@@ -166,12 +167,14 @@
                     canceled: "secondary",
                 };
 
-
-                collection.items.forEach(function (item) {
+                let toHidStates = ["offer","dlvd","canceled"];
+                collection.items.filter((item)=>toHidStates.indexOf(item.id)===-1)
+                    .forEach(function (item) {
                     labels.push(orderStateLabels[item.id]);
                     data.push(item.attributes.cnt);
                     backgroundColor.push(orderColors[item.id]);
                 });
+                console.log(data)
                 data = {
                     labels: labels,
                     datasets: [{
