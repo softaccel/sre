@@ -1,9 +1,6 @@
-let apiatorDebug = false;
+
+
 (function ($) {
-	function dbg() {
-		if(typeof apiatorDebug!=="undefined" && apiatorDebug)
-			console.log(...arguments,arguments.callee.caller);
-	}
 	var escapes = {
 		"'": "'",
 		'\\': '\\',
@@ -15,13 +12,97 @@ let apiatorDebug = false;
 
 	var escapeRegExp = /\\|'|\r|\n|\u2028|\u2029/g;
 
-
+	function escapeChar(match) {
+		return '\\' + escapes[match];
+	}
 
 // JavaScript micro-templating, similar to John Resig's implementation.
 // Underscore templating handles arbitrary delimiters, preserves whitespace,
 // and correctly escapes quotes within interpolated code.
 // NB: `oldSettings` only exists for backwards compatibility.
+	function template(text, settings, oldSettings) {
+		if (!settings && oldSettings) settings = oldSettings;
+		let tplSettings = {
+			evaluate: /<%([\s\S]+?)%>/g,
+			interpolate: /<%=([\s\S]+?)%>/g,
+			escape: /<%-([\s\S]+?)%>/g
+		};
+		if(!settings) {
+			settings = {};
+		}
+		Object.assign(settings,tplSettings);
+		if(!settings.evaluate) {
+			settings.evaluate = tplSettings;
+		}
+		if(!settings.interpolate) {
+			settings.interpolate = tplSettings;
+		}
+		if(!settings.escape) {
+			settings.escape = tplSettings;
+		}
 
+		// settings = defaults({}, settings, _$1.templateSettings);
+
+		// Combine delimiters into one regular expression via alternation.
+		var matcher = RegExp([
+			(settings.escape || noMatch).source,
+			(settings.interpolate || noMatch).source,
+			(settings.evaluate || noMatch).source
+		].join('|') + '|$', 'g');
+
+		// Compile the template source, escaping string literals appropriately.
+		var index = 0;
+		var source = "__p+='";
+		text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
+			source += text.slice(index, offset).replace(escapeRegExp, escapeChar);
+			index = offset + match.length;
+
+			if (escape) {
+				source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
+			} else if (interpolate) {
+				source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+			} else if (evaluate) {
+				source += "';\n" + evaluate + "\n__p+='";
+			}
+
+			// Adobe VMs need the match returned to produce the correct offset.
+			return match;
+		});
+		source += "';\n";
+
+		var argument = settings.variable;
+		if (argument) {
+			// Insure against third-party code injection. (CVE-2021-23358)
+			if (!bareIdentifier.test(argument)) throw new Error(
+				'variable is not a bare identifier: ' + argument
+			);
+		} else {
+			// If a variable is not specified, place data values in local scope.
+			source = 'with(obj||{}){\n' + source + '}\n';
+			argument = 'obj';
+		}
+
+		source = "var __t,__p='',__j=Array.prototype.join," +
+			"print=function(){__p+=__j.call(arguments,'');};\n" +
+			source + 'return __p;\n';
+
+		var render;
+		try {
+			render = new Function(argument, '_', source);
+		} catch (e) {
+			e.source = source;
+			throw e;
+		}
+
+		var template = function(data) {
+			return render.call(this, data, _$1);
+		};
+
+		// Provide the compiled source as a convenience for precompilation.
+		template.source = 'function(' + argument + '){\n' + source + '}';
+
+		return template;
+	}
 
 	FrontBone = {};
 	let itemsArr = {};
@@ -81,6 +162,7 @@ let apiatorDebug = false;
 					url: relUrl
 				};
 				obj.relationships[relName] = Item(opts).loadFromData(obj.relationships[relName]);
+				// console.log(obj.relationships[relname]);
 			}
 
 
@@ -437,10 +519,6 @@ let apiatorDebug = false;
 			}
 		}
 
-		/**
-		 * alias for load_from_data_source
-		 * @returns {Promise<unknown>}
-		 */
 		_item.loadFromRemote = function() {
 			return _item.load_from_data_source();
 		};
@@ -458,15 +536,20 @@ let apiatorDebug = false;
 				storage.read(_item,_item.url,{})
 					.then(function (resp) {
 						let data = resp.data;
+						let textStatus = resp.textStatus;
+						let jqXHR = resp.jqXHR;
+						let ctx = resp.ctx;
 						_item
-							.loadFromJSONAPIDoc(data)
-							.render();
+							.loadFromJSONAPIDoc(data, textStatus, jqXHR, ctx)
+							.views.forEach(function (view){
+							view.render();
+						});
 
 						resolve(_item);
 					})
 					.catch(function(jqXHR, textStatus, errorThrown)
 					{
-						if(apiatorDebug) console.log("fail to load item resource",_item.url,jqXHR, textStatus, errorThrown);
+						// console.log("fail to load resource",_item.url,jqXHR, textStatus, errorThrown);
 						fail(jqXHR, textStatus, errorThrown);
 						reject(jqXHR);
 					});
@@ -499,7 +582,7 @@ let apiatorDebug = false;
 
 			let bound = false;
 			_item.views.forEach(function (v) {
-				if(apiatorDebug) console.log("bind to existing view",v.el);
+				console.log("view exists");
 				if(v===view) {
 					bound = true;
 				}
@@ -523,17 +606,28 @@ let apiatorDebug = false;
 		 * @param ctx
 		 * @returns {_item}
 		 */
-		_item.loadFromJSONAPIDoc = function (data) {
-			if(apiatorDebug) console.log("Load from JSONAPIDoc",data);
+		_item.loadFromJSONAPIDoc = function (data,text,xhr,ctx) {
+			let obj;
+
+			if(this.hasOwnProperty("collection")) {
+				obj = this;
+			}
+			else if(ctx && ctx.hasOwnProperty("collection")) {
+				obj = ctx;
+			}
 
 			if(data.data && data.data.constructor===Array) {
-				if(apiatorDebug) console.log("Invalid configuration: resource type is item but server response is collection",data);
 				throw "Invalid configuration: resource type is item but server response is collection";
 			}
 
-			Object.assign(_item,parseItemData(data,buildDb(data)));
-			_item.url = URL(_item.url);
-			return _item;
+			let db = buildDb(data);
+
+			Object.assign(obj,parseItemData(data,db));
+
+			obj.url = URL(obj.url);
+
+			// dispatch event
+			return this;
 		};
 
 		/**
@@ -545,47 +639,18 @@ let apiatorDebug = false;
 		 * @returns {_item}
 		 */
 		_item.loadFromData = function (data) {
-			if(apiatorDebug) console.log("item load from data 2",_item.loadFromData.caller,data);
+			// throw "Asa";
+			let obj;
 
-			if( data===null || typeof data!=="object" || data.constructor!==Object ) {
-				if(apiatorDebug) console.log("cannot load ",data, " into ",_item);
-				return _item;
-			}
+			if(this.hasOwnProperty("collection"))
+				obj = this;
 
-			// normalize data if not delivered in standard JSONAPI structure
-			if(!data.hasOwnProperty("attributes") && !data.hasOwnProperty("id") && !data.hasOwnProperty("type") ) {
-				if(apiatorDebug) console.log("need to normalize data",data);
+			else if(ctx && ctx.hasOwnProperty("collection"))
+				obj = ctx;
 
-				let attributes = {};
+			Object.assign(obj,data);
 
-				let relationships = {};
-				Object.getOwnPropertyNames(data).forEach(function (propName) {
-					if(data[propName].constructor===Object) {
-						relationships[propName] = Item().loadFromData(data[propName]);
-						delete attributes[propName];
-						return;
-					}
-					if(data[propName].constructor===Array) {
-						relationships[propName] = Collection().loadFromData(data[propName]);
-						delete attributes[propName];
-						return;
-					}
-
-					attributes[propName] = data[propName];
-				});
-
-				data = {
-					attributes: attributes,
-				};
-
-				if(Object.getOwnPropertyNames(relationships).length) {
-					data.relationships = relationships;
-				}
-			}
-
-
-			Object.assign(_item,data);
-			return _item;
+			return this;
 		};
 
 
@@ -596,7 +661,7 @@ let apiatorDebug = false;
 		 * @param error
 		 */
 		_item.fail = function (xhr,statusText,error) {
-			if(apiatorDebug) console.log("item.fail",xhr,statusText,error);
+			// console.log(xhr,statusText,error);
 			// this.view.renderEmpty();
 			this.view.forEach(function (view) {
 				view.renderEmpty();
@@ -657,319 +722,161 @@ let apiatorDebug = false;
 					json.relationships[relName].data.push(tmp);
 				}
 			}
-			if(apiatorDebug) console.log("item.json",json);
+			console.log(json);
 			return json;
 		};
 
-		_item.sync = function() {
-			if(_item.syncOp) {
-				let syncOp = _item.syncOp;
-				console.log("Syncing",_item,syncOp);
-				_item.syncOp = null;
-				return syncOp();
-			}
-			else {
-				console.log("Nothing to sync on",_item)
-			}
-		};
+		/**
+		 *
+		 */
+		_item.update = function (itemData) {
 
-		function updateSync(opts) {
-			console.log("Perform update on ",_item);
-			let options = {
-				rerender: true
+			let toUpdate = {
+				id: this.id,
+				type: this.type,
+				attributes: {},
+				relationships: {}
 			};
-			Object.assign(options,opts);
+
+			// check attributes
+			Object.getOwnPropertyNames(itemData).forEach(function (attrName) {
+				if(itemData[attrName] && typeof itemData[attrName]==="object") {
+					return ;
+				}
+
+				if(!this.attributes.hasOwnProperty(attrName) && !this.strict ) {
+					// console.log("Attr '"+attrName+"'not present in parent object and strict mode off => add attr to update");
+					return toUpdate.attributes[attrName] = itemData[attrName];
+				}
+
+				if(!this.attributes.hasOwnProperty(attrName) && this.strict ) {
+					// console.log("Attr '"+attrName+"'not present in parent object and strict mode ON => skip");
+					return;
+				}
+
+				if(itemData[attrName]!==this.attributes[attrName]) {
+					// console.log("Attr '"+attrName+"'  update value "+itemData[attrName]+" differs in value than current value "+this.attributes[attrName]+" => add to update");
+					return toUpdate.attributes[attrName] = itemData[attrName];
+				}
+
+			}, this);
+
+			// update relationships
+			if(this.relationships) {
+				Object.getOwnPropertyNames(this.relationships).forEach(function (relName) {
+					if (!itemData.hasOwnProperty(relName)) {
+						return;
+					}
+
+
+					if(itemData[relName]===null || typeof itemData[relName] !== "object") {
+						return;
+					}
+
+					if(toUpdate.attributes.hasOwnProperty(relName))
+						return;
+
+					if (this.relationships[relName] == null || this.relationships[relName].id !== itemData[relName]) {
+
+						if (this.relationships[relName] === null || this.relationships[relName].id === null)
+							toUpdate.relationships[relName] = {
+								data: null
+							};
+						else {
+							toUpdate.relationships[relName] = {
+								data: {
+									id: itemData[relName]
+								}
+							};
+							if (this.relationships[relName] && this.relationships[relName].hasOwnProperty("type"))
+								toUpdate.relationships[relName].data.type = this.relationships[relName].type;
+						}
+
+
+						console.log("update " + relName);
+					}
+					// if(this.relationships[rel])
+				}, this);
+			}
 
 			return new Promise(function (resolve,reject) {
-				let toUpdate = {
-					id: _item.id,
-					attributes: {},
-					relationships: {}
-				};
-
-				if(_item.type) {
-					toUpdate.type = _item.type;
-				}
-				Object.getOwnPropertyNames(_item.attributes).forEach(function (attrName) {
-					if(_item.shadow.attributes[attrName]!==_item.attributes[attrName]) {
-						toUpdate.attributes[attrName] = _item.attributes[attrName];
-					}
-				});
-
-				Object.getOwnPropertyNames(_item.relationships).forEach(function (relaName) {
-					if(_item.shadow.relationships[relaName]!==_item.relationships[relaName]) {
-						toUpdate.relationships[relaName] = _item.relationships[relaName];
-					}
-				});
-
-				// nothing to update
 				if(!Object.getOwnPropertyNames(toUpdate.attributes).length
 					&& !Object.getOwnPropertyNames(toUpdate.relationships).length) {
-					_item.syncOp = null;
 					resolve(_item);
 				}
 
 				let patchData = JSON.stringify({data: toUpdate});
 
-				console.log("Send update data",_item,toUpdate,patchData);
-
-				if(opts && opts.justSimulate) {
-					console.log(patchData);
-					resolve(_item);
-					return;
-				}
 				storage.update(_item,_item.updateUrl, {},patchData)
 					.then(function (resp)
 					{
-						console.log("Update response received with fresh data",resp,options,opts);
 						let newData = parseItemData(resp.data,buildDb(resp.data));
 						Object.assign(_item,newData);
-						_item.shadow = null;
 
-						if(options.rerender) {
-							_item.views.forEach(function (view){
-								view.render();
-							});
-						}
+						_item.views.forEach(function (view){
+							view.render();
+						});
 
 						resolve(_item);
 					})
 					.catch(function (xhr)
 					{
-						if(apiatorDebug) console.log("Update NOK",_item.updateUrl,patchData,xhr);
+						// console.log("Update NOK",_item.updateUrl,patchData,xhr);
 						reject(xhr);
 					});
 			});
-		}
 
-
-
-
-		/**
-		 * Update item
-		 */
-		_item.update = function (updateData,opts) {
-			console.log("Update",_item," with data",updateData);
-
-			if(!updateData || updateData.constructor!==Object) {
-				return ;
-			}
-			checkPendingSync(updateSync);
-
-			let updateOptions = {
-				sync: true,
-				rerender: true,
-			};
-
-			if(opts && opts.constructor===Object) {
-				Object.assign(updateOptions, opts);
-			}
-
-			if(!_item.shadow) {
-				_item.shadow = {attributes:{},relationships:{}};
-				Object.assign(_item.shadow.attributes,_item.attributes);
-				Object.assign(_item.shadow.relationships,_item.relationships);
-			}
-
-			/**
-			 *
-			 * @param rel
-			 * @param data
-			 * @returns {*}
-			 */
-			function updateRelation(rel,data) {
-				console.log("Update relation",rel,data);
-
-				// rel is 1:n
-				if (rel && rel.hasOwnProperty("length")) {
-					// todo: fix this
-					return rel;
-					if (data.constructor===Array || data.hasOwnProperty("items") ) {
-						console.log("Update 1:n relation");
-						rel = {data:Collection().loadFromData(data)};
-					}
-					return rel;
-				}
-
-				// rel is 1:1
-				if(typeof data==="object") {
-					console.log("Update 1:1 relation");
-					let item = Item().loadFromData(data);
-					return item;
-				}
-
-				if(rel && rel.id && rel.id===data){
-					return rel;
-				}
-
-				return  {
-					data: {
-						id: data
-					}
-				};
-			}
-
-			// update relationships
-			Object.getOwnPropertyNames(_item.relationships).forEach(function (relName) {
-				if (!updateData.hasOwnProperty(relName)) {
-					return;
-				}
-				if(updateData[relName]===null) {
-					_item.relationships[relName] = null;
-					return;
-				}
-				this.relationships[relName] = updateRelation(this.relationships[relName],updateData[relName]);
-				delete updateData[relName];
-			}, _item);
-
-
-
-			// check attributes
-			Object.getOwnPropertyNames(updateData).forEach(function (attrName) {
-				if( updateData[attrName] && typeof updateData[attrName]==="object") {
-					if(!this.strict && typeof this.relationships[attrName] === "undefined" ) {
-						console.log("Add extra relation");
-						this.relationships[attrName] = updateRelation(this.relationships[attrName],updateData[attrName]);
-					}
-					return ;
-				}
-
-				if(!this.shadow.attributes.hasOwnProperty(attrName) ) {
-					if(!this.strict) {
-						console.log("Attr '"+attrName+"' not existing and strict mode off => add attr to update");
-						this.attributes[attrName] = updateData[attrName];
-					}
-					return;
-				}
-
-				// update only if different from prev value
-				if(updateData[attrName]!==this.shadow.attributes[attrName]) {
-					console.log("Attr '"+attrName+"'  update value '"+updateData[attrName]+"' differs in value than current value '"+this.attributes[attrName]+"' => add to update");
-					this.attributes[attrName] = updateData[attrName];
-				}
-
-			}, _item);
-
-			console.log("item",updateData,Object.assign({},_item))
-
-
-			if(updateOptions.sync) {
-				return updateSync(updateOptions);
-			}
-
-			return new Promise(function (resolve) {
-				_item.syncOp = updateSync;
-				_item.views.forEach(function (view){
-
-					if(updateOptions.rerender) {
-						view.render();
-					}
-				});
-				resolve();
-			});
 		};
 
 		_item.remove = function() {
+			console.log("removing");
+			for(let i=_item.views.length-1 ; i>=0 ; i--) {
+				_item.views[i].remove();
+			}
 
-			if(apiatorDebug) console.log("removing",_item.collection);
-			return new Promise(function (resolve, reject) {
-				let ps = [];
-				for(let i=_item.views.length-1 ; i>=0 ; i--) {
-					ps.push(_item.views[i].remove());
+			if(!_item.collection) {
+				return;
+			}
+			console.log(_item,_item.collection,_item.collection.children);
+			for(i=0;i<_item.collection.items.length;i++) {
+				if(_item.collection.items[i].id===_item.id) {
+					_item.collection.items.splice(i,1);
+					break;
 				}
-				if(apiatorDebug) console.log("collection",_item.collection);
-
-
-				if(_item.collection) {
-					ps.push(_item.collection.removeItem(_item));
-				}
-				Promise.all(ps).finally(()=>resolve());
-			});
+			}
 		};
 
 		/**
-		 * if there is a pending sync operation and that operation is not the same as the current operation, throw an error
-		 * @param syncOp Function - sync function to be validated
-		 */
-		function checkPendingSync(syncOp) {
-			if(!_item.syncOp || _item.syncOp===syncOp)
-				return;
-			throw {
-				message: "Unsynced changes. Sync first before allowed to make other changes",
-				syncOp: _item.syncOp,
-				checkOp: syncOp
-			};
-		}
-		/**
 		 * delete item
 		 */
-		_item.delete = function (ops) {
-			// checkPendingSync();
-
-			let deleteOps = {
-				sync: true,
-			};
-			if(ops && ops.constructor===Object) {
-				Object.assign(deleteOps,ops);
-			}
+		_item.delete = function () {
+			return new Promise((resolve,reject) => {
+				// set deleteUrl
+				_item.deleteUrl = _item.deleteUrl  ? _item.deleteUrl : _item.url + "/" + _item.id;
 
 
-			function deleteOp() {
-				return new Promise((resolve,reject) => {
+				function onDeleteFail(resp) {
+					console.log("fail",resp);
+					reject(resp);
+				}
 
-					// set deleteUrl
-					_item.deleteUrl = _item.deleteUrl  ? _item.deleteUrl : _item.url + "/" + _item.id;
+				// remove from storage
+				storage.delete(_item,_item.deleteUrl,{})
+					.then(
+						function () {
+							_item.remove();
+							resolve();
+						}
 
-
-					function onDeleteFail(resp) {
-						if(apiatorDebug) console.log("failed delete",resp);
-						reject(resp);
-					}
-
-					// remove from storage
-					storage.delete(_item,_item.deleteUrl,{})
-						.then(
-							function () {
-								_item.remove().then(()=>resolve());
-							}
-						)
-						.catch(reject);
-				});
-			}
-
-			if(deleteOps.sync) {
-				return deleteOp();
-			}
-
-			return new Promise(function (resolve) {
-				_item.syncOp = deleteOp;
-				_item.remove().then(()=>resolve());
+					)
+					.catch(reject)
+				// .finally(()=>{console.log("finaly",arguments)});
 			});
-
 
 		};
 
 		_item.getUtilities = function () {
 			return utilities;
-		};
-
-		/**
-		 * render Item
-		 * @param collectionView
-		 */
-		_item.render = function (collectionView) {
-			if(apiatorDebug) console.log("Render from item",_item.render.caller,_item);
-			_item.views.forEach(function (view) {
-				if(typeof collectionView==="undefined") {
-					if(apiatorDebug) console.log("collectionView is undefied so render view");
-					view.render();
-					return;
-				}
-				if(view.container === collectionView) {
-					if(apiatorDebug) console.log("collectionView matches view container so render view");
-					view.render();
-				}
-			});
 		};
 
 		return _item;
@@ -1005,6 +912,7 @@ let apiatorDebug = false;
 				}
 				inp.val(val);
 
+				// console.log("set ",attrName,val);
 
 			});
 
@@ -1013,6 +921,7 @@ let apiatorDebug = false;
 
 			if(instance.relationships)
 				Object.getOwnPropertyNames(instance.relationships).forEach(function (relName) {
+					// console.log("test rel "+relName);
 					if(!form.elements.hasOwnProperty(relName))
 						return;
 
@@ -1028,7 +937,7 @@ let apiatorDebug = false;
 						$(form.elements[relName]).val(vals);
 					}
 					else {
-						if(apiatorDebug) console.log("set ",relName,instance.relationships[relName]);
+						console.log("set ",relName,instance.relationships[relName]);
 						$(form.elements[relName]).val(instance.relationships[relName].id);
 					}
 
@@ -1043,23 +952,22 @@ let apiatorDebug = false;
 
 			// setup submit processing
 			$(form).off("submit").on("submit",function(event) {
-				console.log("form submit triggered",event);
+				// console.log("form submit triggered",event);
 				event.preventDefault();
 				let frm = $(form)[0];
-				cb(utilities.fetchFormData(frm));
-			});
-		},
+				let formElements = {};
+				Object.getOwnPropertyNames( frm.elements).forEach(function (item) {
+					let $item = $(frm.elements[item]);
+					if(!$item.attr("name") || $item.attr("name")==="")
+						return;
+					formElements[$item.attr("name")] = $item.val();
+				});
+				// console.log(formElements,"////////////////",cb);
 
-		fetchFormData: function (frm) {
-			let formElements = {};
-			Object.getOwnPropertyNames( frm.elements).forEach(function (item) {
-				let $item = $(frm.elements[item]);
-				if(!$item.attr("name") || $item.attr("name")==="")
-					return;
-				formElements[$item.attr("name")] = $item.val();
+				cb(formElements);
 			});
-			return formElements;
 		}
+
 	};
 
 
@@ -1077,7 +985,6 @@ let apiatorDebug = false;
 
 		// params is actually a jquery object or an html node
 		if(params.length || params.nodeName) {
-			if(apiatorDebug) console.log("params is actually a jquery object or an html node",params);
 			let $el = $(params);
 			if($el.data("view")) {
 				return $el.data("view");
@@ -1089,7 +996,9 @@ let apiatorDebug = false;
 				.replace(/%&gt;/gi, "%>")
 				.replace(/&amp;/gi, "&");
 
+			// console.log("bindview",html);
 			params = {
+				// template: template(html),
 				template: _.template(html),
 				el: $el
 			};
@@ -1101,7 +1010,6 @@ let apiatorDebug = false;
 		}
 
 		let _itemview = {
-			type: "ItemView",
 			dataBindings: null,
 			template: null,
 			container: null,
@@ -1133,7 +1041,7 @@ let apiatorDebug = false;
 
 		function createElementFromTemplate() {
 			if(_itemview.template==null) {
-				dbg('Warning: no template defined. Nothing to render');
+				console.log('Warning: no template defined. Nothing to render');
 				return null;
 			}
 			let el = $(_itemview.template(_itemview.item))
@@ -1159,142 +1067,35 @@ let apiatorDebug = false;
 
 		/**
 		 *
-		 */
-		function interpolateInstance(_itemview) {
-			if(apiatorDebug) console.log("try to interpolateInstance",_itemview.el,_itemview.item.attributes);
-			let includes = _itemview.el.find("[is=apiator]");
-			if(!includes.length) {
-				if(apiatorDebug) console.log("nothing to interpolate");
-				return;
-			}
-			if(apiatorDebug) console.log("do interpolation",_itemview,includes);
-
-			includes.each(function () {
-				let $el = $(this);
-				$el.removeAttr("is").removeData("instance").data("parentview",_itemview);
-				if(apiatorDebug) console.log("Include to interpolate",$el);
-
-				let options = {returninstance:true};
-				let url = $el.data("url");
-				let dtBind = $el.data("bind");
-
-				if(dtBind) {
-					options.dontload = true;
-					let data = _itemview.item;
-
-					if(apiatorDebug) console.log("databind present",_itemview,data);
-
-					let segments = dtBind.split(".");
-
-					for(let i = 0;i<segments.length;i++) {
-						if(typeof data[segments[i]]==="undefined") {
-							throw "data bind path '"+dtBind+"' does not resolve to a valid member inside the instance tree";
-						}
-						data = data[segments[i]];
-					}
-					if(!data) {
-						return;
-					}
-					if(apiatorDebug) console.log("data.constructor",data,data.constructor);
-					options.resourcetype = (data.hasOwnProperty("length"))? "collection" :"item";
-
-					if(apiatorDebug) console.log("Apiate on ",options,$el,data);
-					let el = $el.apiator(options)
-						.loadFromData(data).render();
-
-					if(url!==undefined) {
-						el.setUrl(url)
-					}
-
-					if(segments[0] ==="relationships") {
-						_itemview.item.relationships[segments[1]] = el;
-					}
-
-					if(apiatorDebug) console.log("Element rendered",el,$el);
-					return;
-				}
-				//
-				// if(url) {
-				// 	$el.apiator(options)
-				// 		.loadFromData(data)
-				// 		.render();
-				// }
-
-
-			});
-		}
-
-		/**
-		 *
-		 * @param doNotAttachToContainer should be true when the element should not be rendered into the DOM
+		 * @param returnView should be true when the element should not be rendered into the DOM
 		 * @returns {null|jQuery}
 		 */
-		_itemview.render = function (doNotAttachToContainer,addontop) {
+		_itemview.render = function (returnView) {
 
-			if(apiatorDebug) console.log("Render view",_itemview.render.caller,_itemview);
-
-			// render element
 			let renderedEl = createElementFromTemplate();
 			if(!renderedEl) {
 				return null;
 			}
 
-			if(doNotAttachToContainer) {
-				if(apiatorDebug) console.log("doNotAttachToContainer",_itemview);
-				_itemview.el = renderedEl;
-				interpolateInstance(_itemview);
-				return _itemview.el;
+			if(returnView) {
+				this.el = renderedEl;
+				return this.el;
 			}
 
-			// replace already rendered element
-			if(_itemview.el && _itemview.el.parents("body").length) {
-				if(apiatorDebug) console.log("replace already rendered element",renderedEl,_itemview.el);
-				let oldEl = _itemview.el;
-				_itemview.el = renderedEl.insertBefore(oldEl);
-				oldEl.remove();
-				interpolateInstance(_itemview);
-				return _itemview;
+
+			if(!_itemview.el) {
+				delete renderedEl;
+				console.log("Invalid item view element");
+				return null;
 			}
 
-			_itemview.el = renderedEl;
-			if(!_itemview.container) {
-				if(apiatorDebug) console.log("No item container");
-				return _itemview;
-			}
 
-			addontop = typeof addontop!=="undefined" ? addontop :
-				(_itemview.item.collection ? _itemview.item.collection.addontop : false );
+			renderedEl.insertBefore(this.el[0]);
 
-			if(addontop) {
-				let children = _itemview.container.el.children();
-				if(children.length) {
-					if(apiatorDebug) console.log("Append item on top of ",children[0]);
-					_itemview.el.insertBefore(children[0]);
-				}
-			}
-			else {
-				if(apiatorDebug) console.log("Append item",_itemview.el,", to container ",_itemview.container.el);
+			this.el.remove();
+			this.el = renderedEl;
 
-				_itemview.el.appendTo(_itemview.container.el);
-			}
-
-			interpolateInstance(_itemview);
-			if(apiatorDebug) console.log("Insert view ",_itemview.el,"into container",_itemview.container.el);
-			// _itemview.container.el.append(_itemview.el);
-
-
-
-			return _itemview;
-
-			//
-			//
-			// renderedEl.insertBefore(_itemview.el[0]);
-			//
-			// this.el.remove();
-			// this.el = renderedEl;
-			//
-			//
-			// return this.el;
+			return this.el;
 		};
 
 		_itemview.renderEmpty = function(returnView) {
@@ -1304,15 +1105,11 @@ let apiatorDebug = false;
 		};
 
 		_itemview.remove = function (idx) {
-			return new Promise(function (resolve) {
-				_itemview.el.fadeOut({
-					complete: ()=>{
-						_itemview.el.remove();
-						resolve();
-					}
-				});
-			})
-
+			_itemview.el.fadeOut({
+				complete: ()=>{
+					_itemview.el.remove();
+				}
+			});
 
 		};
 		return _itemview;
@@ -1325,106 +1122,8 @@ let apiatorDebug = false;
 	 * @returns {{path: string, protocol: string, fragment: string, fqdn: string, port: string, toString: (function(): string), parameters: string}|null}
 	 * @constructor
 	 */
-	function OldURL(url)
+	function URL(url)
 	{
-
-
-		if(!url)
-			return null;
-
-		if(typeof url==="object" && url.hasOwnProperty("protocol") )
-			return url;
-
-		if(url.constructor!==String) {
-			throw "URL is not a string: " + url.toString();
-		}
-
-		let regExp = /^((?:([a-z]+):)([\/]{2,3})([\w\.\-\_]+)(?::(\d+))?)?(?:(\/?[^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/i;
-		let parts = regExp.exec(url);
-
-		let urlObj = {
-			protocol: null,
-			fqdn: null,
-			port: null,
-			path: null,
-			parameters: null,
-			fragment: null,
-			toString: function () {
-				// return url;
-				let str = "";
-				if(this.protocol && this.fqdn) {
-					str += this.protocol+"://"+this.fqdn;
-					if(this.port) {
-						str += this.port;
-					}
-				}
-
-				if(this.path) {
-					str += this.path;
-				}
-				if(this.parameters) {
-					str += "?" + this.parameters.toString();
-				}
-				if(this.fragment) {
-					str += "#" + this.fragment;
-				}
-				return str;
-			}
-		};
-
-		if(typeof parts[2]!=="undefined") {
-			urlObj.protocol = parts[2];
-		}
-		if(typeof parts[4]!=="undefined") {
-			urlObj.fqdn = parts[4];
-		}
-		if(typeof parts[5]!=="undefined") {
-			urlObj.port = parts[5];
-		}
-		if(typeof parts[6]!=="undefined") {
-			urlObj.path = parts[6];
-		}
-		if(typeof parts[7]!=="undefined") {
-			urlObj.parameters = parts[7];
-		}
-		if(typeof parts[8]!=="undefined") {
-			urlObj.fragment = parts[8];
-		}
-
-
-
-		// if(urlObj.)
-
-		if(urlObj.parameters) {
-			let tmp = urlObj.parameters.split("&");
-			urlObj.parameters = {};
-			tmp.forEach(function (item) {
-				if(!item || item==="")
-					return;
-				let eqPos = item.indexOf("=");
-				if(eqPos===-1)
-					urlObj.parameters[item] = "";
-				urlObj.parameters[item.substr(0,eqPos)] = item.substr(eqPos+1);
-			});
-
-		}
-		else {
-			urlObj.parameters = {};
-		}
-
-		urlObj.parameters.toString = function () {
-			let paras = [];
-			for(let para in this) {
-				if(this.hasOwnProperty(para) && para!=="toString")
-					paras.push(para+"="+this[para]);
-			}
-			return paras.join("&");
-		};
-
-
-		return urlObj;
-	}
-	function URL(url) {
 
 		if(!url)
 			return null;
@@ -1546,6 +1245,7 @@ let apiatorDebug = false;
 		};
 
 		this.trigger = function(eventName,other) {
+			// console.log('inplaceofevent',this);
 			let instance = this;
 
 			if(!eventListeners.hasOwnProperty(eventName)) {
@@ -1557,68 +1257,6 @@ let apiatorDebug = false;
 			});
 		}
 	}
-
-	function parseData4InsertUpdate(itemData)
-	{
-
-		if(itemData===null) {
-			return null;
-		}
-
-		if(typeof itemData !== "object") {
-			throw "Invalid item data: "+itemData;
-		}
-
-		if(itemData.constructor===Array || (itemData.hasOwnProperty("items") && itemData.hasOwnProperty("length"))) {
-			let resource = [];
-			// for(let i=0;i<itemData.length;i++) {
-			// 	resource.push(parseData4InsertUpdate(item[i]));
-			// }
-			itemData.forEach(function (item) {
-				resource.push(parseData4InsertUpdate(item));
-			});
-			return resource;
-		}
-
-		if(itemData.constructor!==Object) {
-			throw "Invalid case";
-		}
-
-		let resource = {};
-
-
-		// if(!itemData.hasOwnProperty("type") && !itemData.hasOwnProperty("attributes") ) {
-		if(!itemData.hasOwnProperty("attributes") ) {
-			let tmp = {attributes:{}};
-			if(itemData.hasOwnProperty("type")) {
-				tmp.type = itemData.type;
-			}
-			Object.assign(tmp.attributes, itemData);
-			itemData = tmp;
-		}
-		// else if(itemData.hasOwnProperty("type")) {
-		// 	resource.type = itemData.type;
-		// }
-
-		Object.getOwnPropertyNames(itemData.attributes).forEach(function (attr) {
-			if(itemData.attributes[attr] && typeof itemData.attributes[attr]==="object") {
-				if(!resource.relationships) {
-					resource.relationships = {}
-				}
-				resource.relationships[attr] = {
-					data: parseData4InsertUpdate(itemData.attributes[attr])
-				};
-				return;
-			}
-			if(!resource.attributes) {
-				resource.attributes = {}
-			}
-			resource.attributes[attr] = itemData.attributes[attr];
-		});
-
-		return resource;
-	}
-
 	/**
 	 *
 	 * @param opts
@@ -1627,7 +1265,6 @@ let apiatorDebug = false;
 	function Collection(opts)
 	{
 
-		let iterator = -1;
 		let _collection = {
 			url: null,
 			deleteUrl: null,
@@ -1637,60 +1274,15 @@ let apiatorDebug = false;
 			view: null,
 			offset: 0,
 			total: null,
-			pageSize: 100,
+			pageSize: 10,
 			template: null,
 			navtype: "page",
 			type: null,
 			emptyview: null,
-			length: 0,
-			items: []
+			items: [],
 		};
 
 		EventEmitter.call(_collection);
-
-		_collection.forEach = function(func) {
-			for(let i=0;i<_collection.length;i++) {
-				func(_collection[i]);
-			}
-		};
-		_collection.next = function() {
-			iterator++;
-			if(iterator+1>_collection.length) {
-				iterator = -1;
-				return false;
-			}
-			return  _collection[iterator];
-		};
-		_collection.prev = function() {
-			iterator--;
-			if(iterator-1<0) {
-				iterator = -1;
-				return false;
-			}
-			return  _collection[iterator];
-		};
-		_collection.rewind = function() {
-			iterator = 0;
-		};
-		_collection.key = function() {
-			return iterator;
-		};
-
-
-		_collection.removeItem = function(item) {
-			for(var i=0;i<_collection.items.length;i++) {
-				if(_collection.items[i].id===item.id) {
-					_collection.items.splice(i,1);
-					for(var j=i;j<_collection.length-1;j++) {
-						_collection[j] =_collection[j+1];
-					}
-					delete _collection[j];
-					_collection.length--;
-					break;
-				}
-			}
-		};
-
 
 		_collection.setPageSize = function(val) {
 			if(/^\d+$/.test(val)) {
@@ -1721,7 +1313,7 @@ let apiatorDebug = false;
 			if(!url) {
 				return ;
 			}
-			if(url.constructor===String || url.hasOwnProperty("fqdn")) {
+			if(url.constructor===String) {
 				this.url = URL(url);
 				this.setPageSize(this.url.parameters["page["+_collection.type+"][limit]"]);
 				this.setOffset(this.url.parameters["page["+_collection.type+"][offset]"]);
@@ -1787,8 +1379,7 @@ let apiatorDebug = false;
 		 * @returns {{template: null, insertUrl: null, offset: number, pageSize: number, paging: null, type: null, url: null, view: null, total: null, navtype: string, updateUrl: null, deleteUrl: null, emptyview: null}|{relationships: null, view: null, attributes: null, id: null, collection: null, type: null, url: null}}
 		 */
 		_collection.receiveRemoteData = function (data) {
-			if(apiatorDebug) console.log("Remote data received",data);
-
+			// console.log(data);
 			data = parse(data);
 
 			if(data == null)
@@ -1796,26 +1387,19 @@ let apiatorDebug = false;
 
 			// received data is a collection
 			if(data.constructor===Array) {
-				if(apiatorDebug) console.log("Append multiple items to collection");
 				data.forEach(function (item) {
-					appendItemToCollection(_collection,_collection.loadItem(item,true));
+					appendItemToCollection(_collection,_collection.loadItem(item));
 				});
 
-				// this.trigger("load",{data: data});
+				this.trigger("load",{data: data});
 				return _collection.render();
 			}
 
 			// received data is an item => add it
 			if(data.constructor===Object) {
-				if(apiatorDebug) console.log("Append single item to collection");
-				// this.trigger("load",{data: data});
-				// return  appendItemToCollection(_collection,_collection.loadItem(data),true);
-				let newItem = _collection.loadItem(data);
-				newItem.render(_collection.view);
-				return newItem;
+				this.trigger("load",{data: data});
+				return  appendItemToCollection(_collection,_collection.loadItem(data),true);
 			}
-
-
 
 		};
 
@@ -1831,11 +1415,9 @@ let apiatorDebug = false;
 		 * @param data
 		 */
 		_collection.loadFromData = function (data) {
-			if(apiatorDebug) console.log("collection load from data",data);
-
-			if( data===null || typeof data!=="object" || data.constructor!==Array ) {
-				if(apiatorDebug) console.log("cannot load ",data, " into collection ",_collection);
-				return this;
+			if (data.constructor !== Array) {
+				console.log(data);
+				throw "Invalid data type received. Should be an array.";
 			}
 
 			if(_collection.navtype==="page")
@@ -1845,12 +1427,7 @@ let apiatorDebug = false;
 				_collection.loadItem(item);
 			});
 
-			// if(_collection.view) {
-			// 	_collection.view.render();
-			// }
-			// else {
-			// 	if(apiatorDebug) console.log("collection does not have a view ",_collection);
-			// }
+			_collection.view.render();
 			return _collection;
 		};
 
@@ -1865,12 +1442,8 @@ let apiatorDebug = false;
 		 * @returns {{template: null, insertUrl: null, offset: number, pageSize: number, paging: null, type: null, url: null, view: null, total: null, navtype: string, updateUrl: null, deleteUrl: null, items: [], emptyview: null}}
 		 */
 		_collection.render = function() {
-			if(apiatorDebug) console.log("Render collection",_collection.render.caller,_collection);
-			if(_collection.view) {
+			if(_collection.view && _collection.view.el) {
 				_collection.view.render();
-			}
-			if(_collection.onafterrender && typeof _collection.onafterrender==="function") {
-				_collection.onafterrender(_collection);
 			}
 			return _collection;
 		};
@@ -1888,10 +1461,6 @@ let apiatorDebug = false;
 		 * @returns {Promise<unknown>}
 		 */
 		_collection.load_from_data_source = function () {
-
-			if(_collection.onbeforeload && typeof _collection.onbeforeload==="function") {
-				_collection.onbeforeload(_collection);
-			}
 
 			return  new Promise(function (resolve,reject) {
 				if(!_collection.url) {
@@ -1922,14 +1491,8 @@ let apiatorDebug = false;
 
 		};
 
-		/**
-		 * @todo clarifiy thats this function used for
-		 * @param xhr
-		 * @param txt
-		 * @param err
-		 */
 		_collection.fail = function (xhr, txt, err) {
-			if(apiatorDebug) console.log("Fail to load collection",xhr, txt, err,_collection);
+			console.log(xhr, txt, err,_collection);
 		};
 
 
@@ -1941,7 +1504,66 @@ let apiatorDebug = false;
 		 * @param itemData
 		 * @returns {{data: null}}
 		 */
+		function parseData4InsertUpdate(itemData)
+		{
 
+			if(itemData===null) {
+				return null;
+			}
+
+			if(typeof itemData !== "object") {
+				throw "Invalid item data: "+itemData;
+			}
+
+			if(itemData.constructor===Array) {
+				let resource = [];
+				itemData.forEach(function (item) {
+					resource.push(parseData4InsertUpdate(item));
+				});
+				return resource;
+			}
+
+			if(itemData.constructor!==Object) {
+				throw "Invalid case";
+			}
+
+			let resource = {};
+
+
+			// if(!itemData.hasOwnProperty("type") && !itemData.hasOwnProperty("attributes") ) {
+			if(!itemData.hasOwnProperty("attributes") ) {
+				let tmp = {attributes:{}};
+				if(itemData.hasOwnProperty("type")) {
+					tmp.type = itemData.type;
+				}
+				Object.assign(tmp.attributes, itemData);
+				itemData = tmp;
+			}
+			// else if(itemData.hasOwnProperty("type")) {
+			// 	resource.type = itemData.type;
+			// }
+
+			Object.getOwnPropertyNames(itemData.attributes).forEach(function (attr) {
+				if(itemData.attributes[attr] && typeof itemData.attributes[attr]==="object") {
+					if(!resource.relationships) {
+						resource.relationships = {}
+					}
+					resource.relationships[attr] = {
+						data: parseData4InsertUpdate(itemData.attributes[attr])
+					};
+					return;
+				}
+				if(!resource.attributes) {
+					resource.attributes = {}
+				}
+				resource.attributes[attr] = itemData.attributes[attr];
+			});
+			// for(let attr in itemData.attributes) {
+			//
+			// }
+
+			return resource;
+		}
 		/**
 		 *
 		 * @param itemData
@@ -1952,51 +1574,46 @@ let apiatorDebug = false;
 
 
 
-
-
 		_collection.append = function(itemData) {
 			let jsonApiDoc = {data: parseData4InsertUpdate(itemData)};
 			if(_collection.type) {
 				jsonApiDoc.type = _collection.type;
 			}
+			let _self = this;
 
 			return new Promise(function (resolve,reject) {
-				if(!_collection.insertUrl) {
-					_collection.insertUrl = _collection.url;
+				if(!_self.insertUrl) {
+					_self.insertUrl = _self.url;
 				}
+				console.log(JSON.stringify(jsonApiDoc));
 
 				storage
-					.create(_collection,_collection.insertUrl,{contentType:"application/vnd.api+json"},JSON.stringify(jsonApiDoc))
+					.create(_self,_self.insertUrl,{contentType:"application/vnd.api+json"},JSON.stringify(jsonApiDoc))
 					.then(function (resp) {
 						let data = resp.data;
-						let newItem = _collection.receiveRemoteData(data);
+						let newItem = _self.receiveRemoteData(data);
 						resolve(newItem);
 					})
 					.catch(function (resp) {
-						if(apiatorDebug) console.log("fail to receive data",resp);
+						console.log("fail recv data");
 						reject(resp);
-					});
+					})
+					.finally(function () {
+						console.log("finally recv data");
+					})
 			});
 		};
-		//
-		// _collection.removeItem = function(item) {
-		// 	for(let i=0;i<this.items.length;i++) {
-		// 		if(item===this.items[i]) {
-		// 			this.items.splice(i,1);
-		// 			break;
-		// 		}
-		// 	}
-		// };
 
-		/**
-		 *
-		 * @param itemData
-		 * @param render
-		 * @returns {_item|*|{template: null, insertUrl: null, offset: number, length: number, pageSize: number, paging: null, type: null, url: null, view: null, total: null, navtype: string, updateUrl: null, deleteUrl: null, items: [], emptyview: null}|void}
-		 */
+		_collection.removeItem = function(item) {
+			for(let i=0;i<this.items.length;i++) {
+				if(item===this.items[i]) {
+					this.items.splice(i,1);
+					break;
+				}
+			}
+		};
+
 		_collection.loadItem = function (itemData) {
-			if(!itemData)
-				return null;
 			// throw new Error("asda");
 
 			let opts = {
@@ -2024,17 +1641,11 @@ let apiatorDebug = false;
 				.loadFromData(itemData);
 
 			if(_collection.addontop) {
-				console.log("Add on top");
 				_collection.items.unshift(newItem);
-				for(let i=_collection.length;i>0;i--) {
-					_collection[i]=_collection[i-1];
-				}
-				_collection[0] = newItem;
 			}
 			else {
 				_collection.items.push(newItem);
-				_collection[_collection.length] = newItem;
-				_collection.length++;
+
 			}
 
 			return newItem;
@@ -2048,9 +1659,7 @@ let apiatorDebug = false;
 		function parse(data) {
 			flattenDoc(data);
 			let doc = buildDb(data);
-
-			if(apiatorDebug) console.log("parse data",data);
-
+			// console.log(data);
 
 			if (!data.hasOwnProperty("data"))
 				return data;
@@ -2083,7 +1692,6 @@ let apiatorDebug = false;
 	{
 		let _collectionView = {
 			el: null,
-			type: "CollectionView",
 			container: null,
 			collection: null,
 			itemsContainer: null,
@@ -2102,7 +1710,7 @@ let apiatorDebug = false;
 		 */
 		_collectionView.reset = function () {
 			if(this.allowempty) {
-				_collectionView.el.empty();
+				_collectionView.itemsContainer.empty();
 			}
 			return _collectionView;
 		};
@@ -2112,33 +1720,44 @@ let apiatorDebug = false;
 		 * @returns {_collectionView}
 		 */
 		_collectionView.render = function () {
-			if(apiatorDebug) console.log("Render _collectionView",_collectionView.render.caller, _collectionView.collection,);
-
-			if(_collectionView.collection.navtype==="page") {
-				_collectionView.reset();
+			if($(this.itemsContainer.css("display")==="none")) {
+				$(this.itemsContainer).css("display", null);
 			}
 
-			if(_collectionView.collection.items.length===0) {
-				_collectionView.renderEmpty();
+			if(this.collection.navtype==="page") {
+				this.reset();
 			}
 
-			_collectionView.collection.items.forEach(function (item) {
-				item.render(_collectionView);
-				// item.views.forEach(function (view) {
-				// 	view.render(true);
-				// 	if(view.container===this) {
-				// 		this.append(view.render(true));
-				// 	}
-				// },this);
-
-			},_collectionView);
-
-
-			if (_collectionView.collection.paging && typeof _collectionView.collection.paging==="object") {
-				_collectionView.collection.paging.render();
+			if(this.collection.items.length===0) {
+				this.renderEmpty();
 			}
 
-			return _collectionView;
+			this.collection.items.forEach(function (item) {
+				item.views.forEach(function (view) {
+					if(view.container===this) {
+						this.append(view.render(true));
+					}
+				},this);
+
+			},this);
+
+
+			if (this.collection.paging && typeof this.collection.paging==="object") {
+				this.collection.paging.render();
+			}
+
+
+			// if(this.collection.items.lenght===0) {
+			// 	$(this.collection.emptyview).css("display",null);
+			// 	this.collection.paging.el.css("display",null);
+			// }
+			// else {
+			// 	$(this.collection.emptyview).css("display","none");
+			// 	this.collection.paging.el.css("display","none");
+			// }
+
+
+			return this;
 		};
 
 		_collectionView.renderEmpty = function() {
@@ -2149,24 +1768,15 @@ let apiatorDebug = false;
 
 		};
 
-		/**
-		 *
-		 * @param itemView
-		 * @param addOnTop
-		 * @returns {*|ActiveX.IXMLDOMNode}
-		 */
-		// _collectionView.append = function(itemView,addOnTop) {
-		// 	if(apiatorDebug) console.log("Append item to collectionView",_collectionView,itemView);
-		//
-		// 	if(addOnTop) {
-		// 		let children = _collectionView.el.children();
-		// 		if(children.length) {
-		// 			if(apiatorDebug) console.log("Append item on top of ",children[0]);
-		// 			return  itemView.el.insertBefore(children[0]);
-		// 		}
-		// 	}
-		// 	return itemView.el.appendTo(_collectionView.el);
-		// };
+		_collectionView.append = function(el) {
+			//
+			// let cs = this.itemsContainer.children();
+			// if(cs.length) {
+			// 	console.log("before");
+			// 	return $(cs[0]).before(el);
+			// }
+			return this.itemsContainer.append(el);
+		};
 
 		return _collectionView.reset();
 
@@ -2185,7 +1795,9 @@ let apiatorDebug = false;
 	{
 
 		if(!this.length) {
-			if(apiatorDebug) console.log("Warning: no DOM element bound with apiator",this);
+			console.log(this);
+			console.log("Warning: no DOM element bound with apiator");
+			// return console.log("Invalid element", opts, this);
 		}
 
 		if(typeof opts==="string") {
@@ -2195,7 +1807,7 @@ let apiatorDebug = false;
 		}
 
 		// extract data attributes from html element and assign them to
-		let options = Object.assign({dataBindings: {},addontop:false}, this.data());
+		let options = Object.assign({dataBindings: {}}, this.data());
 
 		// assign options passed as
 		Object.assign(options, parseOptions(opts));
@@ -2217,8 +1829,7 @@ let apiatorDebug = false;
 			return options.returninstance ? instance : this;
 		}
 
-		if(apiatorDebug) console.log("init apiator on ",this,options);
-
+		// console.log("init apiator on ",this,options);
 		if(options.hasOwnProperty("emptyview")) {
 			options.emptyview = $(options.emptyview).remove();
 		}
@@ -2226,7 +1837,7 @@ let apiatorDebug = false;
 		// resource type unknown
 		if (!options.hasOwnProperty("resourcetype")) {
 			options.resourcetype = "collection";
-			if(apiatorDebug) console.log("WARNING: no resourcetype specified. Assumed it's a collection");
+			console.log("WARNING: no resourcetype specified. Assumed it's a collection");
 		}
 
 
@@ -2234,10 +1845,10 @@ let apiatorDebug = false;
 		let instance;
 		switch ( options.resourcetype) {
 			case "collection":
-				instance = createCollectionInstance.bind(this)(this,options);
+				instance = createCollectionInstance.bind(this)(options);
 				break;
 			case "item":
-				instance = createItemInstance.bind(this)(this,options);
+				instance = createItemInstance.bind(this)(options);
 				break;
 			default:
 				throw new Error("Invalid resource type for APIATOR.JS (should be item or collection)." +
@@ -2249,10 +1860,14 @@ let apiatorDebug = false;
 		if(instance.url && (typeof instance.dontload==="undefined" || !instance.dontload)) {
 			instance.loadFromRemote()
 				.catch(function(error){
-					if(apiatorDebug) console.log("instance remote data could not be fetched",error);
+					console.log("error",error)
 				})
+			// .finally(()=>{
+			// 	// console.log(instance,"instance loaded from server")
+			// });
 		}
 
+		// console.log(instance);
 		return (options.hasOwnProperty("returninstance") && opts.returninstance)?instance:this;
 	};
 
@@ -2271,102 +1886,30 @@ let apiatorDebug = false;
 		return db;
 	}
 
-	function sortNow ($lnk,setDir) {
-		let fld = $lnk.data("sortfld");
-		let oldDir = $lnk.data("sortdir");
-		let $sortUp = $lnk.find(".sort-up");
-		let $sortDown = $lnk.find(".sort-down");
-		let $sortDefault = $lnk.find(".sort-default");
-		let dir;
-		let doNotLoad = false;
-		switch(oldDir) {
-			case "up":
-				dir = "down";
-				break;
-			case "down":
-				dir = null;
-				break;
-			default:
-				dir = "up";
-				break;
-		}
-
-		if(typeof setDir!=="undefined" && ["up","down",null].indexOf(setDir)!==-1) {
-			dir = setDir;
-			doNotLoad = true;
-		}
-
-		let inst = $lnk.data("instance");
-		let sort = inst.url.parameters.hasOwnProperty("sort")?inst.url.parameters.sort:"";
-		let sortArr = [];
-		sort.split(",").forEach(function(item){
-			let res = /^(-*)([a-z0-9\-\_]+)$/.exec(item.trim());
-			if(!res)
-				return;
-			if(res[2]==fld)
-				return;
-			sortArr.push(item);
-		});
-
-		switch (dir) {
-			case "up":
-				sortArr.push("-"+fld);
-				$lnk.data("sortdir","down");
-				$sortUp.hide();
-				$sortDown.show();
-				$sortDefault.hide();
-				break;
-			case "down":
-				$lnk.data("sortdir",null);
-
-				$sortUp.hide();
-				$sortDown.hide();
-				$sortDefault.show();
-				break;
-			default:
-				$lnk.data("sortdir","up");
-				sortArr.push(fld);
-
-				$sortUp.show();
-				$sortDown.hide();
-				$sortDefault.hide();
-		}
-
-		let nxtSort = sortArr.join(",");
-		if(sort!==nxtSort) {
-			inst.url.parameters.sort = nxtSort;
-			if(!doNotLoad) {
-				inst.loadFromRemote();
-			}
-		}
-	}
-
 	/**
 	 *
 	 * @param options
 	 * @returns {{template: null, view: null, total: null, offset: number, navtype: string, pageSize: number, paging: null, url: null}}
 	 */
-	function createCollectionInstance(el,options)
+	function createCollectionInstance(options)
 	{
 		// extract template
 		// set default to innerHTML
-		if(apiatorDebug) console.log("Create collection instance",options);
 
-		let templateTxt = el.length ? el[0].innerHTML : null;
+		let templateTxt = this.length ? this[0].innerHTML : null;
+		// console.log(templateTxt);
+		options.templateTxt = templateTxt;
 
-		if(options.template) {
-			if(options.template instanceof jQuery) {
-				if(apiatorDebug) console.log("template is JQuery object",options.template,el);
-				let $tpl = options.template.clone().removeAttr("id");
-				templateTxt = $("<div>").append($tpl).html();
-			}
-			else if(typeof options.template==="string" ) {
-				if(apiatorDebug) console.log("template is raw text: can be eithe a JQuery selector or raw HTML",options.template,el);
-				templateTxt = $("<div>").append($(options.template).clone().removeAttr("id")).html();
-			}
+		if(options.hasOwnProperty("template")) {
+			let $tpl = $(options.template);
+			if($(options.template).length)
+				templateTxt = $(options.template)[0].outerHTML;
+			else
+				throw Error("Invalid collection template for instance #"+this.attr(id));
+			$tpl.remove();
 		}
 
-
+		options.template = null;
 		if(templateTxt!==null) {
 			templateTxt = templateTxt
 				.replace(/&lt;/gi, '<')
@@ -2375,14 +1918,12 @@ let apiatorDebug = false;
 				.replace(/&quot;/gi, '"')
 				.replace(/&nbsp;/gi, " ")
 				.replace(/&amp;/gi, "&");
-			// if(apiatorDebug) console.log("Template txt",templateTxt);
-
 			options.template = _.template(templateTxt);
 		}
 
 		let collectionConfig = {
-			el: el,
-			itemsContainer: options.hasOwnProperty("container") ? $(options.container) : el,
+			el: this,
+			itemsContainer: options.hasOwnProperty("container") ? $(options.container) : this,
 			allowempty: options.disableempty!==true
 		};
 
@@ -2396,8 +1937,78 @@ let apiatorDebug = false;
 			instance.paging = Paging(options.paging, instance);
 		}
 
+		function sortNow ($lnk,setDir) {
+			let fld = $lnk.data("sortfld");
+			let oldDir = $lnk.data("sortdir");
+			let $sortUp = $lnk.find(".sort-up");
+			let $sortDown = $lnk.find(".sort-down");
+			let $sortDefault = $lnk.find(".sort-default");
+			let dir;
+			let doNotLoad = false;
+			switch(oldDir) {
+				case "up":
+					dir = "down";
+					break;
+				case "down":
+					dir = null;
+					break;
+				default:
+					dir = "up";
+					break;
+			}
 
-		// setup sort
+			if(typeof setDir!=="undefined" && ["up","down",null].indexOf(setDir)!==-1) {
+				dir = setDir;
+				doNotLoad = true;
+			}
+
+			let inst = $lnk.data("instance");
+			let sort = inst.url.parameters.hasOwnProperty("sort")?inst.url.parameters.sort:"";
+			let sortArr = [];
+			sort.split(",").forEach(function(item){
+				let res = /^(-*)([a-z0-9\-\_]+)$/.exec(item.trim());
+				if(!res)
+					return;
+				if(res[2]==fld)
+					return;
+				sortArr.push(item);
+			});
+
+			switch (dir) {
+				case "up":
+					sortArr.push("-"+fld);
+					$lnk.data("sortdir","down");
+					$sortUp.hide();
+					$sortDown.show();
+					$sortDefault.hide();
+					break;
+				case "down":
+					$lnk.data("sortdir",null);
+
+					$sortUp.hide();
+					$sortDown.hide();
+					$sortDefault.show();
+					break;
+				default:
+					$lnk.data("sortdir","up");
+					sortArr.push(fld);
+
+					$sortUp.show();
+					$sortDown.hide();
+					$sortDefault.hide();
+			}
+
+			let nxtSort = sortArr.join(",");
+			if(sort!==nxtSort) {
+				inst.url.parameters.sort = nxtSort;
+				// console.log(inst.url);
+				if(!doNotLoad) {
+					inst.loadFromRemote();
+				}
+			}
+		}
+
+		// configure sort
 		if(options.hasOwnProperty("sort") && $(options.sort).length) {
 			let $sort = $(options.sort);
 			let sortFldsArr = instance.url && instance.url.parameters.sort ? instance.url.parameters.sort.split(",") : [];
@@ -2410,10 +2021,10 @@ let apiatorDebug = false;
 				sortFlds[item.substr(1)] = "up";
 			});
 
-			$sort.find("[data-sortfld]").each(function() {
-				$(this).find(".sort-up").hide();
-				$(this).find(".sort-down").hide();
-				$(this).find(".sort-default").show();
+			$sort.find("[data-sortfld]").each(function(sort) {
+				let sortUp = $(this).find(".sort-up").hide();
+				let sortDown = $(this).find(".sort-down").hide();
+				let sortDefault = $(this).find(".sort-default").show();
 
 				$(this).data("instance",instance)
 					.on("click",function (event) {
@@ -2430,6 +2041,15 @@ let apiatorDebug = false;
 		if (options.hasOwnProperty("filter") && $(options.filter).length && $(options.filter).prop("tagName")==="FORM") {
 			instance.filtering = Filtering(options.filter, instance)
 		}
+		//
+		// // setup edit modal
+		// if(options.hasOwnProperty("addeditmodal")  && $(options.addeditmodal).length) {
+		// 	$(options.addeditmodal).on("show.bs.modal", prepareModal);
+		// }
+		//
+		// // setup confirm delete
+		// if(options.hasOwnProperty("deletemodal") && $(options.deletemodal).length)
+		// 	$(options.deletemodal).on("show.bs.modal",prepareDeleteModal);
 
 		return instance;
 	}
@@ -2439,14 +2059,14 @@ let apiatorDebug = false;
 	 * @param options
 	 * @returns {{relationships: null, view: null, attributes: null, id: null, collection: null, type: null, url: null}}
 	 */
-	function createItemInstance(el,options)
+	function createItemInstance(options)
 	{
-		// let container = options.hasOwnProperty("container") ? $(options.container) : this;
+		let container = options.hasOwnProperty("container") ? $(options.container) : this;
 
 		// extract template
 		options.template = null;
-		if(el.length) {
-			let templateTxt = el[0].outerHTML
+		if(this.length) {
+			let templateTxt = this[0].outerHTML
 				.replace(/&lt;/gi, '<')
 				.replace(/&gt;/gi, ">")
 				.replace(/&apos;/gi, "'")
@@ -2459,11 +2079,143 @@ let apiatorDebug = false;
 
 		return Item(options).bindView(ItemView({
 			template: options.template,
-			el: el,
-			id: $(el).attr("id")?$(el).attr("id"):uid()
+			el: this,
+			id: $(this).attr("id")?$(this).attr("id"):uid()
 		}));
 	}
 
+	/*********************************************
+	 * MODALs---------------------
+	 ********************************************/
+
+	/********************************************
+	 * DELETE
+	 ********************************************/
+	function prepareDeleteModal(event)
+	{
+		let itemViewEl = $(event.relatedTarget).parents("[data-type=item]");
+		let modal = this;
+
+		// attach on click event to trigger delete action
+		$(this).find("[data-action=confirmDelete]").off("click")
+			.on("click",function (){
+				itemViewEl.data("instance").delete( ()=>{
+					$(modal).modal("hide");
+				});
+			});
+	}
+
+
+	/**********************************************
+	 * ADD / UPDATE
+	 ********************************************/
+	function prepareModal(event)
+	{
+		let modal = $(this);
+		let form = $(this).find("form")[0];
+		form.reset();
+		let targetInstance;
+
+		let $button = $(event.relatedTarget);
+
+		switch($button.data("action")) {
+			case EDIT_BUTTON_ACTION:
+				console.log("edit");
+				targetInstance = $button.data("instance");
+				if(!targetInstance)
+					return console.log("Invalid targetInstance",event);
+
+				$(form).data("instance",targetInstance);
+
+				// add hidden id field
+				if(!form.elements.hasOwnProperty("id")) {
+					$(form).append("<input type=hidden name=id>");
+				}
+
+				// fill attributes values
+				if(targetInstance.hasOwnProperty("attributes")) {
+					Object.getOwnPropertyNames(targetInstance.attributes).forEach(function (attrName) {
+						$(form[attrName]).val(targetInstance.attributes[attrName]);
+					});
+				}
+
+				// fill relationships values
+				if(targetInstance.hasOwnProperty("relationships") && targetInstance.relationships) {
+					Object.getOwnPropertyNames(targetInstance.relationships).forEach(function (relName) {
+						// console.log(item.relationships[relName],item.relationships[relName].id,item.relationships[relName].constructor);
+
+						// null value
+						if (targetInstance.relationships[relName] === null)
+							$(form[relName]).val(null);
+
+						// 1:1 relationships
+						if (targetInstance.relationships[relName] && targetInstance.relationships[relName].constructor === Object)
+							$(form[relName]).val(targetInstance.relationships[relName].id);
+
+						// 1:n relationships
+						if (targetInstance.relationships[relName] && targetInstance.relationships[relName].constructor === Array) {
+							let relIds = [];
+							targetInstance.relationships[relName].forEach(function (relation) {
+								relIds.push(relation.id);
+							});
+							// if form element is select
+							$(form[relName]).val(relIds);
+						}
+					});
+				}
+
+				form.method = "PATCH";
+				form.action = targetInstance.url;
+				break;
+			case ADD_BUTTON_ACTION:
+				targetInstance = $($button.data("instance")).data("instance");
+				if(!targetInstance) {
+					return console.log("Invalid targetInstance", event);
+				}
+
+				$(form).data("instance",targetInstance);
+				if(form.elements.hasOwnProperty("id") && !$(form.elements.id).attr("data-required")) {
+					$(form.elements.id).remove();
+				}
+
+				form.method = "POST";
+				form.action = targetInstance.url;
+				break;
+			default:
+				console.log("Invalid action ".$button.data("action"));
+				return ;
+		}
+
+		$(form).off("submit").on("submit",function (event) {
+			event.preventDefault();
+			let form = this;
+			let data = {};
+			let instance = $(this).data("instance");
+			for(let i=0;i<form.elements.length;i++) {
+				if(form.elements[i].name) {
+					data[form.elements[i].name] = $(form.elements[i]).val();
+					if(data[form.elements[i].name]===NULL_ENTRY_VALUE) {
+						data[form.elements[i].name] = null;
+					}
+				}
+			}
+
+			switch ($(form).attr("method").toUpperCase()) {
+				case "POST":
+					// instance is a collection
+					console.log("-----------------",instance);
+					instance.createItem(data);
+					break;
+				case "PATCH":
+					// instance is an item
+					// console.log(instance,data);
+					instance.update(data);
+					break;
+			}
+			$(modal).modal("hide");
+			// console.log(data,this,event, $(this).data("instance"));
+		});
+	}
 
 	/**
 	 *
@@ -2483,7 +2235,7 @@ let apiatorDebug = false;
 		filterForm
 			.data("instance",collection)
 			.on("submit",function (e) {
-				if(apiatorDebug) console.log("Filter form was submited");
+				console.log("Filter form was submited");
 				e.preventDefault();
 				let filter = [];
 				let frm = filterForm[0];
@@ -2496,15 +2248,16 @@ let apiatorDebug = false;
 						);
 					}
 				}
-				_self.collection.offset = 0;
+				// _self.collection.url.parameters["page["+_self.collection.type+"][offset]"] = 0;
 				_self.collection.url.parameters["filter"] = filter.join(",");
+				console.log(filter,_self.collection.url)
 				_self.collection.loadFromRemote();
 			})
 			.on("reset",function () {
 				delete _self.collection.url.parameters.filter;
 				// _self.collection.url.parameters["page["+_self.collection.type+"][offset]"] = 0;
 				_self.collection.loadFromRemote();
-				if(apiatorDebug) console.log("filter form reset");
+				console.log("reset");
 			});
 		return filterForm;
 	}
@@ -2696,6 +2449,7 @@ let apiatorDebug = false;
 			return new Promise(function (resolve,reject) {
 				$.ajax(options)
 					.done(function (data, textStatus, jqXHR) {
+						// console.log(data, textStatus, jqXHR,"111111111111");
 						resolve( {
 							data: data,
 							textStatus: textStatus,
@@ -2802,3 +2556,11 @@ let apiatorDebug = false;
 
 })($);
 
+
+//
+// $(document).ready(function () {
+// 	$("[data-apiator]").each(function () {
+// 		if(!$(this).data("instance"))
+// 			$(this).apiator();
+// 	});
+// });
