@@ -56,6 +56,7 @@ be/dbapi
 config/*
 active_env.json
 test.html
+files/
 
 static/ttapp_beta.html
 vendor/

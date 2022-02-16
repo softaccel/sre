@@ -86,7 +86,7 @@ let environment;
 let [localData,userData] = checkAuth();
 
 autoload = false;
-let backendUrl, apiRoot, authUrl, fileApiUrl;
+let backendUrl, apiRoot, authUrl, fileApiUrl, deseneBaseUrl;
 
 
 let p1 = new Promise((resolve,reject)=>
@@ -119,6 +119,7 @@ Promise.all([p1,p2])
         apiRoot = environments[active].feDBapiUrl;
         authUrl = environments[active].authUrl;
         fileApiUrl = environments[active].fileApiUrl;
+        deseneBaseUrl = environments[active].deseneBaseUrl;
 
 
         if(typeof appUrl==="undefined") {

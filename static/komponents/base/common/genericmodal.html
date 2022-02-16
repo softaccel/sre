@@ -1,0 +1,52 @@
+<div class="modal" id="genericModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Comanda A654</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function init_komponent(k) {
+        console.log("generic modal",k,$("#genericModal"));
+        let modal = k.$el.filter("#genericModal").appendTo("body")
+            .on("hide.bs.modal",function () {
+                if(k.data.onexit && typeof k.data.onexit==="function") {
+                    k.data.onexit();
+                }
+                modal.remove();
+                k.$el.remove();
+            }).modal();
+
+        if(k.data.title) {
+            modal.find(".modal-header").html(k.data.title);
+        }
+        else {
+            modal.find(".modal-header").remove();
+        }
+
+        if(k.data.title) {
+            modal.find(".modal-footer").html(k.data.title);
+        }
+        else {
+            modal.find(".modal-footer").remove();
+        }
+
+        if(k.data.body) {
+            modal.find(".modal-body").append(k.data.body);
+        }
+
+        if(k.data.size) {
+            modal.find(".modal-dialog").addClass(k.data.size);
+        }
+
+    }
+</script>

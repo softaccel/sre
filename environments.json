@@ -31,6 +31,7 @@
     "backendUrl": "/spaleck/be",
     "authUrl": "/spaleck/be/main/auth/login",
     "fileApiUrl": "/FileApi",
+    "deseneBaseUrl": "/spaleck/files/",
     "logLevel": 3
   },
   "spalecknet": {

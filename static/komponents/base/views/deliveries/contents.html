@@ -32,6 +32,9 @@
     .items  input{
         border: solid silver 1px;
     }
+    .floating{
+        position: absolute;
+    }
 
 
 </style>
@@ -114,7 +117,9 @@
             <tr class="">
                 <td><button class="btn-success btn">OK</button></td>
                 <td><input type="checkbox" name="ids[]" value="<%= id %>" onclick="toggleSelect($(this).parents('tr'))" data-connected="#checkAllAssignedItems"></td>
-                <td><%= attributes.code %></td> <!-- id din orders_items -->
+                <td><a onclick="showDesign(this)"><%= attributes.code %></a>
+
+                </td> <!-- id din orders_items -->
                 <td><%= attributes.label %></td> <!-- name din idem si la fel -->
                 <td><%= relationships.item.relationships? relationships.item.relationships.order.relationships.doc_id.attributes.docnum : "--" %></td> <!-- docnum din documents, relationship prin doc_id din orders -->
                 <td><%= attributes.totalcnt %></td> <!-- qty din orders_items -->
@@ -156,8 +161,33 @@
 
 <script>
 
+function showDesign(src) {
+    console.log(src);
+    let inst = $(src).data("instance");
+    let code = inst.attributes.code;
+    let img = $("<img style='max-width: 70%'>");
+    img[0].src = deseneBaseUrl+inst.attributes.code+".jpg";
+    img[0].onerror = function (ev) {
 
-    function filterByCheckoutStatus(src) {
+        console.log(ev.target,ev.target.src);
+        ev.target.src = "assets/images/noimage.png";
+        console.log(ev.target,ev.target.src);
+    };
+    let div = $("<div>").addClass("text-center")
+        .append("<h3>"+inst.attributes.label+"</h3>")
+        .append("<h3><span class='badge badge-danger'>Numar desen: "+inst.attributes.code+"</span></h3>")
+        .append(img)
+        .on("click",function (ev) {
+            $(ev.target).parents(".modal").modal("hide")
+        });
+    komponentor.intent("/common/genericmodal").data({
+        size: "modal-xl",
+        body: div
+    }).send();
+}
+
+
+function filterByCheckoutStatus(src) {
         let sel = $(src);
         switch (sel.val()) {
             case "":
@@ -232,12 +262,12 @@
     function init_komponent(k) {
 
         console.log("run again");
-        k.$el.addClass(k.data.instance.attributes.status);
 
         if(!k.data || !k.data.instance) {
             return;
         }
 
+        k.$el.addClass(k.data.instance.attributes.status);
 
         let url = apiRoot + "/deliveries/"+k.data.instance.id + "/delivery_items_aggregated?include=item,item.orders_items_meta,item.order,item.order.doc_id";
         let contentItems = k.$el.find("#deliveryContentsList").apiator({returninstance:true}).setUrl(url);
@@ -270,7 +300,12 @@
                 scanCode:code,
                 onclose: function () {
                     console.log("callback scanning");
-                    contentItems.loadFromRemote();
+                    contentItems.loadFromRemote().then(
+                        function () {
+                            console.log("tooltip",k.$el,k.$el.find("[has=tooltip]").tooltip({html:true}));
+
+                        }
+                    );
                     enableScanning();
                 }
             };
@@ -281,6 +316,7 @@
             contentItems.loadFromRemote()
                 .then(function () {
                     enableScanning();
+                    console.log("tooltip",k.$el,k.$el.find("[has=tooltip]").tooltip({html:true}));
                 });
         };
         k.activate();
@@ -290,12 +326,16 @@
         });
 
         $('#refreshButt').on("click",function () {
-            contentItems.loadFromRemote();
+            contentItems.loadFromRemote()
+                .then(function () {
+                    console.log("tooltip",k.$el,k.$el.find("[has=tooltip]").tooltip({html:true}));
+                })
         });
 
         k.$el.find("#addContentBtn").on("click",function (e) {
             komponentor.intent("/views/deliveries/selectContent").data({instance:k.data.instance,contentItems:contentItems}).send();
         });
+
 
     }
 
