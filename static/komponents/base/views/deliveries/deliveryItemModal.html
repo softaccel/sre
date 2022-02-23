@@ -1,0 +1,67 @@
+<div class="modal" id="deliveryItemModal">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalii item</h5>
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#desenPanel" class="nav-link active">Desen</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#piesePanel" class="nav-link">Piese individuale</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-body">
+                <div class="tab-content" >
+                    <div id="desenPanel" class="tab-pane active"></div>
+                    <div id="piesePanel" class="tab-pane">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Nr. ordine</th>
+                                <th>Tiparit</th>
+                                <th>Scanat</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><%=attributes.seqno%></td>
+                                <td><span class="badge badge-<%=attributes.label_printed==='1'?'success':'secondary'%>"><%=attributes.label_printed==="1"?"tiparit":"netiparit"%></span></td>
+                                <td><span class="badge badge-<%=attributes.checkout==='1'?'success':'secondary'%>"><%=attributes.checkout==="1"?"scanat":"nescanat"%></span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function init_komponent(k) {
+        let instance = k.data.instance;
+        console.log(instance);
+        let img = $("<img>")
+            .css("max-width","100%")
+            .css("max-height","70%")
+            .attr("src",deseneBaseUrl+instance.attributes.code+".jpg")
+            .on("error", function (ev) {
+                console.log(ev.target,ev.target.src);
+                ev.target.src = "assets/images/noimage.png";
+                console.log(ev.target,ev.target.src);
+            });
+
+
+
+        let mdl = k.$el.appendTo("body")
+            .filter(".modal")
+            .on("hide.bs.modal",function () {
+                k.$el.remove();
+            })
+            .modal();
+
+        mdl.find("#desenPanel").append(img);
+        mdl.find("#piesePanel tbody").apiator(apiRoot+"/deliveries_contents?filter=delivery="+instance.relationships.delivery.id+",item="+instance.relationships.item.id);
+    }
+</script>

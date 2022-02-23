@@ -163,10 +163,15 @@
 
 function showDesign(src) {
     console.log(src);
-    let inst = $(src).data("instance");
-    let code = inst.attributes.code;
+    let instance = $(src).data("instance");
+
+    komponentor.intent("/views/deliveries/deliveryItemModal")
+        .data({instance:instance}).send();
+    return;
+
+    let code = instance.attributes.code;
     let img = $("<img style='max-width: 70%'>");
-    img[0].src = deseneBaseUrl+inst.attributes.code+".jpg";
+    img[0].src = deseneBaseUrl+instance.attributes.code+".jpg";
     img[0].onerror = function (ev) {
 
         console.log(ev.target,ev.target.src);
@@ -174,8 +179,8 @@ function showDesign(src) {
         console.log(ev.target,ev.target.src);
     };
     let div = $("<div>").addClass("text-center")
-        .append("<h3>"+inst.attributes.label+"</h3>")
-        .append("<h3><span class='badge badge-danger'>Numar desen: "+inst.attributes.code+"</span></h3>")
+        .append("<h3>"+instance.attributes.label+"</h3>")
+        .append("<h3><span class='badge badge-danger'>Numar desen: "+instance.attributes.code+"</span></h3>")
         .append(img)
         .on("click",function (ev) {
             $(ev.target).parents(".modal").modal("hide")
