@@ -13,7 +13,7 @@
             </div>
             <div class="modal-body">
                 <form name="importForm" id="importForm">
-                    <input type="file" name="orderfile">
+                    <input type="file" name="orderfile" onchange="$(this.form).submit()">
                 </form>
 
                 <form name="orderForm" id="orderForm" style="display: none">
@@ -29,7 +29,7 @@
                             <thead>
                             <tr>
                                 <th><input type="checkbox" checked name="toggleall" data-toggle="cod" onclick="toggleCheck(this)"></th>
-                                <th>Cod</th>
+                                <th>Cod / Nr. desen</th>
                                 <th>Descriere</th>
                                 <th>Cantitate</th>
                                 <th>Pret unitar</th>
@@ -39,8 +39,14 @@
                             </thead>
                             <tbody data-name="orderItems">
                             <tr>
-                                <td><input type="checkbox" name="cod" data-toggleall="toggleall" value="<%= cod %>" checked onclick="toggleCheck(this)"></td>
-                                <td><%= cod %></td>
+                                <td><input type="checkbox" name="cod" data-toggleall="toggleall" checked onclick="toggleCheck(this)" value="<%= typeof cod!=='undefined'?cod:'' %>"></td>
+                                <td>
+                                    <% if(typeof cod==='undefined') { %>
+                                    <input type="text" style="width: 130px" onchange="updateChkBx(this)" onkeyup="updateChkBx(this)" required>
+                                    <% }else{ %>
+                                    <%= cod %>
+                                    <% } %>
+                                </td>
                                 <td><%= desc %></td>
                                 <td><%= qty %> <%= unit %></td>
                                 <td><%= unit_price %><%= curr %></td>
@@ -62,8 +68,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button data-name="uploadButton" form="importForm" type="button" class="btn-primary btn">Importa XML</button>
-                <button data-name="addOrderParts" form="orderForm" type="button" class="btn btn-success" style="display: none">Adauga selectate</button>
+                <button data-name="uploadButton" form="importForm" type="button" class="btn-primary btn" name="uploadButton">Importa XML</button>
+                <button data-name="addOrderParts" form="orderForm" type="submit" class="btn btn-success" style="display: none">Adauga selectate</button>
             </div>
         </div>
     </div>
@@ -71,7 +77,15 @@
 
 <script>
 
-    function uuidv4() {
+function updateChkBx(inp) {
+    let $inp = $(inp);
+    $inp.parents("tr").find("input[name=cod]").val(inp.value);
+    $inp.data().data.cod = inp.value;
+    console.log($inp.data().data);
+}
+
+
+function uuidv4() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
@@ -136,6 +150,7 @@
         let $uploadButton = k.$el.find("[data-name=uploadButton]");
 
         function publishItems(response) {
+            console.log(response);
             let total = 0;
             let entries = [];
             let targetDateSet = false;
@@ -158,11 +173,13 @@
                         desc.push(entry.fields["P.A.S_ArtikelSpr.Bezeichnung[4]"].data);
                     }
 
+
                     let entryData = {
                         desc: desc.join(" / "),
                         unit_price: entry.fields["P.A.E_BelegPos.Einzelpreis"].data.replaceAll(".","").replaceAll(",",".")*1,
                         qty: entry.fields["P.A.E_BelegPos.Menge"].data.replaceAll(".","").replaceAll(",",".")*1,
                         curr: entry.fields["P.A.S_PreisEinheitSpr.KurzBez"].data,
+                        articol: entry.fields["P.A.E_BelegPos.Artikel"].data,
                         unit: valuesMap[entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data]
                             ? valuesMap[entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data]
                             :entry.fields["P.A.S_MengenEinheitSpr.KurzBez"].data,
@@ -187,16 +204,17 @@
                         lastPaSection.cod = entry.fields["P.XZE.PP_Zeichnung.Zeichnung"].data;
                     }
                 }
+
             });
 
+            console.log(entries);
             entries.forEach(function (entry) {
                 let $el = $(template(entry)).appendTo($items).attr("id",uuidv4()).data("data",entry);
                 $el.find("*").data("data",entry);
             });
         }
 
-        function uploadFile(src) {
-            let form = src.target.form;
+        function uploadFile(form) {
             let files = form.orderfile.files;
             $items.empty();
 
@@ -243,8 +261,7 @@
                 });
         }
 
-        function placeOrder(src) {
-            let form = src.target.form;
+        function placeOrder(form) {
             let multiplier = $("input[name=multiplied_by]").val();
             if(!/^d+$/.test(multiplier)) {
                 multiplier = 1;
@@ -262,41 +279,46 @@
                     qty: parseInt(data.qty) * multiplier,
                     unit_price: data.unit_price,
                     currency: valuesMap[data.curr],
-                    orders_items_meta: []
+                    orders_items_meta: [
+                        {
+                            type: "orders_items_meta",
+                            attributes: {
+                                meta_key: "numar_desen",
+                                meta_val: data.cod
+                            }
+                        },
+                        {
+                            type: "orders_items_meta",
+                            attributes: {
+                                meta_key: "cod_articol",
+                                meta_val: data.articol
+                            }
+                        }
+                    ]
                 };
-
-                if (data.fields["P.A.E_BelegPos.Artikel"].data!=="") {
-                    order_part.orders_items_meta.push({
-                        type: "orders_items_meta",
-                        attributes: {
-                            meta_key: "cod_articol",
-                            meta_val: data.fields["P.A.E_BelegPos.Artikel"].data
-                        }
-                    });
-                }
-
-
-                if (data.fields["P.A.P_ZeichnungSpr.Zeichnung"].data!=="") {
-                    order_part.orders_items_meta.push({
-                        type: "orders_items_meta",
-                        attributes: {
-                            meta_key: "numar_desen",
-                            meta_val: data.fields["P.A.P_ZeichnungSpr.Zeichnung"].data
-                        }
-                    });
-                }
-                if (data.fields["P.XZE.PP_Zeichnung.Zeichnung"].data!=="") {
-                    order_part.orders_items_meta.push({
-                        type: "orders_items_meta",
-                        attributes: {
-                            meta_key: "numar_desen",
-                            meta_val: data.fields["P.XZE.PP_Zeichnung.Zeichnung"].data
-                        }
-                    });
-                }
+                //
+                // if (data.fields["P.A.E_BelegPos.Artikel"].data!=="") {
+                //     order_part.orders_items_meta
+                //         .push({
+                //             type: "orders_items_meta",
+                //             attributes: {
+                //                 meta_key: "cod_articol",
+                //                 meta_val: data.fields["P.A.E_BelegPos.Artikel"].data
+                //             }
+                //         });
+                // }
 
                 //
-                // if (data.fields["P.XZE.PP_Zeichnung.Zeichnung"].data!=="") {
+                // if (data.fields["P.A.P_ZeichnungSpr.Zeichnung"] && data.fields["P.A.P_ZeichnungSpr.Zeichnung"].data!=="") {
+                //     order_part.orders_items_meta.push({
+                //         type: "orders_items_meta",
+                //         attributes: {
+                //             meta_key: "numar_desen",
+                //             meta_val: data.fields["P.A.P_ZeichnungSpr.Zeichnung"].data
+                //         }
+                //     });
+                // }
+                // if (data.fields["P.XZE.PP_Zeichnung.Zeichnung"] && data.fields["P.XZE.PP_Zeichnung.Zeichnung"].data!=="") {
                 //     order_part.orders_items_meta.push({
                 //         type: "orders_items_meta",
                 //         attributes: {
@@ -330,6 +352,8 @@
 
             k.data.instance.insertUrl.path = k.data.instance.insertUrl.path.replace("orders_items_wmeta", "orders_items");
 
+            console.log(reqData);
+            
             // return;
             $.ajax({
                 url : k.data.instance.insertUrl.toString(),
@@ -348,8 +372,14 @@
 
         }
 
-        $orderButton.on("click", placeOrder);
-        $uploadButton.on("click", uploadFile);
+        k.$el.find("#orderForm").on("submit",function (event) {
+            event.preventDefault();
+            placeOrder(event.target);
+        });
+        k.$el.find("#importForm").on("submit",function (event) {
+            event.preventDefault();
+            uploadFile(event.target);
+        });
 
         modal.modal("show");
     }

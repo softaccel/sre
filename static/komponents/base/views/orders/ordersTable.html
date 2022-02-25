@@ -166,7 +166,7 @@
 
     function deleteOrder(event) {
         event.stopPropagation();
-        src = event.target;
+        let src = event.target;
         komponentor.intent("/common/messagemodal").data({
             body: "Esti sigur ca vrei sa stergi comanda<br><strong>"+$(src).data("instance").attributes.label + "</strong>",
             buttons: [
